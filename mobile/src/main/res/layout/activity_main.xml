@@ -7,4 +7,5 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
 
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame">
+</FrameLayout>

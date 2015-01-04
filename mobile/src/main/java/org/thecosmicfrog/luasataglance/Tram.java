@@ -13,7 +13,10 @@ public class Tram {
 
     @Override
     public String toString() {
-        return String.format("%s - %s - %s", destination, direction, dueMinutes);
+        if (Integer.parseInt(dueMinutes) > 1)
+            return String.format("%s\t\t\t\t\t\t\t\t%s", destination, dueMinutes + " mins");
+
+        return String.format("%s\t\t\t\t\t\t\t\t%s", destination, dueMinutes + " min");
     }
 
     public String getDestination() {

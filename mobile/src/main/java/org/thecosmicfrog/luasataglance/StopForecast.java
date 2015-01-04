@@ -5,8 +5,13 @@ import java.util.List;
 
 public class StopForecast {
     private String message;
-    private List<Tram> inboundTrams = new ArrayList<Tram>();
-    private List<Tram> outboundTrams = new ArrayList<Tram>();
+    private List<Tram> inboundTrams;
+    private List<Tram> outboundTrams;
+
+    public StopForecast() {
+        inboundTrams = new ArrayList<Tram>();
+        outboundTrams = new ArrayList<Tram>();
+    }
 
     public void addInboundTram(Tram t) {
         // Check there are actually inbound trams running.

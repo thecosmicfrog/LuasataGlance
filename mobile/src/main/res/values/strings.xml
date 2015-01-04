@@ -2,10 +2,11 @@
 <resources>
 
     <string name="app_name">Luas at a Glance</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="message">Awaiting Luas status...</string>
+    <string name="message_title"><b>Status</b></string>
+    <string name="message_error">Error retrieving times from Luas RTPI system.</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    
+
     <string-array name="red_line_stops_array">
         <item>The Point</item>
         <item>Spencer Dock</item>

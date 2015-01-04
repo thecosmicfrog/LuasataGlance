@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -26,9 +28,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class LuasTimesFragment extends Fragment {
 
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
@@ -42,6 +41,22 @@ public class LuasTimesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        /*
+         * Set up tabs.
+         */
+        TabHost tabHost = (TabHost) rootView.findViewById(R.id.tabHost);
+        tabHost.setup();
+
+        TabHost.TabSpec tabSpec = tabHost.newTabSpec("red_line");
+        tabSpec.setContent(R.id.tab_red_line);
+        tabSpec.setIndicator("Red Line");
+        tabHost.addTab(tabSpec);
+
+        tabSpec = tabHost.newTabSpec("green_line");
+        tabSpec.setContent(R.id.tab_green_line);
+        tabSpec.setIndicator("Green Line");
+        tabHost.addTab(tabSpec);
 
         final Spinner spinnerStop = (Spinner) rootView.findViewById(R.id.spinner_stop);
         final ArrayAdapter<CharSequence> adapterStop = ArrayAdapter.createFromResource(
@@ -65,7 +80,7 @@ public class LuasTimesFragment extends Fragment {
         return rootView;
     }
 
-    public class FetchLuasTimes extends AsyncTask<String, Void, String> {
+    public class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {
 
         private final String LOG_TAG = FetchLuasTimes.class.getSimpleName();
 
@@ -132,7 +147,7 @@ public class LuasTimesFragment extends Fragment {
         };
 
         @Override
-        protected String doInBackground(String... params) {
+        protected StopForecast doInBackground(String... params) {
             if (params.length == 0)
                 return null;
 
@@ -175,7 +190,7 @@ public class LuasTimesFragment extends Fragment {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
+                    buffer.append(line).append("\n");
                 }
 
                 if (buffer.length() == 0)
@@ -184,37 +199,59 @@ public class LuasTimesFragment extends Fragment {
                 luasTimesJson = buffer.toString();
 
                 Log.v(LOG_TAG, "Luas times: " + luasTimesJson);
-
-                try {
-                    getLuasDataFromJson(luasTimesJson);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            catch (IOException ioe) {
+            } catch (IOException ioe) {
                 ioe.printStackTrace();
-            }
-            finally {
+            } finally {
                 if (httpUrlConnection != null)
                     httpUrlConnection.disconnect();
 
                 if (reader != null) {
                     try {
                         reader.close();
-                    }
-                    catch (final IOException ioe) {
+                    } catch (final IOException ioe) {
                         Log.e(LOG_TAG, "Error closing stream.", ioe);
                     }
                 }
             }
 
-            return luasTimesJson;
+            try {
+                return getLuasDataFromJson(luasTimesJson);
+            } catch (JSONException je) {
+                je.printStackTrace();
+            }
+
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            TextView redCowTextView = (TextView) rootView.findViewById(R.id.textview_red_cow);
-            redCowTextView.setText(s);
+        protected void onPostExecute(StopForecast sf) {
+            if (sf != null) {
+                TextView messageTextView = (TextView) rootView.findViewById(R.id.textview_message);
+                messageTextView.setText(sf.getMessage());
+
+                ArrayAdapter<Tram> adapterInboundTrams = new ArrayAdapter<>(
+                        getActivity(),
+                        R.layout.list_item_trams,
+                        R.id.textview_list_item_destination,
+                        sf.getInboundTrams());
+
+                ListView listViewInboundTrams = (ListView) rootView.findViewById(R.id.listview_inbound_trams);
+                listViewInboundTrams.setAdapter(adapterInboundTrams);
+
+                ArrayAdapter<Tram> adapterOutboundTrams = new ArrayAdapter<>(
+                        getActivity(),
+                        R.layout.list_item_trams,
+                        R.id.textview_list_item_due_minutes,
+                        sf.getOutboundTrams());
+
+                ListView listViewOutboundTrams = (ListView) rootView.findViewById(R.id.listview_outbound_trams);
+                listViewOutboundTrams.setAdapter(adapterOutboundTrams);
+            } else {
+                TextView messageTextView = (TextView) rootView.findViewById(R.id.textview_message);
+                messageTextView.setText(R.string.message_error);
+            }
+
+
         }
 
         /**
@@ -266,12 +303,10 @@ public class LuasTimesFragment extends Fragment {
 
                 switch (trams[i].getDirection()) {
                     case "Inbound":
-                        if (trams[i] != null)
-                            stopForecast.addInboundTram(trams[i]);
+                        stopForecast.addInboundTram(trams[i]);
                         break;
                     case "Outbound":
-                        if (trams[i] != null)
-                            stopForecast.addOutboundTram(trams[i]);
+                        stopForecast.addOutboundTram(trams[i]);
                         break;
                     default:
                         Log.e(LOG_TAG, "Invalid direction: " + trams[i].getDirection());

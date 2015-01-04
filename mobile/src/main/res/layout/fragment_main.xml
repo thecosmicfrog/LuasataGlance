@@ -9,21 +9,85 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
 
-    tools:context=".MainActivity$PlaceholderFragment"
-    android:orientation="vertical"
-    android:nestedScrollingEnabled="false">
+    tools:context=".MainActivity$LuasTimesFragment"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textview_red_cow"
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:editable="false" />
+    <TabHost
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/tabHost">
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner_stop"
-        android:spinnerMode="dropdown" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/tab_red_line"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical">
+
+                    <Spinner
+                        android:id="@+id/spinner_stop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:spinnerMode="dropdown" />
+
+                    <TextView
+                        android:id="@+id/textview_message_title"
+                        android:text="@string/message_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:background="#006600"
+                        android:textColor="#ffffff"
+                        android:gravity="center_horizontal" />
+
+                    <TextView
+                        android:id="@+id/textview_message"
+                        android:text="@string/message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:background="#ffffff"
+                        android:gravity="center_horizontal" />
+
+                    <ListView
+                        android:id="@+id/listview_inbound_trams"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="12dp"
+                        android:background="#ffffff" />
+
+                    <ListView
+                        android:id="@+id/listview_outbound_trams"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="12dp"
+                        android:background="#ffffff" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab_green_line"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
 
 </LinearLayout>
