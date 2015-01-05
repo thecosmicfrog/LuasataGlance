@@ -38,44 +38,157 @@
                     android:layout_height="fill_parent"
                     android:orientation="vertical">
 
+                    <Space
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+
                     <Spinner
-                        android:id="@+id/spinner_stop"
+                        android:id="@+id/red_line_spinner_stop"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:spinnerMode="dropdown" />
 
-                    <TextView
-                        android:id="@+id/textview_message_title"
-                        android:text="@string/message_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:editable="false"
-                        android:background="#006600"
-                        android:textColor="#ffffff"
-                        android:gravity="center_horizontal" />
+                    <Space
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
 
                     <TextView
-                        android:id="@+id/textview_message"
+                        android:id="@+id/red_line_textview_message_title"
+                        android:text="@string/red_line_message_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#006600"
+                        android:textColor="#ffffff"
+                        android:gravity="center_horizontal"
+                        android:elevation="6dp" />
+
+                    <TextView
+                        android:id="@+id/red_line_textview_message"
                         android:text="@string/message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:editable="false"
                         android:background="#ffffff"
-                        android:gravity="center_horizontal" />
+                        android:gravity="center_horizontal"
+                        android:elevation="6dp"
+                        android:textSize="16sp" />
 
-                    <ListView
-                        android:id="@+id/listview_inbound_trams"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:background="#ffffff" />
+                    <Space
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
 
-                    <ListView
-                        android:id="@+id/listview_outbound_trams"
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/red_line_textview_inbound"
+                        android:text="@string/inbound"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:background="#ffffff" />
+                        android:background="#100054"
+                        android:gravity="center_horizontal"
+                        android:textColor="#ffffff"
+                        android:elevation="6dp" />
+
+                    <TableLayout
+                        android:id="@+id/red_line_tablelayout_inbound"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:stretchColumns="*"
+                        android:elevation="6dp">
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/red_line_textview_inbound_stop1_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/red_line_textview_inbound_stop1_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/red_line_textview_inbound_stop2_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/red_line_textview_inbound_stop2_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/red_line_textview_inbound_stop3_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/red_line_textview_inbound_stop3_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+                    </TableLayout>
+
+                    <Space
+                        android:layout_width="10dp"
+                        android:layout_height="10dp" />
+
+                    <TextView
+                        android:id="@+id/textview_outbound"
+                        android:text="@string/outbound"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#100054"
+                        android:gravity="center_horizontal"
+                        android:textColor="#ffffff"
+                        android:elevation="6dp" />
+
+                    <TableLayout
+                        android:id="@+id/tablelayout_outbound"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:stretchColumns="*"
+                        android:elevation="6dp">
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/red_line_textview_outbound_stop1_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/red_line_textview_outbound_stop1_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/red_line_textview_outbound_stop2_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/red_line_textview_outbound_stop2_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/red_line_textview_outbound_stop3_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/red_line_textview_outbound_stop3_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+                    </TableLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -83,6 +196,158 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:orientation="vertical">
+
+                    <Space
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+
+                    <Spinner
+                        android:id="@+id/green_line_spinner_stop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:spinnerMode="dropdown" />
+
+                    <Space
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+
+                    <TextView
+                        android:id="@+id/green_line_textview_message_title"
+                        android:text="@string/red_line_message_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#006600"
+                        android:textColor="#ffffff"
+                        android:gravity="center_horizontal"
+                        android:elevation="6dp" />
+
+                    <TextView
+                        android:id="@+id/green_line_textview_message"
+                        android:text="@string/message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:gravity="center_horizontal"
+                        android:elevation="6dp"
+                        android:textSize="16sp" />
+
+                    <Space
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+
+                    <TextView
+                        android:id="@+id/green_line_textview_inbound"
+                        android:text="@string/inbound"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#100054"
+                        android:gravity="center_horizontal"
+                        android:textColor="#ffffff"
+                        android:elevation="6dp" />
+
+                    <TableLayout
+                        android:id="@+id/green_line_tablelayout_inbound"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:stretchColumns="*"
+                        android:elevation="6dp">
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/green_line_textview_inbound_stop1_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/green_line_textview_inbound_stop1_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/green_line_textview_inbound_stop2_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/green_line_textview_inbound_stop2_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/green_line_textview_inbound_stop3_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/green_line_textview_inbound_stop3_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+                    </TableLayout>
+
+                    <Space
+                        android:layout_width="10dp"
+                        android:layout_height="10dp" />
+
+                    <TextView
+                        android:id="@+id/green_line_textview_outbound"
+                        android:text="@string/outbound"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#100054"
+                        android:gravity="center_horizontal"
+                        android:textColor="#ffffff"
+                        android:elevation="6dp" />
+
+                    <TableLayout
+                        android:id="@+id/green_line_tablelayout_outbound"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:stretchColumns="*"
+                        android:elevation="6dp">
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/green_line_textview_outbound_stop1_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/green_line_textview_outbound_stop1_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/green_line_textview_outbound_stop2_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/green_line_textview_outbound_stop2_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/green_line_textview_outbound_stop3_name"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/green_line_textview_outbound_stop3_time"
+                                android:gravity="center_horizontal"
+                                android:textSize="16sp" />
+                        </TableRow>
+                    </TableLayout>
 
                 </LinearLayout>
 

@@ -2,9 +2,14 @@
 <resources>
 
     <string name="app_name">Luas at a Glance</string>
+
     <string name="message">Awaiting Luas status...</string>
-    <string name="message_title"><b>Status</b></string>
+    <string name="red_line_message_title"><b>Status</b></string>
     <string name="message_error">Error retrieving times from Luas RTPI system.</string>
+
+    <string name="inbound">Inbound</string>
+    <string name="outbound">Outbound</string>
+
     <string name="action_settings">Settings</string>
 
     <string-array name="red_line_stops_array">
@@ -40,6 +45,31 @@
         <item>Citywest Campus</item>
         <item>Fortunestown</item>
         <item>Saggart</item>
+    </string-array>
+
+    <string-array name="green_line_stops_array">
+        <item>St. Stephen\'s Green</item>
+        <item>Harcourt</item>
+        <item>Charlemont</item>
+        <item>Ranelagh</item>
+        <item>Beechwood</item>
+        <item>Cowper</item>
+        <item>Milltown</item>
+        <item>Windy Arbour</item>
+        <item>Dundrum</item>
+        <item>Balally</item>
+        <item>Kilmacud</item>
+        <item>Stillorgan</item>
+        <item>Sandyford</item>
+        <item>Central Park</item>
+        <item>Glencairn</item>
+        <item>The Gallops</item>
+        <item>Leopardstown Valley</item>
+        <item>Ballyogan Wood</item>
+        <item>Carrickmines</item>
+        <item>Laughanstown</item>
+        <item>Cherrywood</item>
+        <item>Brides Glen</item>
     </string-array>
 
 </resources>
