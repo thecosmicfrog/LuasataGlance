@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="red_message_error">#ffe00000</color>
+    <color name="spinner_background">#ffffffff</color>
+    <color name="message_success">#ff006600</color>
+    <color name="message_error">#ffe00000</color>
 </resources>

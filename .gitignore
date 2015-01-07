@@ -3,6 +3,7 @@
 .gradle
 /gradle
 *gradlew*
+*.iml
 gradle.properties
 /local.properties
 /.idea

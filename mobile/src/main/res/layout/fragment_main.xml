@@ -39,17 +39,47 @@
                     android:orientation="vertical">
 
                     <Space
-                        android:layout_width="20dp"
-                        android:layout_height="20dp" />
-
-                    <Spinner
-                        android:id="@+id/red_line_spinner_stop"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:spinnerMode="dropdown" />
+                        android:layout_height="10dp" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <ProgressBar
+                            style="?android:attr/progressBarStyleSmall"
+                            android:id="@+id/red_line_progressbar_loading_circle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true" />
+                    </RelativeLayout>
 
                     <Space
-                        android:layout_width="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp" />
+
+                    <!--
+                        Hack to allow background of spinner's "arrow" to have a custom color.
+                        Just setting the background property of the Spinner item causes the arrow
+                        to disappear. Simplest solution is to create a RelativeLayout around the
+                        Spinner and set the background of that.
+                    -->
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/spinner_background"
+                        android:elevation="6dp">
+
+                        <Spinner
+                            android:id="@+id/red_line_spinner_stop"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:spinnerMode="dropdown" />
+                    </RelativeLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
                         android:layout_height="20dp" />
 
                     <TextView
@@ -198,14 +228,44 @@
                     android:orientation="vertical">
 
                     <Space
-                        android:layout_width="20dp"
-                        android:layout_height="20dp" />
-
-                    <Spinner
-                        android:id="@+id/green_line_spinner_stop"
                         android:layout_width="match_parent"
+                        android:layout_height="10dp" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <ProgressBar
+                            style="?android:attr/progressBarStyleSmall"
+                            android:id="@+id/green_line_progressbar_loading_circle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true" />
+                    </RelativeLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp" />
+
+                    <!--
+                        Hack to allow background of spinner's "arrow" to have a custom color.
+                        Just setting the background property of the Spinner item causes the arrow
+                        to disappear. Simplest solution is to create a RelativeLayout around the
+                        Spinner and set the background of that.
+                    -->
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:spinnerMode="dropdown" />
+                        android:background="@color/spinner_background"
+                        android:elevation="6dp">
+
+                        <Spinner
+                            android:id="@+id/green_line_spinner_stop"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:spinnerMode="dropdown" />
+                    </RelativeLayout>
 
                     <Space
                         android:layout_width="20dp"
