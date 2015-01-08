@@ -10,10 +10,39 @@
     tools:context=".MainActivity$PlaceholderFragment"
     tools:deviceIds="wear_round"
     android:orientation="vertical"
-    android:nestedScrollingEnabled="false">
+    android:nestedScrollingEnabled="false"
+    android:gravity="center_vertical|center_horizontal"
+    android:weightSum="1">
 
     <TextView
-        android:id="@+id/textview_red_cow"
+        android:id="@+id/textview_red_line"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Red Line"
+        android:layout_weight="0.5"
+        android:gravity="center_vertical|center_horizontal"
+        android:background="#EE3624"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:clickable="true" />
+
+    <TextView
+        android:id="@+id/textview_green_line"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Green Line"
+        android:layout_weight="0.5"
+        android:gravity="center_vertical|center_horizontal"
+        android:background="#59AD40"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:clickable="true" />
+
+</LinearLayout>
+
+<!--
+    <TextView
+        android:id="@+id/textview_wear"
         android:text="testtesttest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,6 +54,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinner_stop"
-        android:spinnerMode="dropdown" />
-
-</LinearLayout>
+        android:spinnerMode="dialog" />
+-->

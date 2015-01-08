@@ -5,4 +5,39 @@
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
 
+    <string-array name="red_line_stops_array">
+        <item>The Point</item>
+        <item>Spencer Dock</item>
+        <item>Mayor Square - NCI</item>
+        <item>George\'s Dock</item>
+        <item>Connolly</item>
+        <item>Busáras</item>
+        <item>Abbey Street</item>
+        <item>Jervis</item>
+        <item>Four Courts</item>
+        <item>Smithfield</item>
+        <item>Museum</item>
+        <item>Heuston</item>
+        <item>James\'s</item>
+        <item>Fatima</item>
+        <item>Rialto</item>
+        <item>Suir Road</item>
+        <item>Goldenbridge</item>
+        <item>Drimnagh</item>
+        <item>Blackhorse</item>
+        <item>Bluebell</item>
+        <item>Kylemore</item>
+        <item>Red Cow</item>
+        <item>Kingswood</item>
+        <item>Belgard</item>
+        <item>Cookstown</item>
+        <item>Hospital</item>
+        <item>Tallaght</item>
+        <item>Fettercairn</item>
+        <item>Cheeverstown</item>
+        <item>Citywest Campus</item>
+        <item>Fortunestown</item>
+        <item>Saggart</item>
+    </string-array>
+
 </resources>
