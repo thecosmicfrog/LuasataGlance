@@ -36,8 +36,9 @@ public class LuasTimesFragment extends Fragment {
 
     private static TabHost tabHost;
     private static String currentTab;
-    private ProgressBar progressBarRedLineLoadingCircle;
-    private ProgressBar progressBarGreenLineLoadingCircle;
+    private static ProgressBar progressBarRedLineLoadingCircle;
+    private static ProgressBar progressBarGreenLineLoadingCircle;
+    private static Spinner redLineSpinnerStop;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +67,7 @@ public class LuasTimesFragment extends Fragment {
         progressBarRedLineLoadingCircle = (ProgressBar) rootView.findViewById(R.id.red_line_progressbar_loading_circle);
         setIsLoading("red_line", false);
 
-        final Spinner redLineSpinnerStop = (Spinner) rootView.findViewById(R.id.red_line_spinner_stop);
+        redLineSpinnerStop = (Spinner) rootView.findViewById(R.id.red_line_spinner_stop);
         final ArrayAdapter<CharSequence> redLineAdapterStop = ArrayAdapter.createFromResource(
                 getActivity(), R.array.red_line_stops_array, R.layout.spinner_stops
         );
@@ -78,9 +79,7 @@ public class LuasTimesFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 currentTab = tabHost.getCurrentTabTag();
 
-                new FetchLuasTimes().execute(
-                        redLineSpinnerStop.getItemAtPosition(position).toString()
-                );
+                loadStopForecast(redLineSpinnerStop.getItemAtPosition(position).toString());
             }
 
             @Override
@@ -107,9 +106,7 @@ public class LuasTimesFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 currentTab = tabHost.getCurrentTabTag();
 
-                new FetchLuasTimes().execute(
-                        greenLineSpinnerStop.getItemAtPosition(position).toString()
-                );
+                loadStopForecast(greenLineSpinnerStop.getItemAtPosition(position).toString());
             }
 
             @Override
@@ -119,6 +116,14 @@ public class LuasTimesFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    public void loadStopForecast(String stopName) {
+        new FetchLuasTimes().execute(stopName);
+    }
+
+    public String getCurrentSelectedStop() {
+        return redLineSpinnerStop.getSelectedItem().toString();
     }
 
     /**
@@ -360,7 +365,7 @@ public class LuasTimesFragment extends Fragment {
                         for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                             if (i < 3) {
                                 textViewInboundStopNames[i].setText(sf.getInboundTrams().get(i).getDestination());
-                                textViewInboundStopTimes[i].setText(sf.getInboundTrams().get(i).getDueMinutes());
+                                textViewInboundStopTimes[i].setText(sf.getInboundTrams().get(i).getDueMinutes() + " mins");
                             }
                         }
                     }
@@ -369,7 +374,7 @@ public class LuasTimesFragment extends Fragment {
                         for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                             if (i < 3) {
                                 textViewOutboundStopNames[i].setText(sf.getOutboundTrams().get(i).getDestination());
-                                textViewOutboundStopTimes[i].setText(sf.getOutboundTrams().get(i).getDueMinutes());
+                                textViewOutboundStopTimes[i].setText(sf.getOutboundTrams().get(i).getDueMinutes() + " mins");
                             }
                         }
                     }
@@ -444,7 +449,7 @@ public class LuasTimesFragment extends Fragment {
                         for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                             if (i < 3) {
                                 textViewInboundStopNames[i].setText(sf.getInboundTrams().get(i).getDestination());
-                                textViewInboundStopTimes[i].setText(sf.getInboundTrams().get(i).getDueMinutes());
+                                textViewInboundStopTimes[i].setText(sf.getInboundTrams().get(i).getDueMinutes() + " mins");
                             }
                         }
                     }
@@ -453,7 +458,7 @@ public class LuasTimesFragment extends Fragment {
                         for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                             if (i < 3) {
                                 textViewOutboundStopNames[i].setText(sf.getOutboundTrams().get(i).getDestination());
-                                textViewOutboundStopTimes[i].setText(sf.getOutboundTrams().get(i).getDueMinutes());
+                                textViewOutboundStopTimes[i].setText(sf.getOutboundTrams().get(i).getDueMinutes() + " mins");
                             }
                         }
                     }

@@ -2,11 +2,13 @@ package org.thecosmicfrog.luasataglance;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TabHost;
 
 public class MainActivity extends ActionBarActivity {
+
+    private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,10 @@ public class MainActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == R.id.action_reload) {
+            Log.v(LOG_TAG, "Reload clicked.");
         }
 
         return super.onOptionsItemSelected(item);
