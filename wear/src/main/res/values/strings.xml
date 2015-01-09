@@ -39,5 +39,32 @@
         <item>Fortunestown</item>
         <item>Saggart</item>
     </string-array>
+    <string-array name="green_line_stops_array">
+        <item>St. Stephen\'s Green</item>
+        <item>Harcourt</item>
+        <item>Charlemont</item>
+        <item>Ranelagh</item>
+        <item>Beechwood</item>
+        <item>Cowper</item>
+        <item>Milltown</item>
+        <item>Windy Arbour</item>
+        <item>Dundrum</item>
+        <item>Balally</item>
+        <item>Kilmacud</item>
+        <item>Stillorgan</item>
+        <item>Sandyford</item>
+        <item>Central Park</item>
+        <item>Glencairn</item>
+        <item>The Gallops</item>
+        <item>Leopardstown Valley</item>
+        <item>Ballyogan Wood</item>
+        <item>Carrickmines</item>
+        <item>Laughanstown</item>
+        <item>Cherrywood</item>
+        <item>Brides Glen</item>
+    </string-array>
+
+    <string name="title_activity_red_line">RedLineActivity</string>
+    <string name="title_activity_green_line">GreenLineActivity</string>
 
 </resources>

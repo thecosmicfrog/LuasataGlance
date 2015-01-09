@@ -18,6 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RedLineActivity"
+            android:label="@string/title_activity_red_line" >
+        </activity>
+        <activity
+            android:name=".GreenLineActivity"
+            android:label="@string/title_activity_green_line" >
+        </activity>
     </application>
 
 </manifest>

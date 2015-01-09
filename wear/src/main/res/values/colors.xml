@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="button_red_line">#FFEE3624</color>
+    <color name="button_green_line">#FF59AD40</color>
+    <color name="button_red_line_clicked">#FFA12418</color>
+    <color name="button_green_line_clicked">#FF326124</color>
+</resources>
