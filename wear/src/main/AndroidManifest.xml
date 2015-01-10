@@ -26,6 +26,10 @@
             android:name=".GreenLineActivity"
             android:label="@string/title_activity_green_line" >
         </activity>
+        <activity
+            android:name=".StopForecastActivity"
+            android:label="@string/title_activity_stop_forecast" >
+        </activity>
     </application>
 
 </manifest>

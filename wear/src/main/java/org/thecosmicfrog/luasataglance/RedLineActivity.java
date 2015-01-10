@@ -1,6 +1,7 @@
 package org.thecosmicfrog.luasataglance;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
@@ -33,7 +34,13 @@ public class RedLineActivity extends Activity {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String forecast = redLineAdapterStop.getItem(position).toString();
+                        String stopName = redLineAdapterStop.getItem(position).toString();
+
+                        startActivity(new Intent(
+                                getApplicationContext(),
+                                StopForecastActivity.class)
+                                .putExtra("stopName", stopName)
+                        );
 
                         Log.v(LOG_TAG, "Clicked!");
                     }

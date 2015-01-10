@@ -66,5 +66,6 @@
 
     <string name="title_activity_red_line">RedLineActivity</string>
     <string name="title_activity_green_line">GreenLineActivity</string>
+    <string name="title_activity_stop_forecast">StopForecastActivity</string>
 
 </resources>
