@@ -2,8 +2,14 @@
 <resources>
 
     <string name="app_name">Luas at a Glance</string>
-    <string name="hello_round">Hello Round World!</string>
-    <string name="hello_square">Hello Square World!</string>
+
+    <string name="message">Awaiting Luas status...</string>
+    <string name="message_title"><b>Status</b></string>
+    <string name="message_success">All services operating normally</string>
+    <string name="message_error">Error retrieving times from Luas RTPI system</string>
+
+    <string name="inbound">Inbound</string>
+    <string name="outbound">Outbound</string>
 
     <string-array name="red_line_stops_array">
         <item>The Point</item>
@@ -39,6 +45,7 @@
         <item>Fortunestown</item>
         <item>Saggart</item>
     </string-array>
+
     <string-array name="green_line_stops_array">
         <item>St. Stephen\'s Green</item>
         <item>Harcourt</item>
