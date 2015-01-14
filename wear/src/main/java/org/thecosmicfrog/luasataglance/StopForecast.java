@@ -1,9 +1,13 @@
 package org.thecosmicfrog.luasataglance;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StopForecast {
+public class StopForecast implements Serializable {
+
+    private static final long serialVersionUID = 0L;
+
     private String message;
     private List<Tram> inboundTrams;
     private List<Tram> outboundTrams;

@@ -1,6 +1,7 @@
 package org.thecosmicfrog.luasataglance;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
@@ -24,7 +25,9 @@ public class GreenLineActivity extends Activity {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
                 greenLineAdapterStop = ArrayAdapter.createFromResource(
-                        getApplicationContext(), R.array.green_line_stops_array, R.layout.listview_stops
+                        getApplicationContext(),
+                        R.array.green_line_stops_array,
+                        R.layout.listview_stops
                 );
 
                 ListView listView = (ListView) stub.findViewById(
@@ -32,10 +35,15 @@ public class GreenLineActivity extends Activity {
                 listView.setAdapter(greenLineAdapterStop);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String forecast = greenLineAdapterStop.getItem(position).toString();
+                    public void onItemClick(
+                            AdapterView<?> parent,View view, int position, long id) {
+                        String stopName = greenLineAdapterStop.getItem(position).toString();
 
-                        Log.v(LOG_TAG, "Clicked!");
+                        startActivity(new Intent(
+                                        getApplicationContext(),
+                                        StopForecastActivity.class)
+                                        .putExtra("stopName", stopName)
+                        );
                     }
                 });
             }

@@ -3,36 +3,34 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
 
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
 
     tools:context="org.thecosmicfrog.luasataglance.StopForecastActivity"
     tools:deviceIds="wear_round">
 
-    <TextView
-        android:id="@+id/textview_message_title"
-        android:text="@string/message_title"
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#006600"
-        android:textColor="#ffffff"
-        android:gravity="center_horizontal"
-        android:elevation="6dp" />
+        android:layout_height="24dp" />
 
-    <TextView
-        android:id="@+id/textview_message"
-        android:text="@string/message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff"
-        android:gravity="center_horizontal"
-        android:elevation="6dp"
-        android:textSize="16sp" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textview_stop_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#006600"
+            android:textColor="#ffffff"
+            android:gravity="center_horizontal"
+            android:elevation="6dp" />
+    </RelativeLayout>
 
     <Space
-        android:layout_width="20dp"
-        android:layout_height="20dp" />
+        android:layout_width="match_parent"
+        android:layout_height="12dp" />
 
     <TextView
         android:id="@+id/textview_inbound"
@@ -44,54 +42,50 @@
         android:textColor="#ffffff"
         android:elevation="6dp" />
 
-    <TableLayout
-        android:id="@+id/tablelayout_inbound"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
-        android:stretchColumns="*"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:elevation="6dp">
 
-        <TableRow>
-            <TextView
-                android:id="@+id/textview_inbound_stop1_name"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
+        <TableLayout
+            android:id="@+id/tablelayout_inbound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:stretchColumns="*">
 
-            <TextView
-                android:id="@+id/textview_inbound_stop1_time"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
-        </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/textview_inbound_stop1_name"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
 
-        <TableRow>
-            <TextView
-                android:id="@+id/textview_inbound_stop2_name"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/textview_inbound_stop1_time"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/textview_inbound_stop2_time"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
-        </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/textview_inbound_stop2_name"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
 
-        <TableRow>
-            <TextView
-                android:id="@+id/textview_inbound_stop3_name"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/textview_inbound_stop3_time"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
-        </TableRow>
-    </TableLayout>
+                <TextView
+                    android:id="@+id/textview_inbound_stop2_time"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
 
     <Space
-        android:layout_width="10dp"
-        android:layout_height="10dp" />
+        android:layout_width="match_parent"
+        android:layout_height="6dp" />
 
     <TextView
         android:id="@+id/textview_outbound"
@@ -103,49 +97,45 @@
         android:textColor="#ffffff"
         android:elevation="6dp" />
 
-    <TableLayout
-        android:id="@+id/tablelayout_outbound"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
-        android:stretchColumns="*"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:elevation="6dp">
 
-        <TableRow>
-            <TextView
-                android:id="@+id/textview_outbound_stop1_name"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
+        <TableLayout
+            android:id="@+id/tablelayout_outbound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:stretchColumns="*">
 
-            <TextView
-                android:id="@+id/textview_outbound_stop1_time"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
-        </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/textview_outbound_stop1_name"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
 
-        <TableRow>
-            <TextView
-                android:id="@+id/textview_outbound_stop2_name"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/textview_outbound_stop1_time"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/textview_outbound_stop2_time"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
-        </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/textview_outbound_stop2_name"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
 
-        <TableRow>
-            <TextView
-                android:id="@+id/textview_outbound_stop3_name"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/textview_outbound_stop3_time"
-                android:gravity="center_horizontal"
-                android:textSize="16sp" />
-        </TableRow>
-    </TableLayout>
+                <TextView
+                    android:id="@+id/textview_outbound_stop2_time"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
 
 </LinearLayout>

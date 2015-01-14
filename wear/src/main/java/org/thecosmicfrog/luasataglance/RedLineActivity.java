@@ -25,7 +25,9 @@ public class RedLineActivity extends Activity {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
                 redLineAdapterStop = ArrayAdapter.createFromResource(
-                      getApplicationContext(), R.array.red_line_stops_array, R.layout.listview_stops
+                      getApplicationContext(),
+                        R.array.red_line_stops_array,
+                        R.layout.listview_stops
                 );
 
                 ListView listView = (ListView) stub.findViewById(
@@ -33,7 +35,8 @@ public class RedLineActivity extends Activity {
                 listView.setAdapter(redLineAdapterStop);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemClick(
+                            AdapterView<?> parent, View view, int position, long id) {
                         String stopName = redLineAdapterStop.getItem(position).toString();
 
                         startActivity(new Intent(
@@ -41,8 +44,6 @@ public class RedLineActivity extends Activity {
                                 StopForecastActivity.class)
                                 .putExtra("stopName", stopName)
                         );
-
-                        Log.v(LOG_TAG, "Clicked!");
                     }
                 });
             }

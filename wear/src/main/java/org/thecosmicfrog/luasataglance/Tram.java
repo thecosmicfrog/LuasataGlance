@@ -1,6 +1,11 @@
 package org.thecosmicfrog.luasataglance;
 
-public class Tram {
+import java.io.Serializable;
+
+public class Tram implements Serializable {
+
+    private static final long serialVersionUID = 0L;
+
     private String destination;
     private String direction;
     private String dueMinutes;

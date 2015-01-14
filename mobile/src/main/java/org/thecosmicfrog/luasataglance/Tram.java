@@ -1,6 +1,11 @@
 package org.thecosmicfrog.luasataglance;
 
-public class Tram {
+import java.io.Serializable;
+
+public class Tram implements Serializable {
+
+    private static final long serialVersionUID = 0L;
+
     private String destination;
     private String direction;
     private String dueMinutes;
@@ -14,9 +19,9 @@ public class Tram {
     @Override
     public String toString() {
         if (Integer.parseInt(dueMinutes) > 1)
-            return String.format("%s\t\t\t\t\t\t\t\t%s", destination, dueMinutes + " mins");
+            return String.format("%s\t%s\t", destination, direction, dueMinutes + " mins");
 
-        return String.format("%s\t\t\t\t\t\t\t\t%s", destination, dueMinutes + " min");
+        return String.format("%s\t%s\t%s", destination, direction, dueMinutes + " min");
     }
 
     public String getDestination() {

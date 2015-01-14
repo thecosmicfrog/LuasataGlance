@@ -18,9 +18,9 @@
         android:id="@+id/tabHost">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical">
+            android:layout_height="fill_parent">
 
             <TabWidget
                 android:id="@android:id/tabs"
@@ -34,9 +34,9 @@
 
                 <LinearLayout
                     android:id="@+id/tab_red_line"
+                    android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="vertical">
+                    android:layout_height="fill_parent">
 
                     <Space
                         android:layout_width="match_parent"

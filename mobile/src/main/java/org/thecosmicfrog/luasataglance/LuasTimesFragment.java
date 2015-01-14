@@ -64,7 +64,8 @@ public class LuasTimesFragment extends Fragment {
         /*
          * Set up Red Line tab.
          */
-        progressBarRedLineLoadingCircle = (ProgressBar) rootView.findViewById(R.id.red_line_progressbar_loading_circle);
+        progressBarRedLineLoadingCircle =
+                (ProgressBar) rootView.findViewById(R.id.red_line_progressbar_loading_circle);
         setIsLoading("red_line", false);
 
         redLineSpinnerStop = (Spinner) rootView.findViewById(R.id.red_line_spinner_stop);
@@ -84,17 +85,19 @@ public class LuasTimesFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
         /*
          * Set up Green Line tab.
          */
-        progressBarGreenLineLoadingCircle = (ProgressBar) rootView.findViewById(R.id.green_line_progressbar_loading_circle);
+        progressBarGreenLineLoadingCircle =
+                (ProgressBar) rootView.findViewById(R.id.green_line_progressbar_loading_circle);
         setIsLoading("green_line", false);
 
-        final Spinner greenLineSpinnerStop = (Spinner) rootView.findViewById(R.id.green_line_spinner_stop);
+        final Spinner greenLineSpinnerStop =
+                (Spinner) rootView.findViewById(R.id.green_line_spinner_stop);
+
         final ArrayAdapter<CharSequence> greenLineAdapterStop = ArrayAdapter.createFromResource(
                 getActivity(), R.array.green_line_stops_array, R.layout.spinner_stops
         );
@@ -111,7 +114,6 @@ public class LuasTimesFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -120,10 +122,6 @@ public class LuasTimesFragment extends Fragment {
 
     public void loadStopForecast(String stopName) {
         new FetchLuasTimes().execute(stopName);
-    }
-
-    public String getCurrentSelectedStop() {
-        return redLineSpinnerStop.getSelectedItem().toString();
     }
 
     /**
@@ -308,7 +306,10 @@ public class LuasTimesFragment extends Fragment {
                         /*
                          * Set the status message from the server.
                          */
-                        TextView textViewMessageTitle = (TextView) rootView.findViewById(R.id.red_line_textview_message_title);
+                        TextView textViewMessageTitle =
+                                (TextView) rootView.findViewById(
+                                        R.id.red_line_textview_message_title
+                                );
 
                         /*
                          * Change the color of the message title TextView depending on the status.
@@ -318,7 +319,8 @@ public class LuasTimesFragment extends Fragment {
                         else
                             textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                        TextView textViewMessage = (TextView) rootView.findViewById(R.id.red_line_textview_message);
+                        TextView textViewMessage =
+                                (TextView) rootView.findViewById(R.id.red_line_textview_message);
                         textViewMessage.setText(sf.getMessage());
                     }
 
@@ -326,27 +328,39 @@ public class LuasTimesFragment extends Fragment {
                      * Create arrays of TextView objects for each entry in the TableLayout.
                      */
                     TextView[] textViewInboundStopNames = new TextView[]{
-                            (TextView) rootView.findViewById(R.id.red_line_textview_inbound_stop1_name),
-                            (TextView) rootView.findViewById(R.id.red_line_textview_inbound_stop2_name),
-                            (TextView) rootView.findViewById(R.id.red_line_textview_inbound_stop3_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_inbound_stop1_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_inbound_stop2_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_inbound_stop3_name),
                     };
 
                     TextView[] textViewInboundStopTimes = new TextView[]{
-                            (TextView) rootView.findViewById(R.id.red_line_textview_inbound_stop1_time),
-                            (TextView) rootView.findViewById(R.id.red_line_textview_inbound_stop2_time),
-                            (TextView) rootView.findViewById(R.id.red_line_textview_inbound_stop3_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_inbound_stop1_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_inbound_stop2_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_inbound_stop3_time),
                     };
 
                     TextView[] textViewOutboundStopNames = new TextView[]{
-                            (TextView) rootView.findViewById(R.id.red_line_textview_outbound_stop1_name),
-                            (TextView) rootView.findViewById(R.id.red_line_textview_outbound_stop2_name),
-                            (TextView) rootView.findViewById(R.id.red_line_textview_outbound_stop3_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_outbound_stop1_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_outbound_stop2_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_outbound_stop3_name),
                     };
 
                     TextView[] textViewOutboundStopTimes = new TextView[]{
-                            (TextView) rootView.findViewById(R.id.red_line_textview_outbound_stop1_time),
-                            (TextView) rootView.findViewById(R.id.red_line_textview_outbound_stop2_time),
-                            (TextView) rootView.findViewById(R.id.red_line_textview_outbound_stop3_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_outbound_stop1_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_outbound_stop2_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_outbound_stop3_time),
                     };
 
                     /*
@@ -364,8 +378,13 @@ public class LuasTimesFragment extends Fragment {
                     if (sf.getInboundTrams() != null) {
                         for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                             if (i < 3) {
-                                textViewInboundStopNames[i].setText(sf.getInboundTrams().get(i).getDestination());
-                                textViewInboundStopTimes[i].setText(sf.getInboundTrams().get(i).getDueMinutes() + " mins");
+                                textViewInboundStopNames[i].setText(
+                                        sf.getInboundTrams().get(i).getDestination()
+                                );
+
+                                textViewInboundStopTimes[i].setText(
+                                        sf.getInboundTrams().get(i).getDueMinutes() + " mins"
+                                );
                             }
                         }
                     }
@@ -373,16 +392,23 @@ public class LuasTimesFragment extends Fragment {
                     if (sf.getOutboundTrams() != null) {
                         for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                             if (i < 3) {
-                                textViewOutboundStopNames[i].setText(sf.getOutboundTrams().get(i).getDestination());
-                                textViewOutboundStopTimes[i].setText(sf.getOutboundTrams().get(i).getDueMinutes() + " mins");
+                                textViewOutboundStopNames[i].setText(
+                                        sf.getOutboundTrams().get(i).getDestination()
+                                );
+
+                                textViewOutboundStopTimes[i].setText(
+                                        sf.getOutboundTrams().get(i).getDueMinutes() + " mins"
+                                );
                             }
                         }
                     }
                 } else {
-                    TextView textViewMessageTitle = (TextView) rootView.findViewById(R.id.red_line_textview_message_title);
+                    TextView textViewMessageTitle =
+                            (TextView) rootView.findViewById(R.id.red_line_textview_message_title);
                     textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                    TextView textViewMessage = (TextView) rootView.findViewById(R.id.red_line_textview_message);
+                    TextView textViewMessage =
+                            (TextView) rootView.findViewById(R.id.red_line_textview_message);
                     textViewMessage.setText(R.string.message_error);
                 }
             } else if (currentTab.equals("green_line")) {
@@ -392,7 +418,10 @@ public class LuasTimesFragment extends Fragment {
                         /*
                          * Set the status message from the server.
                          */
-                        TextView textViewMessageTitle = (TextView) rootView.findViewById(R.id.green_line_textview_message_title);
+                        TextView textViewMessageTitle =
+                                (TextView) rootView.findViewById(
+                                        R.id.green_line_textview_message_title
+                                );
 
                         /*
                          * Change the color of the message title TextView depending on the status.
@@ -402,7 +431,8 @@ public class LuasTimesFragment extends Fragment {
                         else
                             textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                        TextView textViewMessage = (TextView) rootView.findViewById(R.id.green_line_textview_message);
+                        TextView textViewMessage =
+                                (TextView) rootView.findViewById(R.id.green_line_textview_message);
                         textViewMessage.setText(sf.getMessage());
                     }
 
@@ -410,27 +440,39 @@ public class LuasTimesFragment extends Fragment {
                      * Create arrays of TextView objects for each entry in the TableLayout.
                      */
                     TextView[] textViewInboundStopNames = new TextView[]{
-                            (TextView) rootView.findViewById(R.id.green_line_textview_inbound_stop1_name),
-                            (TextView) rootView.findViewById(R.id.green_line_textview_inbound_stop2_name),
-                            (TextView) rootView.findViewById(R.id.green_line_textview_inbound_stop3_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_inbound_stop1_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_inbound_stop2_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_inbound_stop3_name),
                     };
 
                     TextView[] textViewInboundStopTimes = new TextView[]{
-                            (TextView) rootView.findViewById(R.id.green_line_textview_inbound_stop1_time),
-                            (TextView) rootView.findViewById(R.id.green_line_textview_inbound_stop2_time),
-                            (TextView) rootView.findViewById(R.id.green_line_textview_inbound_stop3_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_inbound_stop1_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_inbound_stop2_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_inbound_stop3_time),
                     };
 
                     TextView[] textViewOutboundStopNames = new TextView[]{
-                            (TextView) rootView.findViewById(R.id.green_line_textview_outbound_stop1_name),
-                            (TextView) rootView.findViewById(R.id.green_line_textview_outbound_stop2_name),
-                            (TextView) rootView.findViewById(R.id.green_line_textview_outbound_stop3_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_outbound_stop1_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_outbound_stop2_name),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_outbound_stop3_name),
                     };
 
                     TextView[] textViewOutboundStopTimes = new TextView[]{
-                            (TextView) rootView.findViewById(R.id.green_line_textview_outbound_stop1_time),
-                            (TextView) rootView.findViewById(R.id.green_line_textview_outbound_stop2_time),
-                            (TextView) rootView.findViewById(R.id.green_line_textview_outbound_stop3_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_outbound_stop1_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_outbound_stop2_time),
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_outbound_stop3_time),
                     };
 
                     /*
@@ -448,8 +490,13 @@ public class LuasTimesFragment extends Fragment {
                     if (sf.getInboundTrams() != null) {
                         for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                             if (i < 3) {
-                                textViewInboundStopNames[i].setText(sf.getInboundTrams().get(i).getDestination());
-                                textViewInboundStopTimes[i].setText(sf.getInboundTrams().get(i).getDueMinutes() + " mins");
+                                textViewInboundStopNames[i].setText(
+                                        sf.getInboundTrams().get(i).getDestination()
+                                );
+
+                                textViewInboundStopTimes[i].setText(
+                                        sf.getInboundTrams().get(i).getDueMinutes() + " mins"
+                                );
                             }
                         }
                     }
@@ -457,16 +504,23 @@ public class LuasTimesFragment extends Fragment {
                     if (sf.getOutboundTrams() != null) {
                         for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                             if (i < 3) {
-                                textViewOutboundStopNames[i].setText(sf.getOutboundTrams().get(i).getDestination());
-                                textViewOutboundStopTimes[i].setText(sf.getOutboundTrams().get(i).getDueMinutes() + " mins");
+                                textViewOutboundStopNames[i].setText(
+                                        sf.getOutboundTrams().get(i).getDestination()
+                                );
+
+                                textViewOutboundStopTimes[i].setText(
+                                        sf.getOutboundTrams().get(i).getDueMinutes() + " mins"
+                                );
                             }
                         }
                     }
                 } else {
-                    TextView textViewMessageTitle = (TextView) rootView.findViewById(R.id.green_line_textview_message_title);
+                    TextView textViewMessageTitle =
+                            (TextView) rootView.findViewById(R.id.green_line_textview_message_title);
                     textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                    TextView textViewMessage = (TextView) rootView.findViewById(R.id.green_line_textview_message);
+                    TextView textViewMessage =
+                            (TextView) rootView.findViewById(R.id.green_line_textview_message);
                     textViewMessage.setText(R.string.message_error);
                 }
             } else {

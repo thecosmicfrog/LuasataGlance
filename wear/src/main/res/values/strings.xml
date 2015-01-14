@@ -3,8 +3,6 @@
 
     <string name="app_name">Luas at a Glance</string>
 
-    <string name="message">Awaiting Luas status...</string>
-    <string name="message_title"><b>Status</b></string>
     <string name="message_success">All services operating normally</string>
     <string name="message_error">Error retrieving times from Luas RTPI system</string>
 

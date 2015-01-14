@@ -10,6 +10,7 @@
 
     app:rectLayout="@layout/rect_activity_red_line"
     app:roundLayout="@layout/round_activity_red_line"
+
     tools:context="org.thecosmicfrog.luasataglance.RedLineActivity"
     tools:deviceIds="wear">
 </android.support.wearable.view.WatchViewStub>
