@@ -1,141 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:orientation="vertical"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
     tools:context="org.thecosmicfrog.luasataglance.StopForecastActivity"
     tools:deviceIds="wear_round">
 
-    <Space
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="24dp" />
+        android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/textview_stop_name"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#006600"
-            android:textColor="#ffffff"
-            android:gravity="center_horizontal"
-            android:elevation="6dp" />
-    </RelativeLayout>
+            android:layout_height="match_parent">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="12dp" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
 
-    <TextView
-        android:id="@+id/textview_inbound"
-        android:text="@string/inbound"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#100054"
-        android:gravity="center_horizontal"
-        android:textColor="#ffffff"
-        android:elevation="6dp" />
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:elevation="6dp">
-
-        <TableLayout
-            android:id="@+id/tablelayout_inbound"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:stretchColumns="*">
-
-            <TableRow>
-                <TextView
-                    android:id="@+id/textview_inbound_stop1_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/textview_inbound_stop1_time"
+                    android:id="@+id/textview_stop_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#006600"
+                    android:textColor="#ffffff"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-            </TableRow>
+                    android:elevation="6dp" />
+            </RelativeLayout>
 
-            <TableRow>
-                <TextView
-                    android:id="@+id/textview_inbound_stop2_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="12dp" />
 
-                <TextView
-                    android:id="@+id/textview_inbound_stop2_time"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-            </TableRow>
-        </TableLayout>
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textview_inbound"
+                android:text="@string/inbound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#100054"
+                android:gravity="center_horizontal"
+                android:textColor="#ffffff"
+                android:elevation="6dp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="6dp" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:elevation="6dp">
 
-    <TextView
-        android:id="@+id/textview_outbound"
-        android:text="@string/outbound"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#100054"
-        android:gravity="center_horizontal"
-        android:textColor="#ffffff"
-        android:elevation="6dp" />
+                <TableLayout
+                    android:id="@+id/tablelayout_inbound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#ffffff"
+                    android:stretchColumns="*">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:elevation="6dp">
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/textview_inbound_stop1_name"
+                            android:gravity="center_horizontal"
+                            android:textSize="16sp" />
 
-        <TableLayout
-            android:id="@+id/tablelayout_outbound"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:stretchColumns="*">
+                        <TextView
+                            android:id="@+id/textview_inbound_stop1_time"
+                            android:gravity="center_horizontal"
+                            android:textSize="16sp" />
+                    </TableRow>
 
-            <TableRow>
-                <TextView
-                    android:id="@+id/textview_outbound_stop1_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/textview_inbound_stop2_name"
+                            android:gravity="center_horizontal"
+                            android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/textview_outbound_stop1_time"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-            </TableRow>
+                        <TextView
+                            android:id="@+id/textview_inbound_stop2_time"
+                            android:gravity="center_horizontal"
+                            android:textSize="16sp" />
+                    </TableRow>
+                </TableLayout>
+            </LinearLayout>
 
-            <TableRow>
-                <TextView
-                    android:id="@+id/textview_outbound_stop2_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="6dp" />
 
-                <TextView
-                    android:id="@+id/textview_outbound_stop2_time"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-            </TableRow>
-        </TableLayout>
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textview_outbound"
+                android:text="@string/outbound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#100054"
+                android:gravity="center_horizontal"
+                android:textColor="#ffffff"
+                android:elevation="6dp" />
 
-</LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:elevation="6dp">
+
+                <TableLayout
+                    android:id="@+id/tablelayout_outbound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#ffffff"
+                    android:stretchColumns="*">
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/textview_outbound_stop1_name"
+                            android:gravity="center_horizontal"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/textview_outbound_stop1_time"
+                            android:gravity="center_horizontal"
+                            android:textSize="16sp" />
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/textview_outbound_stop2_name"
+                            android:gravity="center_horizontal"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/textview_outbound_stop2_time"
+                            android:gravity="center_horizontal"
+                            android:textSize="16sp" />
+                    </TableRow>
+                </TableLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

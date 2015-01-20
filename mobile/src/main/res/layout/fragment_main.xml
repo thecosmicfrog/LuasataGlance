@@ -82,156 +82,161 @@
                         android:layout_width="match_parent"
                         android:layout_height="20dp" />
 
-                    <ScrollView
-                        android:id="@+id/red_line_scrollview"
+                    <android.support.v4.widget.SwipeRefreshLayout
+                        android:id="@+id/red_line_swipe_refresh_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent">
+                        <ScrollView
+                            android:id="@+id/red_line_scrollview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                            <TextView
-                                android:id="@+id/red_line_textview_message_title"
-                                android:text="@string/red_line_message_title"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#006600"
-                                android:textColor="#ffffff"
-                                android:gravity="center_horizontal"
-                                android:elevation="6dp" />
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
 
-                            <TextView
-                                android:id="@+id/red_line_textview_message"
-                                android:text="@string/message"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#ffffff"
-                                android:gravity="center_horizontal"
-                                android:elevation="6dp"
-                                android:textSize="16sp" />
+                                <TextView
+                                    android:id="@+id/red_line_textview_message_title"
+                                    android:text="@string/red_line_message_title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#006600"
+                                    android:textColor="#ffffff"
+                                    android:gravity="center_horizontal"
+                                    android:elevation="6dp" />
 
-                            <Space
-                                android:layout_width="20dp"
-                                android:layout_height="20dp" />
+                                <TextView
+                                    android:id="@+id/red_line_textview_message"
+                                    android:text="@string/message"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#ffffff"
+                                    android:gravity="center_horizontal"
+                                    android:elevation="6dp"
+                                    android:textSize="16sp" />
 
-                            <TextView
-                                android:id="@+id/red_line_textview_inbound"
-                                android:text="@string/inbound"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#100054"
-                                android:gravity="center_horizontal"
-                                android:textColor="#ffffff"
-                                android:elevation="6dp" />
+                                <Space
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp" />
 
-                            <TableLayout
-                                android:id="@+id/red_line_tablelayout_inbound"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#ffffff"
-                                android:stretchColumns="*"
-                                android:elevation="6dp">
+                                <TextView
+                                    android:id="@+id/red_line_textview_inbound"
+                                    android:text="@string/inbound"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#100054"
+                                    android:gravity="center_horizontal"
+                                    android:textColor="#ffffff"
+                                    android:elevation="6dp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/red_line_textview_inbound_stop1_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                <TableLayout
+                                    android:id="@+id/red_line_tablelayout_inbound"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#ffffff"
+                                    android:stretchColumns="*"
+                                    android:elevation="6dp">
 
-                                    <TextView
-                                        android:id="@+id/red_line_textview_inbound_stop1_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/red_line_textview_inbound_stop1_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/red_line_textview_inbound_stop2_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                        <TextView
+                                            android:id="@+id/red_line_textview_inbound_stop1_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
 
-                                    <TextView
-                                        android:id="@+id/red_line_textview_inbound_stop2_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/red_line_textview_inbound_stop2_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/red_line_textview_inbound_stop3_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                        <TextView
+                                            android:id="@+id/red_line_textview_inbound_stop2_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
 
-                                    <TextView
-                                        android:id="@+id/red_line_textview_inbound_stop3_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
-                            </TableLayout>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/red_line_textview_inbound_stop3_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                            <Space
-                                android:layout_width="10dp"
-                                android:layout_height="10dp" />
+                                        <TextView
+                                            android:id="@+id/red_line_textview_inbound_stop3_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
+                                </TableLayout>
 
-                            <TextView
-                                android:id="@+id/red_line_textview_outbound"
-                                android:text="@string/outbound"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#100054"
-                                android:gravity="center_horizontal"
-                                android:textColor="#ffffff"
-                                android:elevation="6dp" />
+                                <Space
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp" />
 
-                            <TableLayout
-                                android:id="@+id/red_line_tablelayout_outbound"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#ffffff"
-                                android:stretchColumns="*"
-                                android:elevation="6dp">
+                                <TextView
+                                    android:id="@+id/red_line_textview_outbound"
+                                    android:text="@string/outbound"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#100054"
+                                    android:gravity="center_horizontal"
+                                    android:textColor="#ffffff"
+                                    android:elevation="6dp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/red_line_textview_outbound_stop1_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                <TableLayout
+                                    android:id="@+id/red_line_tablelayout_outbound"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#ffffff"
+                                    android:stretchColumns="*"
+                                    android:elevation="6dp">
 
-                                    <TextView
-                                        android:id="@+id/red_line_textview_outbound_stop1_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/red_line_textview_outbound_stop1_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/red_line_textview_outbound_stop2_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                        <TextView
+                                            android:id="@+id/red_line_textview_outbound_stop1_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
 
-                                    <TextView
-                                        android:id="@+id/red_line_textview_outbound_stop2_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/red_line_textview_outbound_stop2_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/red_line_textview_outbound_stop3_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                        <TextView
+                                            android:id="@+id/red_line_textview_outbound_stop2_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
 
-                                    <TextView
-                                        android:id="@+id/red_line_textview_outbound_stop3_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
-                            </TableLayout>
-                        </LinearLayout>
-                    </ScrollView>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/red_line_textview_outbound_stop3_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
+                                        <TextView
+                                            android:id="@+id/red_line_textview_outbound_stop3_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
+                                </TableLayout>
+                            </LinearLayout>
+                        </ScrollView>
+                    </android.support.v4.widget.SwipeRefreshLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -284,160 +289,163 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp" />
 
-                    <ScrollView
-                        android:id="@+id/green_line_scrollview"
+                    <android.support.v4.widget.SwipeRefreshLayout
+                        android:id="@+id/green_line_swipe_refresh_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent">
+                        <ScrollView
+                            android:id="@+id/green_line_scrollview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                            <TextView
-                                android:id="@+id/green_line_textview_message_title"
-                                android:text="@string/red_line_message_title"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#006600"
-                                android:textColor="#ffffff"
-                                android:gravity="center_horizontal"
-                                android:elevation="6dp" />
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
 
-                            <TextView
-                                android:id="@+id/green_line_textview_message"
-                                android:text="@string/message"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#ffffff"
-                                android:gravity="center_horizontal"
-                                android:elevation="6dp"
-                                android:textSize="16sp" />
+                                <TextView
+                                    android:id="@+id/green_line_textview_message_title"
+                                    android:text="@string/red_line_message_title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#006600"
+                                    android:textColor="#ffffff"
+                                    android:gravity="center_horizontal"
+                                    android:elevation="6dp" />
 
-                            <Space
-                                android:layout_width="20dp"
-                                android:layout_height="20dp" />
+                                <TextView
+                                    android:id="@+id/green_line_textview_message"
+                                    android:text="@string/message"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#ffffff"
+                                    android:gravity="center_horizontal"
+                                    android:elevation="6dp"
+                                    android:textSize="16sp" />
 
-                            <TextView
-                                android:id="@+id/green_line_textview_inbound"
-                                android:text="@string/inbound"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#100054"
-                                android:gravity="center_horizontal"
-                                android:textColor="#ffffff"
-                                android:elevation="6dp" />
+                                <Space
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp" />
 
-                            <TableLayout
-                                android:id="@+id/green_line_tablelayout_inbound"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#ffffff"
-                                android:stretchColumns="*"
-                                android:elevation="6dp">
+                                <TextView
+                                    android:id="@+id/green_line_textview_inbound"
+                                    android:text="@string/inbound"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#100054"
+                                    android:gravity="center_horizontal"
+                                    android:textColor="#ffffff"
+                                    android:elevation="6dp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/green_line_textview_inbound_stop1_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                <TableLayout
+                                    android:id="@+id/green_line_tablelayout_inbound"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#ffffff"
+                                    android:stretchColumns="*"
+                                    android:elevation="6dp">
 
-                                    <TextView
-                                        android:id="@+id/green_line_textview_inbound_stop1_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/green_line_textview_inbound_stop1_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/green_line_textview_inbound_stop2_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                        <TextView
+                                            android:id="@+id/green_line_textview_inbound_stop1_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
 
-                                    <TextView
-                                        android:id="@+id/green_line_textview_inbound_stop2_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/green_line_textview_inbound_stop2_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/green_line_textview_inbound_stop3_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                        <TextView
+                                            android:id="@+id/green_line_textview_inbound_stop2_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
 
-                                    <TextView
-                                        android:id="@+id/green_line_textview_inbound_stop3_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
-                            </TableLayout>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/green_line_textview_inbound_stop3_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                            <Space
-                                android:layout_width="10dp"
-                                android:layout_height="10dp" />
+                                        <TextView
+                                            android:id="@+id/green_line_textview_inbound_stop3_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
+                                </TableLayout>
 
-                            <TextView
-                                android:id="@+id/green_line_textview_outbound"
-                                android:text="@string/outbound"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#100054"
-                                android:gravity="center_horizontal"
-                                android:textColor="#ffffff"
-                                android:elevation="6dp" />
+                                <Space
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp" />
 
-                            <TableLayout
-                                android:id="@+id/green_line_tablelayout_outbound"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#ffffff"
-                                android:stretchColumns="*"
-                                android:elevation="6dp">
+                                <TextView
+                                    android:id="@+id/green_line_textview_outbound"
+                                    android:text="@string/outbound"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#100054"
+                                    android:gravity="center_horizontal"
+                                    android:textColor="#ffffff"
+                                    android:elevation="6dp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/green_line_textview_outbound_stop1_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                <TableLayout
+                                    android:id="@+id/green_line_tablelayout_outbound"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#ffffff"
+                                    android:stretchColumns="*"
+                                    android:elevation="6dp">
 
-                                    <TextView
-                                        android:id="@+id/green_line_textview_outbound_stop1_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/green_line_textview_outbound_stop1_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/green_line_textview_outbound_stop2_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                        <TextView
+                                            android:id="@+id/green_line_textview_outbound_stop1_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
 
-                                    <TextView
-                                        android:id="@+id/green_line_textview_outbound_stop2_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/green_line_textview_outbound_stop2_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
-                                <TableRow>
-                                    <TextView
-                                        android:id="@+id/green_line_textview_outbound_stop3_name"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
+                                        <TextView
+                                            android:id="@+id/green_line_textview_outbound_stop2_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
 
-                                    <TextView
-                                        android:id="@+id/green_line_textview_outbound_stop3_time"
-                                        android:gravity="center_horizontal"
-                                        android:textSize="16sp" />
-                                </TableRow>
-                            </TableLayout>
-                        </LinearLayout>
-                    </ScrollView>
+                                    <TableRow>
+                                        <TextView
+                                            android:id="@+id/green_line_textview_outbound_stop3_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
 
+                                        <TextView
+                                            android:id="@+id/green_line_textview_outbound_stop3_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
+                                </TableLayout>
+                            </LinearLayout>
+                        </ScrollView>
+                    </android.support.v4.widget.SwipeRefreshLayout>
                 </LinearLayout>
-
             </FrameLayout>
         </LinearLayout>
     </TabHost>
-
 </LinearLayout>

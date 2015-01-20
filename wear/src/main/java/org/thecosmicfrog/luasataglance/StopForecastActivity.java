@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
     private WatchViewStub stub;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private TextView textViewStopName;
 
     @Override
@@ -51,6 +53,16 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                     textViewStopName.setTypeface(null, Typeface.BOLD);
                     textViewStopName.setText(getIntent().getStringExtra("stopName"));
 
+                    swipeRefreshLayout =
+                            (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+                    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            // Start the refresh animation.
+                            swipeRefreshLayout.setRefreshing(true);
+                            requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
+                        }
+                    });
                 }
             }
         });
@@ -147,7 +159,8 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                             TextView textViewStopName =
                                     (TextView) findViewById(R.id.textview_stop_name);
 
-                            if (sf.getMessage().equals(getResources().getString(R.string.message_success)))
+                            if (sf.getMessage().equals(
+                                    getResources().getString(R.string.message_success)))
                                 textViewStopName.setBackgroundResource(R.color.message_success);
                             else
                                 textViewStopName.setBackgroundResource(R.color.message_error);
@@ -203,9 +216,16 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                                             sf.getInboundTrams().get(i).getDestination()
                                     );
 
-                                    textViewInboundStopTimes[i].setText(
-                                            sf.getInboundTrams().get(i).getDueMinutes() + "m"
-                                    );
+                                    if (sf.getInboundTrams()
+                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                        textViewInboundStopTimes[i].setText(
+                                                sf.getInboundTrams().get(i).getDueMinutes()
+                                        );
+                                    } else {
+                                        textViewInboundStopTimes[i].setText(
+                                                sf.getInboundTrams().get(i).getDueMinutes()  + "m"
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -217,13 +237,23 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                                             sf.getOutboundTrams().get(i).getDestination()
                                     );
 
-                                    textViewOutboundStopTimes[i].setText(
-                                            sf.getOutboundTrams().get(i).getDueMinutes() + "m"
-                                    );
+                                    if (sf.getOutboundTrams()
+                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                        textViewOutboundStopTimes[i].setText(
+                                                sf.getOutboundTrams().get(i).getDueMinutes()
+                                        );
+                                    } else {
+                                        textViewOutboundStopTimes[i].setText(
+                                                sf.getOutboundTrams().get(i).getDueMinutes()  + "m"
+                                        );
+                                    }
                                 }
                             }
                         }
                     }
+
+                    // Stop the refresh animation.
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             });
         }

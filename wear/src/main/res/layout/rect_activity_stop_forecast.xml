@@ -1,142 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
 
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    tools:context="org.thecosmicfrog.luasataglance.StopForecastActivity"
-    tools:deviceIds="wear_square">
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp">
-
-        <TextView
-            android:id="@+id/textview_stop_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#006600"
-            android:textColor="#ffffff"
-            android:gravity="center_horizontal"
-            android:elevation="6dp" />
-    </RelativeLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="12dp" />
+    android:layout_height="match_parent">
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+
         android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp">
-
-        <TextView
-            android:id="@+id/textview_inbound"
-            android:text="@string/inbound"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#100054"
-            android:gravity="center_horizontal"
-            android:textColor="#ffffff"
-            android:elevation="6dp" />
-
-        <TableLayout
-            android:id="@+id/tablelayout_inbound"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:stretchColumns="*"
-            android:elevation="6dp">
-
-            <TableRow>
-                <TextView
-                    android:id="@+id/textview_inbound_stop1_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textview_inbound_stop1_time"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-            </TableRow>
-
-            <TableRow>
-                <TextView
-                    android:id="@+id/textview_inbound_stop2_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textview_inbound_stop2_time"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-            </TableRow>
-        </TableLayout>
-    </LinearLayout>
-
-    <Space
         android:layout_width="match_parent"
-        android:layout_height="6dp" />
+        android:layout_height="match_parent"
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp">
+        tools:context="org.thecosmicfrog.luasataglance.StopForecastActivity"
+        tools:deviceIds="wear_square">
 
-        <TextView
-            android:id="@+id/textview_outbound"
-            android:text="@string/outbound"
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#100054"
-            android:gravity="center_horizontal"
-            android:textColor="#ffffff"
-            android:elevation="6dp" />
+            android:layout_height="20dp" />
 
-        <TableLayout
-            android:id="@+id/tablelayout_outbound"
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp">
+
+            <TextView
+                android:id="@+id/textview_stop_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#006600"
+                android:textColor="#ffffff"
+                android:gravity="center_horizontal"
+                android:elevation="6dp" />
+        </RelativeLayout>
+
+        <Space
             android:layout_width="match_parent"
+            android:layout_height="12dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:stretchColumns="*"
-            android:elevation="6dp">
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp">
 
-            <TableRow>
-                <TextView
-                    android:id="@+id/textview_outbound_stop1_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+            <TextView
+                android:id="@+id/textview_inbound"
+                android:text="@string/inbound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#100054"
+                android:gravity="center_horizontal"
+                android:textColor="#ffffff"
+                android:elevation="6dp" />
 
-                <TextView
-                    android:id="@+id/textview_outbound_stop1_time"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-            </TableRow>
+            <TableLayout
+                android:id="@+id/tablelayout_inbound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:stretchColumns="*"
+                android:elevation="6dp">
 
-            <TableRow>
-                <TextView
-                    android:id="@+id/textview_outbound_stop2_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                <TableRow>
+                    <TextView
+                        android:id="@+id/textview_inbound_stop1_name"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/textview_outbound_stop2_time"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp" />
-            </TableRow>
-        </TableLayout>
+                    <TextView
+                        android:id="@+id/textview_inbound_stop1_time"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:id="@+id/textview_inbound_stop2_name"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textview_inbound_stop2_time"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="6dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp">
+
+            <TextView
+                android:id="@+id/textview_outbound"
+                android:text="@string/outbound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#100054"
+                android:gravity="center_horizontal"
+                android:textColor="#ffffff"
+                android:elevation="6dp" />
+
+            <TableLayout
+                android:id="@+id/tablelayout_outbound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:stretchColumns="*"
+                android:elevation="6dp">
+
+                <TableRow>
+                    <TextView
+                        android:id="@+id/textview_outbound_stop1_name"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textview_outbound_stop1_time"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:id="@+id/textview_outbound_stop2_name"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textview_outbound_stop2_time"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
