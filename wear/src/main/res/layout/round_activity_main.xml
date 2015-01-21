@@ -23,8 +23,9 @@
         android:layout_weight="0.5"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:clickable="true" />
+        android:textSize="24sp"
+        android:clickable="true"
+        android:paddingTop="20dp" />
 
     <Button
         android:id="@+id/button_green_line"
@@ -35,6 +36,7 @@
         android:layout_weight="0.5"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:clickable="true" />
+        android:textSize="24sp"
+        android:clickable="true"
+        android:paddingBottom="20dp" />
 </LinearLayout>
