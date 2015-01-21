@@ -3,9 +3,12 @@ package org.thecosmicfrog.luasataglance;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,6 +33,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
     private WatchViewStub stub;
 
+    private ProgressBar progressBarLoadingCircle;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView textViewStopName;
 
@@ -48,8 +52,9 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
                 if (getIntent().hasExtra("stopName")) {
-                    textViewStopName = (TextView) findViewById(R.id.textview_stop_name);
-                    textViewStopName.setText(getIntent().getStringExtra("stopName"));
+                    progressBarLoadingCircle =
+                            (ProgressBar) findViewById(R.id.progressbar_loading_circle);
+                    setIsLoading(false);
 
                     swipeRefreshLayout =
                             (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
@@ -61,6 +66,9 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                             requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
                         }
                     });
+
+                    textViewStopName = (TextView) findViewById(R.id.textview_stop_name);
+                    textViewStopName.setText(getIntent().getStringExtra("stopName"));
                 }
             }
         });
@@ -77,8 +85,21 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus) {
+            setIsLoading(true);
             requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
         }
+    }
+
+    public void setIsLoading(final boolean loading) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (loading)
+                    progressBarLoadingCircle.setVisibility(View.VISIBLE);
+                else
+                    progressBarLoadingCircle.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void requestStopTimesFromHostDevice(final String stopName) {
@@ -248,8 +269,9 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                         }
                     }
 
-                    // Stop the refresh animation.
+                    // Stop the refresh animations.
                     swipeRefreshLayout.setRefreshing(false);
+                    setIsLoading(false);
                 }
             });
         }

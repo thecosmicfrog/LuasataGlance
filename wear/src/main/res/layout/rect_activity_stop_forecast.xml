@@ -22,9 +22,18 @@
             tools:context="org.thecosmicfrog.luasataglance.StopForecastActivity"
             tools:deviceIds="wear_square">
 
-            <Space
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="12dp" />
+                android:layout_height="16dp">
+
+                <ProgressBar
+                    android:id="@+id/progressbar_loading_circle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:minHeight="12dp"
+                    android:maxHeight="12dp" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="fill_parent"
