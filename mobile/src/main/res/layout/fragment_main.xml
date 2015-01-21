@@ -83,7 +83,7 @@
                         android:layout_height="20dp" />
 
                     <android.support.v4.widget.SwipeRefreshLayout
-                        android:id="@+id/red_line_swipe_refresh_layout"
+                        android:id="@+id/red_line_swiperefreshlayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
@@ -290,7 +290,7 @@
                         android:layout_height="20dp" />
 
                     <android.support.v4.widget.SwipeRefreshLayout
-                        android:id="@+id/green_line_swipe_refresh_layout"
+                        android:id="@+id/green_line_swiperefreshlayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 

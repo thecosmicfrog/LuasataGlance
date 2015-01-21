@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:id="@+id/swipe_refresh_layout"
+    android:id="@+id/swiperefreshlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
@@ -34,7 +34,8 @@
                     android:background="#006600"
                     android:textColor="#ffffff"
                     android:gravity="center_horizontal"
-                    android:elevation="6dp" />
+                    android:elevation="6dp"
+                    android:textStyle="bold" />
             </RelativeLayout>
 
             <Space
@@ -49,7 +50,8 @@
                 android:background="#100054"
                 android:gravity="center_horizontal"
                 android:textColor="#ffffff"
-                android:elevation="6dp" />
+                android:elevation="6dp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -104,7 +106,8 @@
                 android:background="#100054"
                 android:gravity="center_horizontal"
                 android:textColor="#ffffff"
-                android:elevation="6dp" />
+                android:elevation="6dp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:orientation="vertical"

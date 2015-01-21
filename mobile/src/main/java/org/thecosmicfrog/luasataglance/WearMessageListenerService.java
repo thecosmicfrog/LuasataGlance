@@ -47,8 +47,6 @@ public class WearMessageListenerService extends WearableListenerService {
 
             String stopName = Serializer.deserialize(messageEvent.getData()).toString();
 
-            Log.v(LOG_TAG, "Stop Name: " + stopName);
-
             if (stopName != null)
                 fetchStopForecast(stopName);
         }
@@ -77,7 +75,7 @@ public class WearMessageListenerService extends WearableListenerService {
                 ).await();
 
         if (result.getStatus().isSuccess())
-            Log.v(LOG_TAG, "Success sent to: " + nodeId);
+            Log.i(LOG_TAG, "Return message sent to: " + nodeId);
     }
 
     public class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {

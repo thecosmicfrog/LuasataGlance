@@ -2,7 +2,6 @@ package org.thecosmicfrog.luasataglance;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.wearable.view.WatchViewStub;
@@ -50,11 +49,10 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
             public void onLayoutInflated(WatchViewStub stub) {
                 if (getIntent().hasExtra("stopName")) {
                     textViewStopName = (TextView) findViewById(R.id.textview_stop_name);
-                    textViewStopName.setTypeface(null, Typeface.BOLD);
                     textViewStopName.setText(getIntent().getStringExtra("stopName"));
 
                     swipeRefreshLayout =
-                            (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+                            (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
                     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
@@ -78,8 +76,9 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        if (getIntent().hasExtra("stopName"))
+        if (hasFocus) {
             requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
+        }
     }
 
     private void requestStopTimesFromHostDevice(final String stopName) {
@@ -111,14 +110,11 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     }
 
     private void initGoogleApiClient() {
-        googleApiClient = getGoogleApiClient(this);
-        retrieveDeviceNode();
-    }
-
-    private GoogleApiClient getGoogleApiClient(Context context) {
-        return new GoogleApiClient.Builder(context)
+        googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build();
+
+        retrieveDeviceNode();
     }
 
     private void retrieveDeviceNode() {
@@ -127,7 +123,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
             public void run() {
                 if (googleApiClient != null &&
                         !(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
-                    Log.v(LOG_TAG, "Connecting...");
+                    Log.i(LOG_TAG, "Connecting...");
                     googleApiClient.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
                 }
 

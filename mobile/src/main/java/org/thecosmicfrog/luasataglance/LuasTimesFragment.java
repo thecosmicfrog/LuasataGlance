@@ -93,7 +93,7 @@ public class LuasTimesFragment extends Fragment {
         });
 
         redLineSwipeRefreshLayout =
-                (SwipeRefreshLayout) rootView.findViewById(R.id.red_line_swipe_refresh_layout);
+                (SwipeRefreshLayout) rootView.findViewById(R.id.red_line_swiperefreshlayout);
         redLineSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -133,7 +133,7 @@ public class LuasTimesFragment extends Fragment {
         });
 
         greenLineSwipeRefreshLayout =
-                (SwipeRefreshLayout) rootView.findViewById(R.id.green_line_swipe_refresh_layout);
+                (SwipeRefreshLayout) rootView.findViewById(R.id.green_line_swiperefreshlayout);
         greenLineSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
             @Override
