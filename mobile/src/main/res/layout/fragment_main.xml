@@ -99,7 +99,7 @@
 
                                 <TextView
                                     android:id="@+id/red_line_textview_message_title"
-                                    android:text="@string/red_line_message_title"
+                                    android:text="@string/message_title"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="#006600"
@@ -306,7 +306,7 @@
 
                                 <TextView
                                     android:id="@+id/green_line_textview_message_title"
-                                    android:text="@string/red_line_message_title"
+                                    android:text="@string/message_title"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="#006600"

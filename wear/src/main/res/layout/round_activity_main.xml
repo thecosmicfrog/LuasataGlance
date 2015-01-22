@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,6 +8,7 @@
 
     tools:context=".MainActivity$PlaceholderFragment"
     tools:deviceIds="wear_round"
+
     android:orientation="vertical"
     android:nestedScrollingEnabled="false"
     android:gravity="center_vertical|center_horizontal"

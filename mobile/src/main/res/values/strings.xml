@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Luas at a Glance</string>
 
     <string name="action_reload">Reload</string>
 
     <string name="message">Awaiting Luas status...</string>
-    <string name="red_line_message_title"><b>Status</b></string>
+    <string name="message_title"><b>Status</b></string>
     <string name="message_success">All services operating normally</string>
     <string name="message_error">Error retrieving times from Luas RTPI system</string>
 
@@ -74,5 +73,4 @@
         <item>Cherrywood</item>
         <item>Brides Glen</item>
     </string-array>
-
 </resources>

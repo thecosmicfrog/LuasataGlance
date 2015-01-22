@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Luas at a Glance</string>
 
     <string name="message_success">All services operating normally</string>
@@ -72,5 +71,4 @@
     <string name="title_activity_red_line">RedLineActivity</string>
     <string name="title_activity_green_line">GreenLineActivity</string>
     <string name="title_activity_stop_forecast">StopForecastActivity</string>
-
 </resources>

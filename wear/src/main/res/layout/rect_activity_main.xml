@@ -8,6 +8,7 @@
 
     tools:context=".MainActivity$PlaceholderFragment"
     tools:deviceIds="wear_round"
+
     android:orientation="vertical"
     android:nestedScrollingEnabled="false"
     android:gravity="center_vertical|center_horizontal"

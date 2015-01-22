@@ -10,7 +10,6 @@
     tools:context="org.thecosmicfrog.luasataglance.GreenLineActivity"
     tools:deviceIds="wear_square">
 
-
     <ListView
         android:id="@+id/listview_green_line"
         android:layout_width="match_parent"
