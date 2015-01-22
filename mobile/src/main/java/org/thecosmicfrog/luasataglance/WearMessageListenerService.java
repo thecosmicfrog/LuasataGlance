@@ -35,6 +35,17 @@ public class WearMessageListenerService extends WearableListenerService {
     private String nodeId;
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+
+        googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .addApi(Wearable.API)
+                .build();
+
+        Wearable.MessageApi.addListener(googleApiClient, this);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         Wearable.MessageApi.removeListener(googleApiClient, this);
