@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class RedLineActivity extends Activity {
-
-    private final String LOG_TAG = RedLineActivity.class.getSimpleName();
 
     private ArrayAdapter<CharSequence> redLineAdapterStop;
 

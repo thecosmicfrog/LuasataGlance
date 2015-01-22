@@ -266,7 +266,7 @@ public class LuasTimesFragment extends Fragment {
             try {
                 setIsLoading(currentTab, true);
 
-                // API URL.
+                // Build the API URL.
                 final String BASE_URL = "https://api.thecosmicfrog.org/cgi-bin/luas-api.php?";
                 final String PARAM_ACTION = "action";
                 final String PARAM_STATION = "station";
@@ -327,6 +327,9 @@ public class LuasTimesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(StopForecast sf) {
+            /*
+             * Update UI elements specific to the tab currently selected.
+             */
             switch (currentTab) {
                 case "red_line":
                     // If a valid stop forecast exists...
@@ -457,6 +460,10 @@ public class LuasTimesFragment extends Fragment {
                             }
                         }
                     } else {
+                        /*
+                         * If no stop forecast can be retrieved, set a generic error message and
+                         * change the color of the message title box red.
+                         */
                         TextView textViewMessageTitle =
                                 (TextView) rootView.findViewById(
                                         R.id.red_line_textview_message_title
@@ -599,6 +606,10 @@ public class LuasTimesFragment extends Fragment {
                             }
                         }
                     } else {
+                        /*
+                         * If no stop forecast can be retrieved, set a generic error message and
+                         * change the color of the message title box red.
+                         */
                         TextView textViewMessageTitle =
                                 (TextView) rootView.findViewById(
                                         R.id.green_line_textview_message_title
@@ -613,6 +624,7 @@ public class LuasTimesFragment extends Fragment {
                     break;
 
                 default:
+                    // If for some reason the current selected tab doesn't make sense.
                     Log.e(LOG_TAG, "Unknown tab.");
             }
 

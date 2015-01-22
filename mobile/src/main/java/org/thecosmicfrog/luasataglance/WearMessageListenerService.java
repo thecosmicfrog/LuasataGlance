@@ -160,6 +160,7 @@ public class WearMessageListenerService extends WearableListenerService {
             String stationCode = stopCodes.get(station);
 
             try {
+                // Build the API URL.
                 final String BASE_URL = "https://api.thecosmicfrog.org/cgi-bin/luas-api.php?";
                 final String PARAM_ACTION = "action";
                 final String PARAM_STATION = "station";
@@ -176,7 +177,7 @@ public class WearMessageListenerService extends WearableListenerService {
                 httpUrlConnection.connect();
 
                 InputStream inputStream = httpUrlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder stringBuilder = new StringBuilder();
 
                 if (inputStream == null)
                     luasTimesJson = null;
@@ -185,13 +186,13 @@ public class WearMessageListenerService extends WearableListenerService {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    buffer.append(line).append("\n");
+                    stringBuilder.append(line).append("\n");
                 }
 
-                if (buffer.length() == 0)
+                if (stringBuilder.length() == 0)
                     luasTimesJson = null;
 
-                luasTimesJson = buffer.toString();
+                luasTimesJson = stringBuilder.toString();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             } finally {

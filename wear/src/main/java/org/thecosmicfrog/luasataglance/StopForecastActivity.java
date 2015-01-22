@@ -1,9 +1,7 @@
 package org.thecosmicfrog.luasataglance;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
@@ -90,6 +88,12 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
         }
     }
 
+    /**
+     * Make progress circle spin or not spin.
+     * Must run on UI thread as only this thread can change views. This is achieved using the
+     * runOnUiThread() method. Parameters must be final due to Java scope restrictions.
+     * @param loading Whether or not progress circle should spin.
+     */
     public void setIsLoading(final boolean loading) {
         runOnUiThread(new Runnable() {
             @Override
@@ -102,6 +106,10 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
         });
     }
 
+    /**
+     * Request host device to query server for stop forecast.
+     * @param stopName Stop to query forecast for.
+     */
     private void requestStopTimesFromHostDevice(final String stopName) {
         if (nodeId != null) {
             new Thread(new Runnable() {
