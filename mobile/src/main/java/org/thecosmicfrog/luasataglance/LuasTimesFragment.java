@@ -266,6 +266,7 @@ public class LuasTimesFragment extends Fragment {
             try {
                 setIsLoading(currentTab, true);
 
+                // API URL.
                 final String BASE_URL = "https://api.thecosmicfrog.org/cgi-bin/luas-api.php?";
                 final String PARAM_ACTION = "action";
                 final String PARAM_STATION = "station";
@@ -331,17 +332,17 @@ public class LuasTimesFragment extends Fragment {
                     // If a valid stop forecast exists...
                     if (sf != null) {
                         if (sf.getMessage() != null) {
-                        /*
-                         * Set the status message from the server.
-                         */
+                            /*
+                             * Set the status message from the server.
+                             */
                             TextView textViewMessageTitle =
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_message_title
                                     );
 
-                        /*
-                         * Change the color of the message title TextView depending on the status.
-                         */
+                            /*
+                             * Change the color of the message title TextView depending on the status.
+                             */
                             if (sf.getMessage().equals(
                                     getResources().getString(R.string.message_success)))
                                 textViewMessageTitle.setBackgroundResource(R.color.message_success);
@@ -353,9 +354,9 @@ public class LuasTimesFragment extends Fragment {
                             textViewMessage.setText(sf.getMessage());
                         }
 
-                    /*
-                     * Create arrays of TextView objects for each entry in the TableLayout.
-                     */
+                        /*
+                         * Create arrays of TextView objects for each entry in the TableLayout.
+                         */
                         TextView[] textViewInboundStopNames = new TextView[]{
                                 (TextView) rootView.findViewById(
                                         R.id.red_line_textview_inbound_stop1_name),
@@ -392,10 +393,10 @@ public class LuasTimesFragment extends Fragment {
                                         R.id.red_line_textview_outbound_stop3_time),
                         };
 
-                    /*
-                     * Pull in all trams from the StopForecast, but only display up to three inbound
-                     * and outbound trams. Start by clearing the TextViews.
-                     */
+                        /*
+                         * Pull in all trams from the StopForecast, but only display up to three inbound
+                         * and outbound trams. Start by clearing the TextViews.
+                         */
                         for (int i = 0; i < 3; i++) {
                             textViewInboundStopNames[i].setText("");
                             textViewInboundStopTimes[i].setText("");
@@ -473,17 +474,17 @@ public class LuasTimesFragment extends Fragment {
                     // If a valid stop forecast exists...
                     if (sf != null) {
                         if (sf.getMessage() != null) {
-                        /*
-                         * Set the status message from the server.
-                         */
+                            /*
+                             * Set the status message from the server.
+                             */
                             TextView textViewMessageTitle =
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_message_title
                                     );
 
-                        /*
-                         * Change the color of the message title TextView depending on the status.
-                         */
+                            /*
+                             * Change the color of the message title TextView depending on the status.
+                             */
                             if (sf.getMessage().equals(
                                     getResources().getString(R.string.message_success)))
                                 textViewMessageTitle.setBackgroundResource(R.color.message_success);
@@ -495,9 +496,9 @@ public class LuasTimesFragment extends Fragment {
                             textViewMessage.setText(sf.getMessage());
                         }
 
-                    /*
-                     * Create arrays of TextView objects for each entry in the TableLayout.
-                     */
+                        /*
+                         * Create arrays of TextView objects for each entry in the TableLayout.
+                         */
                         TextView[] textViewInboundStopNames = new TextView[]{
                                 (TextView) rootView.findViewById(
                                         R.id.green_line_textview_inbound_stop1_name),
@@ -534,10 +535,10 @@ public class LuasTimesFragment extends Fragment {
                                         R.id.green_line_textview_outbound_stop3_time),
                         };
 
-                    /*
-                     * Pull in all trams from the StopForecast, but only display up to three inbound
-                     * and outbound trams. Start by clearing the TextViews.
-                     */
+                        /*
+                         * Pull in all trams from the StopForecast, but only display up to three inbound
+                         * and outbound trams. Start by clearing the TextViews.
+                         */
                         for (int i = 0; i < 3; i++) {
                             textViewInboundStopNames[i].setText("");
                             textViewInboundStopTimes[i].setText("");
