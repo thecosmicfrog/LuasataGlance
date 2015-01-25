@@ -1,9 +1,11 @@
+*.apk
 /build
 *.gradle
 .gradle
 /gradle
 *gradlew*
-*.iml
 gradle.properties
-/local.properties
 /.idea
+*.iml
+/local.properties
+manifest-merger-release-report.txt

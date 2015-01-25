@@ -328,309 +328,315 @@ public class LuasTimesFragment extends Fragment {
         @Override
         protected void onPostExecute(StopForecast sf) {
             /*
-             * Update UI elements specific to the tab currently selected.
+             * Only run if Fragment is attached to Activity. Without this check, the app is liable
+             * to crash when the screen is rotated many times in a given period of time.
              */
-            switch (currentTab) {
-                case "red_line":
-                    // If a valid stop forecast exists...
-                    if (sf != null) {
-                        if (sf.getMessage() != null) {
+            if (isAdded()) {
+                /*
+                 * Update UI elements specific to the tab currently selected.
+                 */
+                switch (currentTab) {
+                    case "red_line":
+                        // If a valid stop forecast exists...
+                        if (sf != null) {
+                            if (sf.getMessage() != null) {
+                                /*
+                                 * Set the status message from the server.
+                                 */
+                                TextView textViewMessageTitle =
+                                        (TextView) rootView.findViewById(
+                                                R.id.red_line_textview_message_title
+                                        );
+
+                                /*
+                                 * Change the color of the message title TextView depending on the status.
+                                 */
+                                if (sf.getMessage().equals(
+                                        getResources().getString(R.string.message_success)))
+                                    textViewMessageTitle.setBackgroundResource(R.color.message_success);
+                                else
+                                    textViewMessageTitle.setBackgroundResource(R.color.message_error);
+
+                                TextView textViewMessage =
+                                        (TextView) rootView.findViewById(R.id.red_line_textview_message);
+                                textViewMessage.setText(sf.getMessage());
+                            }
+
                             /*
-                             * Set the status message from the server.
+                             * Create arrays of TextView objects for each entry in the TableLayout.
+                             */
+                            TextView[] textViewInboundStopNames = new TextView[]{
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_inbound_stop1_name),
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_inbound_stop2_name),
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_inbound_stop3_name),
+                            };
+
+                            TextView[] textViewInboundStopTimes = new TextView[]{
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_inbound_stop1_time),
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_inbound_stop2_time),
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_inbound_stop3_time),
+                            };
+
+                            TextView[] textViewOutboundStopNames = new TextView[]{
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_outbound_stop1_name),
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_outbound_stop2_name),
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_outbound_stop3_name),
+                            };
+
+                            TextView[] textViewOutboundStopTimes = new TextView[]{
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_outbound_stop1_time),
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_outbound_stop2_time),
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_outbound_stop3_time),
+                            };
+
+                            /*
+                             * Pull in all trams from the StopForecast, but only display up to three inbound
+                             * and outbound trams. Start by clearing the TextViews.
+                             */
+                            for (int i = 0; i < 3; i++) {
+                                textViewInboundStopNames[i].setText("");
+                                textViewInboundStopTimes[i].setText("");
+
+                                textViewOutboundStopNames[i].setText("");
+                                textViewOutboundStopTimes[i].setText("");
+                            }
+
+                            if (sf.getInboundTrams() != null) {
+                                for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                                    if (i < 3) {
+                                        textViewInboundStopNames[i].setText(
+                                                sf.getInboundTrams().get(i).getDestination()
+                                        );
+
+                                        if (sf.getInboundTrams()
+                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                            textViewInboundStopTimes[i].setText(
+                                                    sf.getInboundTrams().get(i).getDueMinutes()
+                                            );
+                                        } else if (Integer.parseInt(sf.getInboundTrams()
+                                                .get(i).getDueMinutes()) > 1) {
+                                            textViewInboundStopTimes[i].setText(
+                                                    sf.getInboundTrams().get(i).getDueMinutes() + " mins"
+                                            );
+                                        } else {
+                                            textViewInboundStopTimes[i].setText(
+                                                    sf.getInboundTrams().get(i).getDueMinutes() + " min"
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (sf.getOutboundTrams() != null) {
+                                for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                                    if (i < 3) {
+                                        textViewOutboundStopNames[i].setText(
+                                                sf.getOutboundTrams().get(i).getDestination()
+                                        );
+
+                                        if (sf.getOutboundTrams()
+                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    sf.getOutboundTrams().get(i).getDueMinutes()
+                                            );
+                                        } else if (Integer.parseInt(sf.getOutboundTrams()
+                                                .get(i).getDueMinutes()) > 1) {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    sf.getOutboundTrams().get(i).getDueMinutes() + " mins"
+                                            );
+                                        } else {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    sf.getOutboundTrams().get(i).getDueMinutes() + " min"
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            /*
+                             * If no stop forecast can be retrieved, set a generic error message and
+                             * change the color of the message title box red.
                              */
                             TextView textViewMessageTitle =
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_message_title
                                     );
-
-                            /*
-                             * Change the color of the message title TextView depending on the status.
-                             */
-                            if (sf.getMessage().equals(
-                                    getResources().getString(R.string.message_success)))
-                                textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                            else
-                                textViewMessageTitle.setBackgroundResource(R.color.message_error);
+                            textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
                             TextView textViewMessage =
                                     (TextView) rootView.findViewById(R.id.red_line_textview_message);
-                            textViewMessage.setText(sf.getMessage());
+                            textViewMessage.setText(R.string.message_error);
                         }
 
-                        /*
-                         * Create arrays of TextView objects for each entry in the TableLayout.
-                         */
-                        TextView[] textViewInboundStopNames = new TextView[]{
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_inbound_stop1_name),
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_inbound_stop2_name),
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_inbound_stop3_name),
-                        };
+                        break;
 
-                        TextView[] textViewInboundStopTimes = new TextView[]{
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_inbound_stop1_time),
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_inbound_stop2_time),
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_inbound_stop3_time),
-                        };
-
-                        TextView[] textViewOutboundStopNames = new TextView[]{
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_outbound_stop1_name),
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_outbound_stop2_name),
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_outbound_stop3_name),
-                        };
-
-                        TextView[] textViewOutboundStopTimes = new TextView[]{
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_outbound_stop1_time),
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_outbound_stop2_time),
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_outbound_stop3_time),
-                        };
-
-                        /*
-                         * Pull in all trams from the StopForecast, but only display up to three inbound
-                         * and outbound trams. Start by clearing the TextViews.
-                         */
-                        for (int i = 0; i < 3; i++) {
-                            textViewInboundStopNames[i].setText("");
-                            textViewInboundStopTimes[i].setText("");
-
-                            textViewOutboundStopNames[i].setText("");
-                            textViewOutboundStopTimes[i].setText("");
-                        }
-
-                        if (sf.getInboundTrams() != null) {
-                            for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                                if (i < 3) {
-                                    textViewInboundStopNames[i].setText(
-                                            sf.getInboundTrams().get(i).getDestination()
-                                    );
-
-                                    if (sf.getInboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams().get(i).getDueMinutes()
+                    case "green_line":
+                        // If a valid stop forecast exists...
+                        if (sf != null) {
+                            if (sf.getMessage() != null) {
+                                /*
+                                 * Set the status message from the server.
+                                 */
+                                TextView textViewMessageTitle =
+                                        (TextView) rootView.findViewById(
+                                                R.id.green_line_textview_message_title
                                         );
-                                    } else if (Integer.parseInt(sf.getInboundTrams()
-                                            .get(i).getDueMinutes()) > 1) {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams().get(i).getDueMinutes()  + " mins"
-                                        );
-                                    } else {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams().get(i).getDueMinutes()  + " min"
-                                        );
-                                    }
-                                }
+
+                                /*
+                                 * Change the color of the message title TextView depending on the status.
+                                 */
+                                if (sf.getMessage().equals(
+                                        getResources().getString(R.string.message_success)))
+                                    textViewMessageTitle.setBackgroundResource(R.color.message_success);
+                                else
+                                    textViewMessageTitle.setBackgroundResource(R.color.message_error);
+
+                                TextView textViewMessage =
+                                        (TextView) rootView.findViewById(R.id.green_line_textview_message);
+                                textViewMessage.setText(sf.getMessage());
                             }
-                        }
 
-                        if (sf.getOutboundTrams() != null) {
-                            for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                                if (i < 3) {
-                                    textViewOutboundStopNames[i].setText(
-                                            sf.getOutboundTrams().get(i).getDestination()
-                                    );
-
-                                    if (sf.getOutboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams().get(i).getDueMinutes()
-                                        );
-                                    } else if (Integer.parseInt(sf.getOutboundTrams()
-                                            .get(i).getDueMinutes()) > 1) {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams().get(i).getDueMinutes()  + " mins"
-                                        );
-                                    } else {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams().get(i).getDueMinutes()  + " min"
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        /*
-                         * If no stop forecast can be retrieved, set a generic error message and
-                         * change the color of the message title box red.
-                         */
-                        TextView textViewMessageTitle =
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_message_title
-                                );
-                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
-
-                        TextView textViewMessage =
-                                (TextView) rootView.findViewById(R.id.red_line_textview_message);
-                        textViewMessage.setText(R.string.message_error);
-                    }
-
-                    break;
-
-                case "green_line":
-                    // If a valid stop forecast exists...
-                    if (sf != null) {
-                        if (sf.getMessage() != null) {
                             /*
-                             * Set the status message from the server.
+                             * Create arrays of TextView objects for each entry in the TableLayout.
+                             */
+                            TextView[] textViewInboundStopNames = new TextView[]{
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_inbound_stop1_name),
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_inbound_stop2_name),
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_inbound_stop3_name),
+                            };
+
+                            TextView[] textViewInboundStopTimes = new TextView[]{
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_inbound_stop1_time),
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_inbound_stop2_time),
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_inbound_stop3_time),
+                            };
+
+                            TextView[] textViewOutboundStopNames = new TextView[]{
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_outbound_stop1_name),
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_outbound_stop2_name),
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_outbound_stop3_name),
+                            };
+
+                            TextView[] textViewOutboundStopTimes = new TextView[]{
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_outbound_stop1_time),
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_outbound_stop2_time),
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_outbound_stop3_time),
+                            };
+
+                            /*
+                             * Pull in all trams from the StopForecast, but only display up to three inbound
+                             * and outbound trams. Start by clearing the TextViews.
+                             */
+                            for (int i = 0; i < 3; i++) {
+                                textViewInboundStopNames[i].setText("");
+                                textViewInboundStopTimes[i].setText("");
+
+                                textViewOutboundStopNames[i].setText("");
+                                textViewOutboundStopTimes[i].setText("");
+                            }
+
+                            if (sf.getInboundTrams() != null) {
+                                for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                                    if (i < 3) {
+                                        textViewInboundStopNames[i].setText(
+                                                sf.getInboundTrams().get(i).getDestination()
+                                        );
+
+                                        if (sf.getInboundTrams()
+                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                            textViewInboundStopTimes[i].setText(
+                                                    sf.getInboundTrams().get(i).getDueMinutes()
+                                            );
+                                        } else if (Integer.parseInt(sf.getInboundTrams()
+                                                .get(i).getDueMinutes()) > 1) {
+                                            textViewInboundStopTimes[i].setText(
+                                                    sf.getInboundTrams().get(i).getDueMinutes() + " mins"
+                                            );
+                                        } else {
+                                            textViewInboundStopTimes[i].setText(
+                                                    sf.getInboundTrams().get(i).getDueMinutes() + " min"
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (sf.getOutboundTrams() != null) {
+                                for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                                    if (i < 3) {
+                                        textViewOutboundStopNames[i].setText(
+                                                sf.getOutboundTrams().get(i).getDestination()
+                                        );
+
+                                        if (sf.getOutboundTrams()
+                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    sf.getOutboundTrams().get(i).getDueMinutes()
+                                            );
+                                        } else if (Integer.parseInt(sf.getOutboundTrams()
+                                                .get(i).getDueMinutes()) > 1) {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    sf.getOutboundTrams().get(i).getDueMinutes() + " mins"
+                                            );
+                                        } else {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    sf.getOutboundTrams().get(i).getDueMinutes() + " min"
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            /*
+                             * If no stop forecast can be retrieved, set a generic error message and
+                             * change the color of the message title box red.
                              */
                             TextView textViewMessageTitle =
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_message_title
                                     );
-
-                            /*
-                             * Change the color of the message title TextView depending on the status.
-                             */
-                            if (sf.getMessage().equals(
-                                    getResources().getString(R.string.message_success)))
-                                textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                            else
-                                textViewMessageTitle.setBackgroundResource(R.color.message_error);
+                            textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
                             TextView textViewMessage =
                                     (TextView) rootView.findViewById(R.id.green_line_textview_message);
-                            textViewMessage.setText(sf.getMessage());
+                            textViewMessage.setText(R.string.message_error);
                         }
 
-                        /*
-                         * Create arrays of TextView objects for each entry in the TableLayout.
-                         */
-                        TextView[] textViewInboundStopNames = new TextView[]{
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_inbound_stop1_name),
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_inbound_stop2_name),
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_inbound_stop3_name),
-                        };
+                        break;
 
-                        TextView[] textViewInboundStopTimes = new TextView[]{
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_inbound_stop1_time),
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_inbound_stop2_time),
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_inbound_stop3_time),
-                        };
+                    default:
+                        // If for some reason the current selected tab doesn't make sense.
+                        Log.e(LOG_TAG, "Unknown tab.");
+                }
 
-                        TextView[] textViewOutboundStopNames = new TextView[]{
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_outbound_stop1_name),
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_outbound_stop2_name),
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_outbound_stop3_name),
-                        };
-
-                        TextView[] textViewOutboundStopTimes = new TextView[]{
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_outbound_stop1_time),
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_outbound_stop2_time),
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_outbound_stop3_time),
-                        };
-
-                        /*
-                         * Pull in all trams from the StopForecast, but only display up to three inbound
-                         * and outbound trams. Start by clearing the TextViews.
-                         */
-                        for (int i = 0; i < 3; i++) {
-                            textViewInboundStopNames[i].setText("");
-                            textViewInboundStopTimes[i].setText("");
-
-                            textViewOutboundStopNames[i].setText("");
-                            textViewOutboundStopTimes[i].setText("");
-                        }
-
-                        if (sf.getInboundTrams() != null) {
-                            for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                                if (i < 3) {
-                                    textViewInboundStopNames[i].setText(
-                                            sf.getInboundTrams().get(i).getDestination()
-                                    );
-
-                                    if (sf.getInboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams().get(i).getDueMinutes()
-                                        );
-                                    } else if (Integer.parseInt(sf.getInboundTrams()
-                                            .get(i).getDueMinutes()) > 1) {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams().get(i).getDueMinutes()  + " mins"
-                                        );
-                                    } else {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams().get(i).getDueMinutes()  + " min"
-                                        );
-                                    }
-                                }
-                            }
-                        }
-
-                        if (sf.getOutboundTrams() != null) {
-                            for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                                if (i < 3) {
-                                    textViewOutboundStopNames[i].setText(
-                                            sf.getOutboundTrams().get(i).getDestination()
-                                    );
-
-                                    if (sf.getOutboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams().get(i).getDueMinutes()
-                                        );
-                                    } else if (Integer.parseInt(sf.getOutboundTrams()
-                                            .get(i).getDueMinutes()) > 1) {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams().get(i).getDueMinutes()  + " mins"
-                                        );
-                                    } else {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams().get(i).getDueMinutes()  + " min"
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        /*
-                         * If no stop forecast can be retrieved, set a generic error message and
-                         * change the color of the message title box red.
-                         */
-                        TextView textViewMessageTitle =
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_message_title
-                                );
-                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
-
-                        TextView textViewMessage =
-                                (TextView) rootView.findViewById(R.id.green_line_textview_message);
-                        textViewMessage.setText(R.string.message_error);
-                    }
-
-                    break;
-
-                default:
-                    // If for some reason the current selected tab doesn't make sense.
-                    Log.e(LOG_TAG, "Unknown tab.");
+                // Stop the refresh animation.
+                redLineSwipeRefreshLayout.setRefreshing(false);
+                greenLineSwipeRefreshLayout.setRefreshing(false);
             }
-
-            // Stop the refresh animation.
-            redLineSwipeRefreshLayout.setRefreshing(false);
-            greenLineSwipeRefreshLayout.setRefreshing(false);
         }
 
         /**

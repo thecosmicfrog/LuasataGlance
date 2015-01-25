@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.thecosmicfrog.luasataglance" >
+    package="org.thecosmicfrog.luasataglance"
+    android:versionCode="6"
+    android:versionName="0.1">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -33,5 +35,4 @@
             android:label="@string/title_activity_stop_forecast" >
         </activity>
     </application>
-
 </manifest>
