@@ -159,27 +159,33 @@ public class LuasTimesFragment extends Fragment {
      * @param loading Whether or not progress circle should spin.
      */
     public void setIsLoading(final String line, final boolean loading) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                switch (line) {
-                    case "red_line":
-                        if (loading)
-                            progressBarRedLineLoadingCircle.setVisibility(View.VISIBLE);
-                        else
-                            progressBarRedLineLoadingCircle.setVisibility(View.INVISIBLE);
-                        break;
-                    case "green_line":
-                        if (loading)
-                            progressBarGreenLineLoadingCircle.setVisibility(View.VISIBLE);
-                        else
-                            progressBarGreenLineLoadingCircle.setVisibility(View.INVISIBLE);
-                        break;
-                    default:
-                        Log.e(LOG_TAG, "Invalid line specified.");
+        /*
+         * Only run if Fragment is attached to Activity. Without this check, the app is liable
+         * to crash when the screen is rotated many times in a given period of time.
+         */
+        if (isAdded()) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    switch (line) {
+                        case "red_line":
+                            if (loading)
+                                progressBarRedLineLoadingCircle.setVisibility(View.VISIBLE);
+                            else
+                                progressBarRedLineLoadingCircle.setVisibility(View.INVISIBLE);
+                            break;
+                        case "green_line":
+                            if (loading)
+                                progressBarGreenLineLoadingCircle.setVisibility(View.VISIBLE);
+                            else
+                                progressBarGreenLineLoadingCircle.setVisibility(View.INVISIBLE);
+                            break;
+                        default:
+                            Log.e(LOG_TAG, "Invalid line specified.");
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {
