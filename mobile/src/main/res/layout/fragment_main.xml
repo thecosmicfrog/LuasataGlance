@@ -115,7 +115,10 @@
                                     android:background="#ffffff"
                                     android:gravity="center_horizontal"
                                     android:elevation="6dp"
-                                    android:textSize="16sp" />
+                                    android:textSize="16sp"
+                                    android:ellipsize="none"
+                                    android:maxLines="30"
+                                    android:scrollHorizontally="false" />
 
                                 <Space
                                     android:layout_width="20dp"
@@ -322,7 +325,10 @@
                                     android:background="#ffffff"
                                     android:gravity="center_horizontal"
                                     android:elevation="6dp"
-                                    android:textSize="16sp" />
+                                    android:textSize="16sp"
+                                    android:ellipsize="none"
+                                    android:maxLines="30"
+                                    android:scrollHorizontally="false"/>
 
                                 <Space
                                     android:layout_width="20dp"

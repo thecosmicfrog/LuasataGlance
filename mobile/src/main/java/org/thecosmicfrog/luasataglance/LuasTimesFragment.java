@@ -291,9 +291,6 @@ public class LuasTimesFragment extends Fragment {
                 InputStream inputStream = httpUrlConnection.getInputStream();
                 StringBuilder stringBuilder = new StringBuilder();
 
-                if (inputStream == null)
-                    luasTimesJson = null;
-
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
@@ -301,10 +298,10 @@ public class LuasTimesFragment extends Fragment {
                     stringBuilder.append(line).append("\n");
                 }
 
-                if (stringBuilder.length() == 0)
+                if (inputStream == null || stringBuilder.length() == 0)
                     luasTimesJson = null;
-
-                luasTimesJson = stringBuilder.toString();
+                else
+                    luasTimesJson = stringBuilder.toString();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             } finally {
@@ -322,10 +319,12 @@ public class LuasTimesFragment extends Fragment {
                 }
             }
 
-            try {
-                return getLuasDataFromJson(luasTimesJson);
-            } catch (JSONException je) {
-                je.printStackTrace();
+            if (luasTimesJson != null) {
+                try {
+                    return getLuasDataFromJson(luasTimesJson);
+                } catch (JSONException je) {
+                    je.printStackTrace();
+                }
             }
 
             return null;
@@ -371,7 +370,7 @@ public class LuasTimesFragment extends Fragment {
                             /*
                              * Create arrays of TextView objects for each entry in the TableLayout.
                              */
-                            TextView[] textViewInboundStopNames = new TextView[]{
+                            TextView[] textViewInboundStopNames = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_inbound_stop1_name),
                                     (TextView) rootView.findViewById(
@@ -380,7 +379,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.red_line_textview_inbound_stop3_name),
                             };
 
-                            TextView[] textViewInboundStopTimes = new TextView[]{
+                            TextView[] textViewInboundStopTimes = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_inbound_stop1_time),
                                     (TextView) rootView.findViewById(
@@ -389,7 +388,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.red_line_textview_inbound_stop3_time),
                             };
 
-                            TextView[] textViewOutboundStopNames = new TextView[]{
+                            TextView[] textViewOutboundStopNames = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_outbound_stop1_name),
                                     (TextView) rootView.findViewById(
@@ -398,7 +397,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.red_line_textview_outbound_stop3_name),
                             };
 
-                            TextView[] textViewOutboundStopTimes = new TextView[]{
+                            TextView[] textViewOutboundStopTimes = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_outbound_stop1_time),
                                     (TextView) rootView.findViewById(
@@ -517,7 +516,7 @@ public class LuasTimesFragment extends Fragment {
                             /*
                              * Create arrays of TextView objects for each entry in the TableLayout.
                              */
-                            TextView[] textViewInboundStopNames = new TextView[]{
+                            TextView[] textViewInboundStopNames = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_inbound_stop1_name),
                                     (TextView) rootView.findViewById(
@@ -526,7 +525,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.green_line_textview_inbound_stop3_name),
                             };
 
-                            TextView[] textViewInboundStopTimes = new TextView[]{
+                            TextView[] textViewInboundStopTimes = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_inbound_stop1_time),
                                     (TextView) rootView.findViewById(
@@ -535,7 +534,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.green_line_textview_inbound_stop3_time),
                             };
 
-                            TextView[] textViewOutboundStopNames = new TextView[]{
+                            TextView[] textViewOutboundStopNames = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_outbound_stop1_name),
                                     (TextView) rootView.findViewById(
@@ -544,7 +543,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.green_line_textview_outbound_stop3_name),
                             };
 
-                            TextView[] textViewOutboundStopTimes = new TextView[]{
+                            TextView[] textViewOutboundStopTimes = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_outbound_stop1_time),
                                     (TextView) rootView.findViewById(
