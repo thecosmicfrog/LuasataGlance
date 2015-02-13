@@ -44,7 +44,8 @@
 
                     <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:minHeight="16dp">
 
                         <ProgressBar
                             style="?android:attr/progressBarStyleSmall"
@@ -100,6 +101,7 @@
                                 <TextView
                                     android:id="@+id/red_line_textview_message_title"
                                     android:text="@string/message_title"
+                                    android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="#006600"
@@ -127,6 +129,7 @@
                                 <TextView
                                     android:id="@+id/red_line_textview_inbound"
                                     android:text="@string/inbound"
+                                    android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="#100054"
@@ -186,6 +189,7 @@
                                 <TextView
                                     android:id="@+id/red_line_textview_outbound"
                                     android:text="@string/outbound"
+                                    android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="#100054"
@@ -254,7 +258,8 @@
 
                     <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:minHeight="16dp">
 
                         <ProgressBar
                             style="?android:attr/progressBarStyleSmall"
@@ -310,6 +315,7 @@
                                 <TextView
                                     android:id="@+id/green_line_textview_message_title"
                                     android:text="@string/message_title"
+                                    android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="#006600"
@@ -337,6 +343,7 @@
                                 <TextView
                                     android:id="@+id/green_line_textview_inbound"
                                     android:text="@string/inbound"
+                                    android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="#100054"
@@ -396,6 +403,7 @@
                                 <TextView
                                     android:id="@+id/green_line_textview_outbound"
                                     android:text="@string/outbound"
+                                    android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="#100054"

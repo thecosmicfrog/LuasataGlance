@@ -2,8 +2,8 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.thecosmicfrog.luasataglance"
-    android:versionCode="8"
-    android:versionName="0.12">
+    android:versionCode="9"
+    android:versionName="@string/version_name">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

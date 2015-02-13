@@ -172,13 +172,13 @@ public class LuasTimesFragment extends Fragment {
                             if (loading)
                                 progressBarRedLineLoadingCircle.setVisibility(View.VISIBLE);
                             else
-                                progressBarRedLineLoadingCircle.setVisibility(View.INVISIBLE);
+                                progressBarRedLineLoadingCircle.setVisibility(View.GONE);
                             break;
                         case "green_line":
                             if (loading)
                                 progressBarGreenLineLoadingCircle.setVisibility(View.VISIBLE);
                             else
-                                progressBarGreenLineLoadingCircle.setVisibility(View.INVISIBLE);
+                                progressBarGreenLineLoadingCircle.setVisibility(View.GONE);
                             break;
                         default:
                             Log.e(LOG_TAG, "Invalid line specified.");
