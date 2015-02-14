@@ -49,6 +49,12 @@ public class LuasTimesFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        initTabs();
+
+        return rootView;
+    }
+
+    private void initTabs() {
         /*
          * Set up tabs.
          */
@@ -96,13 +102,13 @@ public class LuasTimesFragment extends Fragment {
                 (SwipeRefreshLayout) rootView.findViewById(R.id.red_line_swiperefreshlayout);
         redLineSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Start the refresh animation.
-                redLineSwipeRefreshLayout.setRefreshing(true);
-                loadStopForecast(redLineSpinnerStop.getSelectedItem().toString());
-            }
-        });
+                    @Override
+                    public void onRefresh() {
+                        // Start the refresh animation.
+                        redLineSwipeRefreshLayout.setRefreshing(true);
+                        loadStopForecast(redLineSpinnerStop.getSelectedItem().toString());
+                    }
+                });
 
         /*
          * Set up Green Line tab.
@@ -136,15 +142,13 @@ public class LuasTimesFragment extends Fragment {
                 (SwipeRefreshLayout) rootView.findViewById(R.id.green_line_swiperefreshlayout);
         greenLineSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Start the refresh animation.
-                greenLineSwipeRefreshLayout.setRefreshing(true);
-                loadStopForecast(greenLineSpinnerStop.getSelectedItem().toString());
-            }
-        });
-
-        return rootView;
+                    @Override
+                    public void onRefresh() {
+                        // Start the refresh animation.
+                        greenLineSwipeRefreshLayout.setRefreshing(true);
+                        loadStopForecast(greenLineSpinnerStop.getSelectedItem().toString());
+                    }
+                });
     }
 
     public void loadStopForecast(String stopName) {
