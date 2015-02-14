@@ -43,6 +43,12 @@ public class LuasTimesFragment extends Fragment {
     private Spinner greenLineSpinnerStop;
     private SwipeRefreshLayout redLineSwipeRefreshLayout;
     private SwipeRefreshLayout greenLineSwipeRefreshLayout;
+    private TextView textViewMessageTitle;
+    private TextView textViewMessage;
+    private TextView[] textViewInboundStopNames;
+    private TextView[] textViewInboundStopTimes;
+    private TextView[] textViewOutboundStopNames;
+    private TextView[] textViewOutboundStopTimes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -192,6 +198,113 @@ public class LuasTimesFragment extends Fragment {
         }
     }
 
+    /**
+     * Clear the stop forecast displayed in the current tab.
+     */
+    public void clearStopForecast() {
+        /*
+         * Initialise the stop forecast based on which tab is selected.
+         */
+        switch (currentTab) {
+            case "red_line":
+                textViewInboundStopNames = new TextView[] {
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_inbound_stop1_name),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_inbound_stop2_name),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_inbound_stop3_name),
+                };
+
+                textViewInboundStopTimes = new TextView[] {
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_inbound_stop1_time),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_inbound_stop2_time),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_inbound_stop3_time),
+                };
+
+                textViewOutboundStopNames = new TextView[] {
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_outbound_stop1_name),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_outbound_stop2_name),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_outbound_stop3_name),
+                };
+
+                textViewOutboundStopTimes = new TextView[] {
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_outbound_stop1_time),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_outbound_stop2_time),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_outbound_stop3_time),
+                };
+
+                break;
+
+            case "green_line":
+                textViewInboundStopNames = new TextView[] {
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_inbound_stop1_name),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_inbound_stop2_name),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_inbound_stop3_name),
+                };
+
+                textViewInboundStopTimes = new TextView[] {
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_inbound_stop1_time),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_inbound_stop2_time),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_inbound_stop3_time),
+                };
+
+                textViewOutboundStopNames = new TextView[] {
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_outbound_stop1_name),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_outbound_stop2_name),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_outbound_stop3_name),
+                };
+
+                textViewOutboundStopTimes = new TextView[] {
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_outbound_stop1_time),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_outbound_stop2_time),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_outbound_stop3_time),
+                };
+
+                break;
+
+            default:
+                Log.e(LOG_TAG, "Invalid line specified.");
+        }
+
+        /*
+         * Clear the stop forecast.
+         */
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 3; i++) {
+                    textViewInboundStopNames[i].setText("");
+                    textViewInboundStopTimes[i].setText("");
+
+                    textViewOutboundStopNames[i].setText("");
+                    textViewOutboundStopTimes[i].setText("");
+                }
+            }
+        });
+    }
+
     public class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {
 
         private final String LOG_TAG = FetchLuasTimes.class.getSimpleName();
@@ -260,6 +373,11 @@ public class LuasTimesFragment extends Fragment {
 
         @Override
         protected StopForecast doInBackground(String... params) {
+            /*
+             * Start by clearing the currently-displayed stop forecast.
+             */
+            clearStopForecast();
+
             if (params.length == 0)
                 return null;
 
@@ -352,7 +470,7 @@ public class LuasTimesFragment extends Fragment {
                                 /*
                                  * Set the status message from the server.
                                  */
-                                TextView textViewMessageTitle =
+                                textViewMessageTitle =
                                         (TextView) rootView.findViewById(
                                                 R.id.red_line_textview_message_title
                                         );
@@ -366,7 +484,7 @@ public class LuasTimesFragment extends Fragment {
                                 else
                                     textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                                TextView textViewMessage =
+                                textViewMessage =
                                         (TextView) rootView.findViewById(R.id.red_line_textview_message);
                                 textViewMessage.setText(sf.getMessage());
                             }
@@ -374,7 +492,7 @@ public class LuasTimesFragment extends Fragment {
                             /*
                              * Create arrays of TextView objects for each entry in the TableLayout.
                              */
-                            TextView[] textViewInboundStopNames = new TextView[] {
+                            textViewInboundStopNames = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_inbound_stop1_name),
                                     (TextView) rootView.findViewById(
@@ -383,7 +501,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.red_line_textview_inbound_stop3_name),
                             };
 
-                            TextView[] textViewInboundStopTimes = new TextView[] {
+                            textViewInboundStopTimes = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_inbound_stop1_time),
                                     (TextView) rootView.findViewById(
@@ -392,7 +510,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.red_line_textview_inbound_stop3_time),
                             };
 
-                            TextView[] textViewOutboundStopNames = new TextView[] {
+                            textViewOutboundStopNames = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_outbound_stop1_name),
                                     (TextView) rootView.findViewById(
@@ -401,7 +519,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.red_line_textview_outbound_stop3_name),
                             };
 
-                            TextView[] textViewOutboundStopTimes = new TextView[] {
+                            textViewOutboundStopTimes = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_outbound_stop1_time),
                                     (TextView) rootView.findViewById(
@@ -412,16 +530,8 @@ public class LuasTimesFragment extends Fragment {
 
                             /*
                              * Pull in all trams from the StopForecast, but only display up to three inbound
-                             * and outbound trams. Start by clearing the TextViews.
+                             * and outbound trams.
                              */
-                            for (int i = 0; i < 3; i++) {
-                                textViewInboundStopNames[i].setText("");
-                                textViewInboundStopTimes[i].setText("");
-
-                                textViewOutboundStopNames[i].setText("");
-                                textViewOutboundStopTimes[i].setText("");
-                            }
-
                             if (sf.getInboundTrams() != null) {
                                 for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                                     if (i < 3) {
@@ -478,13 +588,13 @@ public class LuasTimesFragment extends Fragment {
                              * If no stop forecast can be retrieved, set a generic error message and
                              * change the color of the message title box red.
                              */
-                            TextView textViewMessageTitle =
+                            textViewMessageTitle =
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_message_title
                                     );
                             textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                            TextView textViewMessage =
+                            textViewMessage =
                                     (TextView) rootView.findViewById(R.id.red_line_textview_message);
                             textViewMessage.setText(R.string.message_error);
                         }
@@ -498,7 +608,7 @@ public class LuasTimesFragment extends Fragment {
                                 /*
                                  * Set the status message from the server.
                                  */
-                                TextView textViewMessageTitle =
+                                textViewMessageTitle =
                                         (TextView) rootView.findViewById(
                                                 R.id.green_line_textview_message_title
                                         );
@@ -512,7 +622,7 @@ public class LuasTimesFragment extends Fragment {
                                 else
                                     textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                                TextView textViewMessage =
+                                textViewMessage =
                                         (TextView) rootView.findViewById(R.id.green_line_textview_message);
                                 textViewMessage.setText(sf.getMessage());
                             }
@@ -520,7 +630,7 @@ public class LuasTimesFragment extends Fragment {
                             /*
                              * Create arrays of TextView objects for each entry in the TableLayout.
                              */
-                            TextView[] textViewInboundStopNames = new TextView[] {
+                            textViewInboundStopNames = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_inbound_stop1_name),
                                     (TextView) rootView.findViewById(
@@ -529,7 +639,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.green_line_textview_inbound_stop3_name),
                             };
 
-                            TextView[] textViewInboundStopTimes = new TextView[] {
+                            textViewInboundStopTimes = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_inbound_stop1_time),
                                     (TextView) rootView.findViewById(
@@ -538,7 +648,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.green_line_textview_inbound_stop3_time),
                             };
 
-                            TextView[] textViewOutboundStopNames = new TextView[] {
+                            textViewOutboundStopNames = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_outbound_stop1_name),
                                     (TextView) rootView.findViewById(
@@ -547,7 +657,7 @@ public class LuasTimesFragment extends Fragment {
                                             R.id.green_line_textview_outbound_stop3_name),
                             };
 
-                            TextView[] textViewOutboundStopTimes = new TextView[] {
+                            textViewOutboundStopTimes = new TextView[] {
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_outbound_stop1_time),
                                     (TextView) rootView.findViewById(
@@ -558,16 +668,8 @@ public class LuasTimesFragment extends Fragment {
 
                             /*
                              * Pull in all trams from the StopForecast, but only display up to three inbound
-                             * and outbound trams. Start by clearing the TextViews.
+                             * and outbound trams.
                              */
-                            for (int i = 0; i < 3; i++) {
-                                textViewInboundStopNames[i].setText("");
-                                textViewInboundStopTimes[i].setText("");
-
-                                textViewOutboundStopNames[i].setText("");
-                                textViewOutboundStopTimes[i].setText("");
-                            }
-
                             if (sf.getInboundTrams() != null) {
                                 for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                                     if (i < 3) {
@@ -624,13 +726,13 @@ public class LuasTimesFragment extends Fragment {
                              * If no stop forecast can be retrieved, set a generic error message and
                              * change the color of the message title box red.
                              */
-                            TextView textViewMessageTitle =
+                            textViewMessageTitle =
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_message_title
                                     );
                             textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                            TextView textViewMessage =
+                            textViewMessage =
                                     (TextView) rootView.findViewById(R.id.green_line_textview_message);
                             textViewMessage.setText(R.string.message_error);
                         }
