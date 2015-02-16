@@ -1,5 +1,6 @@
 *.apk
 /build
+/doc
 *.gradle
 .gradle
 /gradle

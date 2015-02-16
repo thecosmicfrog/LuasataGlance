@@ -26,7 +26,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LuasTimesFragment extends Fragment {
@@ -35,10 +37,15 @@ public class LuasTimesFragment extends Fragment {
 
     private View rootView = null;
 
+    private final String RED_LINE = "red_line";
+    private final String GREEN_LINE = "green_line";
+
     private TabHost tabHost;
     private String currentTab;
     private ProgressBar progressBarRedLineLoadingCircle;
     private ProgressBar progressBarGreenLineLoadingCircle;
+    private ArrayAdapter<CharSequence> redLineAdapterStop;
+    private ArrayAdapter<CharSequence> greenLineAdapterStop;
     private Spinner redLineSpinnerStop;
     private Spinner greenLineSpinnerStop;
     private SwipeRefreshLayout redLineSwipeRefreshLayout;
@@ -57,9 +64,16 @@ public class LuasTimesFragment extends Fragment {
 
         initTabs();
 
+        if (getActivity().getIntent().hasExtra("stopName")) {
+            setTabAndSpinner();
+        }
+
         return rootView;
     }
 
+    /**
+     * Initialise both tabs.
+     */
     private void initTabs() {
         /*
          * Set up tabs.
@@ -67,12 +81,12 @@ public class LuasTimesFragment extends Fragment {
         tabHost = (TabHost) rootView.findViewById(R.id.tabHost);
         tabHost.setup();
 
-        TabHost.TabSpec tabSpec = tabHost.newTabSpec("red_line");
+        TabHost.TabSpec tabSpec = tabHost.newTabSpec(RED_LINE);
         tabSpec.setContent(R.id.tab_red_line);
         tabSpec.setIndicator("Red Line");
         tabHost.addTab(tabSpec);
 
-        tabSpec = tabHost.newTabSpec("green_line");
+        tabSpec = tabHost.newTabSpec(GREEN_LINE);
         tabSpec.setContent(R.id.tab_green_line);
         tabSpec.setIndicator("Green Line");
         tabHost.addTab(tabSpec);
@@ -82,11 +96,11 @@ public class LuasTimesFragment extends Fragment {
          */
         progressBarRedLineLoadingCircle =
                 (ProgressBar) rootView.findViewById(R.id.red_line_progressbar_loading_circle);
-        setIsLoading("red_line", false);
+        setIsLoading(RED_LINE, false);
 
         redLineSpinnerStop = (Spinner) rootView.findViewById(R.id.red_line_spinner_stop);
-        final ArrayAdapter<CharSequence> redLineAdapterStop = ArrayAdapter.createFromResource(
-                getActivity(), R.array.red_line_stops_array, R.layout.spinner_stops
+        redLineAdapterStop = ArrayAdapter.createFromResource(
+                getActivity(), R.array.red_line_array_stops, R.layout.spinner_stops
         );
         redLineAdapterStop.setDropDownViewResource(R.layout.spinner_stops);
         redLineSpinnerStop.setAdapter(redLineAdapterStop);
@@ -121,12 +135,12 @@ public class LuasTimesFragment extends Fragment {
          */
         progressBarGreenLineLoadingCircle =
                 (ProgressBar) rootView.findViewById(R.id.green_line_progressbar_loading_circle);
-        setIsLoading("green_line", false);
+        setIsLoading(GREEN_LINE, false);
 
         greenLineSpinnerStop = (Spinner) rootView.findViewById(R.id.green_line_spinner_stop);
 
-        final ArrayAdapter<CharSequence> greenLineAdapterStop = ArrayAdapter.createFromResource(
-                getActivity(), R.array.green_line_stops_array, R.layout.spinner_stops
+        greenLineAdapterStop = ArrayAdapter.createFromResource(
+                getActivity(), R.array.green_line_array_stops, R.layout.spinner_stops
         );
         greenLineAdapterStop.setDropDownViewResource(R.layout.spinner_stops);
         greenLineSpinnerStop.setAdapter(greenLineAdapterStop);
@@ -157,6 +171,31 @@ public class LuasTimesFragment extends Fragment {
                 });
     }
 
+    /**
+     * Set the current tab and the position of the Spinner.
+     */
+    private void setTabAndSpinner() {
+        String[] redLineArrayStops = getResources().getStringArray(R.array.red_line_array_stops);
+        String[] greenLineArrayStops = getResources().getStringArray(R.array.green_line_array_stops);
+
+        List<String> redLineListStops = Arrays.asList(redLineArrayStops);
+        List<String> greenLineListStops = Arrays.asList(greenLineArrayStops);
+
+        if (redLineListStops.contains(getActivity().getIntent().getStringExtra("stopName"))) {
+            tabHost.setCurrentTab(0);
+            redLineSpinnerStop.setSelection(
+                    redLineAdapterStop
+                            .getPosition(getActivity().getIntent().getStringExtra("stopName"))
+            );
+        } else if (greenLineListStops.contains(getActivity().getIntent().getStringExtra("stopName"))) {
+            tabHost.setCurrentTab(1);
+            greenLineSpinnerStop.setSelection(
+                    greenLineAdapterStop
+                            .getPosition(getActivity().getIntent().getStringExtra("stopName"))
+            );
+        }
+    }
+
     public void loadStopForecast(String stopName) {
         new FetchLuasTimes().execute(stopName);
     }
@@ -178,19 +217,20 @@ public class LuasTimesFragment extends Fragment {
                 @Override
                 public void run() {
                     switch (line) {
-                        case "red_line":
+                        case RED_LINE:
                             if (loading)
                                 progressBarRedLineLoadingCircle.setVisibility(View.VISIBLE);
                             else
                                 progressBarRedLineLoadingCircle.setVisibility(View.GONE);
                             break;
-                        case "green_line":
+                        case GREEN_LINE:
                             if (loading)
                                 progressBarGreenLineLoadingCircle.setVisibility(View.VISIBLE);
                             else
                                 progressBarGreenLineLoadingCircle.setVisibility(View.GONE);
                             break;
                         default:
+                            // If for some reason the line doesn't make sense.
                             Log.e(LOG_TAG, "Invalid line specified.");
                     }
                 }
@@ -198,15 +238,9 @@ public class LuasTimesFragment extends Fragment {
         }
     }
 
-    /**
-     * Clear the stop forecast displayed in the current tab.
-     */
-    public void clearStopForecast() {
-        /*
-         * Initialise the stop forecast based on which tab is selected.
-         */
-        switch (currentTab) {
-            case "red_line":
+    private void initStopForecast(String line) {
+        switch (line) {
+            case RED_LINE:
                 textViewInboundStopNames = new TextView[] {
                         (TextView) rootView.findViewById(
                                 R.id.red_line_textview_inbound_stop1_name),
@@ -245,7 +279,7 @@ public class LuasTimesFragment extends Fragment {
 
                 break;
 
-            case "green_line":
+            case GREEN_LINE:
                 textViewInboundStopNames = new TextView[] {
                         (TextView) rootView.findViewById(
                                 R.id.green_line_textview_inbound_stop1_name),
@@ -285,6 +319,29 @@ public class LuasTimesFragment extends Fragment {
                 break;
 
             default:
+        }
+    }
+
+    /**
+     * Clear the stop forecast displayed in the current tab.
+     */
+    public void clearStopForecast() {
+        /*
+         * Initialise the stop forecast based on which tab is selected.
+         */
+        switch (currentTab) {
+            case RED_LINE:
+                initStopForecast(RED_LINE);
+
+                break;
+
+            case GREEN_LINE:
+                initStopForecast(GREEN_LINE);
+
+                break;
+
+            default:
+                // If for some reason the line doesn't make sense.
                 Log.e(LOG_TAG, "Invalid line specified.");
         }
 
@@ -463,7 +520,7 @@ public class LuasTimesFragment extends Fragment {
                  * Update UI elements specific to the tab currently selected.
                  */
                 switch (currentTab) {
-                    case "red_line":
+                    case RED_LINE:
                         // If a valid stop forecast exists...
                         if (sf != null) {
                             if (sf.getMessage() != null) {
@@ -492,41 +549,7 @@ public class LuasTimesFragment extends Fragment {
                             /*
                              * Create arrays of TextView objects for each entry in the TableLayout.
                              */
-                            textViewInboundStopNames = new TextView[] {
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_inbound_stop1_name),
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_inbound_stop2_name),
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_inbound_stop3_name),
-                            };
-
-                            textViewInboundStopTimes = new TextView[] {
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_inbound_stop1_time),
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_inbound_stop2_time),
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_inbound_stop3_time),
-                            };
-
-                            textViewOutboundStopNames = new TextView[] {
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_outbound_stop1_name),
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_outbound_stop2_name),
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_outbound_stop3_name),
-                            };
-
-                            textViewOutboundStopTimes = new TextView[] {
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_outbound_stop1_time),
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_outbound_stop2_time),
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_outbound_stop3_time),
-                            };
+                            initStopForecast(RED_LINE);
 
                             /*
                              * Pull in all trams from the StopForecast, but only display up to three inbound
@@ -601,7 +624,7 @@ public class LuasTimesFragment extends Fragment {
 
                         break;
 
-                    case "green_line":
+                    case GREEN_LINE:
                         // If a valid stop forecast exists...
                         if (sf != null) {
                             if (sf.getMessage() != null) {
@@ -630,41 +653,7 @@ public class LuasTimesFragment extends Fragment {
                             /*
                              * Create arrays of TextView objects for each entry in the TableLayout.
                              */
-                            textViewInboundStopNames = new TextView[] {
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_inbound_stop1_name),
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_inbound_stop2_name),
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_inbound_stop3_name),
-                            };
-
-                            textViewInboundStopTimes = new TextView[] {
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_inbound_stop1_time),
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_inbound_stop2_time),
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_inbound_stop3_time),
-                            };
-
-                            textViewOutboundStopNames = new TextView[] {
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_outbound_stop1_name),
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_outbound_stop2_name),
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_outbound_stop3_name),
-                            };
-
-                            textViewOutboundStopTimes = new TextView[] {
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_outbound_stop1_time),
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_outbound_stop2_time),
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_outbound_stop3_time),
-                            };
+                            initStopForecast(GREEN_LINE);
 
                             /*
                              * Pull in all trams from the StopForecast, but only display up to three inbound
@@ -813,6 +802,7 @@ public class LuasTimesFragment extends Fragment {
                             stopForecast.addOutboundTram(trams[i]);
                             break;
                         default:
+                            // If for some reason the direction doesn't make sense.
                             Log.e(LOG_TAG, "Invalid direction: " + trams[i].getDirection());
                     }
                 }

@@ -1,6 +1,7 @@
 package org.thecosmicfrog.luasataglance;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -35,12 +36,19 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.action_favourites) {
+            startActivity(new Intent(
+                            getApplicationContext(),
+                            FavouritesActivity.class)
+            );
+        }
+
         if (id == R.id.action_about) {
-            View view = getLayoutInflater().inflate(R.layout.dialog_about, null);
+            View dialogAbout = getLayoutInflater().inflate(R.layout.dialog_about, null);
 
             new AlertDialog.Builder(this)
                     .setTitle(R.string.app_name)
-                    .setView(view)
+                    .setView(dialogAbout)
                     .show();
         }
 

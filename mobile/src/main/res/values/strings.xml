@@ -1,36 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+        App
+    -->
     <string name="app_name">Luas at a Glance</string>
     <string name="version_code">10</string>
     <string name="version_name">0.14</string>
 
-    <string name="action_reload">Reload</string>
+    <!--
+        Activities
+    -->
+    <string name="title_activity_favourites">Favourites</string>
+    <string name="title_activity_favourites_select">Select Favourites</string>
 
-    <string name="message">Awaiting Luas status...</string>
+    <!--
+        Main UI
+    -->
+    <string name="message">Awaiting Luas status&#8230;</string>
     <string name="message_title">Status</string>
     <string name="message_success">All services operating normally</string>
     <string name="message_error">
         Error retrieving times from Luas RTPI system.\n\n
         Please check your network connection. If there are no issues,
-        the Luas RTPI system may be down.
-    </string>
-
+        the Luas RTPI system may be down.</string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
 
+    <!--
+        Actions
+    -->
     <string name="action_about">About</string>
+    <string name="action_favourites">Favourites</string>
+    <string name="action_favourites_edit">Edit</string>
+    <string name="action_favourites_save">Save</string>
+    <string name="action_reload">Reload</string>
+
+    <!--
+        About
+    -->
     <string name="about_title_version">Version</string>
     <string name="about_title_description">Description</string>
     <string name="about_description">
         Android Wear and mobile app providing real-time tram stop information for Dublin\'s Luas
-        light rail service.
-    </string>
+        light rail service.</string>
     <string name="about_title_license">License</string>
     <string name="about_license">GNU General Public License (GPLv3)</string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
 
-    <string-array name="red_line_stops_array">
+    <!--
+        Favourites
+    -->
+    <string name="favourites_none_selected">
+        Let\'s get started!\n\nTap the Edit button in the top-right corner of the screen
+        to start adding your most frequently-used Luas stops.
+    </string>
+
+    <!--
+        Stop arrays
+    -->
+    <string-array name="red_line_array_stops">
         <item>The Point</item>
         <item>Spencer Dock</item>
         <item>Mayor Square - NCI</item>
@@ -65,7 +94,7 @@
         <item>Saggart</item>
     </string-array>
 
-    <string-array name="green_line_stops_array">
+    <string-array name="green_line_array_stops">
         <item>St. Stephen\'s Green</item>
         <item>Harcourt</item>
         <item>Charlemont</item>
@@ -89,4 +118,5 @@
         <item>Cherrywood</item>
         <item>Brides Glen</item>
     </string-array>
+
 </resources>
