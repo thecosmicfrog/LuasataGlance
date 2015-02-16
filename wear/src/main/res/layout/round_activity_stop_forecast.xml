@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="org.thecosmicfrog.luasataglance.StopForecastActivity"
+    tools:context="org.thecosmicfrog.luasataglance.activity.StopForecastActivity"
     tools:deviceIds="wear_round">
 
     <ScrollView

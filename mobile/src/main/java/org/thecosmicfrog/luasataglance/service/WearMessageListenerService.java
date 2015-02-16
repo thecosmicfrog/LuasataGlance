@@ -1,4 +1,4 @@
-package org.thecosmicfrog.luasataglance;
+package org.thecosmicfrog.luasataglance.service;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,6 +13,9 @@ import com.google.android.gms.wearable.WearableListenerService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.thecosmicfrog.luasataglance.object.StopForecast;
+import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.util.Serializer;
 
 import java.io.BufferedReader;
 import java.io.IOException;

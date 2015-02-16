@@ -1,4 +1,4 @@
-package org.thecosmicfrog.luasataglance;
+package org.thecosmicfrog.luasataglance.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.Button;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
+
+import org.thecosmicfrog.luasataglance.R;
 
 import java.util.concurrent.TimeUnit;
 

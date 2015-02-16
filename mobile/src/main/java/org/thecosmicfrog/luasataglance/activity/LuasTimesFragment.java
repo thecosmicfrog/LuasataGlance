@@ -1,4 +1,4 @@
-package org.thecosmicfrog.luasataglance;
+package org.thecosmicfrog.luasataglance.activity;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -19,6 +19,9 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.object.StopForecast;
+import org.thecosmicfrog.luasataglance.object.Tram;
 
 import java.io.BufferedReader;
 import java.io.IOException;

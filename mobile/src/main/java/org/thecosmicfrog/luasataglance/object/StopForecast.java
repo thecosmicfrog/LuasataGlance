@@ -1,4 +1,4 @@
-package org.thecosmicfrog.luasataglance;
+package org.thecosmicfrog.luasataglance.object;
 
 import java.io.Serializable;
 import java.util.ArrayList;

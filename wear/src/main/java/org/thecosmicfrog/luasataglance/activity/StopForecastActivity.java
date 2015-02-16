@@ -1,4 +1,4 @@
-package org.thecosmicfrog.luasataglance;
+package org.thecosmicfrog.luasataglance.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,6 +15,10 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+
+import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.object.StopForecast;
+import org.thecosmicfrog.luasataglance.util.Serializer;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

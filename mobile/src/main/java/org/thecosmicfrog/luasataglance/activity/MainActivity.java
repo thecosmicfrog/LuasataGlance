@@ -1,4 +1,4 @@
-package org.thecosmicfrog.luasataglance;
+package org.thecosmicfrog.luasataglance.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import org.thecosmicfrog.luasataglance.R;
 
 public class MainActivity extends ActionBarActivity {
 

@@ -1,4 +1,4 @@
-package org.thecosmicfrog.luasataglance;
+package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.thecosmicfrog.luasataglance.R;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    tools:context="org.thecosmicfrog.luasataglance.FavouritesSelectActivity">
+    tools:context="org.thecosmicfrog.luasataglance.activity.FavouritesSelectActivity">
 
     <item
         android:id="@+id/action_favourites_save"

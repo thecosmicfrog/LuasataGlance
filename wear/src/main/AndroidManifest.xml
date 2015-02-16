@@ -12,10 +12,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault.Light" >
+        android:theme="@android:style/Theme.DeviceDefault.Light">
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:name=".activity.MainActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,16 +23,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RedLineActivity"
-            android:label="@string/title_activity_red_line" >
+            android:name=".activity.RedLineActivity"
+            android:label="@string/title_activity_red_line">
         </activity>
         <activity
-            android:name=".GreenLineActivity"
-            android:label="@string/title_activity_green_line" >
+            android:name=".activity.GreenLineActivity"
+            android:label="@string/title_activity_green_line">
         </activity>
         <activity
-            android:name=".StopForecastActivity"
-            android:label="@string/title_activity_stop_forecast" >
+            android:name=".activity.StopForecastActivity"
+            android:label="@string/title_activity_stop_forecast">
         </activity>
     </application>
 </manifest>

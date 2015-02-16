@@ -1,4 +1,4 @@
-package org.thecosmicfrog.luasataglance;
+package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Serializer;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
