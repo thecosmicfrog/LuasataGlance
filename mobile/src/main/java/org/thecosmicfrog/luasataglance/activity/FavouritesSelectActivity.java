@@ -15,12 +15,16 @@ import android.widget.ListView;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 public class FavouritesSelectActivity extends ActionBarActivity {
 
@@ -30,7 +34,7 @@ public class FavouritesSelectActivity extends ActionBarActivity {
 
     private ArrayAdapter<String> adapterFavouriteStops;
     private SparseBooleanArray checkedItems;
-    private List<String> selectedItems;
+    private List<CharSequence> selectedItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +86,38 @@ public class FavouritesSelectActivity extends ActionBarActivity {
                 }
             }
         });
+
+        /*
+         * Keep the FavouritesSelectActivity in sync with the favourites file by ensuring
+         * all favourite stops are already checked in the ListView.
+         */
+        try {
+            /*
+             * Open the "favourites" file and read in the List object of favourite stops
+             * contained within.
+             */
+            InputStream fileInput = openFileInput(FILE_FAVOURITES);
+            InputStream buffer = new BufferedInputStream(fileInput);
+            ObjectInput objectInput = new ObjectInputStream(buffer);
+
+            List<CharSequence> listFavouriteStops = (List<CharSequence>) objectInput.readObject();
+
+            /*
+             * Programmatically check the boxes of already-favourited stops.
+             */
+            for (int i = 0; i < listFavouriteStops.size(); i++) {
+                if (listAllStops.contains(listFavouriteStops.get(i).toString())) {
+                    listViewStops.setItemChecked(
+                            listAllStops.indexOf(
+                                    listFavouriteStops.get(i).toString()
+                            ), true);
+                }
+            }
+        } catch (FileNotFoundException fnfe) {
+            Log.i(LOG_TAG, "Favourites file doesn't exist.");
+        } catch (ClassNotFoundException | IOException ioe) {
+            Log.e(LOG_TAG, Log.getStackTraceString(ioe));
+        }
     }
 
     @Override

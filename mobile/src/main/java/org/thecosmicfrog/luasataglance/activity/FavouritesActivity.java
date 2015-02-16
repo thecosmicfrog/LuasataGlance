@@ -48,6 +48,7 @@ public class FavouritesActivity extends ActionBarActivity {
             TextView textViewFavouritesNoneSelected
                     = (TextView) findViewById(R.id.textview_favourites_none_selected);
             textViewFavouritesNoneSelected.setVisibility(View.GONE);
+
             /*
              * Open the "favourites" file and read in the List object of favourite stops
              * contained within.

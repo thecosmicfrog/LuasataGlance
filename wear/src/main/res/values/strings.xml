@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">11</string>
-    <string name="version_name">0.15</string>
+    <string name="version_code">12</string>
+    <string name="version_name">0.16</string>
 
     <string name="message_success">All services operating normally</string>
     <string name="message_error">Error retrieving times from Luas RTPI system</string>
