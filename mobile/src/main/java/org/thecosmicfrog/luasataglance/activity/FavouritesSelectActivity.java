@@ -111,7 +111,7 @@ public class FavouritesSelectActivity extends ActionBarActivity {
                     file.close();
                 }
             } catch (IOException ioe) {
-                Log.e(LOG_TAG, ioe.getMessage());
+                Log.e(LOG_TAG, Log.getStackTraceString(ioe));
             }
 
             // We're finished here. Close the activity.

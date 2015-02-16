@@ -42,6 +42,13 @@ public class FavouritesActivity extends ActionBarActivity {
 
         try {
             /*
+             * Start by making sure the TextView isn't displayed. This should only display
+             * when a user has no favourites saved.
+             */
+            TextView textViewFavouritesNoneSelected
+                    = (TextView) findViewById(R.id.textview_favourites_none_selected);
+            textViewFavouritesNoneSelected.setVisibility(View.GONE);
+            /*
              * Open the "favourites" file and read in the List object of favourite stops
              * contained within.
              */
@@ -79,7 +86,7 @@ public class FavouritesActivity extends ActionBarActivity {
                     );
                 }
             });
-        } catch (FileNotFoundException fnfe) {
+        } catch (ClassNotFoundException | FileNotFoundException fnfe) {
             /*
              * If the favourites file doesn't exist, the user has probably not set up this
              * feature yet. Handle the exception gracefully by displaying a TextView with
@@ -90,8 +97,13 @@ public class FavouritesActivity extends ActionBarActivity {
             TextView textViewFavouritesNoneSelected
                     = (TextView) findViewById(R.id.textview_favourites_none_selected);
             textViewFavouritesNoneSelected.setVisibility(View.VISIBLE);
-        } catch (ClassNotFoundException | IOException e) {
-            Log.e(LOG_TAG, e.getMessage());
+        } catch (IOException e) {
+            /*
+             * Something has gone wrong; the file may have been corrupted. Delete the file.
+             */
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+            Log.i(LOG_TAG, "Deleting favourites file.");
+            deleteFile(FILE_FAVOURITES);
         }
     }
 

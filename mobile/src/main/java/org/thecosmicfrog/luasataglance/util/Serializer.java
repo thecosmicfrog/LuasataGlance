@@ -24,7 +24,7 @@ public final class Serializer {
 
             return baos.toByteArray();
         } catch (IOException ioe) {
-            Log.e(LOG_TAG, ioe.getMessage());
+            Log.e(LOG_TAG, Log.getStackTraceString(ioe));
         }
 
         return null;
@@ -40,9 +40,9 @@ public final class Serializer {
 
             return o.readObject();
         } catch (IOException ioe) {
-            Log.e(LOG_TAG, "Exception:", ioe);
+            Log.e(LOG_TAG, Log.getStackTraceString(ioe));
         } catch (ClassNotFoundException cnfe) {
-            Log.e(LOG_TAG, "Exception:", cnfe);
+            Log.e(LOG_TAG, Log.getStackTraceString(cnfe));
         }
 
         return null;

@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">10</string>
-    <string name="version_name">0.14</string>
+    <string name="version_code">11</string>
+    <string name="version_name">0.15</string>
 
     <!--
         Activities
@@ -118,5 +118,4 @@
         <item>Cherrywood</item>
         <item>Brides Glen</item>
     </string-array>
-
 </resources>
