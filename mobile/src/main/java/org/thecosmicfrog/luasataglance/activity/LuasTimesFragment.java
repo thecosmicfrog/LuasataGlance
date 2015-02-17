@@ -111,8 +111,6 @@ public class LuasTimesFragment extends Fragment {
         redLineSpinnerStop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentTab = tabHost.getCurrentTabTag();
-
                 loadStopForecast(redLineSpinnerStop.getItemAtPosition(position).toString());
             }
 
@@ -151,8 +149,6 @@ public class LuasTimesFragment extends Fragment {
         greenLineSpinnerStop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentTab = tabHost.getCurrentTabTag();
-
                 loadStopForecast(greenLineSpinnerStop.getItemAtPosition(position).toString());
             }
 
@@ -200,6 +196,8 @@ public class LuasTimesFragment extends Fragment {
     }
 
     public void loadStopForecast(String stopName) {
+        currentTab = tabHost.getCurrentTabTag();
+
         new FetchLuasTimes().execute(stopName);
     }
 
