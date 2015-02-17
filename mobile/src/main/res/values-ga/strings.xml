@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        App
+    -->
+    <string name="app_name">Luas at a Glance</string>
+    <string name="version_code">12</string>
+    <string name="version_name">0.16</string>
+
+    <!--
+        Activities
+    -->
+    <string name="title_activity_favourites">Ceanáin</string>
+    <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
+
+    <!--
+        Main UI
+    -->
+    <string name="message">Ag fanacht d\'stádas Luas&#8230;</string>
+    <string name="message_title">Stádas</string>
+    <string name="message_success">Gan seirbhís ag feidhmiú mar is gnáth</string>
+    <string name="message_error">
+        Fadhb ag fáil amanna ón gcóras Luas RTPI.\n\n
+        Déan sheiceáil ar d’nasc leis an idirlíon. Mura bhfuil aon fadhb,
+        is le córas RTPI Luas an cúis.
+    </string>
+    <string name="inbound">Bealach Isteach</string>
+    <string name="outbound">Bealach Amach</string>
+
+    <!--
+        Actions
+    -->
+    <string name="action_about">Eolas Faoi</string>
+    <string name="action_favourites">Ceanáin</string>
+    <string name="action_favourites_edit">Athraigh</string>
+    <string name="action_favourites_save">Sábháil</string>
+    <string name="action_reload">Athnuaigh</string>
+
+    <!--
+        About
+    -->
+    <string name="about_title_version">Leagan</string>
+    <string name="about_title_description">Cur Síos</string>
+    <string name="about_description">
+        Aipp guthán agus Android Wear a léiríonn eolas fíor-ama don Luas,
+        córas iarnróid éadrom Bhaile Átha Cliath.
+    </string>
+    <string name="about_title_license">Ceadúnas</string>
+    <string name="about_license">GNU General Public License (GPLv3)</string>
+    <string name="about_title_source_bugs_features">
+        Cód foinseach, fabht agus iarratais speisialta
+    </string>
+    <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
+
+    <!--
+        Favourites
+    -->
+    <string name="favourites_none_selected">
+        Tosóidh muid!\n\nBrú an cnap Athrígh ar bharr an scáileáin chun cuir le do liosta
+        de Stadanna Luas ina úsáidtear go minic.
+    </string>
+
+    <!--
+        Stop arrays
+    -->
+    <string-array name="red_line_array_stops">
+        <item>Iosta na Rinne</item>
+        <item>Duga Spencer</item>
+        <item>Cearnóg an Mhéara - CNÉ</item>
+        <item>Duga Sheoirse</item>
+        <item>Conghaile</item>
+        <item>Busáras</item>
+        <item>Sráid na Mainistreach</item>
+        <item>Jervis</item>
+        <item>Na Ceithre Cúirteanna</item>
+        <item>Margadh na Feirme</item>
+        <item>Árd-Mhúsaem</item>
+        <item>Heuston</item>
+        <item>Ospidéal San Séamas</item>
+        <item>Fatima</item>
+        <item>Rialto</item>
+        <item>Bóthar na Siúire</item>
+        <item>An Droichead Órga</item>
+        <item>Droimeanach</item>
+        <item>An Capall Dubh</item>
+        <item>An Cloigín Gorm</item>
+        <item>An Chill Mhór</item>
+        <item>An Bhó Dhearg</item>
+        <item>Coill an Rí</item>
+        <item>Belgard</item>
+        <item>Baile an Chócaigh</item>
+        <item>Ospidéal Thamhlachta</item>
+        <item>Tamhlacht</item>
+        <item>Fothar Chardain</item>
+        <item>Baile an tSíbrigh</item>
+        <item>Campas Gnó Iarthar na Cathrach</item>
+        <item>Baile Uí Fhoirtcheirn</item>
+        <item>Teach Sagard</item>
+    </string-array>
+
+    <string-array name="green_line_array_stops">
+        <item>Faiche Stiabhna</item>
+        <item>Sráid Fhearchair</item>
+        <item>Charlemont</item>
+        <item>Raghnallach</item>
+        <item>Coill na Feá</item>
+        <item>Cowper</item>
+        <item>Baile an Mhuilinn</item>
+        <item>Na Glasáin</item>
+        <item>Dún Droma</item>
+        <item>Baile Amhlaoibh</item>
+        <item>Cill Mochuda</item>
+        <item>Stigh Lorgan</item>
+        <item>Áth an Ghainimh</item>
+        <item>An Pháirc Láir</item>
+        <item>Gleann an Chairn</item>
+        <item>An Eachrais</item>
+        <item>Gleann Bhaile na Lobhar</item>
+        <item>Coill Bhaile Uí Ógáin</item>
+        <item>Carraig Mhaighin</item>
+        <item>Baile an Locháin</item>
+        <item>Coill na Silíní</item>
+        <item>Gleann Bhríde</item>
+    </string-array>
+</resources>
