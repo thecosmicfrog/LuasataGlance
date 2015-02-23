@@ -593,7 +593,6 @@ public class LuasTimesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(StopForecast sf) {
-            EnglishGaeilgeMap englishGaeilgeMap = new EnglishGaeilgeMap();
 
             /*
              * Only run if Fragment is attached to Activity. Without this check, the app is liable
@@ -603,53 +602,67 @@ public class LuasTimesFragment extends Fragment {
                 /*
                  * Update UI elements specific to the tab currently selected.
                  */
-                switch (currentTab) {
-                    case RED_LINE:
-                        // If a valid stop forecast exists...
-                        if (sf != null) {
-                            if (sf.getMessage() != null) {
-                                String message;
+                updateStopForecast(sf);
 
-                                switch (localeDefault) {
-                                    case GAEILGE:
-                                        message = englishGaeilgeMap.get(sf.getMessage());
-                                        break;
-                                    default:
-                                        message = sf.getMessage();
-                                }
+                // Stop the refresh animation.
+                redLineSwipeRefreshLayout.setRefreshing(false);
+                greenLineSwipeRefreshLayout.setRefreshing(false);
+            }
+        }
 
-                                /*
-                                 * Set the status message from the server.
-                                 */
-                                textViewMessageTitle =
-                                        (TextView) rootView.findViewById(
-                                                R.id.red_line_textview_message_title
-                                        );
+        private void updateStopForecast(StopForecast sf) {
+            EnglishGaeilgeMap englishGaeilgeMap = new EnglishGaeilgeMap();
 
-                                /*
-                                 * Change the color of the message title TextView depending on the status.
-                                 */
-                                if (message.equals(
-                                        getResources().getString(R.string.message_success)))
-                                    textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                                else
-                                    textViewMessageTitle.setBackgroundResource(R.color.message_error);
+            switch (currentTab) {
+                case RED_LINE:
+                    // If a valid stop forecast exists...
+                    if (sf != null) {
+                        if (sf.getMessage() != null) {
+                            String message;
 
-                                textViewMessage =
-                                        (TextView) rootView.findViewById(R.id.red_line_textview_message);
-                                textViewMessage.setText(message);
+                            switch (localeDefault) {
+                                case GAEILGE:
+                                    message = englishGaeilgeMap.get(sf.getMessage());
+                                    break;
+                                default:
+                                    message = sf.getMessage();
                             }
 
                             /*
-                             * Create arrays of TextView objects for each entry in the TableLayout.
+                             * Set the status message from the server.
                              */
-                            initStopForecast(RED_LINE);
+                            textViewMessageTitle =
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_message_title
+                                    );
 
                             /*
-                             * Pull in all trams from the StopForecast, but only display up to three inbound
-                             * and outbound trams.
+                             * Change the color of the message title TextView depending on the status.
                              */
-                            if (sf.getInboundTrams() != null) {
+                            if (message.equals(
+                                    getResources().getString(R.string.message_success)))
+                                textViewMessageTitle.setBackgroundResource(R.color.message_success);
+                            else
+                                textViewMessageTitle.setBackgroundResource(R.color.message_error);
+
+                            textViewMessage =
+                                    (TextView) rootView.findViewById(R.id.red_line_textview_message);
+                            textViewMessage.setText(message);
+                        }
+
+                        /*
+                         * Create arrays of TextView objects for each entry in the TableLayout.
+                         */
+                        initStopForecast(RED_LINE);
+
+                        /*
+                         * Pull in all trams from the StopForecast, but only display up to three inbound
+                         * and outbound trams.
+                         */
+                        if (sf.getInboundTrams() != null) {
+                            if (sf.getInboundTrams().size() == 0) {
+                                textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
+                            } else {
                                 String inboundTram;
 
                                 for (int i = 0; i < sf.getInboundTrams().size(); i++) {
@@ -698,8 +711,12 @@ public class LuasTimesFragment extends Fragment {
                                     }
                                 }
                             }
+                        }
 
-                            if (sf.getOutboundTrams() != null) {
+                        if (sf.getOutboundTrams() != null) {
+                            if (sf.getOutboundTrams().size() == 0) {
+                                textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
+                            } else {
                                 String outboundTram;
 
                                 for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
@@ -748,70 +765,74 @@ public class LuasTimesFragment extends Fragment {
                                     }
                                 }
                             }
-                        } else {
-                            /*
-                             * If no stop forecast can be retrieved, set a generic error message and
-                             * change the color of the message title box red.
-                             */
-                            textViewMessageTitle =
-                                    (TextView) rootView.findViewById(
-                                            R.id.red_line_textview_message_title
-                                    );
-                            textViewMessageTitle.setBackgroundResource(R.color.message_error);
-
-                            textViewMessage =
-                                    (TextView) rootView.findViewById(R.id.red_line_textview_message);
-                            textViewMessage.setText(R.string.message_error);
                         }
+                    } else {
+                        /*
+                         * If no stop forecast can be retrieved, set a generic error message and
+                         * change the color of the message title box red.
+                         */
+                        textViewMessageTitle =
+                                (TextView) rootView.findViewById(
+                                        R.id.red_line_textview_message_title
+                                );
+                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                        break;
+                        textViewMessage =
+                                (TextView) rootView.findViewById(R.id.red_line_textview_message);
+                        textViewMessage.setText(R.string.message_error);
+                    }
 
-                    case GREEN_LINE:
-                        // If a valid stop forecast exists...
-                        if (sf != null) {
-                            if (sf.getMessage() != null) {
-                                String message;
+                    break;
 
-                                switch (localeDefault) {
-                                    case GAEILGE:
-                                        message = englishGaeilgeMap.get(sf.getMessage());
-                                        break;
-                                    default:
-                                        message = sf.getMessage();
-                                }
+                case GREEN_LINE:
+                    // If a valid stop forecast exists...
+                    if (sf != null) {
+                        if (sf.getMessage() != null) {
+                            String message;
 
-                                /*
-                                 * Set the status message from the server.
-                                 */
-                                textViewMessageTitle =
-                                        (TextView) rootView.findViewById(
-                                                R.id.green_line_textview_message_title
-                                        );
-
-                                /*
-                                 * Change the color of the message title TextView depending on the status.
-                                 */
-                                if (message.equals(
-                                        getResources().getString(R.string.message_success)))
-                                    textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                                else
-                                    textViewMessageTitle.setBackgroundResource(R.color.message_error);
-
-                                textViewMessage =
-                                        (TextView) rootView.findViewById(R.id.green_line_textview_message);
-                                textViewMessage.setText(message);
+                            switch (localeDefault) {
+                                case GAEILGE:
+                                    message = englishGaeilgeMap.get(sf.getMessage());
+                                    break;
+                                default:
+                                    message = sf.getMessage();
                             }
 
                             /*
-                             * Create arrays of TextView objects for each entry in the TableLayout.
+                             * Set the status message from the server.
                              */
-                            initStopForecast(GREEN_LINE);
+                            textViewMessageTitle =
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_message_title
+                                    );
 
                             /*
-                             * Pull in all trams from the StopForecast, but only display up to three inbound
-                             * and outbound trams.
+                             * Change the color of the message title TextView depending on the status.
                              */
-                            if (sf.getInboundTrams() != null) {
+                            if (message.equals(
+                                    getResources().getString(R.string.message_success)))
+                                textViewMessageTitle.setBackgroundResource(R.color.message_success);
+                            else
+                                textViewMessageTitle.setBackgroundResource(R.color.message_error);
+
+                            textViewMessage =
+                                    (TextView) rootView.findViewById(R.id.green_line_textview_message);
+                            textViewMessage.setText(message);
+                        }
+
+                        /*
+                         * Create arrays of TextView objects for each entry in the TableLayout.
+                         */
+                        initStopForecast(GREEN_LINE);
+
+                        /*
+                         * Pull in all trams from the StopForecast, but only display up to three inbound
+                         * and outbound trams.
+                         */
+                        if (sf.getInboundTrams() != null) {
+                            if (sf.getInboundTrams().size() == 0) {
+                                textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
+                            } else {
                                 String inboundTram;
 
                                 for (int i = 0; i < sf.getInboundTrams().size(); i++) {
@@ -856,8 +877,12 @@ public class LuasTimesFragment extends Fragment {
                                     }
                                 }
                             }
+                        }
 
-                            if (sf.getOutboundTrams() != null) {
+                        if (sf.getOutboundTrams() != null) {
+                            if (sf.getOutboundTrams().size() == 0) {
+                                textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
+                            } else {
                                 String outboundTram;
 
                                 for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
@@ -902,32 +927,28 @@ public class LuasTimesFragment extends Fragment {
                                     }
                                 }
                             }
-                        } else {
-                            /*
-                             * If no stop forecast can be retrieved, set a generic error message and
-                             * change the color of the message title box red.
-                             */
-                            textViewMessageTitle =
-                                    (TextView) rootView.findViewById(
-                                            R.id.green_line_textview_message_title
-                                    );
-                            textViewMessageTitle.setBackgroundResource(R.color.message_error);
-
-                            textViewMessage =
-                                    (TextView) rootView.findViewById(R.id.green_line_textview_message);
-                            textViewMessage.setText(R.string.message_error);
                         }
+                    } else {
+                        /*
+                         * If no stop forecast can be retrieved, set a generic error message and
+                         * change the color of the message title box red.
+                         */
+                        textViewMessageTitle =
+                                (TextView) rootView.findViewById(
+                                        R.id.green_line_textview_message_title
+                                );
+                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
-                        break;
+                        textViewMessage =
+                                (TextView) rootView.findViewById(R.id.green_line_textview_message);
+                        textViewMessage.setText(R.string.message_error);
+                    }
 
-                    default:
-                        // If for some reason the current selected tab doesn't make sense.
-                        Log.e(LOG_TAG, "Unknown tab.");
-                }
+                    break;
 
-                // Stop the refresh animation.
-                redLineSwipeRefreshLayout.setRefreshing(false);
-                greenLineSwipeRefreshLayout.setRefreshing(false);
+                default:
+                    // If for some reason the current selected tab doesn't make sense.
+                    Log.e(LOG_TAG, "Unknown tab.");
             }
         }
 

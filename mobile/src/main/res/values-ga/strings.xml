@@ -26,6 +26,7 @@
     </string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
+    <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
 
     <!--
         Actions

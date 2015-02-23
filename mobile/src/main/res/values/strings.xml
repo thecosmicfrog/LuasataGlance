@@ -25,6 +25,7 @@
         the Luas RTPI system may be down.</string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
+    <string name="no_trams_forecast"><b>No trams forecast</b></string>
 
     <!--
         Actions
