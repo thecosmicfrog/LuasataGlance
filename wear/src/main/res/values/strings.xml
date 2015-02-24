@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+        App
+    -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">13</string>
-    <string name="version_name">0.17</string>
+    <string name="version_code">14</string>
+    <string name="version_name">0.18</string>
 
+    <!--
+        Activities
+    -->
+    <string name="title_activity_red_line">Red Line</string>
+    <string name="title_activity_green_line">Green Line</string>
+    <string name="title_activity_stop_forecast">Stop Forecast</string>
+
+    <!--
+        Main UI
+    -->
     <string name="message_success">All services operating normally</string>
     <string name="message_error">Error retrieving times from Luas RTPI system</string>
-
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
+    <string name="no_trams_forecast"><b>No trams forecast</b></string>
 
+    <!--
+        Stop arrays
+    -->
     <string-array name="red_line_stops_array">
         <item>The Point</item>
         <item>Spencer Dock</item>
@@ -69,8 +85,4 @@
         <item>Cherrywood</item>
         <item>Brides Glen</item>
     </string-array>
-
-    <string name="title_activity_red_line">RedLineActivity</string>
-    <string name="title_activity_green_line">GreenLineActivity</string>
-    <string name="title_activity_stop_forecast">StopForecastActivity</string>
 </resources>

@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -308,8 +309,15 @@ public class WearMessageListenerService extends WearableListenerService {
                     }
                 }
             } else {
-                stopForecast.setInboundTrams(null);
-                stopForecast.setOutboundTrams(null);
+                /*
+                 * If there is no "trams" object in the JSON returned from the server,
+                 * there are no inbound or outbound trams forecast. This can happen
+                 * frequently for some stops, such as Connolly, which ceases service
+                 * earlier than others.
+                 * In this case, set empty ArrayLists for inbound and outbound trams.
+                 */
+                stopForecast.setInboundTrams(new ArrayList<Tram>());
+                stopForecast.setOutboundTrams(new ArrayList<Tram>());
             }
 
             return stopForecast;
