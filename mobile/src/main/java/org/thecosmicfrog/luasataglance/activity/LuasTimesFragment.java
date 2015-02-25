@@ -226,13 +226,17 @@ public class LuasTimesFragment extends Fragment {
                                 progressBarRedLineLoadingCircle.setVisibility(View.VISIBLE);
                             else
                                 progressBarRedLineLoadingCircle.setVisibility(View.GONE);
+
                             break;
+
                         case GREEN_LINE:
                             if (loading)
                                 progressBarGreenLineLoadingCircle.setVisibility(View.VISIBLE);
                             else
                                 progressBarGreenLineLoadingCircle.setVisibility(View.GONE);
+
                             break;
+
                         default:
                             // If for some reason the line doesn't make sense.
                             Log.e(LOG_TAG, "Invalid line specified.");
@@ -378,13 +382,14 @@ public class LuasTimesFragment extends Fragment {
 
         public FetchLuasTimes() {
             localeDefault = Locale.getDefault().toString();
+            Log.i(LOG_TAG, "Default locale: " + localeDefault);
 
             /*
              * If the user's default locale is set to Irish (Gaeilge), build a Map
              * of Irish stop names:codes.
              * If not, default to English.
              */
-            if (localeDefault.equals(GAEILGE)) {
+            if (localeDefault.startsWith(GAEILGE)) {
                 stopCodes = new HashMap<String, String>() {
                     {
                         // Red Line
@@ -438,7 +443,7 @@ public class LuasTimesFragment extends Fragment {
                         put("An Pháirc Láir", "CPK");
                         put("Gleann an Chairn", "GLE");
                         put("An Eachrais", "GAL");
-                        put("Gleann Bhaile na Lobhard", "LEO");
+                        put("Gleann Bhaile na Lobhar", "LEO");
                         put("Coill Bhaile Uí Ógáin", "BAW");
                         put("Carraig Mhaighin", "CCK");
                         put("Baile an Locháin", "LAU");
@@ -621,12 +626,10 @@ public class LuasTimesFragment extends Fragment {
                         if (sf.getMessage() != null) {
                             String message;
 
-                            switch (localeDefault) {
-                                case GAEILGE:
-                                    message = englishGaeilgeMap.get(sf.getMessage());
-                                    break;
-                                default:
-                                    message = sf.getMessage();
+                            if (localeDefault.startsWith(GAEILGE)) {
+                                message = englishGaeilgeMap.get(sf.getMessage());
+                            } else {
+                                message = sf.getMessage();
                             }
 
                             /*
@@ -668,12 +671,10 @@ public class LuasTimesFragment extends Fragment {
 
                                 for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                                     if (i < 3) {
-                                        switch (localeDefault) {
-                                            case GAEILGE:
-                                                inboundTram = englishGaeilgeMap.get(sf.getInboundTrams().get(i).getDestination());
-                                                break;
-                                            default:
-                                                inboundTram = sf.getInboundTrams().get(i).getDestination();
+                                        if (localeDefault.startsWith(GAEILGE)) {
+                                            inboundTram = englishGaeilgeMap.get(sf.getInboundTrams().get(i).getDestination());
+                                        } else {
+                                            inboundTram = sf.getInboundTrams().get(i).getDestination();
                                         }
 
                                         textViewInboundStopNames[i].setText(
@@ -684,18 +685,16 @@ public class LuasTimesFragment extends Fragment {
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             String dueMinutes;
 
-                                            switch (localeDefault) {
-                                                case GAEILGE:
-                                                    dueMinutes = englishGaeilgeMap.get("DUE");
-                                                    break;
-                                                default:
-                                                    dueMinutes = "DUE";
+                                            if (localeDefault.startsWith(GAEILGE)) {
+                                                dueMinutes = englishGaeilgeMap.get("DUE");
+                                            } else {
+                                                dueMinutes = "DUE";
                                             }
 
                                             textViewInboundStopTimes[i].setText(
                                                     dueMinutes
                                             );
-                                        } else if (localeDefault.equals(GAEILGE)) {
+                                        } else if (localeDefault.startsWith(GAEILGE)) {
                                             textViewInboundStopTimes[i].setText(
                                                     sf.getInboundTrams().get(i).getDueMinutes() + " nóim"
                                             );
@@ -722,12 +721,10 @@ public class LuasTimesFragment extends Fragment {
 
                                 for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                                     if (i < 3) {
-                                        switch (localeDefault) {
-                                            case GAEILGE:
-                                                outboundTram = englishGaeilgeMap.get(sf.getOutboundTrams().get(i).getDestination());
-                                                break;
-                                            default:
-                                                outboundTram = sf.getOutboundTrams().get(i).getDestination();
+                                        if (localeDefault.startsWith(GAEILGE)) {
+                                            outboundTram = englishGaeilgeMap.get(sf.getOutboundTrams().get(i).getDestination());
+                                        } else {
+                                            outboundTram = sf.getOutboundTrams().get(i).getDestination();
                                         }
 
                                         textViewOutboundStopNames[i].setText(
@@ -738,18 +735,16 @@ public class LuasTimesFragment extends Fragment {
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             String dueMinutes;
 
-                                            switch (localeDefault) {
-                                                case GAEILGE:
-                                                    dueMinutes = englishGaeilgeMap.get("DUE");
-                                                    break;
-                                                default:
-                                                    dueMinutes = "DUE";
+                                            if (localeDefault.startsWith(GAEILGE)) {
+                                                dueMinutes = englishGaeilgeMap.get("DUE");
+                                            } else {
+                                                dueMinutes = "DUE";
                                             }
 
                                             textViewOutboundStopTimes[i].setText(
                                                     dueMinutes
                                             );
-                                        } else if (localeDefault.equals(GAEILGE)) {
+                                        } else if (localeDefault.startsWith(GAEILGE)) {
                                             textViewOutboundStopTimes[i].setText(
                                                     sf.getOutboundTrams().get(i).getDueMinutes() + " nóim"
                                             );
@@ -791,12 +786,10 @@ public class LuasTimesFragment extends Fragment {
                         if (sf.getMessage() != null) {
                             String message;
 
-                            switch (localeDefault) {
-                                case GAEILGE:
-                                    message = englishGaeilgeMap.get(sf.getMessage());
-                                    break;
-                                default:
-                                    message = sf.getMessage();
+                            if (localeDefault.startsWith(GAEILGE)) {
+                                message = englishGaeilgeMap.get(sf.getMessage());
+                            } else {
+                                message = sf.getMessage();
                             }
 
                             /*
@@ -838,12 +831,10 @@ public class LuasTimesFragment extends Fragment {
 
                                 for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                                     if (i < 3) {
-                                        switch (localeDefault) {
-                                            case GAEILGE:
-                                                inboundTram = englishGaeilgeMap.get(sf.getInboundTrams().get(i).getDestination());
-                                                break;
-                                            default:
-                                                inboundTram = sf.getInboundTrams().get(i).getDestination();
+                                        if (localeDefault.startsWith(GAEILGE)) {
+                                            inboundTram = englishGaeilgeMap.get(sf.getInboundTrams().get(i).getDestination());
+                                        } else {
+                                            inboundTram = sf.getInboundTrams().get(i).getDestination();
                                         }
 
                                         textViewInboundStopNames[i].setText(
@@ -854,12 +845,10 @@ public class LuasTimesFragment extends Fragment {
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             String dueMinutes;
 
-                                            switch (localeDefault) {
-                                                case GAEILGE:
-                                                    dueMinutes = englishGaeilgeMap.get("DUE");
-                                                    break;
-                                                default:
-                                                    dueMinutes = "DUE";
+                                            if (localeDefault.startsWith(GAEILGE)) {
+                                                dueMinutes = englishGaeilgeMap.get("DUE");
+                                            } else {
+                                                dueMinutes = "DUE";
                                             }
 
                                             textViewInboundStopTimes[i].setText(
@@ -888,12 +877,10 @@ public class LuasTimesFragment extends Fragment {
 
                                 for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                                     if (i < 3) {
-                                        switch (localeDefault) {
-                                            case GAEILGE:
-                                                outboundTram = englishGaeilgeMap.get(sf.getOutboundTrams().get(i).getDestination());
-                                                break;
-                                            default:
-                                                outboundTram = sf.getOutboundTrams().get(i).getDestination();
+                                        if (localeDefault.startsWith(GAEILGE)) {
+                                            outboundTram = englishGaeilgeMap.get(sf.getOutboundTrams().get(i).getDestination());
+                                        } else {
+                                            outboundTram = sf.getOutboundTrams().get(i).getDestination();
                                         }
 
                                         textViewOutboundStopNames[i].setText(
@@ -904,12 +891,10 @@ public class LuasTimesFragment extends Fragment {
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             String dueMinutes;
 
-                                            switch (localeDefault) {
-                                                case GAEILGE:
-                                                    dueMinutes = englishGaeilgeMap.get("DUE");
-                                                    break;
-                                                default:
-                                                    dueMinutes = "DUE";
+                                            if (localeDefault.startsWith(GAEILGE)) {
+                                                dueMinutes = englishGaeilgeMap.get("DUE");
+                                            } else {
+                                                dueMinutes = "DUE";
                                             }
 
                                             textViewOutboundStopTimes[i].setText(
@@ -1011,10 +996,14 @@ public class LuasTimesFragment extends Fragment {
                     switch (trams[i].getDirection()) {
                         case "Inbound":
                             stopForecast.addInboundTram(trams[i]);
+
                             break;
+
                         case "Outbound":
                             stopForecast.addOutboundTram(trams[i]);
+
                             break;
+
                         default:
                             // If for some reason the direction doesn't make sense.
                             Log.e(LOG_TAG, "Invalid direction: " + trams[i].getDirection());

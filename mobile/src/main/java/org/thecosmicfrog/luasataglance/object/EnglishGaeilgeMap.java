@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class EnglishGaeilgeMap extends HashMap<String, String> {
     public EnglishGaeilgeMap() {
-        put("All services operating normally", "Gan seirbhís ag feidhmiú mar is gnáth");
+        put("All services operating normally", "Gach seirbhís ag feidhmiú mar is gnáth");
         put("DUE", "AM");
 
         // Red Line
@@ -58,7 +58,7 @@ public class EnglishGaeilgeMap extends HashMap<String, String> {
         put("Central Park", "An Pháirc Láir");
         put("Glencairn", "Gleann an Chairn");
         put("The Gallops", "An Eachrais");
-        put("Leopardstown Valley", "Gleann Bhaile na Lobhard");
+        put("Leopardstown Valley", "Gleann Bhaile na Lobhar");
         put("Ballyogan Wood", "Coill Bhaile Uí Ógáin");
         put("Carrickmines", "Carraig Mhaighin");
         put("Laughanstown", "Baile an Locháin");
