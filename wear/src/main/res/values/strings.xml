@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">15</string>
-    <string name="version_name">0.19</string>
+    <string name="version_code">16</string>
+    <string name="version_name">0.20</string>
 
     <!--
         Activities
@@ -17,7 +17,7 @@
     <!--
         Main UI
     -->
-    <string name="message_success">All services operating normally</string>
+    <string name="message_success">operating normally</string>
     <string name="message_error">Error retrieving times from Luas RTPI system</string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>

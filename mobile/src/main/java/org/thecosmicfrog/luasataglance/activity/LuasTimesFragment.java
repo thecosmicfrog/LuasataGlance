@@ -643,7 +643,7 @@ public class LuasTimesFragment extends Fragment {
                             /*
                              * Change the color of the message title TextView depending on the status.
                              */
-                            if (message.equals(
+                            if (message.contains(
                                     getResources().getString(R.string.message_success)))
                                 textViewMessageTitle.setBackgroundResource(R.color.message_success);
                             else
@@ -803,7 +803,7 @@ public class LuasTimesFragment extends Fragment {
                             /*
                              * Change the color of the message title TextView depending on the status.
                              */
-                            if (message.equals(
+                            if (message.contains(
                                     getResources().getString(R.string.message_success)))
                                 textViewMessageTitle.setBackgroundResource(R.color.message_success);
                             else

@@ -188,7 +188,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                             TextView textViewStopName =
                                     (TextView) findViewById(R.id.textview_stop_name);
 
-                            if (sf.getMessage().equals(
+                            if (sf.getMessage().contains(
                                     getResources().getString(R.string.message_success)))
                                 textViewStopName.setBackgroundResource(R.color.message_success);
                             else
