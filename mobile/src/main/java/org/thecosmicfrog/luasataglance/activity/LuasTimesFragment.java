@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class LuasTimesFragment extends Fragment {
 
@@ -68,13 +70,55 @@ public class LuasTimesFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        // Initialise user interface.
         initTabs();
 
+        // If a Favourite stop brought us to this activity, load that stop's forecast.
         if (getActivity().getIntent().hasExtra("stopName")) {
             setTabAndSpinner();
         }
 
+        // Keep track of the currently-focused tab.
+        currentTab = tabHost.getCurrentTabTag();
+
+        // Reload stop forecast every 15 seconds.
+        autoReloadStopForecast(15000);
+
         return rootView;
+    }
+
+    /**
+     * Automatically reload the stop forecast after a defined period.
+     * @param reloadTimeMillis The period (ms) after which the stop forecast should reload.
+     */
+    private void autoReloadStopForecast(int reloadTimeMillis) {
+        TimerTask timerTaskReload = new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (currentTab) {
+                            case RED_LINE:
+                                loadStopForecast(redLineSpinnerStop.getSelectedItem().toString());
+
+                                break;
+
+                            case GREEN_LINE:
+                                loadStopForecast(greenLineSpinnerStop.getSelectedItem().toString());
+
+                                break;
+
+                            default:
+                                Log.e(LOG_TAG, "Invalid line specified.");
+                        }
+                    }
+                });
+            }
+        };
+
+        // Schedule the auto-reload task to run.
+        new Timer().schedule(timerTaskReload, 0, reloadTimeMillis);
     }
 
     /**
@@ -128,6 +172,9 @@ public class LuasTimesFragment extends Fragment {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
+                        // Start by clearing the currently-displayed stop forecast.
+                        clearStopForecast();
+
                         // Start the refresh animation.
                         redLineSwipeRefreshLayout.setRefreshing(true);
                         loadStopForecast(redLineSpinnerStop.getSelectedItem().toString());
@@ -166,6 +213,9 @@ public class LuasTimesFragment extends Fragment {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
+                        // Start by clearing the currently-displayed stop forecast.
+                        clearStopForecast();
+
                         // Start the refresh animation.
                         greenLineSwipeRefreshLayout.setRefreshing(true);
                         loadStopForecast(greenLineSpinnerStop.getSelectedItem().toString());
@@ -198,6 +248,10 @@ public class LuasTimesFragment extends Fragment {
         }
     }
 
+    /**
+     * Load the stop forecast for a particular stop.
+     * @param stopName The stop for which to load a stop forecast.
+     */
     public void loadStopForecast(String stopName) {
         currentTab = tabHost.getCurrentTabTag();
 
@@ -246,6 +300,10 @@ public class LuasTimesFragment extends Fragment {
         }
     }
 
+    /**
+     * Initialise the arrays which hold a stop forecast.
+     * @param line Line for which to initialise stop forecast arrays.
+     */
     private void initStopForecast(String line) {
         switch (line) {
             case RED_LINE:
@@ -382,7 +440,6 @@ public class LuasTimesFragment extends Fragment {
 
         public FetchLuasTimes() {
             localeDefault = Locale.getDefault().toString();
-            Log.i(LOG_TAG, "Default locale: " + localeDefault);
 
             /*
              * If the user's default locale is set to Irish (Gaeilge), build a Map
@@ -521,8 +578,6 @@ public class LuasTimesFragment extends Fragment {
             /*
              * Start by clearing the currently-displayed stop forecast.
              */
-            clearStopForecast();
-
             if (params.length == 0)
                 return null;
 
@@ -599,12 +654,13 @@ public class LuasTimesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(StopForecast sf) {
-
             /*
              * Only run if Fragment is attached to Activity. Without this check, the app is liable
              * to crash when the screen is rotated many times in a given period of time.
              */
             if (isAdded()) {
+                clearStopForecast();
+
                 /*
                  * Update UI elements specific to the tab currently selected.
                  */
@@ -624,17 +680,15 @@ public class LuasTimesFragment extends Fragment {
                     // If a valid stop forecast exists...
                     if (sf != null) {
                         if (sf.getMessage() != null) {
+                            Log.v(LOG_TAG, "1");
                             String message;
 
                             if (localeDefault.startsWith(GAEILGE)) {
-                                message = englishGaeilgeMap.get(sf.getMessage());
+                                message = getResources().getString(R.string.message_success);
                             } else {
                                 message = sf.getMessage();
                             }
 
-                            /*
-                             * Set the status message from the server.
-                             */
                             textViewMessageTitle =
                                     (TextView) rootView.findViewById(
                                             R.id.red_line_textview_message_title
@@ -649,6 +703,9 @@ public class LuasTimesFragment extends Fragment {
                             else
                                 textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
+                            /*
+                             * Set the status message from the server.
+                             */
                             textViewMessage =
                                     (TextView) rootView.findViewById(R.id.red_line_textview_message);
                             textViewMessage.setText(message);
@@ -787,14 +844,11 @@ public class LuasTimesFragment extends Fragment {
                             String message;
 
                             if (localeDefault.startsWith(GAEILGE)) {
-                                message = englishGaeilgeMap.get(sf.getMessage());
+                                message = getResources().getString(R.string.message_success);
                             } else {
                                 message = sf.getMessage();
                             }
 
-                            /*
-                             * Set the status message from the server.
-                             */
                             textViewMessageTitle =
                                     (TextView) rootView.findViewById(
                                             R.id.green_line_textview_message_title
@@ -809,6 +863,9 @@ public class LuasTimesFragment extends Fragment {
                             else
                                 textViewMessageTitle.setBackgroundResource(R.color.message_error);
 
+                            /*
+                             * Set the status message from the server.
+                             */
                             textViewMessage =
                                     (TextView) rootView.findViewById(R.id.green_line_textview_message);
                             textViewMessage.setText(message);

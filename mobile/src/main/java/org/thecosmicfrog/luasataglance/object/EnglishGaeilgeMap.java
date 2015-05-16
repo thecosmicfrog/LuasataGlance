@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class EnglishGaeilgeMap extends HashMap<String, String> {
     public EnglishGaeilgeMap() {
-        put("All services operating normally", "Gach seirbhís ag feidhmiú mar is gnáth");
+        put("operating normally", "ag feidhmiú mar is gnáth");
         put("DUE", "AM");
 
         // Red Line
