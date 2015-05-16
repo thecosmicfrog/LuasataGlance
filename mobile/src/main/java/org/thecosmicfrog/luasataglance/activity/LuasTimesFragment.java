@@ -82,43 +82,9 @@ public class LuasTimesFragment extends Fragment {
         currentTab = tabHost.getCurrentTabTag();
 
         // Reload stop forecast every 15 seconds.
-        autoReloadStopForecast(15000);
+        autoReloadStopForecast(15000, 15000);
 
         return rootView;
-    }
-
-    /**
-     * Automatically reload the stop forecast after a defined period.
-     * @param reloadTimeMillis The period (ms) after which the stop forecast should reload.
-     */
-    private void autoReloadStopForecast(int reloadTimeMillis) {
-        TimerTask timerTaskReload = new TimerTask() {
-            @Override
-            public void run() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (currentTab) {
-                            case RED_LINE:
-                                loadStopForecast(redLineSpinnerStop.getSelectedItem().toString());
-
-                                break;
-
-                            case GREEN_LINE:
-                                loadStopForecast(greenLineSpinnerStop.getSelectedItem().toString());
-
-                                break;
-
-                            default:
-                                Log.e(LOG_TAG, "Invalid line specified.");
-                        }
-                    }
-                });
-            }
-        };
-
-        // Schedule the auto-reload task to run.
-        new Timer().schedule(timerTaskReload, 0, reloadTimeMillis);
     }
 
     /**
@@ -246,6 +212,50 @@ public class LuasTimesFragment extends Fragment {
                             .getPosition(getActivity().getIntent().getStringExtra("stopName"))
             );
         }
+    }
+
+    /**
+     * Automatically reload the stop forecast after a defined period.
+     * @param delayTimeMillis The delay (ms) before starting the timer.
+     * @param reloadTimeMillis The period (ms) after which the stop forecast should reload.
+     */
+    private void autoReloadStopForecast(int delayTimeMillis, int reloadTimeMillis) {
+        TimerTask timerTaskReload = new TimerTask() {
+            @Override
+            public void run() {
+                /*
+                 * Ensure the currently-focused tab is known to avoid loading
+                 * a stop forecast for the wrong line.
+                 */
+                currentTab = tabHost.getCurrentTabTag();
+
+                // Check Fragment is attached to Activity in order to avoid NullPointerExceptions.
+                if (isAdded()){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            switch (currentTab) {
+                                case RED_LINE:
+                                    loadStopForecast(redLineSpinnerStop.getSelectedItem().toString());
+
+                                    break;
+
+                                case GREEN_LINE:
+                                    loadStopForecast(greenLineSpinnerStop.getSelectedItem().toString());
+
+                                    break;
+
+                                default:
+                                    Log.e(LOG_TAG, "Invalid line specified.");
+                            }
+                        }
+                    });
+                }
+            }
+        };
+
+        // Schedule the auto-reload task to run.
+        new Timer().schedule(timerTaskReload, delayTimeMillis, reloadTimeMillis);
     }
 
     /**
@@ -680,7 +690,6 @@ public class LuasTimesFragment extends Fragment {
                     // If a valid stop forecast exists...
                     if (sf != null) {
                         if (sf.getMessage() != null) {
-                            Log.v(LOG_TAG, "1");
                             String message;
 
                             if (localeDefault.startsWith(GAEILGE)) {
