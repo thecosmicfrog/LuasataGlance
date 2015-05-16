@@ -65,6 +65,8 @@ public class LuasTimesFragment extends Fragment {
     private TextView[] textViewOutboundStopNames;
     private TextView[] textViewOutboundStopTimes;
 
+    private TimerTask timerTaskReload;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,6 +87,14 @@ public class LuasTimesFragment extends Fragment {
         autoReloadStopForecast(15000, 15000);
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        // Stop the auto-reload TimerTask.
+        timerTaskReload.cancel();
     }
 
     /**
@@ -220,7 +230,7 @@ public class LuasTimesFragment extends Fragment {
      * @param reloadTimeMillis The period (ms) after which the stop forecast should reload.
      */
     private void autoReloadStopForecast(int delayTimeMillis, int reloadTimeMillis) {
-        TimerTask timerTaskReload = new TimerTask() {
+        timerTaskReload = new TimerTask() {
             @Override
             public void run() {
                 /*

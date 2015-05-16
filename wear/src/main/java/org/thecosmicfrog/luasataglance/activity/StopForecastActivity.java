@@ -21,6 +21,8 @@ import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class StopForecastActivity extends Activity implements MessageApi.MessageListener {
@@ -38,6 +40,8 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     private ProgressBar progressBarLoadingCircle;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView textViewStopName;
+
+    private TimerTask timerTaskReload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +75,8 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
                     textViewStopName = (TextView) findViewById(R.id.textview_stop_name);
                     textViewStopName.setText(getIntent().getStringExtra("stopName"));
+
+                    autoReloadStopForecast(15000, 15000);
                 }
             }
         });
@@ -79,6 +85,10 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // Stop the auto-reload TimerTask so as to prevent multiple TimerTasks running each time
+        // the Activity is started.
+        timerTaskReload.cancel();
 
         // Remove the MessageListener.
         Wearable.MessageApi.removeListener(googleApiClient, this);
@@ -90,6 +100,29 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
             setIsLoading(true);
             requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
         }
+    }
+
+    /**
+     * Automatically reload the stop forecast after a defined period.
+     * @param delayTimeMillis The delay (ms) before starting the timer.
+     * @param reloadTimeMillis The period (ms) after which the stop forecast should reload.
+     */
+    private void autoReloadStopForecast(int delayTimeMillis, int reloadTimeMillis) {
+        timerTaskReload = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setIsLoading(true);
+                        requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
+                    }
+                });
+            }
+        };
+
+        // Schedule the auto-reload task to run.
+        new Timer().schedule(timerTaskReload, delayTimeMillis, reloadTimeMillis);
     }
 
     /**
