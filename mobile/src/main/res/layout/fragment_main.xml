@@ -123,8 +123,42 @@
                                     android:scrollHorizontally="false" />
 
                                 <Space
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp" />
+                                    android:layout_width="match_parent"
+                                    android:layout_height="12dp" />
+
+                                <LinearLayout
+                                    android:id="@+id/linearlayout_swipe_refresh_tutorial"
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:id="@+id/textview_swipe_refresh_information"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:paddingLeft="12dp"
+                                        android:paddingRight="12dp"
+                                        android:paddingTop="12dp"
+                                        android:text="@string/information"
+                                        android:textSize="16sp"
+                                        android:background="#ffffff" />
+
+                                    <TextView
+                                        android:id="@+id/textview_swipe_refresh_tutorial"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingRight="12dp"
+                                        android:paddingTop="12dp"
+                                        android:paddingBottom="12dp"
+                                        android:text="@string/swipe_refresh_tutorial"
+                                        android:textSize="16sp"
+                                        android:background="#ffffff" />
+                                </LinearLayout>
+
+                                <Space
+                                    android:layout_width="match_parent"
+                                    android:layout_height="12dp" />
 
                                 <TextView
                                     android:id="@+id/red_line_textview_inbound"
@@ -183,7 +217,7 @@
                                 </TableLayout>
 
                                 <Space
-                                    android:layout_width="10dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="10dp" />
 
                                 <TextView
@@ -294,7 +328,7 @@
                     </RelativeLayout>
 
                     <Space
-                        android:layout_width="20dp"
+                        android:layout_width="match_parent"
                         android:layout_height="20dp" />
 
                     <android.support.v4.widget.SwipeRefreshLayout
@@ -337,7 +371,7 @@
                                     android:scrollHorizontally="false"/>
 
                                 <Space
-                                    android:layout_width="20dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="20dp" />
 
                                 <TextView
@@ -397,7 +431,7 @@
                                 </TableLayout>
 
                                 <Space
-                                    android:layout_width="10dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="10dp" />
 
                                 <TextView

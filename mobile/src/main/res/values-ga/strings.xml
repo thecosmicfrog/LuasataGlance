@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">16</string>
-    <string name="version_name">0.20</string>
+    <string name="version_code">17</string>
+    <string name="version_name">0.21</string>
 
     <!--
         Activities
@@ -19,11 +19,12 @@
     <string name="message">Ag fanacht d\'stádas Luas&#8230;</string>
     <string name="message_title">Stádas</string>
     <string name="message_success">Gach seirbhís ag feidhmiú mar is gnáth</string>
-    <string name="message_error">
-        Fadhb ag fáil amanna ón gcóras Luas RTPI.\n\n
-        Déan sheiceáil ar d’nasc leis an idirlíon. Mura bhfuil aon fadhb,
-        is le córas RTPI Luas an cúis.
-    </string>
+    <string name="message_error">Fadhb ag fáil amanna ón gcóras Luas RTPI.\n\nDéan sheiceáil ar
+        d’nasc leis an idirlíon. Mura bhfuil aon fadhb, is le córas RTPI Luas an cúis.</string>
+    <string name="information">\u2139</string>
+    <string name="swipe_refresh_tutorial">Beidh amanna cothrom le dáta <b>gach 15 soicind</b>.\nIs
+        féidir leat freisin thabhairt cothrom le dáta de láimh ag tarraingt síos le do mhéar.
+        Bain triail as anois chun é a dhífhostú an teachtaireacht seo!</string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
     <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
@@ -42,24 +43,19 @@
     -->
     <string name="about_title_version">Leagan</string>
     <string name="about_title_description">Cur Síos</string>
-    <string name="about_description">
-        Aipp guthán agus Android Wear a léiríonn eolas fíor-ama don Luas,
-        córas iarnróid éadrom Bhaile Átha Cliath.
-    </string>
+    <string name="about_description">Aipp guthán agus Android Wear a léiríonn eolas fíor-ama don
+        Luas, córas iarnróid éadrom Bhaile Átha Cliath.</string>
     <string name="about_title_license">Ceadúnas</string>
     <string name="about_license">GNU General Public License (GPLv3)</string>
-    <string name="about_title_source_bugs_features">
-        Cód foinseach, fabht agus iarratais speisialta
-    </string>
+    <string name="about_title_source_bugs_features">Cód foinseach, fabht agus iarratais
+        speisialta</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
 
     <!--
         Favourites
     -->
-    <string name="favourites_none_selected">
-        Tosóidh muid!\n\nBrú an cnap Athrígh ar bharr an scáileáin chun cuir le do liosta
-        de stadanna Luas ina úsáidtear go minic.
-    </string>
+    <string name="favourites_none_selected">Tosóidh muid!\n\nBrú an cnap Athrígh ar bharr an
+        scáileáin chun cuir le do liosta de stadanna Luas ina úsáidtear go minic.</string>
 
     <!--
         Stop arrays

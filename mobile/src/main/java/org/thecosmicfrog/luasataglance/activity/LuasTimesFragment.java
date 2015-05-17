@@ -1,5 +1,6 @@
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -25,6 +27,8 @@ import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,6 +49,8 @@ public class LuasTimesFragment extends Fragment {
 
     private View rootView = null;
 
+    private final String FILE_HAS_RUN_ONCE = "has_run_once";
+
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
 
@@ -60,6 +66,7 @@ public class LuasTimesFragment extends Fragment {
     private SwipeRefreshLayout greenLineSwipeRefreshLayout;
     private TextView textViewMessageTitle;
     private TextView textViewMessage;
+    private LinearLayout linearLayoutSwipeRefreshTutorial;
     private TextView[] textViewInboundStopNames;
     private TextView[] textViewInboundStopTimes;
     private TextView[] textViewOutboundStopNames;
@@ -74,6 +81,9 @@ public class LuasTimesFragment extends Fragment {
 
         // Initialise user interface.
         initTabs();
+
+        // Display tutorial for SwipeRefreshLayout, if required.
+        displaySwipeRefreshTutorial();
 
         // If a Favourite stop brought us to this activity, load that stop's forecast.
         if (getActivity().getIntent().hasExtra("stopName")) {
@@ -142,12 +152,19 @@ public class LuasTimesFragment extends Fragment {
             }
         });
 
+        // Only display the SwipeRefreshLayout tutorial in the Red Line tab for simplicity.
+        linearLayoutSwipeRefreshTutorial
+                = (LinearLayout) rootView.findViewById(R.id.linearlayout_swipe_refresh_tutorial);
+
         redLineSwipeRefreshLayout =
                 (SwipeRefreshLayout) rootView.findViewById(R.id.red_line_swiperefreshlayout);
         redLineSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
+                        // Hide the SwipeRefreshTutorial, if it is visible.
+                        linearLayoutSwipeRefreshTutorial.setVisibility(View.GONE);
+
                         // Start by clearing the currently-displayed stop forecast.
                         clearStopForecast();
 
@@ -197,6 +214,47 @@ public class LuasTimesFragment extends Fragment {
                         loadStopForecast(greenLineSpinnerStop.getSelectedItem().toString());
                     }
                 });
+    }
+
+    /**
+     * Determine if this is the first time the app has been launched and, if so, display a brief
+     * tutorial on how to use the SwipeRefreshLayout to reload a stop forecast.
+     */
+    private void displaySwipeRefreshTutorial() {
+        /*
+         * Start by making sure the TextView isn't displayed. This should only display
+         * when a user has no favourites saved.
+         */
+        linearLayoutSwipeRefreshTutorial
+                = (LinearLayout) rootView.findViewById(R.id.linearlayout_swipe_refresh_tutorial);
+        linearLayoutSwipeRefreshTutorial.setVisibility(View.GONE);
+
+        try {
+            /*
+             * If the swipe_refresh_first_time file doesn't exist, this is likely the first time the
+             * user has launched the app. Handle the exception gracefully by displaying a TextView
+             * with instructions on how to use the SwipeRefreshLayout to reload the stop forecast.
+             */
+            File fileHasRunOnce = new File(FILE_HAS_RUN_ONCE);
+
+            if (!fileHasRunOnce.exists()) {
+                Log.i(LOG_TAG, "First time launching. Displaying SwipeRefreshLayout tutorial.");
+
+                linearLayoutSwipeRefreshTutorial
+                        = (LinearLayout) rootView.findViewById(R.id.linearlayout_swipe_refresh_tutorial);
+                linearLayoutSwipeRefreshTutorial.setVisibility(View.VISIBLE);
+
+                // Create a new blank file to signify the user has run app at least once.
+                FileOutputStream fos =
+                        getActivity().openFileOutput(
+                                FILE_HAS_RUN_ONCE,
+                                Context.MODE_PRIVATE
+                        );
+                fos.flush();
+            }
+        } catch (IOException ioe) {
+            Log.e(LOG_TAG, Log.getStackTraceString(ioe));
+        }
     }
 
     /**

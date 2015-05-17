@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">16</string>
-    <string name="version_name">0.20</string>
+    <string name="version_code">17</string>
+    <string name="version_name">0.21</string>
 
     <!--
         Activities
@@ -19,10 +19,13 @@
     <string name="message">Awaiting Luas status&#8230;</string>
     <string name="message_title">Status</string>
     <string name="message_success">operating normally</string>
-    <string name="message_error">
-        Error retrieving times from Luas RTPI system.\n\n
-        Please check your network connection. If there are no issues,
-        the Luas RTPI system may be down.</string>
+    <string name="message_error"> Error retrieving times from Luas RTPI system.\n\nPlease check
+        your network connection. If there are no issues, the Luas RTPI system may be down.
+    </string>
+    <string name="information">\u2139</string>
+    <string name="swipe_refresh_tutorial">Times will update <b>every 15 seconds</b>.\nYou can also
+        manually update by swiping down with your finger. Try it now to dismiss this message!
+    </string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
@@ -41,9 +44,8 @@
     -->
     <string name="about_title_version">Version</string>
     <string name="about_title_description">Description</string>
-    <string name="about_description">
-        Android Wear and mobile app providing real-time tram stop information for Dublin\'s Luas
-        light rail service.</string>
+    <string name="about_description">Android Wear and mobile app providing real-time tram stop
+        information for Dublin\'s Luas light rail service.</string>
     <string name="about_title_license">License</string>
     <string name="about_license">GNU General Public License (GPLv3)</string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
@@ -52,9 +54,8 @@
     <!--
         Favourites
     -->
-    <string name="favourites_none_selected">
-        Let\'s get started!\n\nTap the Edit button in the top-right corner of the screen
-        to start adding your most frequently-used Luas stops.
+    <string name="favourites_none_selected">Let\'s get started!\n\nTap the Edit button in the
+        top-right corner of the screen to start adding your most frequently-used Luas stops.
     </string>
 
     <!--
