@@ -1,6 +1,5 @@
 package org.thecosmicfrog.luasataglance.activity;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import org.thecosmicfrog.luasataglance.object.Tram;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,8 +46,6 @@ public class LuasTimesFragment extends Fragment {
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
 
     private View rootView = null;
-
-    private final String FILE_HAS_RUN_ONCE = "has_run_once";
 
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
@@ -82,9 +78,6 @@ public class LuasTimesFragment extends Fragment {
         // Initialise user interface.
         initTabs();
 
-        // Display tutorial for SwipeRefreshLayout, if required.
-        displaySwipeRefreshTutorial();
-
         // If a Favourite stop brought us to this activity, load that stop's forecast.
         if (getActivity().getIntent().hasExtra("stopName")) {
             setTabAndSpinner();
@@ -93,10 +86,18 @@ public class LuasTimesFragment extends Fragment {
         // Keep track of the currently-focused tab.
         currentTab = tabHost.getCurrentTabTag();
 
-        // Reload stop forecast every 15 seconds.
-        autoReloadStopForecast(15000, 15000);
+        // Reload stop forecast every 10 seconds.
+        autoReloadStopForecast(10000, 10000);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Display tutorial for SwipeRefreshLayout, if required.
+        displaySwipeRefreshTutorial();
     }
 
     @Override
@@ -230,12 +231,14 @@ public class LuasTimesFragment extends Fragment {
         linearLayoutSwipeRefreshTutorial.setVisibility(View.GONE);
 
         try {
+            final String FILE_HAS_RUN_ONCE = "has_run_once";
+
             /*
              * If the swipe_refresh_first_time file doesn't exist, this is likely the first time the
              * user has launched the app. Handle the exception gracefully by displaying a TextView
              * with instructions on how to use the SwipeRefreshLayout to reload the stop forecast.
              */
-            File fileHasRunOnce = new File(FILE_HAS_RUN_ONCE);
+            File fileHasRunOnce = new File(getActivity().getFilesDir().getPath() + "/" + FILE_HAS_RUN_ONCE);
 
             if (!fileHasRunOnce.exists()) {
                 Log.i(LOG_TAG, "First time launching. Displaying SwipeRefreshLayout tutorial.");
@@ -245,12 +248,10 @@ public class LuasTimesFragment extends Fragment {
                 linearLayoutSwipeRefreshTutorial.setVisibility(View.VISIBLE);
 
                 // Create a new blank file to signify the user has run app at least once.
-                FileOutputStream fos =
-                        getActivity().openFileOutput(
-                                FILE_HAS_RUN_ONCE,
-                                Context.MODE_PRIVATE
-                        );
-                fos.flush();
+                if (fileHasRunOnce.createNewFile())
+                    Log.i(LOG_TAG, "File created: " + FILE_HAS_RUN_ONCE);
+                else
+                    Log.e(LOG_TAG, "Failed to write file: " + FILE_HAS_RUN_ONCE);
             }
         } catch (IOException ioe) {
             Log.e(LOG_TAG, Log.getStackTraceString(ioe));

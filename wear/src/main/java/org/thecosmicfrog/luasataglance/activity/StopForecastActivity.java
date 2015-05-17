@@ -76,7 +76,8 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                     textViewStopName = (TextView) findViewById(R.id.textview_stop_name);
                     textViewStopName.setText(getIntent().getStringExtra("stopName"));
 
-                    autoReloadStopForecast(15000, 15000);
+                    // Reload stop forecast every 3 seconds.
+                    autoReloadStopForecast(3000, 3000);
                 }
             }
         });
@@ -272,42 +273,50 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                         }
 
                         if (sf.getInboundTrams() != null) {
-                            for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                                if (i < 2) {
-                                    textViewInboundStopNames[i].setText(
-                                            sf.getInboundTrams().get(i).getDestination()
-                                    );
+                            if (sf.getInboundTrams().size() == 0) {
+                                textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
+                            } else {
+                                for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                                    if (i < 2) {
+                                        textViewInboundStopNames[i].setText(
+                                                sf.getInboundTrams().get(i).getDestination()
+                                        );
 
-                                    if (sf.getInboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams().get(i).getDueMinutes()
-                                        );
-                                    } else {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams().get(i).getDueMinutes()  + "m"
-                                        );
+                                        if (sf.getInboundTrams()
+                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                            textViewInboundStopTimes[i].setText(
+                                                    sf.getInboundTrams().get(i).getDueMinutes()
+                                            );
+                                        } else {
+                                            textViewInboundStopTimes[i].setText(
+                                                    sf.getInboundTrams().get(i).getDueMinutes()  + "m"
+                                            );
+                                        }
                                     }
                                 }
                             }
                         }
 
                         if (sf.getOutboundTrams() != null) {
-                            for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                                if (i < 2) {
-                                    textViewOutboundStopNames[i].setText(
-                                            sf.getOutboundTrams().get(i).getDestination()
-                                    );
+                            if (sf.getOutboundTrams().size() == 0) {
+                                textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
+                            } else {
+                                for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                                    if (i < 2) {
+                                        textViewOutboundStopNames[i].setText(
+                                                sf.getOutboundTrams().get(i).getDestination()
+                                        );
 
-                                    if (sf.getOutboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams().get(i).getDueMinutes()
-                                        );
-                                    } else {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams().get(i).getDueMinutes()  + "m"
-                                        );
+                                        if (sf.getOutboundTrams()
+                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    sf.getOutboundTrams().get(i).getDueMinutes()
+                                            );
+                                        } else {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    sf.getOutboundTrams().get(i).getDueMinutes()  + "m"
+                                            );
+                                        }
                                     }
                                 }
                             }
