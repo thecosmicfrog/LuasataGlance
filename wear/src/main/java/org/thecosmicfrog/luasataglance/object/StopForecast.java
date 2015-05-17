@@ -1,6 +1,5 @@
 /**
  * @author Aaron Hastings
- * @version 0.21
  *
  * Copyright 2015 Aaron Hastings
  *

@@ -1,6 +1,5 @@
 /**
  * @author Aaron Hastings
- * @version 0.21
  *
  * Copyright 2015 Aaron Hastings
  *
@@ -97,12 +96,26 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
                     textViewStopName = (TextView) findViewById(R.id.textview_stop_name);
                     textViewStopName.setText(getIntent().getStringExtra("stopName"));
-
-                    // Reload stop forecast every 3 seconds.
-                    autoReloadStopForecast(3000, 3000);
                 }
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Stop the auto-reload TimerTask so as to prevent multiple TimerTasks running each time
+        // the Activity is started.
+        timerTaskReload.cancel();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Reload stop forecast every 3 seconds.
+        autoReloadStopForecast(3000, 3000);
     }
 
     @Override

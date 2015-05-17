@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">17</string>
-    <string name="version_name">0.21</string>
+    <string name="version_code">18</string>
+    <string name="version_name">0.22</string>
 
     <!--
         Activities
@@ -23,7 +23,7 @@
         your network connection. If there are no issues, the Luas RTPI system may be down.
     </string>
     <string name="information">\u2139</string>
-    <string name="swipe_refresh_tutorial">Times will update <b>every 15 seconds</b>.\nYou can also
+    <string name="swipe_refresh_tutorial">Times will update <b>every 10 seconds</b>.\nYou can also
         manually update by swiping down with your finger. Try it now to dismiss this message!
     </string>
     <string name="inbound">Inbound</string>

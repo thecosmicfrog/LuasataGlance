@@ -1,6 +1,5 @@
 /**
  * @author Aaron Hastings
- * @version 0.21
  *
  * Copyright 2015 Aaron Hastings
  *
@@ -108,10 +107,15 @@ public class LuasTimesFragment extends Fragment {
         // Keep track of the currently-focused tab.
         currentTab = tabHost.getCurrentTabTag();
 
-        // Reload stop forecast every 10 seconds.
-        autoReloadStopForecast(10000, 10000);
-
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Stop the auto-reload TimerTask.
+        timerTaskReload.cancel();
     }
 
     @Override
@@ -120,6 +124,9 @@ public class LuasTimesFragment extends Fragment {
 
         // Display tutorial for SwipeRefreshLayout, if required.
         displaySwipeRefreshTutorial();
+
+        // Reload stop forecast every 10 seconds.
+        autoReloadStopForecast(10000, 10000);
     }
 
     @Override
