@@ -29,6 +29,7 @@
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
+    <string name="tap_to_load_times"><b>Tap to load times</b></string>
 
     <!--
         Actions
@@ -120,4 +121,8 @@
         <item>Cherrywood</item>
         <item>Brides Glen</item>
     </string-array>
+
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
 </resources>
