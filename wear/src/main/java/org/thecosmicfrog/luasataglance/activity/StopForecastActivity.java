@@ -114,8 +114,15 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     protected void onResume() {
         super.onResume();
 
-        // Reload stop forecast every 3 seconds.
-        autoReloadStopForecast(3000, 3000);
+        /*
+         * Reload stop forecast every 3 seconds.
+         * Induce 3 second delay if app is launching from cold start (timerTaskReload == null) in
+         * order to prevent two HTTP requests in rapid succession.
+         */
+        if (timerTaskReload == null)
+            autoReloadStopForecast(3000, 3000);
+        else
+            autoReloadStopForecast(0, 3000);
     }
 
     @Override

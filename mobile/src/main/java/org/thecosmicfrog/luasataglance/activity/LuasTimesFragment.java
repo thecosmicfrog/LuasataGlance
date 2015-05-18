@@ -125,8 +125,15 @@ public class LuasTimesFragment extends Fragment {
         // Display tutorial for SwipeRefreshLayout, if required.
         displaySwipeRefreshTutorial();
 
-        // Reload stop forecast every 10 seconds.
-        autoReloadStopForecast(10000, 10000);
+        /*
+         * Reload stop forecast every 10 seconds.
+         * Induce 10 second delay if app is launching from cold start (timerTaskReload == null) in
+         * order to prevent two HTTP requests in rapid succession.
+         */
+        if (timerTaskReload == null)
+            autoReloadStopForecast(10000, 10000);
+        else
+            autoReloadStopForecast(0, 10000);
     }
 
     @Override

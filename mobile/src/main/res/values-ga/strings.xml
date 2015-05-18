@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">18</string>
-    <string name="version_name">0.22</string>
+    <string name="version_code">19</string>
+    <string name="version_name">0.23</string>
 
     <!--
         Activities
@@ -22,9 +22,9 @@
     <string name="message_error">Fadhb ag fáil amanna ón gcóras Luas RTPI.\n\nDéan sheiceáil ar
         d’nasc leis an idirlíon. Mura bhfuil aon fadhb, is le córas RTPI Luas an cúis.</string>
     <string name="information">\u2139</string>
-    <string name="swipe_refresh_tutorial">Beidh amanna cothrom le dáta <b>gach 10 soicind</b>.\nIs
-        féidir leat freisin thabhairt cothrom le dáta de láimh ag tarraingt síos le do mhéar.
-        Bain triail as anois chun é a dhífhostú an teachtaireacht seo!</string>
+    <string name="swipe_refresh_tutorial">Déanfar na hamanna a uasdátú <b>gach 10 soicind</b>.\nIs
+        féidir leat freisin uasdátú trí tarraingt síos le do mhear. Déan é anois le fáil ré leis an
+        teachtaireacht seo!</string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
     <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
