@@ -1,3 +1,24 @@
+/**
+ * @author Aaron Hastings
+ *
+ * Copyright 2015 Aaron Hastings
+ *
+ * This file is part of Luas at a Glance.
+ *
+ * Luas at a Glance is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Luas at a Glance is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.thecosmicfrog.luasataglance.widget;
 
 import android.app.PendingIntent;
@@ -8,8 +29,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.util.Log;
-import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 
 import org.json.JSONArray;
@@ -20,19 +41,23 @@ import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 
 /**
  * Implementation of App Widget functionality.
@@ -42,51 +67,62 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     private final static String LOG_TAG = StopForecastWidget.class.getSimpleName();
 
-    static final int PROGRESSBAR = R.id.progressbar;
-    static final int TEXTVIEW_STOP_NAME = R.id.textview_stop_name;
-    static final int TEXTVIEW_INBOUND_STOP1_NAME = R.id.textview_inbound_stop1_name;
-    static final int TEXTVIEW_INBOUND_STOP1_TIME = R.id.textview_inbound_stop1_time;
-    static final int TEXTVIEW_INBOUND_STOP2_NAME = R.id.textview_inbound_stop2_name;
-    static final int TEXTVIEW_INBOUND_STOP2_TIME = R.id.textview_inbound_stop2_time;
-    static final int TEXTVIEW_OUTBOUND_STOP1_NAME = R.id.textview_outbound_stop1_name;
-    static final int TEXTVIEW_OUTBOUND_STOP1_TIME = R.id.textview_outbound_stop1_time;
-    static final int TEXTVIEW_OUTBOUND_STOP2_NAME = R.id.textview_outbound_stop2_name;
-    static final int TEXTVIEW_OUTBOUND_STOP2_TIME = R.id.textview_outbound_stop2_time;
-
-    private final static String WIDGET_CLICK_STOP_NAME = "WidgetClickStopName";
-    private final static String WIDGET_CLICK_STOP_FORECAST = "WidgetClickStopForecast";
+    private static final String FILE_WIDGET_SELECTED_STOPS = "widget_selected_stops";
+    private static final String MESSAGE_SUCCESS_ENGLISH = "operating normally";
+    private static final int LOAD_LIMIT_MILLIS = 4000;
+    private static final int STOP_FORECAST_TIMEOUT_MILLIS = 30000;
 
     private static RemoteViews views;
     private static int currAppWidgetId;
     private static AppWidgetManager currAppWidgetManager;
     private static Resources res;
-    private static String selectedStopName;
 
-    static int[] textViewInboundStopNames = {
+    private static TimerTask timerTaskStopForecastTimeout;
+
+    private static long stopForecastLastClickTime = 0;
+
+    private static List<CharSequence> listSelectedStops;
+    private static int indexNextStopToLoad;
+    private static String selectedStopName;
+    private static EnglishGaeilgeMap mapEnglishGaeilge;
+
+    private static final int PROGRESSBAR = R.id.progressbar;
+    private static final int TEXTVIEW_STOP_NAME = R.id.textview_stop_name;
+    private static final int TEXTVIEW_INBOUND_STOP1_NAME = R.id.textview_inbound_stop1_name;
+    private static final int TEXTVIEW_INBOUND_STOP1_TIME = R.id.textview_inbound_stop1_time;
+    private static final int TEXTVIEW_INBOUND_STOP2_NAME = R.id.textview_inbound_stop2_name;
+    private static final int TEXTVIEW_INBOUND_STOP2_TIME = R.id.textview_inbound_stop2_time;
+    private static final int TEXTVIEW_OUTBOUND_STOP1_NAME = R.id.textview_outbound_stop1_name;
+    private static final int TEXTVIEW_OUTBOUND_STOP1_TIME = R.id.textview_outbound_stop1_time;
+    private static final int TEXTVIEW_OUTBOUND_STOP2_NAME = R.id.textview_outbound_stop2_name;
+    private static final int TEXTVIEW_OUTBOUND_STOP2_TIME = R.id.textview_outbound_stop2_time;
+
+    private final static String WIDGET_CLICK_STOP_NAME = "WidgetClickStopName";
+    private final static String WIDGET_CLICK_STOP_FORECAST = "WidgetClickStopForecast";
+
+    private static int[] textViewInboundStopNames = {
             TEXTVIEW_INBOUND_STOP1_NAME,
             TEXTVIEW_INBOUND_STOP2_NAME
     };
 
-    static int[] textViewInboundStopTimes = {
+    private static int[] textViewInboundStopTimes = {
             TEXTVIEW_INBOUND_STOP1_TIME,
             TEXTVIEW_INBOUND_STOP2_TIME
     };
 
-    static int[] textViewOutboundStopNames = {
+    private static int[] textViewOutboundStopNames = {
             TEXTVIEW_OUTBOUND_STOP1_NAME,
             TEXTVIEW_OUTBOUND_STOP2_NAME
     };
 
-    static int[] textViewOutboundStopTimes = {
+    private static int[] textViewOutboundStopTimes = {
             TEXTVIEW_OUTBOUND_STOP1_TIME,
             TEXTVIEW_OUTBOUND_STOP2_TIME
     };
 
-    private static TimerTask timerTaskStopForecastTimeout;
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
+        // There may be multiple widgets active, so update all of them.
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
             updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
@@ -104,25 +140,64 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
+        Log.i(LOG_TAG, "Widget first created.");
     }
 
     @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
+        Log.i(LOG_TAG, "Widget disabled.");
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
+        /*
+         * If the user taps the stop name, switch to the next stop in their list of selected stops
+         * for the widget.
+         */
         if (intent.getAction().equals(WIDGET_CLICK_STOP_NAME)) {
-            views.setTextViewText(R.id.textview_inbound_stop1_name, "Stop name clicked.");
-            updateAppWidget();
+            /*
+             * Start by clearing the currently-displayed stop forecast.
+             */
+            clearStopForecast();
+
+            /*
+             * Reset the stop forecast timeout.
+             */
+            stopForecastTimeout(0, STOP_FORECAST_TIMEOUT_MILLIS);
+
+            /*
+             * Move on to the next index in the list. If we're on the last index, reset back to the
+             * first index (0).
+             */
+            if (indexNextStopToLoad != listSelectedStops.size() - 1)
+                indexNextStopToLoad++;
+            else
+                indexNextStopToLoad = 0;
+
+            loadStopForecast(listSelectedStops.get(indexNextStopToLoad).toString());
         }
 
+        /*
+         * If the user taps the stop forecast display, load the forecast for that stop, setting up
+         * a timeout as well.
+         */
         if (intent.getAction().equals(WIDGET_CLICK_STOP_FORECAST)) {
-            stopForecastTimeout(0, 5000);
+            /*
+             * Induce an artificial limit on number of allowed sequential clicks in order to prevent
+             * server hammering.
+             */
+            if (SystemClock.elapsedRealtime() - stopForecastLastClickTime < LOAD_LIMIT_MILLIS)
+                return;
+
+            stopForecastLastClickTime = SystemClock.elapsedRealtime();
+
+            /*
+             * Start by resetting the stop forecast timeout.
+             */
+            stopForecastTimeout(0, STOP_FORECAST_TIMEOUT_MILLIS);
+
             loadStopForecast(selectedStopName);
         }
     }
@@ -134,7 +209,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
         res = context.getResources();
 
-        // Construct the RemoteViews object
+        // Construct the RemoteViews object.
         views = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
 
         // Set up Intents to register taps on the widget.
@@ -156,12 +231,38 @@ public class StopForecastWidget extends AppWidgetProvider {
                 R.id.linearlayout_stop_forecast, pendingIntentWidgetClickStopForecast
         );
 
-        // Set the selected stop as the stop chosen from the widget configuration Activity.
-        selectedStopName = StopForecastWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
-        views.setTextViewText(R.id.textview_stop_name, selectedStopName);
+        try {
+            /*
+             * Open the "widget_selected_stops" file and read in the List object of selected stops
+             * contained within.
+             */
+            InputStream fileInput = context.openFileInput(FILE_WIDGET_SELECTED_STOPS);
+            InputStream buffer = new BufferedInputStream(fileInput);
+            ObjectInput objectInput = new ObjectInputStream(buffer);
+
+            listSelectedStops = (List<CharSequence>) objectInput.readObject();
+
+            selectedStopName = listSelectedStops.get(0).toString();
+
+            loadStopForecast(selectedStopName);
+        } catch (ClassNotFoundException | FileNotFoundException fnfe) {
+            /*
+             * If the favourites file doesn't exist, the user has probably not set up this
+             * feature yet. Handle the exception gracefully by displaying a TextView with
+             * instructions on how to add favourites.
+             */
+            Log.i(LOG_TAG, "Widget selected stops not yet set up.");
+        } catch (IOException e) {
+            /*
+             * Something has gone wrong; the file may have been corrupted. Delete the file.
+             */
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+            Log.i(LOG_TAG, "Deleting widget selected stops file.");
+            context.deleteFile(FILE_WIDGET_SELECTED_STOPS);
+        }
 
         // Set up 30-second timeout for stop forecast.
-        stopForecastTimeout(0, 5000);
+        stopForecastTimeout(0, STOP_FORECAST_TIMEOUT_MILLIS);
 
         if (selectedStopName != null)
             loadStopForecast(selectedStopName);
@@ -201,13 +302,29 @@ public class StopForecastWidget extends AppWidgetProvider {
         new Timer().schedule(timerTaskStopForecastTimeout, delayTimeMillis, timeoutTimeMillis);
     }
 
+    /**
+     * Load the stop forecast for a particular stop.
+     * @param stopName The stop for which to load a stop forecast.
+     */
     static void loadStopForecast(String stopName) {
+        // Instantiate an object of EnglishGaeilgeMap.
+        mapEnglishGaeilge = new EnglishGaeilgeMap();
+
+        // Start by clearing the currently-displayed stop forecast.
+        clearStopForecast();
+
+        // Set the stop name in the widget.
+        views.setTextViewText(TEXTVIEW_STOP_NAME, stopName);
+
+        // Keep track of the selected stop.
+        selectedStopName = stopName;
+
         new FetchLuasTimes().execute(stopName);
     }
 
     /**
      * Make progress bar appear or disappear.
-     * @param loading Whether or not progress circle should spin.
+     * @param loading Whether or not progress bar should animate.
      */
     static void setIsLoading(boolean loading) {
         views.setProgressBar(PROGRESSBAR, 0, 0, loading);
@@ -216,7 +333,7 @@ public class StopForecastWidget extends AppWidgetProvider {
     }
 
     /**
-     * Clear the stop forecast displayed in the current tab.
+     * Clear the stop forecast currently displayed in the widget.
      */
     static void clearStopForecast() {
         /*
@@ -229,6 +346,8 @@ public class StopForecastWidget extends AppWidgetProvider {
             views.setTextViewText(textViewOutboundStopNames[i], "");
             views.setTextViewText(textViewOutboundStopTimes[i], "");
         }
+
+        updateAppWidget();
     }
 
     static class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {
@@ -243,7 +362,6 @@ public class StopForecastWidget extends AppWidgetProvider {
 
         public FetchLuasTimes() {
             localeDefault = Locale.getDefault().toString();
-            Log.i(LOG_TAG, "Default locale: " + localeDefault);
 
             /*
              * If the user's default locale is set to Irish (Gaeilge), build a Map
@@ -379,11 +497,6 @@ public class StopForecastWidget extends AppWidgetProvider {
 
         @Override
         protected StopForecast doInBackground(String... params) {
-            /*
-             * Start by clearing the currently-displayed stop forecast.
-             */
-//            clearStopForecast();
-
             if (params.length == 0)
                 return null;
 
@@ -433,8 +546,6 @@ public class StopForecastWidget extends AppWidgetProvider {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             } finally {
-//                setIsLoading(false);
-
                 if (httpUrlConnection != null)
                     httpUrlConnection.disconnect();
 
@@ -467,24 +578,53 @@ public class StopForecastWidget extends AppWidgetProvider {
         }
 
         private void updateStopForecast(StopForecast sf) {
-            EnglishGaeilgeMap englishGaeilgeMap = new EnglishGaeilgeMap();
+            mapEnglishGaeilge = new EnglishGaeilgeMap();
 
             // If a valid stop forecast exists...
             if (sf != null) {
+                if (sf.getMessage() != null) {
+                    /*
+                     * Change the color of the stop name TextView depending on the status.
+                     * Status will always come from the server in English.
+                     */
+                    if (sf.getMessage().contains(MESSAGE_SUCCESS_ENGLISH)) {
+                        views.setInt(R.id.textview_stop_name,
+                                "setBackgroundResource",
+                                R.color.message_success
+                        );
+                    }
+                    else {
+                        Log.e(LOG_TAG, "Server has returned a service disruption or error.");
+
+                        views.setInt(R.id.textview_stop_name,
+                                "setBackgroundResource",
+                                R.color.message_error
+                        );
+                    }
+
+                    /*
+                     * To make best use of the widget's real estate, re-use one of the inbound stop
+                     * TextViews for the status message.
+                     */
+                    views.setTextViewText(R.id.textview_inbound_stop1_name, sf.getMessage());
+                }
+
                 /*
-                 * Pull in all trams from the StopForecast, but only display up to three inbound
+                 * Pull in all trams from the StopForecast, but only display up to two inbound
                  * and outbound trams.
                  */
                 if (sf.getInboundTrams() != null) {
                     if (sf.getInboundTrams().size() == 0) {
-                        views.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME, "No trams forecast");
+                        views.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME,
+                                res.getString(R.string.no_trams_forecast)
+                        );
                     } else {
                         String inboundTram;
 
                         for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                             if (i < 2) {
                                 if (localeDefault.startsWith(GAEILGE)) {
-                                    inboundTram = englishGaeilgeMap.get(sf.getInboundTrams().get(i).getDestination());
+                                    inboundTram = mapEnglishGaeilge.get(sf.getInboundTrams().get(i).getDestination());
                                 } else {
                                     inboundTram = sf.getInboundTrams().get(i).getDestination();
                                 }
@@ -496,7 +636,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                                     String dueMinutes;
 
                                     if (localeDefault.startsWith(GAEILGE)) {
-                                        dueMinutes = englishGaeilgeMap.get("DUE");
+                                        dueMinutes = mapEnglishGaeilge.get("DUE");
                                     } else {
                                         dueMinutes = "DUE";
                                     }
@@ -523,14 +663,16 @@ public class StopForecastWidget extends AppWidgetProvider {
 
                 if (sf.getOutboundTrams() != null) {
                     if (sf.getOutboundTrams().size() == 0) {
-                        views.setTextViewText(TEXTVIEW_OUTBOUND_STOP1_NAME, "No trams forecast");
+                        views.setTextViewText(TEXTVIEW_OUTBOUND_STOP1_NAME,
+                                res.getString(R.string.no_trams_forecast)
+                        );
                     } else {
                         String outboundTram;
 
                         for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                             if (i < 2) {
                                 if (localeDefault.startsWith(GAEILGE)) {
-                                    outboundTram = englishGaeilgeMap.get(sf.getOutboundTrams().get(i).getDestination());
+                                    outboundTram = mapEnglishGaeilge.get(sf.getOutboundTrams().get(i).getDestination());
                                 } else {
                                     outboundTram = sf.getOutboundTrams().get(i).getDestination();
                                 }
@@ -542,7 +684,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                                     String dueMinutes;
 
                                     if (localeDefault.startsWith(GAEILGE)) {
-                                        dueMinutes = englishGaeilgeMap.get("DUE");
+                                        dueMinutes = mapEnglishGaeilge.get("DUE");
                                     } else {
                                         dueMinutes = "DUE";
                                     }
@@ -567,20 +709,18 @@ public class StopForecastWidget extends AppWidgetProvider {
                     }
                 }
             } else {
-                Log.v(LOG_TAG, "Else");
+                Log.e(LOG_TAG, "Error in stop forecast (equals null).");
+
                 /*
                  * If no stop forecast can be retrieved, set a generic error message and
                  * change the color of the message title box red.
                  */
-//                textViewInboundStopNames =
-//                        (TextView) rootView.findViewById(
-//                                R.id.red_line_textview_message_title
-//                        );
-//                textViewInboundStopNames.setBackgroundResource(R.color.message_error);
-//
-//                textViewMessage =
-//                        (TextView) rootView.findViewById(R.id.red_line_textview_message);
-//                textViewMessage.setText(R.string.message_error);
+                views.setInt(TEXTVIEW_STOP_NAME,
+                        "setBackgroundResource",
+                        R.color.message_error
+                );
+
+                views.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME, res.getString(R.string.message_error));
             }
         }
 
@@ -671,5 +811,3 @@ public class StopForecastWidget extends AppWidgetProvider {
         }
     }
 }
-
-
