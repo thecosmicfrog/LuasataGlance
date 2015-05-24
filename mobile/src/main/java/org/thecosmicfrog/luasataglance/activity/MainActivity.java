@@ -66,6 +66,13 @@ public class MainActivity extends ActionBarActivity {
             );
         }
 
+        if (id == R.id.action_news) {
+            startActivity(new Intent(
+                            getApplicationContext(),
+                            NewsActivity.class)
+            );
+        }
+
         if (id == R.id.action_about) {
             View dialogAbout = getLayoutInflater().inflate(R.layout.dialog_about, null);
 

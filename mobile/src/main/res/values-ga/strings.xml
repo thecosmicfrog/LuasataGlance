@@ -4,14 +4,15 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">21</string>
-    <string name="version_name">0.25</string>
+    <string name="version_code">22</string>
+    <string name="version_name">0.26</string>
 
     <!--
         Activities
     -->
     <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
+    <string name="title_activity_news">Nuacht Luas</string>
 
     <!--
         Main UI
@@ -37,6 +38,7 @@
     <string name="action_favourites">Ceanáin</string>
     <string name="action_favourites_edit">Athraigh</string>
     <string name="action_favourites_save">Sábháil</string>
+    <string name="action_news">Nuacht</string>
     <string name="action_reload">Athnuaigh</string>
 
     <!--

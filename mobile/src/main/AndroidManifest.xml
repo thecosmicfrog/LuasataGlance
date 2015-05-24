@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.thecosmicfrog.luasataglance"
     android:versionCode="@string/version_code"
-    android:versionName="@string/version_name">
+    android:versionName="@string/version_name" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,14 +10,14 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,8 +25,7 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".service.WearMessageListenerService">
+        <service android:name=".service.WearMessageListenerService" >
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
@@ -35,7 +34,7 @@
         <activity
             android:name=".activity.FavouritesActivity"
             android:label="@string/title_activity_favourites"
-            android:parentActivityName=".activity.MainActivity">
+            android:parentActivityName=".activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
@@ -43,15 +42,13 @@
         <activity
             android:name=".activity.FavouritesSelectActivity"
             android:label="@string/title_activity_favourites_select"
-            android:parentActivityName=".activity.FavouritesActivity">
+            android:parentActivityName=".activity.FavouritesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.FavouritesActivity" />
         </activity>
 
-        <receiver
-            android:name=".widget.StopForecastWidget">
-
+        <receiver android:name=".widget.StopForecastWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -61,12 +58,20 @@
                 android:resource="@xml/stop_forecast_widget_info" />
         </receiver>
 
-        <activity
-            android:name=".widget.StopForecastWidgetConfigureActivity">
-
+        <activity android:name=".widget.StopForecastWidgetConfigureActivity" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name=".activity.NewsActivity"
+            android:label="@string/title_activity_news"
+            android:parentActivityName=".activity.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.thecosmicfrog.luasataglance.activity.MainActivity" />
+        </activity>
     </application>
+
 </manifest>
