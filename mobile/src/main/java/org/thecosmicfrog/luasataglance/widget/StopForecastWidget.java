@@ -158,11 +158,6 @@ public class StopForecastWidget extends AppWidgetProvider {
          */
         if (intent.getAction().equals(WIDGET_CLICK_STOP_NAME)) {
             /*
-             * Start by clearing the currently-displayed stop forecast.
-             */
-            clearStopForecast();
-
-            /*
              * Reset the stop forecast timeout.
              */
             stopForecastTimeout(0, STOP_FORECAST_TIMEOUT_MILLIS);
