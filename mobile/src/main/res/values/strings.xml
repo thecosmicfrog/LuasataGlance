@@ -4,14 +4,15 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">21</string>
-    <string name="version_name">0.25</string>
+    <string name="version_code">22</string>
+    <string name="version_name">0.26</string>
 
     <!--
         Activities
     -->
     <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
+    <string name="title_activity_news">Luas News</string>
 
     <!--
         Main UI
@@ -38,6 +39,7 @@
     <string name="action_favourites">Favourites</string>
     <string name="action_favourites_edit">Edit</string>
     <string name="action_favourites_save">Save</string>
+    <string name="action_news">News</string>
     <string name="action_reload">Reload</string>
 
     <!--
