@@ -24,6 +24,7 @@ package org.thecosmicfrog.luasataglance.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -52,6 +53,7 @@ import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +75,7 @@ public class StopForecastWidget extends AppWidgetProvider {
     private static final int STOP_FORECAST_TIMEOUT_MILLIS = 30000;
 
     private static RemoteViews views;
+//    private static Context currContext;
     private static int currAppWidgetId;
     private static AppWidgetManager currAppWidgetManager;
     private static Resources res;
@@ -122,6 +125,8 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        currAppWidgetManager = appWidgetManager;
+
         // There may be multiple widgets active, so update all of them.
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
@@ -141,6 +146,9 @@ public class StopForecastWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         Log.i(LOG_TAG, "Widget first created.");
+
+        // Construct the RemoteViews object.
+        views = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
     }
 
     @Override
@@ -152,6 +160,9 @@ public class StopForecastWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
+        // Construct the RemoteViews object.
+        views = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
+
         /*
          * If the user taps the stop name, switch to the next stop in their list of selected stops
          * for the widget.
@@ -160,7 +171,7 @@ public class StopForecastWidget extends AppWidgetProvider {
             /*
              * Reset the stop forecast timeout.
              */
-            stopForecastTimeout(0, STOP_FORECAST_TIMEOUT_MILLIS);
+            stopForecastTimeout(context, 0, STOP_FORECAST_TIMEOUT_MILLIS);
 
             /*
              * Move on to the next index in the list. If we're on the last index, reset back to the
@@ -171,7 +182,7 @@ public class StopForecastWidget extends AppWidgetProvider {
             else
                 indexNextStopToLoad = 0;
 
-            loadStopForecast(listSelectedStops.get(indexNextStopToLoad).toString());
+            loadStopForecast(context, listSelectedStops.get(indexNextStopToLoad).toString());
         }
 
         /*
@@ -191,9 +202,9 @@ public class StopForecastWidget extends AppWidgetProvider {
             /*
              * Start by resetting the stop forecast timeout.
              */
-            stopForecastTimeout(0, STOP_FORECAST_TIMEOUT_MILLIS);
+            stopForecastTimeout(context, 0, STOP_FORECAST_TIMEOUT_MILLIS);
 
-            loadStopForecast(selectedStopName);
+            loadStopForecast(context, selectedStopName);
         }
     }
 
@@ -239,7 +250,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
             selectedStopName = listSelectedStops.get(0).toString();
 
-            loadStopForecast(selectedStopName);
+            loadStopForecast(context, selectedStopName);
         } catch (ClassNotFoundException | FileNotFoundException fnfe) {
             /*
              * If the favourites file doesn't exist, the user has probably not set up this
@@ -257,18 +268,31 @@ public class StopForecastWidget extends AppWidgetProvider {
         }
 
         // Set up 30-second timeout for stop forecast.
-        stopForecastTimeout(0, STOP_FORECAST_TIMEOUT_MILLIS);
+        stopForecastTimeout(context, 0, STOP_FORECAST_TIMEOUT_MILLIS);
 
         if (selectedStopName != null)
-            loadStopForecast(selectedStopName);
+            loadStopForecast(context, selectedStopName);
 
         // Instruct the widget manager to update the widget.
-        updateAppWidget();
+//        updateAppWidget();
+        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
-    static void updateAppWidget() {
-        currAppWidgetManager.updateAppWidget(currAppWidgetId, views);
+    static void updateAppWidget(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        ComponentName thisWidget = new ComponentName(context, StopForecastWidget.class);
+        Log.v(LOG_TAG, "updateAppWidget 1");
+
+        appWidgetManager.updateAppWidget(thisWidget, views);
+        Log.v(LOG_TAG, "updateAppWidget 2");
     }
+
+//    static void updateAppWidget() {
+//        if (currAppWidgetManager == null) {
+//            Log.v(LOG_TAG, "NULL");
+//        }
+//        currAppWidgetManager.updateAppWidget(currAppWidgetId, views);
+//    }
 
     /**
      * Set up timeout for stop forecast, which clears the stop forecast and displays a holding
@@ -280,17 +304,19 @@ public class StopForecastWidget extends AppWidgetProvider {
      * @param timeoutTimeMillis The period (ms) after which the stop forecast should be considered
      *                          expired and cleared.
      */
-    static void stopForecastTimeout(int delayTimeMillis, int timeoutTimeMillis) {
+    static void stopForecastTimeout(final Context context, int delayTimeMillis, int timeoutTimeMillis) {
         if (timerTaskStopForecastTimeout != null)
             timerTaskStopForecastTimeout.cancel();
+
+        final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
 
         timerTaskStopForecastTimeout = new TimerTask() {
             @Override
             public void run() {
                 clearStopForecast();
-                views.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME, res.getString(R.string.tap_to_load_times));
+//                remoteViews.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME, res.getString(R.string.tap_to_load_times));
 
-                updateAppWidget();
+                updateAppWidget(context);
             }
         };
 
@@ -301,12 +327,12 @@ public class StopForecastWidget extends AppWidgetProvider {
      * Load the stop forecast for a particular stop.
      * @param stopName The stop for which to load a stop forecast.
      */
-    static void loadStopForecast(String stopName) {
+    static void loadStopForecast(Context context, String stopName) {
         // Instantiate an object of EnglishGaeilgeMap.
         mapEnglishGaeilge = new EnglishGaeilgeMap();
 
         // Start by clearing the currently-displayed stop forecast.
-        clearStopForecast();
+//        clearStopForecast();
 
         // Set the stop name in the widget.
         views.setTextViewText(TEXTVIEW_STOP_NAME, stopName);
@@ -314,7 +340,11 @@ public class StopForecastWidget extends AppWidgetProvider {
         // Keep track of the selected stop.
         selectedStopName = stopName;
 
-        new FetchLuasTimes().execute(stopName);
+        Object[] contextAndStopName = {context, stopName};
+        List<Object> listContextAndStopName = Arrays.asList(contextAndStopName);
+
+//        new FetchLuasTimes().execute(stopName);
+        new FetchLuasTimes().execute(listContextAndStopName);
     }
 
     /**
@@ -324,7 +354,7 @@ public class StopForecastWidget extends AppWidgetProvider {
     static void setIsLoading(boolean loading) {
         views.setProgressBar(PROGRESSBAR, 0, 0, loading);
 
-        updateAppWidget();
+//        updateAppWidget();
     }
 
     /**
@@ -342,10 +372,11 @@ public class StopForecastWidget extends AppWidgetProvider {
             views.setTextViewText(textViewOutboundStopTimes[i], "");
         }
 
-        updateAppWidget();
+//        updateAppWidget();
     }
 
-    static class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {
+//    static class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {
+    static class FetchLuasTimes extends AsyncTask<List<Object>, Void, List<Object>> {
 
         private final String LOG_TAG = FetchLuasTimes.class.getSimpleName();
 
@@ -490,10 +521,17 @@ public class StopForecastWidget extends AppWidgetProvider {
             }
         }
 
+//        @Override
+//        protected StopForecast doInBackground(String... params)
+
         @Override
-        protected StopForecast doInBackground(String... params) {
+        protected List<Object> doInBackground(List<Object>... params) {
             if (params.length == 0)
                 return null;
+
+            List<Object> listParams = params[0];
+
+            Context context = (Context) listParams.get(0);
 
             HttpURLConnection httpUrlConnection = null;
             BufferedReader reader = null;
@@ -502,7 +540,8 @@ public class StopForecastWidget extends AppWidgetProvider {
 
             // HTTP parameters to pass to the API.
             String action = "times";
-            String station = params[0];
+//            String station = params[0];
+            String station = (String) listParams.get(1);
             String stationCode = stopCodes.get(station);
 
             try {
@@ -555,7 +594,13 @@ public class StopForecastWidget extends AppWidgetProvider {
 
             if (luasTimesJson != null) {
                 try {
-                    return getLuasDataFromJson(luasTimesJson);
+                    StopForecast stopForecast = getLuasDataFromJson(luasTimesJson);
+                    Object[] contextAndStopForecast = {context, stopForecast};
+                    List<Object> listContextAndStopForecast = Arrays.asList(contextAndStopForecast);
+
+//                    return getLuasDataFromJson(luasTimesJson);
+                    return listContextAndStopForecast;
+
                 } catch (JSONException je) {
                     je.printStackTrace();
                 }
@@ -564,12 +609,17 @@ public class StopForecastWidget extends AppWidgetProvider {
             return null;
         }
 
+//        protected void onPostExecute(StopForecast sf)
         @Override
-        protected void onPostExecute(StopForecast sf) {
-            updateStopForecast(sf);
+        protected void onPostExecute(List<Object> listContextAndStopForecast) {
+            Context context = (Context) listContextAndStopForecast.get(0);
+            StopForecast stopForecast = (StopForecast) listContextAndStopForecast.get(1);
+
+            updateStopForecast(stopForecast);
             setIsLoading(false);
 
-            updateAppWidget();
+//            updateAppWidget();
+            updateAppWidget(context);
         }
 
         private void updateStopForecast(StopForecast sf) {
@@ -610,9 +660,9 @@ public class StopForecastWidget extends AppWidgetProvider {
                  */
                 if (sf.getInboundTrams() != null) {
                     if (sf.getInboundTrams().size() == 0) {
-                        views.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME,
-                                res.getString(R.string.no_trams_forecast)
-                        );
+//                        views.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME,
+//                                res.getString(R.string.no_trams_forecast)
+//                        );
                     } else {
                         String inboundTram;
 
@@ -658,9 +708,9 @@ public class StopForecastWidget extends AppWidgetProvider {
 
                 if (sf.getOutboundTrams() != null) {
                     if (sf.getOutboundTrams().size() == 0) {
-                        views.setTextViewText(TEXTVIEW_OUTBOUND_STOP1_NAME,
-                                res.getString(R.string.no_trams_forecast)
-                        );
+//                        views.setTextViewText(TEXTVIEW_OUTBOUND_STOP1_NAME,
+//                                res.getString(R.string.no_trams_forecast)
+//                        );
                     } else {
                         String outboundTram;
 
