@@ -69,24 +69,13 @@ import java.util.TimerTask;
  */
 public class StopForecastWidget extends AppWidgetProvider {
 
-    private final static String LOG_TAG = StopForecastWidget.class.getSimpleName();
+    private static final String LOG_TAG = StopForecastWidget.class.getSimpleName();
 
     private static final String PREFS_NAME = "org.thecosmicfrog.luasataglane.StopForecastWidget";
     private static final String FILE_WIDGET_SELECTED_STOPS = "widget_selected_stops";
     private static final String MESSAGE_SUCCESS_ENGLISH = "operating normally";
     private static final int LOAD_LIMIT_MILLIS = 4000;
     private static final int STOP_FORECAST_TIMEOUT_MILLIS = 20000;
-
-    private static RemoteViews views;
-    private static Resources res;
-
-    private static TimerTask timerTaskStopForecastTimeout;
-
-    private static long stopForecastLastClickTime = 0;
-
-    private static List<CharSequence> listSelectedStops;
-    private static int indexNextStopToLoad;
-    private static EnglishGaeilgeMap mapEnglishGaeilge;
 
     private static final int PROGRESSBAR = R.id.progressbar;
     private static final int TEXTVIEW_STOP_NAME = R.id.textview_stop_name;
@@ -99,8 +88,8 @@ public class StopForecastWidget extends AppWidgetProvider {
     private static final int TEXTVIEW_OUTBOUND_STOP2_NAME = R.id.textview_outbound_stop2_name;
     private static final int TEXTVIEW_OUTBOUND_STOP2_TIME = R.id.textview_outbound_stop2_time;
 
-    private final static String WIDGET_CLICK_STOP_NAME = "WidgetClickStopName";
-    private final static String WIDGET_CLICK_STOP_FORECAST = "WidgetClickStopForecast";
+    private static final String WIDGET_CLICK_STOP_NAME = "WidgetClickStopName";
+    private static final String WIDGET_CLICK_STOP_FORECAST = "WidgetClickStopForecast";
 
     private static int[] textViewInboundStopNames = {
             TEXTVIEW_INBOUND_STOP1_NAME,
@@ -122,6 +111,17 @@ public class StopForecastWidget extends AppWidgetProvider {
             TEXTVIEW_OUTBOUND_STOP2_TIME
     };
 
+    private static RemoteViews views;
+    private static Resources res;
+
+    private static TimerTask timerTaskStopForecastTimeout;
+
+    private static long stopForecastLastClickTime = 0;
+
+    private static List<CharSequence> listSelectedStops;
+    private static int indexNextStopToLoad;
+    private static EnglishGaeilgeMap mapEnglishGaeilge;
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them.
@@ -132,9 +132,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
-        // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
-            StopForecastWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
         }
     }
 
@@ -208,18 +206,33 @@ public class StopForecastWidget extends AppWidgetProvider {
         }
     }
 
+    /**
+     * Save the currently-selected stop name to shared preferences.
+     * @param context Context.
+     * @param selectedStopName Name of the stop to save to shared preferences.
+     */
     static void saveSelectedStopName(Context context, String selectedStopName) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putString("selectedStopName", selectedStopName);
         prefs.apply();
     }
 
+    /**
+     * Load the currently-selected stop name from shared preferences.
+     * @param context Context
+     * @return Selected stop name.
+     */
     static String loadSelectedStopName(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
 
         return prefs.getString("selectedStopName", null);
     }
 
+    /**
+     * Load list of user-selected stops from file.
+     * @param context Context.
+     * @return List of user-selected stops.
+     */
     static List<CharSequence> loadListSelectedStops(Context context) {
         try {
             /*
@@ -300,6 +313,11 @@ public class StopForecastWidget extends AppWidgetProvider {
         updateAppWidget(context, views);
     }
 
+    /**
+     * Temporary overloaded method.
+     * @param context Context.
+     * @param views RemoteViews object to update.
+     */
     static void updateAppWidget(Context context, RemoteViews views) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName thisWidget = new ComponentName(context, StopForecastWidget.class);
@@ -313,6 +331,7 @@ public class StopForecastWidget extends AppWidgetProvider {
      * This is a necessary evil due to their currently being no way for a widget to know when it
      * is "active" or "visible to the user". This implementation is in order to not hammer the
      * battery and network.
+     * @param context Context.
      * @param delayTimeMillis The delay (ms) before starting the timer.
      * @param timeoutTimeMillis The period (ms) after which the stop forecast should be considered
      *                          expired and cleared.
@@ -345,6 +364,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     /**
      * Load the stop forecast for a particular stop.
+     * @param context Context.
      * @param stopName The stop for which to load a stop forecast.
      */
     static void loadStopForecast(Context context, String stopName) {
@@ -357,6 +377,11 @@ public class StopForecastWidget extends AppWidgetProvider {
         // Keep track of the selected stop.
         saveSelectedStopName(context, stopName);
 
+        /*
+         * Create a two-field List containing the Context and stop name to load a stop forecast
+         * for. This is a slightly ugly way of ensuring the appropriate Context is worked on by the
+         * AsyncTask.
+         */
         Object[] contextAndStopName = {context, stopName};
         List<Object> listContextAndStopName = Arrays.asList(contextAndStopName);
 
@@ -366,6 +391,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     /**
      * Make progress bar appear or disappear.
+     * @param context Context.
      * @param loading Whether or not progress bar should animate.
      */
     static void setIsLoading(Context context, boolean loading) {
@@ -376,6 +402,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     /**
      * Clear the stop forecast currently displayed in the widget.
+     * @param remoteViewToClear RemoteViews object to clear.
      */
     static void clearStopForecast(RemoteViews remoteViewToClear) {
         /*
@@ -543,6 +570,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
             List<Object> listParams = params[0];
 
+            // Pull the Context out of the List.
             Context context = (Context) listParams.get(0);
 
             HttpURLConnection httpUrlConnection = null;
@@ -629,6 +657,11 @@ public class StopForecastWidget extends AppWidgetProvider {
             updateAppWidget(context, views);
         }
 
+        /**
+         * Update the current stop forecast with newer information from the server.
+         * @param context Context.
+         * @param sf Latest stop forecast from server.
+         */
         private void updateStopForecast(Context context, StopForecast sf) {
             mapEnglishGaeilge = new EnglishGaeilgeMap();
 
@@ -782,6 +815,7 @@ public class StopForecastWidget extends AppWidgetProvider {
          *
          * Fortunately parsing is easy: constructor takes the JSON string and converts it
          * into an Object hierarchy for us.
+         * @param forecastJsonStr The latest stop forecast from the server, in JSON format.
          */
         private StopForecast getLuasDataFromJson(String forecastJsonStr)
                 throws JSONException {

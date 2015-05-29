@@ -135,14 +135,7 @@ public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
         // If this activity was started with an intent without an app widget ID, finish with an error.
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
-            return;
         }
-    }
-
-    static void deleteTitlePref(Context context, int appWidgetId) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId);
-        prefs.commit();
     }
 
     @Override
