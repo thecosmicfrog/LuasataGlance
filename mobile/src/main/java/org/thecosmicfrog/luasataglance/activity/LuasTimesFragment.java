@@ -79,6 +79,8 @@ public class LuasTimesFragment extends Fragment {
 
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
 
+    private final String GAEILGE = "ga";
+
     private View rootView = null;
 
     private final String RED_LINE = "red_line";
@@ -109,6 +111,11 @@ public class LuasTimesFragment extends Fragment {
 
     private TimerTask timerTaskReload;
 
+    private static AlarmManager alarmManager;
+    private static BroadcastReceiver broadcastReceiver;
+    private static PendingIntent pendingIntent;
+
+    private static String localeDefault;
     private static String notifyStopName;
     private static String notifyStopTimeStr;
     private static int notifyStopTimeExpected;
@@ -164,6 +171,10 @@ public class LuasTimesFragment extends Fragment {
 
         // Stop the auto-reload TimerTask.
         timerTaskReload.cancel();
+
+        // Stop the AlarmManager and associated PendingIntent and BroadcastReceiver.
+        alarmManager.cancel(pendingIntent);
+        getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     /**
@@ -575,7 +586,8 @@ public class LuasTimesFragment extends Fragment {
     }
 
     private void initStopForecastOnClickListeners(String line) {
-        final NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(STOP_FORECAST);
+        localeDefault = Locale.getDefault().toString();
+        final NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(localeDefault, STOP_FORECAST);
 
         switch(line) {
             case RED_LINE:
@@ -634,6 +646,9 @@ public class LuasTimesFragment extends Fragment {
     }
 
     private void showNotifyTimeDialog(String direction, int index, NotifyTimesMap mapNotifyTimes) {
+        EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
+        localeDefault = Locale.getDefault().toString();
+
         switch (direction) {
             case INBOUND:
                 notifyStopName = textViewInboundStopNames[index].getText().toString();
@@ -642,7 +657,12 @@ public class LuasTimesFragment extends Fragment {
                 if (notifyStopTimeStr.equals(""))
                     return;
 
-                if (notifyStopTimeStr.equalsIgnoreCase("DUE")) {
+                if (notifyStopTimeStr.equalsIgnoreCase("DUE")
+                        || notifyStopTimeStr.equalsIgnoreCase("AM")
+                        || notifyStopTimeStr.equalsIgnoreCase("1 min")
+                        || notifyStopTimeStr.equalsIgnoreCase("1 nóim")
+                        || notifyStopTimeStr.equalsIgnoreCase("2 mins")
+                        || notifyStopTimeStr.equalsIgnoreCase("2 nóim")) {
                     Toast.makeText(
                             getActivity(),
                             getResources().getString(R.string.cannot_schedule_notification),
@@ -652,7 +672,8 @@ public class LuasTimesFragment extends Fragment {
                     return;
                 }
 
-                notifyStopTimeExpected = mapNotifyTimes.get(notifyStopTimeStr);
+                if (localeDefault.startsWith(GAEILGE))
+                    notifyStopTimeExpected = mapNotifyTimes.get(notifyStopTimeStr);
 
                 new NotifyTimeDialog(getActivity()).show();
 
@@ -665,7 +686,12 @@ public class LuasTimesFragment extends Fragment {
                 if (notifyStopTimeStr.equals(""))
                     return;
 
-                if (notifyStopTimeStr.equalsIgnoreCase("DUE")) {
+                if (notifyStopTimeStr.equalsIgnoreCase("DUE")
+                        || notifyStopTimeStr.equalsIgnoreCase("AM")
+                        || notifyStopTimeStr.equalsIgnoreCase("1 min")
+                        || notifyStopTimeStr.equalsIgnoreCase("1 nóim")
+                        || notifyStopTimeStr.equalsIgnoreCase("2 mins")
+                        || notifyStopTimeStr.equalsIgnoreCase("2 nóim")) {
                     Toast.makeText(
                             getActivity(),
                             getResources().getString(R.string.cannot_schedule_notification),
@@ -785,7 +811,7 @@ public class LuasTimesFragment extends Fragment {
         private void scheduleNotification(Context context,
                                           final int notifyTimeUserRequestedMins,
                                           int notifyDelayMillis) {
-            BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            broadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     /*
@@ -850,14 +876,14 @@ public class LuasTimesFragment extends Fragment {
                     new IntentFilter("org.thecosmicfrog.luasataglance")
             );
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+            pendingIntent = PendingIntent.getBroadcast(
                     context,
                     0,
                     new Intent("org.thecosmicfrog.luasataglance"),
                     0
             );
 
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(
+            alarmManager = (AlarmManager) context.getSystemService(
                     Context.ALARM_SERVICE
             );
             alarmManager.set(

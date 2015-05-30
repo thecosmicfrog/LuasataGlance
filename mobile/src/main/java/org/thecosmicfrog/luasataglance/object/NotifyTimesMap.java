@@ -25,61 +25,71 @@ import java.util.HashMap;
 
 public class NotifyTimesMap extends HashMap<String, Integer> {
 
+    private final String GAEILGE = "ga";
     private final String DIALOG = "dialog";
     private final String STOP_FORECAST = "stop_forecast";
 
-    public NotifyTimesMap(String type) {
+    private String minsBeforeArrival;
+    private String mins;
+
+    public NotifyTimesMap(String locale, String type) {
+        if (locale.startsWith(GAEILGE)) {
+            minsBeforeArrival = "nóim roimh theacht";
+            mins = "nóim";
+        } else {
+            minsBeforeArrival = "mins before arrival";
+            mins = "mins";
+        }
+
         switch (type) {
             case DIALOG:
-                put("1 min before arrival", 1);
-                put("2 mins before arrival", 2);
-                put("3 mins before arrival", 3);
-                put("4 mins before arrival", 4);
-                put("5 mins before arrival", 5);
-                put("6 mins before arrival", 6);
-                put("7 mins before arrival", 7);
-                put("8 mins before arrival", 8);
-                put("9 mins before arrival", 9);
-                put("10 mins before arrival", 10);
-                put("11 mins before arrival", 11);
-                put("12 mins before arrival", 12);
-                put("13 mins before arrival", 13);
-                put("14 mins before arrival", 14);
-                put("15 mins before arrival", 15);
+                put("2 " + minsBeforeArrival, 2);
+                put("3 " + minsBeforeArrival, 3);
+                put("4 " + minsBeforeArrival, 4);
+                put("5 " + minsBeforeArrival, 5);
+                put("6 " + minsBeforeArrival, 6);
+                put("7 " + minsBeforeArrival, 7);
+                put("8 " + minsBeforeArrival, 8);
+                put("9 " + minsBeforeArrival, 9);
+                put("10 " + minsBeforeArrival, 10);
+                put("11 " + minsBeforeArrival, 11);
+                put("12 " + minsBeforeArrival, 12);
+                put("13 " + minsBeforeArrival, 13);
+                put("14 " + minsBeforeArrival, 14);
+                put("15 " + minsBeforeArrival, 15);
 
                 break;
 
             case STOP_FORECAST:
-                put("1 min", 1);
-                put("2 mins", 2);
-                put("3 mins", 3);
-                put("4 mins", 4);
-                put("5 mins", 5);
-                put("6 mins", 6);
-                put("7 mins", 7);
-                put("8 mins", 8);
-                put("9 mins", 9);
-                put("10 mins", 10);
-                put("11 mins", 11);
-                put("12 mins", 12);
-                put("13 mins", 13);
-                put("14 mins", 14);
-                put("15 mins", 15);
-                put("16 mins", 16);
-                put("17 mins", 17);
-                put("18 mins", 18);
-                put("19 mins", 19);
-                put("20 mins", 20);
-                put("21 mins", 21);
-                put("22 mins", 22);
-                put("23 mins", 23);
-                put("24 mins", 24);
-                put("25 mins", 25);
-                put("26 mins", 26);
-                put("27 mins", 27);
-                put("28 mins", 28);
-                put("29 mins", 29);
-                put("30 mins", 30);
+                put("2 " + mins, 2);
+                put("3 " + mins, 3);
+                put("4 " + mins, 4);
+                put("5 " + mins, 5);
+                put("6 " + mins, 6);
+                put("7 " + mins, 7);
+                put("8 " + mins, 8);
+                put("9 " + mins, 9);
+                put("10 " + mins, 10);
+                put("11 " + mins, 11);
+                put("12 " + mins, 12);
+                put("13 " + mins, 13);
+                put("14 " + mins, 14);
+                put("15 " + mins, 15);
+                put("16 " + mins, 16);
+                put("17 " + mins, 17);
+                put("18 " + mins, 18);
+                put("19 " + mins, 19);
+                put("20 " + mins, 20);
+                put("21 " + mins, 21);
+                put("22 " + mins, 22);
+                put("23 " + mins, 23);
+                put("24 " + mins, 24);
+                put("25 " + mins, 25);
+                put("26 " + mins, 26);
+                put("27 " + mins, 27);
+                put("28 " + mins, 28);
+                put("29 " + mins, 29);
+                put("30 " + mins, 30);
         }
     }
 }

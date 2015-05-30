@@ -63,4 +63,11 @@
         android:layout_height="wrap_content"
         android:text="@string/about_source_bugs_features"
         android:autoLink="web" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about_irish_translations"
+        android:textStyle="bold"
+        android:paddingTop="16dp" />
 </LinearLayout>

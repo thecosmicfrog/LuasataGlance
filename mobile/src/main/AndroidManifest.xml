@@ -74,7 +74,7 @@
         </activity>
         <activity
             android:name=".activity.NotifyTimeDialog"
-            android:label="@string/title_activity_notify_time_dialog" >
+            android:label="@string/notify_title" >
         </activity>
 
         <receiver android:name=".activity.LuasTimesFragment$NotifyTimesReceiver" >

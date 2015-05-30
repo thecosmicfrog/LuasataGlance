@@ -30,6 +30,7 @@
     <string name="outbound">Bealach Amach</string>
     <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
     <string name="tap_to_load_times"><b>Cliceáil amanna a fháil</b></string>
+    <string name="cannot_schedule_notification">Tá an tram sroichte go luath: Ní féidir fógra a sceideal.</string>
 
     <!--
         Actions
@@ -38,7 +39,7 @@
     <string name="action_favourites">Ceanáin</string>
     <string name="action_favourites_edit">Athraigh</string>
     <string name="action_favourites_save">Sábháil</string>
-    <string name="action_news">Nuacht</string>
+    <string name="action_news">Nuacht Luas</string>
     <string name="action_reload">Athnuaigh</string>
 
     <!--
@@ -53,12 +54,30 @@
     <string name="about_title_source_bugs_features">Cód foinseach, fabht agus iarratais
         speisialta</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
+    <string name="about_irish_translations">Aistriúcháin Gaeilge le Feidhlim Seoighe</string>
 
     <!--
         Favourites
     -->
     <string name="favourites_none_selected">Tosóidh muid!\n\nBrú an cnap Athrígh ar bharr an
         scáileáin chun cuir le do liosta de stadanna Luas ina úsáidtear go minic.</string>
+
+    <!--
+    Notification
+    -->
+    <string name="notification_title">Am le fágáil!</string>
+    <string name="notification_tram_expected">Beidh do thram ag fágáil ag\u0020</string>
+    <string name="notification_minute">\u0020nóiméad.</string>
+    <string name="notification_minutes">\u0020nóiméad.</string>
+
+    <!--
+        Notify dialog
+    -->
+    <string name="notify_set">Sceideal</string>
+    <string name="notify_title">Socraigh fógra tram</string>
+    <string name="notify_when">Cén uair ar mhaith leat fógra a fháil faoin tram seo?</string>
+    <string name="notify_successful">Fógra sceidealaithe.</string>
+    <string name="notify_invalid_time">Am mícheart: Tá an tram le sroicheadh roimh sin.</string>
 
     <!--
         Stop arrays
@@ -121,5 +140,22 @@
         <item>Baile an Locháin</item>
         <item>Coill na Silíní</item>
         <item>Gleann Bhríde</item>
+    </string-array>
+
+    <string-array name="array_notifytime_mins">
+        <item>2 nóim roimh theacht</item>
+        <item>3 nóim roimh theacht</item>
+        <item>4 nóim roimh theacht</item>
+        <item>5 nóim roimh theacht</item>
+        <item>6 nóim roimh theacht</item>
+        <item>7 nóim roimh theacht</item>
+        <item>8 nóim roimh theacht</item>
+        <item>9 nóim roimh theacht</item>
+        <item>10 nóim roimh theacht</item>
+        <item>11 nóim roimh theacht</item>
+        <item>12 nóim roimh theacht</item>
+        <item>13 nóim roimh theacht</item>
+        <item>14 nóim roimh theacht</item>
+        <item>15 nóim roimh theacht</item>
     </string-array>
 </resources>

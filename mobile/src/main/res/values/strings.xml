@@ -13,7 +13,6 @@
     <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
     <string name="title_activity_news">Luas News</string>
-    <string name="title_activity_notify_time_dialog">NotifyTimeDialog</string>
 
     <!--
         Main UI
@@ -32,7 +31,7 @@
     <string name="outbound">Outbound</string>
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
     <string name="tap_to_load_times"><b>Tap to load times</b></string>
-    <string name="cannot_schedule_notification">Tram is DUE. Cannot schedule notification.</string>
+    <string name="cannot_schedule_notification">Tram is due shortly. Cannot schedule notification.</string>
 
     <!--
         Actions
@@ -41,7 +40,7 @@
     <string name="action_favourites">Favourites</string>
     <string name="action_favourites_edit">Edit</string>
     <string name="action_favourites_save">Save</string>
-    <string name="action_news">News</string>
+    <string name="action_news">Luas News</string>
     <string name="action_reload">Reload</string>
 
     <!--
@@ -55,13 +54,13 @@
     <string name="about_license">GNU General Public License (GPLv3)</string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
+    <string name="about_irish_translations">Irish translations by Féidhlim Seoighe</string>
 
     <!--
         Favourites
     -->
     <string name="favourites_none_selected">Let\'s get started!\n\nTap the Edit button in the
-        top-right corner of the screen to start adding your most frequently-used Luas stops.
-    </string>
+        top-right corner of the screen to start adding your most frequently-used Luas stops.</string>
 
     <!--
         Notification
@@ -144,7 +143,6 @@
     </string-array>
 
     <string-array name="array_notifytime_mins">
-        <item>1 min before arrival</item>
         <item>2 mins before arrival</item>
         <item>3 mins before arrival</item>
         <item>4 mins before arrival</item>

@@ -34,6 +34,7 @@ import android.widget.Spinner;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class NotifyTimeDialog extends Dialog {
@@ -46,12 +47,16 @@ public class NotifyTimeDialog extends Dialog {
 
     private Button buttonNotifyTime;
 
+    private String localeDefault;
+
     public NotifyTimeDialog(Context context) {
         super(context);
 
+        localeDefault = Locale.getDefault().toString();
+
         setTitle(R.string.notify_title);
 
-        mapNotifyTimes = new NotifyTimesMap(DIALOG);
+        mapNotifyTimes = new NotifyTimesMap(localeDefault, DIALOG);
     }
 
     @Override
