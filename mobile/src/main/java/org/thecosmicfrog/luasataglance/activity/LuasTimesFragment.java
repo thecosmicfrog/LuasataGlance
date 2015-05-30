@@ -21,10 +21,16 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,13 +42,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TabHost;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
+import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
 
@@ -70,6 +79,9 @@ public class LuasTimesFragment extends Fragment {
 
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
+    private final String STOP_FORECAST = "stop_forecast";
+    private final String INBOUND = "inbound";
+    private final String OUTBOUND = "outbound";
 
     private TabHost tabHost;
     private String currentTab;
@@ -84,12 +96,18 @@ public class LuasTimesFragment extends Fragment {
     private TextView textViewMessageTitle;
     private TextView textViewMessage;
     private LinearLayout linearLayoutSwipeRefreshTutorial;
+    private TableRow[] tableRowInboundStops;
+    private TableRow[] tableRowOutboundStops;
     private TextView[] textViewInboundStopNames;
     private TextView[] textViewInboundStopTimes;
     private TextView[] textViewOutboundStopNames;
     private TextView[] textViewOutboundStopTimes;
 
     private TimerTask timerTaskReload;
+
+    private static String notifyStopName;
+    private static String notifyStopTimeStr;
+    private static int notifyStopTimeExpected;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -274,13 +292,16 @@ public class LuasTimesFragment extends Fragment {
              * user has launched the app. Handle the exception gracefully by displaying a TextView
              * with instructions on how to use the SwipeRefreshLayout to reload the stop forecast.
              */
-            File fileHasRunOnce = new File(getActivity().getFilesDir().getPath() + "/" + FILE_HAS_RUN_ONCE);
+            File fileHasRunOnce =
+                    new File(getActivity().getFilesDir().getPath() + "/" + FILE_HAS_RUN_ONCE);
 
             if (!fileHasRunOnce.exists()) {
                 Log.i(LOG_TAG, "First time launching. Displaying SwipeRefreshLayout tutorial.");
 
                 linearLayoutSwipeRefreshTutorial
-                        = (LinearLayout) rootView.findViewById(R.id.linearlayout_swipe_refresh_tutorial);
+                        = (LinearLayout) rootView.findViewById(
+                        R.id.linearlayout_swipe_refresh_tutorial
+                );
                 linearLayoutSwipeRefreshTutorial.setVisibility(View.VISIBLE);
 
                 // Create a new blank file to signify the user has run app at least once.
@@ -304,17 +325,19 @@ public class LuasTimesFragment extends Fragment {
         List<String> redLineListStops = Arrays.asList(redLineArrayStops);
         List<String> greenLineListStops = Arrays.asList(greenLineArrayStops);
 
-        if (redLineListStops.contains(getActivity().getIntent().getStringExtra("stopName"))) {
+        String stopNameFromIntent = getActivity().getIntent().getStringExtra("stopName");
+
+        if (redLineListStops.contains(stopNameFromIntent)) {
             tabHost.setCurrentTab(0);
             redLineSpinnerStop.setSelection(
                     redLineAdapterStop
-                            .getPosition(getActivity().getIntent().getStringExtra("stopName"))
+                            .getPosition(stopNameFromIntent)
             );
-        } else if (greenLineListStops.contains(getActivity().getIntent().getStringExtra("stopName"))) {
+        } else if (greenLineListStops.contains(stopNameFromIntent)) {
             tabHost.setCurrentTab(1);
             greenLineSpinnerStop.setSelection(
                     greenLineAdapterStop
-                            .getPosition(getActivity().getIntent().getStringExtra("stopName"))
+                            .getPosition(stopNameFromIntent)
             );
         }
     }
@@ -341,12 +364,16 @@ public class LuasTimesFragment extends Fragment {
                         public void run() {
                             switch (currentTab) {
                                 case RED_LINE:
-                                    loadStopForecast(redLineSpinnerStop.getSelectedItem().toString());
+                                    loadStopForecast(
+                                            redLineSpinnerStop.getSelectedItem().toString()
+                                    );
 
                                     break;
 
                                 case GREEN_LINE:
-                                    loadStopForecast(greenLineSpinnerStop.getSelectedItem().toString());
+                                    loadStopForecast(
+                                            greenLineSpinnerStop.getSelectedItem().toString()
+                                    );
 
                                     break;
 
@@ -422,6 +449,24 @@ public class LuasTimesFragment extends Fragment {
     private void initStopForecast(String line) {
         switch (line) {
             case RED_LINE:
+                tableRowInboundStops = new TableRow[] {
+                        (TableRow) rootView.findViewById(
+                                R.id.red_line_tablerow_inbound_stop1),
+                        (TableRow) rootView.findViewById(
+                                R.id.red_line_tablerow_inbound_stop2),
+                        (TableRow) rootView.findViewById(
+                                R.id.red_line_tablerow_inbound_stop3),
+                };
+
+                tableRowOutboundStops = new TableRow[] {
+                        (TableRow) rootView.findViewById(
+                                R.id.red_line_tablerow_outbound_stop1),
+                        (TableRow) rootView.findViewById(
+                                R.id.red_line_tablerow_outbound_stop2),
+                        (TableRow) rootView.findViewById(
+                                R.id.red_line_tablerow_outbound_stop3),
+                };
+
                 textViewInboundStopNames = new TextView[] {
                         (TextView) rootView.findViewById(
                                 R.id.red_line_textview_inbound_stop1_name),
@@ -458,9 +503,29 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.red_line_textview_outbound_stop3_time),
                 };
 
+                initStopForecastOnClickListeners(RED_LINE);
+
                 break;
 
             case GREEN_LINE:
+                tableRowInboundStops = new TableRow[] {
+                        (TableRow) rootView.findViewById(
+                                R.id.green_line_tablerow_inbound_stop1),
+                        (TableRow) rootView.findViewById(
+                                R.id.green_line_tablerow_inbound_stop2),
+                        (TableRow) rootView.findViewById(
+                                R.id.green_line_tablerow_inbound_stop3),
+                };
+
+                tableRowOutboundStops = new TableRow[] {
+                        (TableRow) rootView.findViewById(
+                                R.id.green_line_tablerow_outbound_stop1),
+                        (TableRow) rootView.findViewById(
+                                R.id.green_line_tablerow_outbound_stop2),
+                        (TableRow) rootView.findViewById(
+                                R.id.green_line_tablerow_outbound_stop3),
+                };
+
                 textViewInboundStopNames = new TextView[] {
                         (TextView) rootView.findViewById(
                                 R.id.green_line_textview_inbound_stop1_name),
@@ -497,9 +562,123 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.green_line_textview_outbound_stop3_time),
                 };
 
+                initStopForecastOnClickListeners(GREEN_LINE);
+
                 break;
 
             default:
+        }
+    }
+
+    private void initStopForecastOnClickListeners(String line) {
+        final NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(STOP_FORECAST);
+
+        switch(line) {
+            case RED_LINE:
+                for (int i = 0; i < tableRowInboundStops.length; i++) {
+                    final int index = i;
+
+                    tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showNotifyTimeDialog(INBOUND, index, mapNotifyTimes);
+                        }
+                    });
+                }
+
+                for (int i = 0; i < tableRowOutboundStops.length; i++) {
+                    final int index = i;
+
+                    tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showNotifyTimeDialog(OUTBOUND, index, mapNotifyTimes);
+                        }
+                    });
+                }
+
+                break;
+
+            case GREEN_LINE:
+                for (int i = 0; i < tableRowInboundStops.length; i++) {
+                    final int index = i;
+
+                    tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showNotifyTimeDialog(INBOUND, index, mapNotifyTimes);
+                        }
+                    });
+                }
+
+                for (int i = 0; i < tableRowOutboundStops.length; i++) {
+                    final int index = i;
+
+                    tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showNotifyTimeDialog(OUTBOUND, index, mapNotifyTimes);
+                        }
+                    });
+                }
+
+                break;
+
+            default:
+
+        }
+    }
+
+    private void showNotifyTimeDialog(String direction, int index, NotifyTimesMap mapNotifyTimes) {
+        switch (direction) {
+            case INBOUND:
+                notifyStopName = textViewInboundStopNames[index].getText().toString();
+                notifyStopTimeStr = textViewInboundStopTimes[index].getText().toString();
+
+                if (notifyStopTimeStr.equals(""))
+                    return;
+
+                if (notifyStopTimeStr.equalsIgnoreCase("DUE")) {
+                    Toast.makeText(
+                            getActivity(),
+                            getResources().getString(R.string.cannot_schedule_notification),
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    return;
+                }
+
+                notifyStopTimeExpected = mapNotifyTimes.get(notifyStopTimeStr);
+
+                new NotifyTimeDialog(getActivity()).show();
+
+                break;
+
+            case OUTBOUND:
+                notifyStopName = textViewOutboundStopNames[index].getText().toString();
+                notifyStopTimeStr = textViewOutboundStopTimes[index].getText().toString();
+
+                if (notifyStopTimeStr.equals(""))
+                    return;
+
+                if (notifyStopTimeStr.equalsIgnoreCase("DUE")) {
+                    Toast.makeText(
+                            getActivity(),
+                            getResources().getString(R.string.cannot_schedule_notification),
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    return;
+                }
+
+                notifyStopTimeExpected = mapNotifyTimes.get(notifyStopTimeStr);
+
+                new NotifyTimeDialog(getActivity()).show();
+
+                break;
+
+            default:
+
         }
     }
 
@@ -541,6 +720,111 @@ public class LuasTimesFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public static class NotifyTimesReceiver extends BroadcastReceiver {
+
+        private final String LOG_TAG = NotifyTimesReceiver.class.getSimpleName();
+
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            final int notifyTimeUserRequestedMins = intent.getIntExtra("notifyTime", 5);
+            final int NOTIFY_TIME_SAFETY_NET_MILLIS = 30000;
+
+            /*
+             * Define when a user should be notified that their tram is on its way. To do this, we
+             * simply take the number of minutes the tram is expected in and subtract the due time
+             * the user has asked to be notified at.
+             *
+             * 1 minute can be the difference between missing and catching a tram. Always insert an
+             * artificial 30 second "safety net".
+             * Example: If the user has set a notification that should fire after 5 minutes, the
+             *          notification will actually fire after 4.5 minutes.
+             */
+            int notifyDelayMillis =
+                    (notifyStopTimeExpected - notifyTimeUserRequestedMins)
+                            * 60000
+                            - NOTIFY_TIME_SAFETY_NET_MILLIS;
+
+            /*
+             * If the notification time makes no sense, inform the user and don't proceed.
+             */
+            if (notifyDelayMillis < 0) {
+                Toast.makeText(
+                        context,
+                        context.getResources().getString(R.string.notify_invalid_time),
+                        Toast.LENGTH_LONG
+                ).show();
+
+                return;
+            }
+
+
+            /*
+             * Inform user the notification has been scheduled successfully.
+             */
+            Toast.makeText(
+                    context,
+                    context.getResources().getString(R.string.notify_successful),
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            /*
+             * Wait the appropriate time (notifyDelayMillis), then display an incoming tram
+             * notification to the user.
+             */
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    /*
+                     * Create a StringBuilder in order to format the notification message correctly.
+                     * Start by adding a message telling the user their tram is expected in
+                     * N.
+                     */
+                    StringBuilder stringBuilderContentText = new StringBuilder();
+                    stringBuilderContentText.append(
+                            context.getResources().getString(R.string.notification_tram_expected)
+                    ).append(
+                            Integer.toString(notifyTimeUserRequestedMins)
+                    );
+
+                    /*
+                     * Append either "minutes" or "minute" depending on the time chosen.
+                     */
+                    if (notifyTimeUserRequestedMins > 1)
+                        stringBuilderContentText.append(
+                                context.getResources().getString(R.string.notification_minutes)
+                        );
+                    else
+                        stringBuilderContentText.append(
+                                context.getResources().getString(R.string.notification_minute)
+                        );
+
+                    /*
+                     * Create the NotificationBuilder, setting an appropriate title and the message
+                     * built in the StringBuilder.
+                     */
+                    NotificationCompat.Builder notificationBuilder =
+                            new NotificationCompat.Builder(context)
+                                    .setSmallIcon(R.drawable.laag_logo)
+                                    .setContentTitle(
+                                            context.getResources().getString(
+                                                    R.string.notification_title
+                                            )
+                                    )
+                                    .setContentText(stringBuilderContentText.toString());
+
+                    /*
+                     * Create a NotificationManager and display the notification to the user.
+                     */
+                    NotificationManager notificationManager =
+                            (NotificationManager) context.getSystemService(
+                                    Context.NOTIFICATION_SERVICE
+                            );
+                    notificationManager.notify(1, notificationBuilder.build());
+                }
+            }, notifyDelayMillis);
+        }
     }
 
     public class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {
@@ -788,7 +1072,7 @@ public class LuasTimesFragment extends Fragment {
         }
 
         private void updateStopForecast(StopForecast sf) {
-            EnglishGaeilgeMap englishGaeilgeMap = new EnglishGaeilgeMap();
+            EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
 
             switch (currentTab) {
                 case RED_LINE:
@@ -809,7 +1093,8 @@ public class LuasTimesFragment extends Fragment {
                                     );
 
                             /*
-                             * Change the color of the message title TextView depending on the status.
+                             * Change the color of the message title TextView depending on the
+                             * status.
                              */
                             if (message.contains(
                                     getResources().getString(R.string.message_success)))
@@ -821,7 +1106,9 @@ public class LuasTimesFragment extends Fragment {
                              * Set the status message from the server.
                              */
                             textViewMessage =
-                                    (TextView) rootView.findViewById(R.id.red_line_textview_message);
+                                    (TextView) rootView.findViewById(
+                                            R.id.red_line_textview_message
+                                    );
                             textViewMessage.setText(message);
                         }
 
@@ -831,8 +1118,8 @@ public class LuasTimesFragment extends Fragment {
                         initStopForecast(RED_LINE);
 
                         /*
-                         * Pull in all trams from the StopForecast, but only display up to three inbound
-                         * and outbound trams.
+                         * Pull in all trams from the StopForecast, but only display up to three
+                         * inbound and outbound trams.
                          */
                         if (sf.getInboundTrams() != null) {
                             if (sf.getInboundTrams().size() == 0) {
@@ -843,9 +1130,15 @@ public class LuasTimesFragment extends Fragment {
                                 for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                                     if (i < 3) {
                                         if (localeDefault.startsWith(GAEILGE)) {
-                                            inboundTram = englishGaeilgeMap.get(sf.getInboundTrams().get(i).getDestination());
+                                            inboundTram = mapEnglishGaeilge.get(
+                                                    sf.getInboundTrams()
+                                                            .get(i)
+                                                            .getDestination()
+                                            );
                                         } else {
-                                            inboundTram = sf.getInboundTrams().get(i).getDestination();
+                                            inboundTram = sf.getInboundTrams()
+                                                    .get(i)
+                                                    .getDestination();
                                         }
 
                                         textViewInboundStopNames[i].setText(
@@ -857,7 +1150,7 @@ public class LuasTimesFragment extends Fragment {
                                             String dueMinutes;
 
                                             if (localeDefault.startsWith(GAEILGE)) {
-                                                dueMinutes = englishGaeilgeMap.get("DUE");
+                                                dueMinutes = mapEnglishGaeilge.get("DUE");
                                             } else {
                                                 dueMinutes = "DUE";
                                             }
@@ -867,16 +1160,22 @@ public class LuasTimesFragment extends Fragment {
                                             );
                                         } else if (localeDefault.startsWith(GAEILGE)) {
                                             textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams().get(i).getDueMinutes() + " nóim"
+                                                    sf.getInboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " nóim"
                                             );
                                         } else if (Integer.parseInt(sf.getInboundTrams()
                                                 .get(i).getDueMinutes()) > 1) {
                                             textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams().get(i).getDueMinutes() + " mins"
+                                                    sf.getInboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " mins"
                                             );
                                         } else {
                                             textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams().get(i).getDueMinutes() + " min"
+                                                    sf.getInboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " min"
                                             );
                                         }
                                     }
@@ -893,21 +1192,24 @@ public class LuasTimesFragment extends Fragment {
                                 for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                                     if (i < 3) {
                                         if (localeDefault.startsWith(GAEILGE)) {
-                                            outboundTram = englishGaeilgeMap.get(sf.getOutboundTrams().get(i).getDestination());
+                                            outboundTram = mapEnglishGaeilge.get(
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDestination()
+                                            );
                                         } else {
-                                            outboundTram = sf.getOutboundTrams().get(i).getDestination();
+                                            outboundTram =
+                                                    sf.getOutboundTrams().get(i).getDestination();
                                         }
 
-                                        textViewOutboundStopNames[i].setText(
-                                                outboundTram
-                                        );
+                                        textViewOutboundStopNames[i].setText(outboundTram);
 
                                         if (sf.getOutboundTrams()
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             String dueMinutes;
 
                                             if (localeDefault.startsWith(GAEILGE)) {
-                                                dueMinutes = englishGaeilgeMap.get("DUE");
+                                                dueMinutes = mapEnglishGaeilge.get("DUE");
                                             } else {
                                                 dueMinutes = "DUE";
                                             }
@@ -917,16 +1219,22 @@ public class LuasTimesFragment extends Fragment {
                                             );
                                         } else if (localeDefault.startsWith(GAEILGE)) {
                                             textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams().get(i).getDueMinutes() + " nóim"
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " nóim"
                                             );
                                         } else if (Integer.parseInt(sf.getOutboundTrams()
                                                 .get(i).getDueMinutes()) > 1) {
                                             textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams().get(i).getDueMinutes() + " mins"
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " mins"
                                             );
                                         } else {
                                             textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams().get(i).getDueMinutes() + " min"
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " min"
                                             );
                                         }
                                     }
@@ -969,7 +1277,8 @@ public class LuasTimesFragment extends Fragment {
                                     );
 
                             /*
-                             * Change the color of the message title TextView depending on the status.
+                             * Change the color of the message title TextView depending on the
+                             * status.
                              */
                             if (message.contains(
                                     getResources().getString(R.string.message_success)))
@@ -981,7 +1290,9 @@ public class LuasTimesFragment extends Fragment {
                              * Set the status message from the server.
                              */
                             textViewMessage =
-                                    (TextView) rootView.findViewById(R.id.green_line_textview_message);
+                                    (TextView) rootView.findViewById(
+                                            R.id.green_line_textview_message
+                                    );
                             textViewMessage.setText(message);
                         }
 
@@ -991,8 +1302,8 @@ public class LuasTimesFragment extends Fragment {
                         initStopForecast(GREEN_LINE);
 
                         /*
-                         * Pull in all trams from the StopForecast, but only display up to three inbound
-                         * and outbound trams.
+                         * Pull in all trams from the StopForecast, but only display up to three
+                         * inbound and outbound trams.
                          */
                         if (sf.getInboundTrams() != null) {
                             if (sf.getInboundTrams().size() == 0) {
@@ -1003,21 +1314,25 @@ public class LuasTimesFragment extends Fragment {
                                 for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                                     if (i < 3) {
                                         if (localeDefault.startsWith(GAEILGE)) {
-                                            inboundTram = englishGaeilgeMap.get(sf.getInboundTrams().get(i).getDestination());
+                                            inboundTram = mapEnglishGaeilge.get(
+                                                    sf.getInboundTrams()
+                                                            .get(i)
+                                                            .getDestination());
                                         } else {
-                                            inboundTram = sf.getInboundTrams().get(i).getDestination();
+                                            inboundTram =
+                                                    sf.getInboundTrams()
+                                                    .get(i)
+                                                    .getDestination();
                                         }
 
-                                        textViewInboundStopNames[i].setText(
-                                                inboundTram
-                                        );
+                                        textViewInboundStopNames[i].setText(inboundTram);
 
                                         if (sf.getInboundTrams()
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             String dueMinutes;
 
                                             if (localeDefault.startsWith(GAEILGE)) {
-                                                dueMinutes = englishGaeilgeMap.get("DUE");
+                                                dueMinutes = mapEnglishGaeilge.get("DUE");
                                             } else {
                                                 dueMinutes = "DUE";
                                             }
@@ -1028,11 +1343,15 @@ public class LuasTimesFragment extends Fragment {
                                         } else if (Integer.parseInt(sf.getInboundTrams()
                                                 .get(i).getDueMinutes()) > 1) {
                                             textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams().get(i).getDueMinutes() + " mins"
+                                                    sf.getInboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " mins"
                                             );
                                         } else {
                                             textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams().get(i).getDueMinutes() + " min"
+                                                    sf.getInboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " min"
                                             );
                                         }
                                     }
@@ -1049,21 +1368,26 @@ public class LuasTimesFragment extends Fragment {
                                 for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                                     if (i < 3) {
                                         if (localeDefault.startsWith(GAEILGE)) {
-                                            outboundTram = englishGaeilgeMap.get(sf.getOutboundTrams().get(i).getDestination());
+                                            outboundTram = mapEnglishGaeilge.get(
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDestination()
+                                            );
                                         } else {
-                                            outboundTram = sf.getOutboundTrams().get(i).getDestination();
+                                            outboundTram =
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDestination();
                                         }
 
-                                        textViewOutboundStopNames[i].setText(
-                                                outboundTram
-                                        );
+                                        textViewOutboundStopNames[i].setText(outboundTram);
 
                                         if (sf.getOutboundTrams()
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             String dueMinutes;
 
                                             if (localeDefault.startsWith(GAEILGE)) {
-                                                dueMinutes = englishGaeilgeMap.get("DUE");
+                                                dueMinutes = mapEnglishGaeilge.get("DUE");
                                             } else {
                                                 dueMinutes = "DUE";
                                             }
@@ -1074,11 +1398,15 @@ public class LuasTimesFragment extends Fragment {
                                         } else if (Integer.parseInt(sf.getOutboundTrams()
                                                 .get(i).getDueMinutes()) > 1) {
                                             textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams().get(i).getDueMinutes() + " mins"
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " mins"
                                             );
                                         } else {
                                             textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams().get(i).getDueMinutes() + " min"
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes() + " min"
                                             );
                                         }
                                     }

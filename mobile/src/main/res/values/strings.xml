@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">23</string>
-    <string name="version_name">0.27</string>
+    <string name="version_code">24</string>
+    <string name="version_name">0.28</string>
 
     <!--
         Activities
@@ -13,6 +13,7 @@
     <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
     <string name="title_activity_news">Luas News</string>
+    <string name="title_activity_notify_time_dialog">NotifyTimeDialog</string>
 
     <!--
         Main UI
@@ -31,6 +32,7 @@
     <string name="outbound">Outbound</string>
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
     <string name="tap_to_load_times"><b>Tap to load times</b></string>
+    <string name="cannot_schedule_notification">Tram is DUE. Cannot schedule notification.</string>
 
     <!--
         Actions
@@ -60,6 +62,23 @@
     <string name="favourites_none_selected">Let\'s get started!\n\nTap the Edit button in the
         top-right corner of the screen to start adding your most frequently-used Luas stops.
     </string>
+
+    <!--
+        Notification
+    -->
+    <string name="notification_title">Time to leave!</string>
+    <string name="notification_tram_expected">Your tram is expected in\u0020</string>
+    <string name="notification_minute">\u0020minute.</string>
+    <string name="notification_minutes">\u0020minutes.</string>
+
+    <!--
+        Notify dialog
+    -->
+    <string name="notify_set">Schedule</string>
+    <string name="notify_title">Schedule tram notification</string>
+    <string name="notify_when">When would you like to be notified about this tram?</string>
+    <string name="notify_successful">Notification scheduled.</string>
+    <string name="notify_invalid_time">Invalid time: Tram expected before then.</string>
 
     <!--
         Stop arrays
@@ -122,5 +141,23 @@
         <item>Laughanstown</item>
         <item>Cherrywood</item>
         <item>Brides Glen</item>
+    </string-array>
+
+    <string-array name="array_notifytime_mins">
+        <item>1 min before arrival</item>
+        <item>2 mins before arrival</item>
+        <item>3 mins before arrival</item>
+        <item>4 mins before arrival</item>
+        <item>5 mins before arrival</item>
+        <item>6 mins before arrival</item>
+        <item>7 mins before arrival</item>
+        <item>8 mins before arrival</item>
+        <item>9 mins before arrival</item>
+        <item>10 mins before arrival</item>
+        <item>11 mins before arrival</item>
+        <item>12 mins before arrival</item>
+        <item>13 mins before arrival</item>
+        <item>14 mins before arrival</item>
+        <item>15 mins before arrival</item>
     </string-array>
 </resources>

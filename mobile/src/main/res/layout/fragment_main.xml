@@ -179,7 +179,9 @@
                                     android:stretchColumns="*"
                                     android:elevation="6dp">
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/red_line_tablerow_inbound_stop1">
+
                                         <TextView
                                             android:id="@+id/red_line_textview_inbound_stop1_name"
                                             android:gravity="center_horizontal"
@@ -191,7 +193,9 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/red_line_tablerow_inbound_stop2">
+
                                         <TextView
                                             android:id="@+id/red_line_textview_inbound_stop2_name"
                                             android:gravity="center_horizontal"
@@ -203,7 +207,9 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/red_line_tablerow_inbound_stop3">
+
                                         <TextView
                                             android:id="@+id/red_line_textview_inbound_stop3_name"
                                             android:gravity="center_horizontal"
@@ -239,7 +245,9 @@
                                     android:stretchColumns="*"
                                     android:elevation="6dp">
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/red_line_tablerow_outbound_stop1">
+
                                         <TextView
                                             android:id="@+id/red_line_textview_outbound_stop1_name"
                                             android:gravity="center_horizontal"
@@ -251,7 +259,9 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/red_line_tablerow_outbound_stop2">
+
                                         <TextView
                                             android:id="@+id/red_line_textview_outbound_stop2_name"
                                             android:gravity="center_horizontal"
@@ -263,7 +273,9 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/red_line_tablerow_outbound_stop3">
+
                                         <TextView
                                             android:id="@+id/red_line_textview_outbound_stop3_name"
                                             android:gravity="center_horizontal"
@@ -393,7 +405,9 @@
                                     android:stretchColumns="*"
                                     android:elevation="6dp">
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/green_line_tablerow_inbound_stop1">
+
                                         <TextView
                                             android:id="@+id/green_line_textview_inbound_stop1_name"
                                             android:gravity="center_horizontal"
@@ -405,7 +419,9 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/green_line_tablerow_inbound_stop2">
+
                                         <TextView
                                             android:id="@+id/green_line_textview_inbound_stop2_name"
                                             android:gravity="center_horizontal"
@@ -417,7 +433,9 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/green_line_tablerow_inbound_stop3">
+
                                         <TextView
                                             android:id="@+id/green_line_textview_inbound_stop3_name"
                                             android:gravity="center_horizontal"
@@ -453,7 +471,9 @@
                                     android:stretchColumns="*"
                                     android:elevation="6dp">
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/green_line_tablerow_outbound_stop1">
+
                                         <TextView
                                             android:id="@+id/green_line_textview_outbound_stop1_name"
                                             android:gravity="center_horizontal"
@@ -465,7 +485,9 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/green_line_tablerow_outbound_stop2">
+
                                         <TextView
                                             android:id="@+id/green_line_textview_outbound_stop2_name"
                                             android:gravity="center_horizontal"
@@ -477,7 +499,9 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
-                                    <TableRow>
+                                    <TableRow
+                                        android:id="@+id/green_line_tablerow_outbound_stop3">
+
                                         <TextView
                                             android:id="@+id/green_line_textview_outbound_stop3_name"
                                             android:gravity="center_horizontal"

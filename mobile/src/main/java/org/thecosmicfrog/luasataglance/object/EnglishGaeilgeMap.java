@@ -24,6 +24,7 @@ package org.thecosmicfrog.luasataglance.object;
 import java.util.HashMap;
 
 public class EnglishGaeilgeMap extends HashMap<String, String> {
+
     public EnglishGaeilgeMap() {
         put("operating normally", "ag feidhmiú mar is gnáth");
         put("DUE", "AM");
