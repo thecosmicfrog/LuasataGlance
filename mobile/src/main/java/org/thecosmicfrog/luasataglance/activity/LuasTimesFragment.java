@@ -646,7 +646,6 @@ public class LuasTimesFragment extends Fragment {
     }
 
     private void showNotifyTimeDialog(String direction, int index, NotifyTimesMap mapNotifyTimes) {
-        EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
         localeDefault = Locale.getDefault().toString();
 
         switch (direction) {
@@ -672,8 +671,7 @@ public class LuasTimesFragment extends Fragment {
                     return;
                 }
 
-                if (localeDefault.startsWith(GAEILGE))
-                    notifyStopTimeExpected = mapNotifyTimes.get(notifyStopTimeStr);
+                notifyStopTimeExpected = mapNotifyTimes.get(notifyStopTimeStr);
 
                 new NotifyTimeDialog(getActivity()).show();
 
