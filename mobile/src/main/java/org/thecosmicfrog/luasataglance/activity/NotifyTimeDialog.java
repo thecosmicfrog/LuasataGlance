@@ -49,6 +49,12 @@ public class NotifyTimeDialog extends Dialog {
 
     private String localeDefault;
 
+    public NotifyTimeDialog() {
+        super(null);
+
+        Log.wtf(LOG_TAG, "There is no default constructor here. Go away.");
+    }
+
     public NotifyTimeDialog(Context context) {
         super(context);
 
