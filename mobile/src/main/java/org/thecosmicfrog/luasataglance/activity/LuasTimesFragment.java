@@ -21,14 +21,18 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -759,7 +763,6 @@ public class LuasTimesFragment extends Fragment {
                 return;
             }
 
-
             /*
              * Inform user the notification has been scheduled successfully.
              */
@@ -769,13 +772,22 @@ public class LuasTimesFragment extends Fragment {
                     Toast.LENGTH_SHORT
             ).show();
 
-            /*
-             * Wait the appropriate time (notifyDelayMillis), then display an incoming tram
-             * notification to the user.
-             */
-            new Handler().postDelayed(new Runnable() {
+            scheduleNotification(context, notifyTimeUserRequestedMins, notifyDelayMillis);
+        }
+
+        /**
+         * Schedule notification for tram.
+         * @param context Context.
+         * @param notifyTimeUserRequestedMins Minutes before tram arrival the user has requested to
+         *                                    be notified at.
+         * @param notifyDelayMillis Milliseconds to wait before firing off notification.
+         */
+        private void scheduleNotification(Context context,
+                                          final int notifyTimeUserRequestedMins,
+                                          int notifyDelayMillis) {
+            BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
                 @Override
-                public void run() {
+                public void onReceive(Context context, Intent intent) {
                     /*
                      * Create a StringBuilder in order to format the notification message correctly.
                      * Start by adding a message telling the user their tram is expected in
@@ -802,7 +814,9 @@ public class LuasTimesFragment extends Fragment {
 
                     /*
                      * Create the NotificationBuilder, setting an appropriate title and the message
-                     * built in the StringBuilder.
+                     * built in the StringBuilder. The default notification sound should be played
+                     * and the device should vibrate twice for 1 second with a 1 second delay
+                     * between them.
                      */
                     NotificationCompat.Builder notificationBuilder =
                             new NotificationCompat.Builder(context)
@@ -812,7 +826,13 @@ public class LuasTimesFragment extends Fragment {
                                                     R.string.notification_title
                                             )
                                     )
-                                    .setContentText(stringBuilderContentText.toString());
+                                    .setContentText(stringBuilderContentText.toString())
+                                    .setVibrate(new long[] {100, 1000, 1000, 1000, 1000})
+                                    .setSound(
+                                            RingtoneManager.getDefaultUri(
+                                                    RingtoneManager.TYPE_NOTIFICATION
+                                            )
+                                    );
 
                     /*
                      * Create a NotificationManager and display the notification to the user.
@@ -823,7 +843,27 @@ public class LuasTimesFragment extends Fragment {
                             );
                     notificationManager.notify(1, notificationBuilder.build());
                 }
-            }, notifyDelayMillis);
+            };
+
+            context.getApplicationContext().registerReceiver(
+                    broadcastReceiver,
+                    new IntentFilter("org.thecosmicfrog.luasataglance")
+            );
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    new Intent("org.thecosmicfrog.luasataglance"),
+                    0
+            );
+
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(
+                    Context.ALARM_SERVICE
+            );
+            alarmManager.set(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
+            );
         }
     }
 
