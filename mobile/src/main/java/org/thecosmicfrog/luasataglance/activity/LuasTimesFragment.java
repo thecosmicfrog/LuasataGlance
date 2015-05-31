@@ -171,10 +171,6 @@ public class LuasTimesFragment extends Fragment {
 
         // Stop the auto-reload TimerTask.
         timerTaskReload.cancel();
-
-        // Stop the AlarmManager and associated PendingIntent and BroadcastReceiver.
-        alarmManager.cancel(pendingIntent);
-        getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     /**
