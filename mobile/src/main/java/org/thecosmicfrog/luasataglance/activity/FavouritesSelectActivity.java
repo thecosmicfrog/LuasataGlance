@@ -22,6 +22,7 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,6 +62,8 @@ public class FavouritesSelectActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourites_select);
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.luas_purple))));
 
         /*
          * Build arrays for Red Line and Green Line stops from resources, then create Lists

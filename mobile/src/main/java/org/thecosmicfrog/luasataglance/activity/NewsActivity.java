@@ -21,6 +21,7 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.webkit.WebView;
@@ -36,6 +37,8 @@ public class NewsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.luas_purple))));
 
         // Load the "Travel Updates" section of the Luas mobile website.
         webViewNews = (WebView) findViewById(R.id.webview_news);

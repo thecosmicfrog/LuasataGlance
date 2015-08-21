@@ -22,6 +22,7 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +56,8 @@ public class FavouritesActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourites);
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.luas_purple))));
     }
 
     @Override

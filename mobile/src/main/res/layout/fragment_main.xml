@@ -166,7 +166,7 @@
                                     android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#100054"
+                                    android:background="@color/luas_purple"
                                     android:gravity="center_horizontal"
                                     android:textColor="#ffffff"
                                     android:elevation="6dp" />
@@ -235,7 +235,7 @@
                                     android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#100054"
+                                    android:background="@color/luas_purple"
                                     android:gravity="center_horizontal"
                                     android:textColor="#ffffff"
                                     android:elevation="6dp" />
@@ -398,7 +398,7 @@
                                     android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#100054"
+                                    android:background="@color/luas_purple"
                                     android:gravity="center_horizontal"
                                     android:textColor="#ffffff"
                                     android:elevation="6dp" />
@@ -467,7 +467,7 @@
                                     android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#100054"
+                                    android:background="@color/luas_purple"
                                     android:gravity="center_horizontal"
                                     android:textColor="#ffffff"
                                     android:elevation="6dp" />
