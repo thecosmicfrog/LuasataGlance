@@ -481,7 +481,8 @@
                                     android:elevation="6dp">
 
                                     <TableRow
-                                        android:id="@+id/green_line_tablerow_outbound_stop1">
+                                        android:id="@+id/green_line_tablerow_outbound_stop1"
+                                        android:background="@android:drawable/list_selector_background">
 
                                         <TextView
                                             android:id="@+id/green_line_textview_outbound_stop1_name"
@@ -495,7 +496,8 @@
                                     </TableRow>
 
                                     <TableRow
-                                        android:id="@+id/green_line_tablerow_outbound_stop2">
+                                        android:id="@+id/green_line_tablerow_outbound_stop2"
+                                        android:background="@android:drawable/list_selector_background">
 
                                         <TextView
                                             android:id="@+id/green_line_textview_outbound_stop2_name"
@@ -509,7 +511,8 @@
                                     </TableRow>
 
                                     <TableRow
-                                        android:id="@+id/green_line_tablerow_outbound_stop3">
+                                        android:id="@+id/green_line_tablerow_outbound_stop3"
+                                        android:background="@android:drawable/list_selector_background">
 
                                         <TextView
                                             android:id="@+id/green_line_textview_outbound_stop3_name"
