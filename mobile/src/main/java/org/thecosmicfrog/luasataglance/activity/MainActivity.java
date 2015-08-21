@@ -46,7 +46,11 @@ public class MainActivity extends ActionBarActivity {
                     .commit();
         }
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.luas_purple))));
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(
+                        getResources().getColor(R.color.luas_purple)
+                )
+        );
     }
 
     @Override

@@ -63,7 +63,11 @@ public class FavouritesSelectActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourites_select);
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.luas_purple))));
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(
+                        getResources().getColor(R.color.luas_purple)
+                )
+        );
 
         /*
          * Build arrays for Red Line and Green Line stops from resources, then create Lists

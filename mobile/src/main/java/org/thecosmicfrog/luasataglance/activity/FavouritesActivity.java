@@ -57,7 +57,11 @@ public class FavouritesActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourites);
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.luas_purple))));
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(
+                        getResources().getColor(R.color.luas_purple)
+                )
+        );
     }
 
     @Override

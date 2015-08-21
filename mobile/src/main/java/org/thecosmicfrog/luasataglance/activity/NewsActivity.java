@@ -38,7 +38,11 @@ public class NewsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable((getResources().getColor(R.color.luas_purple))));
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(
+                        getResources().getColor(R.color.luas_purple)
+                )
+        );
 
         // Load the "Travel Updates" section of the Luas mobile website.
         webViewNews = (WebView) findViewById(R.id.webview_news);
