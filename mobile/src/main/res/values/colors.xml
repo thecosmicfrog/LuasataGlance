@@ -4,4 +4,6 @@
     <color name="message_success">#ff006600</color>
     <color name="message_error">#ffe00000</color>
     <color name="spinner_background">#ffffffff</color>
+    <color name="tab_red_line">#ffff4d4d</color>
+    <color name="tab_green_line">#ff33ad5C</color>
 </resources>

@@ -28,6 +28,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -192,6 +194,19 @@ public class LuasTimesFragment extends Fragment {
         tabSpec.setContent(R.id.tab_green_line);
         tabSpec.setIndicator("Green Line");
         tabHost.addTab(tabSpec);
+
+        /*
+         * Set appropriate colours for Red and Green Line tabs.
+         */
+        tabHost.getTabWidget().getChildAt(0).getBackground().setColorFilter(
+                getResources().getColor(R.color.tab_red_line),
+                PorterDuff.Mode.SRC_ATOP
+        );
+
+        tabHost.getTabWidget().getChildAt(1).getBackground().setColorFilter(
+                getResources().getColor(R.color.tab_green_line),
+                PorterDuff.Mode.SRC_ATOP
+        );
 
         /*
          * Set up Red Line tab.
