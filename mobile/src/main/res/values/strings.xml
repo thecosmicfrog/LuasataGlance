@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">27</string>
-    <string name="version_name">0.31</string>
+    <string name="version_code">28</string>
+    <string name="version_name">0.32</string>
 
     <!--
         Activities
@@ -50,7 +50,7 @@
     <string name="about_title_description">Description</string>
     <string name="about_description">Android Wear and mobile app providing real-time tram stop
         information for Dublin\'s Luas light rail service.</string>
-    <string name="about_title_license">License</string>
+    <string name="about_title_license">Open Source License</string>
     <string name="about_license">GNU General Public License (GPLv3)</string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
