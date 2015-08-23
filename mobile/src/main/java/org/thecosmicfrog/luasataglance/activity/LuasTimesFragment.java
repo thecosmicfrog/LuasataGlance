@@ -604,6 +604,9 @@ public class LuasTimesFragment extends Fragment {
         initStopForecastOnClickListeners();
     }
 
+    /**
+     * Initialise OnClickListeners for a stop forecast.
+     */
     private void initStopForecastOnClickListeners() {
         localeDefault = Locale.getDefault().toString();
         final NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(localeDefault, STOP_FORECAST);
@@ -631,6 +634,12 @@ public class LuasTimesFragment extends Fragment {
         }
     }
 
+    /**
+     * Show dialog for choosing notification times.
+     * @param direction Tram direction (inbound or outbound).
+     * @param index Index representing which specific tram to notify for.
+     * @param mapNotifyTimes Map of human-readable due times to machine-readable integers.
+     */
     private void showNotifyTimeDialog(String direction, int index, NotifyTimesMap mapNotifyTimes) {
         localeDefault = Locale.getDefault().toString();
 
