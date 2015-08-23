@@ -539,8 +539,6 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.red_line_textview_outbound_stop3_time),
                 };
 
-                initStopForecastOnClickListeners(RED_LINE);
-
                 break;
 
             case GREEN_LINE:
@@ -598,71 +596,38 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.green_line_textview_outbound_stop3_time),
                 };
 
-                initStopForecastOnClickListeners(GREEN_LINE);
-
                 break;
 
             default:
         }
+
+        initStopForecastOnClickListeners();
     }
 
-    private void initStopForecastOnClickListeners(String line) {
+    private void initStopForecastOnClickListeners() {
         localeDefault = Locale.getDefault().toString();
         final NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(localeDefault, STOP_FORECAST);
 
-        switch(line) {
-            case RED_LINE:
-                for (int i = 0; i < tableRowInboundStops.length; i++) {
-                    final int index = i;
+        for (int i = 0; i < tableRowInboundStops.length; i++) {
+            final int index = i;
 
-                    tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showNotifyTimeDialog(INBOUND, index, mapNotifyTimes);
-                        }
-                    });
+            tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showNotifyTimeDialog(INBOUND, index, mapNotifyTimes);
                 }
+            });
+        }
 
-                for (int i = 0; i < tableRowOutboundStops.length; i++) {
-                    final int index = i;
+        for (int i = 0; i < tableRowOutboundStops.length; i++) {
+            final int index = i;
 
-                    tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showNotifyTimeDialog(OUTBOUND, index, mapNotifyTimes);
-                        }
-                    });
+            tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showNotifyTimeDialog(OUTBOUND, index, mapNotifyTimes);
                 }
-
-                break;
-
-            case GREEN_LINE:
-                for (int i = 0; i < tableRowInboundStops.length; i++) {
-                    final int index = i;
-
-                    tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showNotifyTimeDialog(INBOUND, index, mapNotifyTimes);
-                        }
-                    });
-                }
-
-                for (int i = 0; i < tableRowOutboundStops.length; i++) {
-                    final int index = i;
-
-                    tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showNotifyTimeDialog(OUTBOUND, index, mapNotifyTimes);
-                        }
-                    });
-                }
-
-                break;
-
-            default:
-
+            });
         }
     }
 
