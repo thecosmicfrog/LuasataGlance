@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:textColor="#000000"
+    android:textColor="@android:color/black"
     android:textSize="18sp"
     android:checkMark="?android:attr/listChoiceIndicatorMultiple"
     android:padding="12dp" />

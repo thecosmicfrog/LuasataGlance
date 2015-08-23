@@ -45,8 +45,8 @@
                     android:id="@+id/textview_stop_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#006600"
-                    android:textColor="#ffffff"
+                    android:background="@color/message_success"
+                    android:textColor="@android:color/white"
                     android:gravity="center_horizontal"
                     android:elevation="6dp"
                     android:textStyle="bold" />
@@ -68,9 +68,9 @@
                     android:text="@string/inbound"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#100054"
+                    android:background="@color/luas_purple"
                     android:gravity="center_horizontal"
-                    android:textColor="#ffffff"
+                    android:textColor="@android:color/white"
                     android:elevation="6dp"
                     android:textStyle="bold" />
 
@@ -78,7 +78,7 @@
                     android:id="@+id/tablelayout_inbound"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#ffffff"
+                    android:background="@android:color/white"
                     android:stretchColumns="*"
                     android:elevation="6dp">
 
@@ -124,9 +124,9 @@
                     android:text="@string/outbound"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#100054"
+                    android:background="@color/luas_purple"
                     android:gravity="center_horizontal"
-                    android:textColor="#ffffff"
+                    android:textColor="@android:color/white"
                     android:elevation="6dp"
                     android:textStyle="bold" />
 
@@ -134,7 +134,7 @@
                     android:id="@+id/tablelayout_outbound"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#ffffff"
+                    android:background="@android:color/white"
                     android:stretchColumns="*"
                     android:elevation="6dp">
 

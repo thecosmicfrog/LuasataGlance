@@ -22,7 +22,7 @@
         android:text="Red Line"
         android:layout_weight="0.5"
         android:gravity="center_vertical|center_horizontal"
-        android:textColor="#FFFFFF"
+        android:textColor="@android:color/white"
         android:textSize="24sp"
         android:clickable="true"
         android:paddingTop="20dp" />
@@ -35,7 +35,7 @@
         android:text="Green Line"
         android:layout_weight="0.5"
         android:gravity="center_vertical|center_horizontal"
-        android:textColor="#FFFFFF"
+        android:textColor="@android:color/white"
         android:textSize="24sp"
         android:clickable="true"
         android:paddingBottom="20dp" />

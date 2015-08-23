@@ -22,7 +22,7 @@
         android:paddingBottom="12dp"
         android:text="@string/favourites_none_selected"
         android:textSize="22sp"
-        android:background="#ffffff"
+        android:background="@android:color/white"
         android:visibility="gone" />
 
     <ListView

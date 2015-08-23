@@ -104,8 +104,8 @@
                                     android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#006600"
-                                    android:textColor="#ffffff"
+                                    android:background="@color/message_success"
+                                    android:textColor="@android:color/white"
                                     android:gravity="center_horizontal"
                                     android:elevation="6dp" />
 
@@ -114,7 +114,7 @@
                                     android:text="@string/message"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#ffffff"
+                                    android:background="@android:color/white"
                                     android:gravity="center_horizontal"
                                     android:elevation="6dp"
                                     android:textSize="16sp"
@@ -142,7 +142,7 @@
                                         android:paddingTop="12dp"
                                         android:text="@string/information"
                                         android:textSize="16sp"
-                                        android:background="#ffffff" />
+                                        android:background="@android:color/white" />
 
                                     <TextView
                                         android:id="@+id/textview_swipe_refresh_tutorial"
@@ -153,7 +153,7 @@
                                         android:paddingBottom="12dp"
                                         android:text="@string/swipe_refresh_tutorial"
                                         android:textSize="16sp"
-                                        android:background="#ffffff" />
+                                        android:background="@android:color/white" />
                                 </LinearLayout>
 
                                 <Space
@@ -168,14 +168,14 @@
                                     android:layout_height="wrap_content"
                                     android:background="@color/luas_purple"
                                     android:gravity="center_horizontal"
-                                    android:textColor="#ffffff"
+                                    android:textColor="@android:color/white"
                                     android:elevation="6dp" />
 
                                 <TableLayout
                                     android:id="@+id/red_line_tablelayout_inbound"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#ffffff"
+                                    android:background="@android:color/white"
                                     android:stretchColumns="*"
                                     android:elevation="6dp">
 
@@ -237,14 +237,14 @@
                                     android:layout_height="wrap_content"
                                     android:background="@color/luas_purple"
                                     android:gravity="center_horizontal"
-                                    android:textColor="#ffffff"
+                                    android:textColor="@android:color/white"
                                     android:elevation="6dp" />
 
                                 <TableLayout
                                     android:id="@+id/red_line_tablelayout_outbound"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#ffffff"
+                                    android:background="@android:color/white"
                                     android:stretchColumns="*"
                                     android:elevation="6dp">
 
@@ -370,8 +370,8 @@
                                     android:textStyle="bold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#006600"
-                                    android:textColor="#ffffff"
+                                    android:background="@color/message_success"
+                                    android:textColor="@android:color/white"
                                     android:gravity="center_horizontal"
                                     android:elevation="6dp" />
 
@@ -380,7 +380,7 @@
                                     android:text="@string/message"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#ffffff"
+                                    android:background="@android:color/white"
                                     android:gravity="center_horizontal"
                                     android:elevation="6dp"
                                     android:textSize="16sp"
@@ -400,14 +400,14 @@
                                     android:layout_height="wrap_content"
                                     android:background="@color/luas_purple"
                                     android:gravity="center_horizontal"
-                                    android:textColor="#ffffff"
+                                    android:textColor="@android:color/white"
                                     android:elevation="6dp" />
 
                                 <TableLayout
                                     android:id="@+id/green_line_tablelayout_inbound"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#ffffff"
+                                    android:background="@android:color/white"
                                     android:stretchColumns="*"
                                     android:elevation="6dp">
 
@@ -469,14 +469,14 @@
                                     android:layout_height="wrap_content"
                                     android:background="@color/luas_purple"
                                     android:gravity="center_horizontal"
-                                    android:textColor="#ffffff"
+                                    android:textColor="@android:color/white"
                                     android:elevation="6dp" />
 
                                 <TableLayout
                                     android:id="@+id/green_line_tablelayout_outbound"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="#ffffff"
+                                    android:background="@android:color/white"
                                     android:stretchColumns="*"
                                     android:elevation="6dp">
 
