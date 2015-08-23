@@ -25,6 +25,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import org.thecosmicfrog.luasataglance.R;
 
@@ -44,8 +45,14 @@ public class NewsActivity extends ActionBarActivity {
                 )
         );
 
-        // Load the "Travel Updates" section of the Luas mobile website.
+        /*
+         * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
+         * browser is liable to open.
+         */
         webViewNews = (WebView) findViewById(R.id.webview_news);
+        webViewNews.setWebViewClient(new WebViewClient());
+
+        // Load the "Travel Updates" section of the Luas mobile website.
         webViewNews.loadUrl(URL_NEWS);
     }
 }
