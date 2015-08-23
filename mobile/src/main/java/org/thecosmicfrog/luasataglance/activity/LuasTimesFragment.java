@@ -209,6 +209,16 @@ public class LuasTimesFragment extends Fragment {
         );
 
         /*
+         * Keep track of the currently-focused tab.
+         */
+        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                currentTab = tabHost.getCurrentTabTag();
+            }
+        });
+
+        /*
          * Set up Red Line tab.
          */
         progressBarRedLineLoadingCircle =
