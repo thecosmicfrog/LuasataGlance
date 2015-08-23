@@ -599,6 +599,8 @@ public class LuasTimesFragment extends Fragment {
                 break;
 
             default:
+                // If for some reason the line doesn't make sense.
+                Log.e(LOG_TAG, "Invalid line specified.");
         }
 
         initStopForecastOnClickListeners();
@@ -701,7 +703,8 @@ public class LuasTimesFragment extends Fragment {
                 break;
 
             default:
-
+                // If for some reason the direction doesn't make sense.
+                Log.e(LOG_TAG, "Invalid direction: " + direction);
         }
     }
 
