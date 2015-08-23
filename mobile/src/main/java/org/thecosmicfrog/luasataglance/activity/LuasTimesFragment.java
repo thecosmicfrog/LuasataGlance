@@ -209,12 +209,14 @@ public class LuasTimesFragment extends Fragment {
         );
 
         /*
-         * Keep track of the currently-focused tab.
+         * When the tab changes, keep track of which is the currently-focused tab, then
+         * initialise that tab to ensure variables are up to date.
          */
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
                 currentTab = tabHost.getCurrentTabTag();
+                initStopForecast(currentTab);
             }
         });
 
