@@ -65,7 +65,8 @@ import java.util.TimerTask;
 
 /**
  * Implementation of App Widget functionality.
- * App Widget Configuration implemented in {@link StopForecastWidgetConfigureActivity StopForecastWidgetConfigureActivity}
+ * App Widget Configuration implemented in
+ * {@link StopForecastWidgetConfigureActivity StopForecastWidgetConfigureActivity}
  */
 public class StopForecastWidget extends AppWidgetProvider {
 
@@ -709,7 +710,9 @@ public class StopForecastWidget extends AppWidgetProvider {
                         for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                             if (i < 2) {
                                 if (localeDefault.startsWith(GAEILGE)) {
-                                    inboundTram = mapEnglishGaeilge.get(sf.getInboundTrams().get(i).getDestination());
+                                    inboundTram = mapEnglishGaeilge.get(
+                                            sf.getInboundTrams().get(i).getDestination()
+                                    );
                                 } else {
                                     inboundTram = sf.getInboundTrams().get(i).getDestination();
                                 }
@@ -757,7 +760,9 @@ public class StopForecastWidget extends AppWidgetProvider {
                         for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                             if (i < 2) {
                                 if (localeDefault.startsWith(GAEILGE)) {
-                                    outboundTram = mapEnglishGaeilge.get(sf.getOutboundTrams().get(i).getDestination());
+                                    outboundTram = mapEnglishGaeilge.get(
+                                            sf.getOutboundTrams().get(i).getDestination()
+                                    );
                                 } else {
                                     outboundTram = sf.getOutboundTrams().get(i).getDestination();
                                 }
@@ -805,7 +810,10 @@ public class StopForecastWidget extends AppWidgetProvider {
                         R.color.message_error
                 );
 
-                views.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME, res.getString(R.string.message_error));
+                views.setTextViewText(
+                        TEXTVIEW_INBOUND_STOP1_NAME,
+                        res.getString(R.string.message_error)
+                );
             }
         }
 

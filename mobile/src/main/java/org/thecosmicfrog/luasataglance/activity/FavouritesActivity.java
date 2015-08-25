@@ -97,7 +97,9 @@ public class FavouritesActivity extends ActionBarActivity {
             /*
              * Populate ListView with the user's favourite stops, as read from file.
              */
-            ListView listViewFavouriteStops = (ListView) findViewById(R.id.listview_favourite_stops);
+            ListView listViewFavouriteStops = (ListView) findViewById(
+                    R.id.listview_favourite_stops
+            );
             listViewFavouriteStops.setAdapter(adapterFavouriteStops);
             listViewFavouriteStops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

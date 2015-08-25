@@ -55,7 +55,8 @@ public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
     private final String FILE_WIDGET_SELECTED_STOPS = "widget_selected_stops";
 
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private static final String PREFS_NAME = "org.thecosmicfrog.luasataglance.widget.StopForecastWidget";
+    private static final String PREFS_NAME =
+            "org.thecosmicfrog.luasataglance.widget.StopForecastWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
 
     private ArrayAdapter<String> adapterSelectedStops;
@@ -84,7 +85,9 @@ public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
          * two Lists.
          */
         String[] redLineArrayStops = getResources().getStringArray(R.array.red_line_array_stops);
-        String[] greenLineArrayStops = getResources().getStringArray(R.array.green_line_array_stops);
+        String[] greenLineArrayStops = getResources().getStringArray(
+                R.array.green_line_array_stops
+        );
 
         List<String> redLineListStops = Arrays.asList(redLineArrayStops);
         List<String> greenLineListStops = Arrays.asList(greenLineArrayStops);
@@ -132,7 +135,8 @@ public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        // If this activity was started with an intent without an app widget ID, finish with an error.
+        // If this activity was started with an intent without an app widget ID, finish with an
+        // error.
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
         }
@@ -160,7 +164,11 @@ public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
         if (id == R.id.action_favourites_save) {
             try {
                 if (selectedItems != null && !selectedItems.isEmpty()) {
-                    FileOutputStream file = openFileOutput(FILE_WIDGET_SELECTED_STOPS, Context.MODE_PRIVATE);
+                    FileOutputStream file = openFileOutput(
+                            FILE_WIDGET_SELECTED_STOPS,
+                            Context.MODE_PRIVATE
+                    );
+
                     file.write(Serializer.serialize(selectedItems));
 
                     file.close();

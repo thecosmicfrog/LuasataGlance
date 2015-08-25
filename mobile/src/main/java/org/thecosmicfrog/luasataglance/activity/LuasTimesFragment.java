@@ -357,8 +357,12 @@ public class LuasTimesFragment extends Fragment {
      * Set the current tab and the position of the Spinner.
      */
     private void setTabAndSpinner() {
-        String[] redLineArrayStops = getResources().getStringArray(R.array.red_line_array_stops);
-        String[] greenLineArrayStops = getResources().getStringArray(R.array.green_line_array_stops);
+        String[] redLineArrayStops = getResources().getStringArray(
+                R.array.red_line_array_stops
+        );
+        String[] greenLineArrayStops = getResources().getStringArray(
+                R.array.green_line_array_stops
+        );
 
         List<String> redLineListStops = Arrays.asList(redLineArrayStops);
         List<String> greenLineListStops = Arrays.asList(greenLineArrayStops);
