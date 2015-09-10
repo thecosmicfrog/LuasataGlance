@@ -10,3 +10,5 @@ gradle.properties
 *.iml
 /local.properties
 manifest-merger-release-report.txt
+mobile/src/main/java/org/thecosmicfrog/luasataglance/util/Auth.java
+
