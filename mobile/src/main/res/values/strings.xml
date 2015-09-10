@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">30</string>
-    <string name="version_name">0.34</string>
+    <string name="version_code">31</string>
+    <string name="version_name">0.35</string>
 
     <!--
         Activities
@@ -19,7 +19,7 @@
     -->
     <string name="message">Awaiting Luas status&#8230;</string>
     <string name="message_title">Status</string>
-    <string name="message_success">operating normally</string>
+    <string name="message_success">All services operating normally</string>
     <string name="message_error"> Error retrieving times from Luas RTPI system.\n\nPlease check
         your network connection. If there are no issues, the Luas RTPI system may be down.
     </string>
@@ -54,7 +54,7 @@
     <string name="about_license">GNU General Public License (GPLv3)</string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
-    <string name="about_irish_translations">Irish translations by Féidhlim Seoighe</string>
+    <string name="about_irish_translations">Irish translations by Feidhlim Seoighe</string>
 
     <!--
         Favourites

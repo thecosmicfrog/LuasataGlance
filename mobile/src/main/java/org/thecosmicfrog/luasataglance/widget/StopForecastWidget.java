@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -40,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Auth;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
@@ -74,7 +76,6 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     private static final String PREFS_NAME = "org.thecosmicfrog.luasataglane.StopForecastWidget";
     private static final String FILE_WIDGET_SELECTED_STOPS = "widget_selected_stops";
-    private static final String MESSAGE_SUCCESS_ENGLISH = "operating normally";
     private static final int LOAD_LIMIT_MILLIS = 4000;
     private static final int STOP_FORECAST_TIMEOUT_MILLIS = 20000;
 
@@ -440,124 +441,124 @@ public class StopForecastWidget extends AppWidgetProvider {
                 stopCodes = new HashMap<String, String>() {
                     {
                         // Red Line
-                        put("Iosta na Rinne", "TPT");
-                        put("Duga Spencer", "SDK");
-                        put("Cearnóg an Mhéara - CNÉ", "MYS");
-                        put("Duga Sheoirse", "GDK");
-                        put("Conghaile", "CON");
-                        put("Busáras", "BUS");
-                        put("Sráid na Mainistreach", "ABB");
-                        put("Jervis", "JER");
-                        put("Na Ceithre Cúirteanna", "FOU");
-                        put("Margadh na Feirme", "SMI");
-                        put("Árd-Mhúsaem", "MUS");
-                        put("Heuston", "HEU");
-                        put("Ospidéal San Séamas", "JAM");
-                        put("Fatima", "FAT");
-                        put("Rialto", "RIA");
-                        put("Bóthar na Siúire", "SUI");
-                        put("An Droichead Órga", "GOL");
-                        put("Droimeanach", "DRI");
-                        put("An Capall Dubh", "BLA");
-                        put("An Cloigín Gorm", "BLU");
-                        put("An Chill Mhór", "KYL");
-                        put("An Bhó Dhearg", "RED");
-                        put("Coill an Rí", "KIN");
-                        put("Belgard", "BEL");
-                        put("Baile an Chócaigh", "COO");
-                        put("Ospidéal Thamhlachta", "HOS");
-                        put("Tamhlacht", "TAL");
-                        put("Fothar Chardain", "FET");
-                        put("Baile an tSíbrigh", "CVN");
-                        put("Campas Gnó Iarthar na Cathrach", "CIT");
-                        put("Baile Uí Fhoirtcheirn", "FOR");
-                        put("Teach Sagard", "SAG");
+                        put("Iosta na Rinne", "LUAS57");
+                        put("Duga Spencer", "LUAS56");
+                        put("Cearnóg an Mhéara - CNÉ", "LUAS55");
+                        put("Duga Sheoirse", "LUAS54");
+                        put("Conghaile", "LUAS23");
+                        put("Busáras", "LUAS22");
+                        put("Sráid na Mainistreach", "LUAS21");
+                        put("Jervis", "LUAS20");
+                        put("Na Ceithre Cúirteanna", "LUAS19");
+                        put("Margadh na Feirme", "LUAS18");
+                        put("Árd-Mhúsaem", "LUAS17");
+                        put("Heuston", "LUAS16");
+                        put("Ospidéal San Séamas", "LUAS15");
+                        put("Fatima", "LUAS14");
+                        put("Rialto", "LUAS13");
+                        put("Bóthar na Siúire", "LUAS12");
+                        put("An Droichead Órga", "LUAS11");
+                        put("Droimeanach", "LUAS10");
+                        put("An Capall Dubh", "LUAS9");
+                        put("An Cloigín Gorm", "LUAS8");
+                        put("An Chill Mhór", "LUAS7");
+                        put("An Bhó Dhearg", "LUAS6");
+                        put("Coill an Rí", "LUAS5");
+                        put("Belgard", "LUAS4");
+                        put("Baile an Chócaigh", "LUAS3");
+                        put("Ospidéal Thamhlachta", "LUAS2");
+                        put("Tamhlacht", "LUAS1");
+                        put("Fothar Chardain", "LUAS49");
+                        put("Baile an tSíbrigh", "LUAS50");
+                        put("Campas Gnó Iarthar na Cathrach", "LUAS51");
+                        put("Baile Uí Fhoirtcheirn", "LUAS52");
+                        put("Teach Sagard", "LUAS53");
 
                         // Green Line
-                        put("Faiche Stiabhna", "STS");
-                        put("Sráid Fhearchair", "HAR");
-                        put("Charlemont", "CHA");
-                        put("Raghnallach", "RAN");
-                        put("Coill na Feá", "BEE");
-                        put("Cowper", "COW");
-                        put("Baile an Mhuilinn", "MIL");
-                        put("Na Glasáin", "WIN");
-                        put("Dún Droma", "DUN");
-                        put("Baile Amhlaoibh", "BAL");
-                        put("Cill Mochuda", "KIL");
-                        put("Stigh Lorgan", "STI");
-                        put("Áth an Ghainimh", "SAN");
-                        put("An Pháirc Láir", "CPK");
-                        put("Gleann an Chairn", "GLE");
-                        put("An Eachrais", "GAL");
-                        put("Gleann Bhaile na Lobhar", "LEO");
-                        put("Coill Bhaile Uí Ógáin", "BAW");
-                        put("Carraig Mhaighin", "CCK");
-                        put("Baile an Locháin", "LAU");
-                        put("Coill na Silíní", "CHE");
-                        put("Gleann Bhríde", "BRI");
+                        put("Faiche Stiabhna", "LUAS24");
+                        put("Sráid Fhearchair", "LUAS25");
+                        put("Charlemont", "LUAS26");
+                        put("Raghnallach", "LUAS27");
+                        put("Coill na Feá", "LUAS28");
+                        put("Cowper", "LUAS29");
+                        put("Baile an Mhuilinn", "LUAS30");
+                        put("Na Glasáin", "LUAS31");
+                        put("Dún Droma", "LUAS32");
+                        put("Baile Amhlaoibh", "LUAS33");
+                        put("Cill Mochuda", "LUAS34");
+                        put("Stigh Lorgan", "LUAS35");
+                        put("Áth an Ghainimh", "LUAS36");
+                        put("An Pháirc Láir", "LUAS37");
+                        put("Gleann an Chairn", "LUAS38");
+                        put("An Eachrais", "LUAS39");
+                        put("Gleann Bhaile na Lobhar", "LUAS40");
+                        put("Coill Bhaile Uí Ógáin", "LUAS42");
+                        put("Carraig Mhaighin", "LUAS44");
+                        put("Baile an Locháin", "LUAS46");
+                        put("Coill na Silíní", "LUAS47");
+                        put("Gleann Bhríde", "LUAS48");
                     }
                 };
             } else {
                 stopCodes = new HashMap<String, String>() {
                     {
                         // Red Line
-                        put("The Point", "TPT");
-                        put("Spencer Dock", "SDK");
-                        put("Mayor Square - NCI", "MYS");
-                        put("George's Dock", "GDK");
-                        put("Connolly", "CON");
-                        put("Busáras", "BUS");
-                        put("Abbey Street", "ABB");
-                        put("Jervis", "JER");
-                        put("Four Courts", "FOU");
-                        put("Smithfield", "SMI");
-                        put("Museum", "MUS");
-                        put("Heuston", "HEU");
-                        put("James's", "JAM");
-                        put("Fatima", "FAT");
-                        put("Rialto", "RIA");
-                        put("Suir Road", "SUI");
-                        put("Goldenbridge", "GOL");
-                        put("Drimnagh", "DRI");
-                        put("Blackhorse", "BLA");
-                        put("Bluebell", "BLU");
-                        put("Kylemore", "KYL");
-                        put("Red Cow", "RED");
-                        put("Kingswood", "KIN");
-                        put("Belgard", "BEL");
-                        put("Cookstown", "COO");
-                        put("Hospital", "HOS");
-                        put("Tallaght", "TAL");
-                        put("Fettercairn", "FET");
-                        put("Cheeverstown", "CVN");
-                        put("Citywest Campus", "CIT");
-                        put("Fortunestown", "FOR");
-                        put("Saggart", "SAG");
+                        put("The Point", "LUAS57");
+                        put("Spencer Dock", "LUAS56");
+                        put("Mayor Square - NCI", "LUAS55");
+                        put("George's Dock", "LUAS54");
+                        put("Connolly", "LUAS23");
+                        put("Busáras", "LUAS22");
+                        put("Abbey Street", "LUAS21");
+                        put("Jervis", "LUAS20");
+                        put("Four Courts", "LUAS19");
+                        put("Smithfield", "LUAS18");
+                        put("Museum", "LUAS17");
+                        put("Heuston", "LUAS16");
+                        put("James's", "LUAS15");
+                        put("Fatima", "LUAS14");
+                        put("Rialto", "LUAS13");
+                        put("Suir Road", "LUAS12");
+                        put("Goldenbridge", "LUAS11");
+                        put("Drimnagh", "LUAS10");
+                        put("Blackhorse", "LUAS9");
+                        put("Bluebell", "LUAS8");
+                        put("Kylemore", "LUAS7");
+                        put("Red Cow", "LUAS6");
+                        put("Kingswood", "LUAS5");
+                        put("Belgard", "LUAS4");
+                        put("Cookstown", "LUAS3");
+                        put("Hospital", "LUAS2");
+                        put("Tallaght", "LUAS1");
+                        put("Fettercairn", "LUAS49");
+                        put("Cheeverstown", "LUAS50");
+                        put("Citywest Campus", "LUAS51");
+                        put("Fortunestown", "LUAS52");
+                        put("Saggart", "LUAS53");
 
                         // Green Line
-                        put("St. Stephen's Green", "STS");
-                        put("Harcourt", "HAR");
-                        put("Charlemont", "CHA");
-                        put("Ranelagh", "RAN");
-                        put("Beechwood", "BEE");
-                        put("Cowper", "COW");
-                        put("Milltown", "MIL");
-                        put("Windy Arbour", "WIN");
-                        put("Dundrum", "DUN");
-                        put("Balally", "BAL");
-                        put("Kilmacud", "KIL");
-                        put("Stillorgan", "STI");
-                        put("Sandyford", "SAN");
-                        put("Central Park", "CPK");
-                        put("Glencairn", "GLE");
-                        put("The Gallops", "GAL");
-                        put("Leopardstown Valley", "LEO");
-                        put("Ballyogan Wood", "BAW");
-                        put("Carrickmines", "CCK");
-                        put("Laughanstown", "LAU");
-                        put("Cherrywood", "CHE");
-                        put("Brides Glen", "BRI");
+                        put("St. Stephen's Green", "LUAS24");
+                        put("Harcourt", "LUAS25");
+                        put("Charlemont", "LUAS26");
+                        put("Ranelagh", "LUAS27");
+                        put("Beechwood", "LUAS28");
+                        put("Cowper", "LUAS29");
+                        put("Milltown", "LUAS30");
+                        put("Windy Arbour", "LUAS31");
+                        put("Dundrum", "LUAS32");
+                        put("Balally", "LUAS33");
+                        put("Kilmacud", "LUAS34");
+                        put("Stillorgan", "LUAS35");
+                        put("Sandyford", "LUAS36");
+                        put("Central Park", "LUAS37");
+                        put("Glencairn", "LUAS38");
+                        put("The Gallops", "LUAS39");
+                        put("Leopardstown Valley", "LUAS40");
+                        put("Ballyogan Wood", "LUAS42");
+                        put("Carrickmines", "LUAS44");
+                        put("Laughanstown", "LUAS46");
+                        put("Cherrywood", "LUAS47");
+                        put("Brides Glen", "LUAS48");
                     }
                 };
             }
@@ -580,27 +581,40 @@ public class StopForecastWidget extends AppWidgetProvider {
             String luasTimesJson = null;
 
             // HTTP parameters to pass to the API.
-            String action = "times";
-            String station = (String) listParams.get(1);
-            String stationCode = stopCodes.get(station);
+            String format = "json";
+            String stopName = (String) listParams.get(1);
+            String stopId = stopCodes.get(stopName);
 
             try {
                 setIsLoading(context, true);
 
                 // Build the API URL.
-                final String BASE_URL = "https://api.thecosmicfrog.org/cgi-bin/luas-api.php?";
-                final String PARAM_ACTION = "action";
-                final String PARAM_STATION = "station";
+                final String BASE_URL =
+                        "http://www.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?";
+                final String PARAM_STOPID = "stopid";
+                final String PARAM_FORMAT = "format";
 
                 Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                        .appendQueryParameter(PARAM_ACTION, action)
-                        .appendQueryParameter(PARAM_STATION, stationCode)
+                        .appendQueryParameter(PARAM_STOPID, stopId)
+                        .appendQueryParameter(PARAM_FORMAT, format)
                         .build();
 
                 URL url = new URL(builtUri.toString());
 
+                /*
+                 * Dublinked is protected by HTTP Basic auth. Send the username and password as
+                 * part of the request. This username and password should not be important from a
+                 * security perspective, as the auth is just used as a simple rate limiter.
+                 */
+                final String BASIC_AUTH =
+                        "Basic " + Base64.encodeToString(
+                                (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
+                                Base64.NO_WRAP
+                        );
+
                 httpUrlConnection = (HttpURLConnection) url.openConnection();
                 httpUrlConnection.setRequestMethod("GET");
+                httpUrlConnection.setRequestProperty("Authorization", BASIC_AUTH);
                 httpUrlConnection.connect();
 
                 InputStream inputStream = httpUrlConnection.getInputStream();
@@ -668,31 +682,32 @@ public class StopForecastWidget extends AppWidgetProvider {
 
             // If a valid stop forecast exists...
             if (sf != null) {
-                if (sf.getMessage() != null) {
-                    /*
-                     * Change the color of the stop name TextView depending on the status.
-                     * Status will always come from the server in English.
-                     */
-                    if (sf.getMessage().contains(MESSAGE_SUCCESS_ENGLISH)) {
+                if (sf.getErrorMessage() != null) {
+                    if (sf.getErrorMessage().equals("")) {
+                        /*
+                         * No error message on server. Change the stop name TextView to green.
+                         */
                         views.setInt(R.id.textview_stop_name,
                                 "setBackgroundResource",
                                 R.color.message_success
                         );
-                    }
-                    else {
+                    } else {
                         Log.e(LOG_TAG, "Server has returned a service disruption or error.");
 
                         views.setInt(R.id.textview_stop_name,
                                 "setBackgroundResource",
                                 R.color.message_error
                         );
-                    }
 
-                    /*
-                     * To make best use of the widget's real estate, re-use one of the inbound stop
-                     * TextViews for the status message.
-                     */
-                    views.setTextViewText(R.id.textview_inbound_stop1_name, sf.getMessage());
+                        /*
+                         * To make best use of the widget's real estate, re-use one of the inbound
+                         * stop TextViews for the status message.
+                         */
+                        views.setTextViewText(
+                                R.id.textview_inbound_stop1_name,
+                                sf.getErrorMessage()
+                        );
+                    }
                 }
 
                 /*
@@ -831,11 +846,11 @@ public class StopForecastWidget extends AppWidgetProvider {
             StopForecast stopForecast = new StopForecast();
 
             // These are the names of the JSON objects that need to be extracted.
-            final String LUAS_MESSAGE = "message";
-            final String LUAS_TRAMS = "trams";
+            final String LUAS_ERRORMESSAGE = "errormessage";
+            final String LUAS_RESULTS = "results";
             final String LUAS_DESTINATION = "destination";
             final String LUAS_DIRECTION = "direction";
-            final String LUAS_DUEMINUTES = "dueMinutes";
+            final String LUAS_DUETIME = "duetime";
 
             JSONObject tramsJson = new JSONObject(forecastJsonStr);
 
@@ -843,10 +858,10 @@ public class StopForecastWidget extends AppWidgetProvider {
              * If a message is returned from the server, add it to the StopForecast object.
              * Otherwise, set the message field to null.
              */
-            if (tramsJson.has(LUAS_MESSAGE)) {
-                stopForecast.setMessage(tramsJson.getString(LUAS_MESSAGE));
+            if (tramsJson.has(LUAS_ERRORMESSAGE)) {
+                stopForecast.setErrorMessage(tramsJson.getString(LUAS_ERRORMESSAGE));
             } else {
-                stopForecast.setMessage(null);
+                stopForecast.setErrorMessage(null);
             }
 
             /*
@@ -854,32 +869,34 @@ public class StopForecastWidget extends AppWidgetProvider {
              * as an array of both inbound and output trams.
              * Otherwise, set both fields to null.
              */
-            if (tramsJson.has(LUAS_TRAMS)) {
-                JSONArray tramsArray = tramsJson.getJSONArray(LUAS_TRAMS);
+            if (tramsJson.has(LUAS_RESULTS)) {
+                JSONArray tramsArray = tramsJson.getJSONArray(LUAS_RESULTS);
 
                 Tram[] trams = new Tram[tramsArray.length()];
 
                 for (int i = 0; i < tramsArray.length(); i++) {
                     String destination;
                     String direction;
-                    String dueMinutes;
+                    String duetime;
 
                     // Get the JSON object representing the trams.
                     JSONObject tramObject = tramsArray.getJSONObject(i);
 
-                    destination = tramObject.getString(LUAS_DESTINATION);
-                    direction = tramObject.getString(LUAS_DIRECTION);
-                    dueMinutes = tramObject.getString(LUAS_DUEMINUTES);
+                    // Strip out the annoying "LUAS " prefix from the destination.
+                    destination = tramObject.getString(LUAS_DESTINATION).replace("LUAS ", "");
 
-                    trams[i] = new Tram(destination, direction, dueMinutes);
+                    direction = tramObject.getString(LUAS_DIRECTION);
+                    duetime = tramObject.getString(LUAS_DUETIME);
+
+                    trams[i] = new Tram(destination, direction, duetime);
 
                     switch (trams[i].getDirection()) {
-                        case "Inbound":
+                        case "I":
                             stopForecast.addInboundTram(trams[i]);
 
                             break;
 
-                        case "Outbound":
+                        case "O":
                             stopForecast.addOutboundTram(trams[i]);
 
                             break;

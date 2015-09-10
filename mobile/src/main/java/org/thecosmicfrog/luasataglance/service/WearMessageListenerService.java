@@ -121,62 +121,62 @@ public class WearMessageListenerService extends WearableListenerService {
         Map<String, String> stopCodes = new HashMap<String, String>() {
             {
                 // Red Line
-                put("The Point", "TPT");
-                put("Spencer Dock", "SDK");
-                put("Mayor Square - NCI", "MYS");
-                put("George's Dock", "GDK");
-                put("Connolly", "CON");
-                put("Busáras", "BUS");
-                put("Abbey Street", "ABB");
-                put("Jervis", "JER");
-                put("Four Courts", "FOU");
-                put("Smithfield", "SMI");
-                put("Museum", "MUS");
-                put("Heuston", "HEU");
-                put("James's", "JAM");
-                put("Fatima", "FAT");
-                put("Rialto", "RIA");
-                put("Suir Road", "SUI");
-                put("Goldenbridge", "GOL");
-                put("Drimnagh", "DRI");
-                put("Blackhorse", "BLA");
-                put("Bluebell", "BLU");
-                put("Kylemore", "KYL");
-                put("Red Cow", "RED");
-                put("Kingswood", "KIN");
-                put("Belgard", "BEL");
-                put("Cookstown", "COO");
-                put("Hospital", "HOS");
-                put("Tallaght", "TAL");
-                put("Fettercairn", "FET");
-                put("Cheeverstown", "CVN");
-                put("Citywest Campus", "CIT");
-                put("Fortunestown", "FOR");
-                put("Saggart", "SAG");
+                put("The Point", "LUAS57");
+                put("Spencer Dock", "LUAS56");
+                put("Mayor Square - NCI", "LUAS55");
+                put("George's Dock", "LUAS54");
+                put("Connolly", "LUAS23");
+                put("Busáras", "LUAS22");
+                put("Abbey Street", "LUAS21");
+                put("Jervis", "LUAS20");
+                put("Four Courts", "LUAS19");
+                put("Smithfield", "LUAS18");
+                put("Museum", "LUAS17");
+                put("Heuston", "LUAS16");
+                put("James's", "LUAS15");
+                put("Fatima", "LUAS14");
+                put("Rialto", "LUAS13");
+                put("Suir Road", "LUAS12");
+                put("Goldenbridge", "LUAS11");
+                put("Drimnagh", "LUAS10");
+                put("Blackhorse", "LUAS9");
+                put("Bluebell", "LUAS8");
+                put("Kylemore", "LUAS7");
+                put("Red Cow", "LUAS6");
+                put("Kingswood", "LUAS5");
+                put("Belgard", "LUAS4");
+                put("Cookstown", "LUAS3");
+                put("Hospital", "LUAS2");
+                put("Tallaght", "LUAS1");
+                put("Fettercairn", "LUAS49");
+                put("Cheeverstown", "LUAS50");
+                put("Citywest Campus", "LUAS51");
+                put("Fortunestown", "LUAS52");
+                put("Saggart", "LUAS53");
 
                 // Green Line
-                put("St. Stephen's Green", "STS");
-                put("Harcourt", "HAR");
-                put("Charlemont", "CHA");
-                put("Ranelagh", "RAN");
-                put("Beechwood", "BEE");
-                put("Cowper", "COW");
-                put("Milltown", "MIL");
-                put("Windy Arbour", "WIN");
-                put("Dundrum", "DUN");
-                put("Balally", "BAL");
-                put("Kilmacud", "KIL");
-                put("Stillorgan", "STI");
-                put("Sandyford", "SAN");
-                put("Central Park", "CPK");
-                put("Glencairn", "GLE");
-                put("The Gallops", "GAL");
-                put("Leopardstown Valley", "LEO");
-                put("Ballyogan Wood", "BAW");
-                put("Carrickmines", "CCK");
-                put("Laughanstown", "LAU");
-                put("Cherrywood", "CHE");
-                put("Brides Glen", "BRI");
+                put("St. Stephen's Green", "LUAS24");
+                put("Harcourt", "LUAS25");
+                put("Charlemont", "LUAS26");
+                put("Ranelagh", "LUAS27");
+                put("Beechwood", "LUAS28");
+                put("Cowper", "LUAS29");
+                put("Milltown", "LUAS30");
+                put("Windy Arbour", "LUAS31");
+                put("Dundrum", "LUAS32");
+                put("Balally", "LUAS33");
+                put("Kilmacud", "LUAS34");
+                put("Stillorgan", "LUAS35");
+                put("Sandyford", "LUAS36");
+                put("Central Park", "LUAS37");
+                put("Glencairn", "LUAS38");
+                put("The Gallops", "LUAS39");
+                put("Leopardstown Valley", "LUAS40");
+                put("Ballyogan Wood", "LUAS42");
+                put("Carrickmines", "LUAS44");
+                put("Laughanstown", "LUAS46");
+                put("Cherrywood", "LUAS47");
+                put("Brides Glen", "LUAS48");
             }
         };
 
@@ -276,11 +276,11 @@ public class WearMessageListenerService extends WearableListenerService {
             StopForecast stopForecast = new StopForecast();
 
             // These are the names of the JSON objects that need to be extracted.
-            final String LUAS_MESSAGE = "message";
-            final String LUAS_TRAMS = "trams";
+            final String LUAS_ERRORMESSAGE = "errormessage";
+            final String LUAS_RESULTS = "results";
             final String LUAS_DESTINATION = "destination";
             final String LUAS_DIRECTION = "direction";
-            final String LUAS_DUEMINUTES = "dueMinutes";
+            final String LUAS_DUETIME = "duetime";
 
             JSONObject tramsJson = new JSONObject(forecastJsonStr);
 
@@ -288,10 +288,10 @@ public class WearMessageListenerService extends WearableListenerService {
              * If a message is returned from the server, add it to the StopForecast object.
              * Otherwise, set the message field to null.
              */
-            if (tramsJson.has(LUAS_MESSAGE)) {
-                stopForecast.setMessage(tramsJson.getString(LUAS_MESSAGE));
+            if (tramsJson.has(LUAS_ERRORMESSAGE)) {
+                stopForecast.setErrorMessage(tramsJson.getString(LUAS_ERRORMESSAGE));
             } else {
-                stopForecast.setMessage(null);
+                stopForecast.setErrorMessage(null);
             }
 
             /*
@@ -299,33 +299,40 @@ public class WearMessageListenerService extends WearableListenerService {
              * as an array of both inbound and output trams.
              * Otherwise, set both fields to null.
              */
-            if (tramsJson.has(LUAS_TRAMS)) {
-                JSONArray tramsArray = tramsJson.getJSONArray(LUAS_TRAMS);
+            if (tramsJson.has(LUAS_RESULTS)) {
+                JSONArray tramsArray = tramsJson.getJSONArray(LUAS_RESULTS);
 
                 Tram[] trams = new Tram[tramsArray.length()];
 
                 for (int i = 0; i < tramsArray.length(); i++) {
                     String destination;
                     String direction;
-                    String dueMinutes;
+                    String duetime;
 
                     // Get the JSON object representing the trams.
                     JSONObject tramObject = tramsArray.getJSONObject(i);
 
-                    destination = tramObject.getString(LUAS_DESTINATION);
-                    direction = tramObject.getString(LUAS_DIRECTION);
-                    dueMinutes = tramObject.getString(LUAS_DUEMINUTES);
+                    // Strip out the annoying "LUAS " prefix from the destination.
+                    destination = tramObject.getString(LUAS_DESTINATION).replace("LUAS ", "");
 
-                    trams[i] = new Tram(destination, direction, dueMinutes);
+                    direction = tramObject.getString(LUAS_DIRECTION);
+                    duetime = tramObject.getString(LUAS_DUETIME);
+
+                    trams[i] = new Tram(destination, direction, duetime);
 
                     switch (trams[i].getDirection()) {
-                        case "Inbound":
+                        case "I":
                             stopForecast.addInboundTram(trams[i]);
+
                             break;
-                        case "Outbound":
+
+                        case "O":
                             stopForecast.addOutboundTram(trams[i]);
+
                             break;
+
                         default:
+                            // If for some reason the direction doesn't make sense.
                             Log.e(LOG_TAG, "Invalid direction: " + trams[i].getDirection());
                     }
                 }
