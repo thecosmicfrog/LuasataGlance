@@ -256,27 +256,28 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                     StopForecast sf =
                             (StopForecast) Serializer.deserialize(messageEvent.getData());
 
+                    // If a valid stop forecast exists...
                     if (sf != null) {
-                        if (sf.getMessage() != null) {
+                        if (sf.getErrorMessage().equals("")) {
                             /*
-                             * Change the color of the stop name TextView depending on the status.
+                             * No error message on server. Change the message title TextView to
+                             * green and set a default success message.
                              */
                             TextView textViewStopName =
                                     (TextView) findViewById(R.id.textview_stop_name);
-
-                            if (sf.getMessage().contains(
-                                    getResources().getString(R.string.message_success)))
                                 textViewStopName.setBackgroundResource(R.color.message_success);
-                            else
-                                textViewStopName.setBackgroundResource(R.color.message_error);
-
+                        } else {
                             /*
                              * To make best use of the wearable's screen real estate, re-use one of
                              * the inbound stop TextViews for the status message.
                              */
+                            TextView textViewStopName =
+                                    (TextView) findViewById(R.id.textview_stop_name);
+                            textViewStopName.setBackgroundResource(R.color.message_error);
+
                             TextView textViewInboundStop1Name =
                                     (TextView) findViewById(R.id.textview_inbound_stop1_name);
-                            textViewInboundStop1Name.setText(sf.getMessage());
+                            textViewInboundStop1Name.setText(sf.getErrorMessage());
                         }
 
                         /*

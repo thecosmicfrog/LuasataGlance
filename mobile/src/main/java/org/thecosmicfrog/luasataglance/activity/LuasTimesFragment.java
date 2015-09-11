@@ -1088,8 +1088,6 @@ public class LuasTimesFragment extends Fragment {
                                 Base64.NO_WRAP
                         );
 
-                Log.v(LOG_TAG, BASIC_AUTH);
-
                 httpUrlConnection = (HttpURLConnection) url.openConnection();
                 httpUrlConnection.setRequestMethod("GET");
                 httpUrlConnection.setRequestProperty("Authorization", BASIC_AUTH);

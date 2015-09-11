@@ -23,6 +23,7 @@ package org.thecosmicfrog.luasataglance.service;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.util.Auth;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
 import java.io.BufferedReader;
@@ -191,25 +193,40 @@ public class WearMessageListenerService extends WearableListenerService {
             String luasTimesJson = null;
 
             // HTTP parameters to pass to the API.
-            String action = "times";
-            String station = params[0];
-            String stationCode = stopCodes.get(station);
+            String format = "json";
+            String stopName = params[0];
+            String stopId = stopCodes.get(stopName);
 
             try {
-                // Build the API URL.
-                final String BASE_URL = "https://api.thecosmicfrog.org/cgi-bin/luas-api.php?";
-                final String PARAM_ACTION = "action";
-                final String PARAM_STATION = "station";
+                /*
+                 * Build the API URL.
+                 */
+                final String BASE_URL =
+                        "http://www.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?";
+                final String PARAM_STOPID = "stopid";
+                final String PARAM_FORMAT = "format";
 
                 Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                        .appendQueryParameter(PARAM_ACTION, action)
-                        .appendQueryParameter(PARAM_STATION, stationCode)
+                        .appendQueryParameter(PARAM_STOPID, stopId)
+                        .appendQueryParameter(PARAM_FORMAT, format)
                         .build();
 
                 URL url = new URL(builtUri.toString());
 
+                /*
+                 * Dublinked is protected by HTTP Basic auth. Send the username and password as
+                 * part of the request. This username and password should not be important from a
+                 * security perspective, as the auth is just used as a simple rate limiter.
+                 */
+                final String BASIC_AUTH =
+                        "Basic " + Base64.encodeToString(
+                                (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
+                                Base64.NO_WRAP
+                        );
+
                 httpUrlConnection = (HttpURLConnection) url.openConnection();
                 httpUrlConnection.setRequestMethod("GET");
+                httpUrlConnection.setRequestProperty("Authorization", BASIC_AUTH);
                 httpUrlConnection.connect();
 
                 InputStream inputStream = httpUrlConnection.getInputStream();
@@ -286,12 +303,12 @@ public class WearMessageListenerService extends WearableListenerService {
 
             /*
              * If a message is returned from the server, add it to the StopForecast object.
-             * Otherwise, set the message field to null.
+             * Otherwise, set the message field to an empty String.
              */
             if (tramsJson.has(LUAS_ERRORMESSAGE)) {
                 stopForecast.setErrorMessage(tramsJson.getString(LUAS_ERRORMESSAGE));
             } else {
-                stopForecast.setErrorMessage(null);
+                stopForecast.setErrorMessage("");
             }
 
             /*
