@@ -18,6 +18,7 @@
         Main UI
     -->
     <string name="message_success">operating normally</string>
+    <string name="message_not_running">No trams expected at this stop.</string>
     <string name="message_error">Error retrieving times from Luas RTPI system</string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
