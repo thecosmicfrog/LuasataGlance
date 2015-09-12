@@ -30,8 +30,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -52,40 +50,40 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.api.ApiMethods;
+import org.thecosmicfrog.luasataglance.api.ApiTimes;
+import org.thecosmicfrog.luasataglance.api.ApiTimes.Result;
+import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.util.Auth;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class LuasTimesFragment extends Fragment {
 
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
 
+    private final String API_FORMAT = "json";
     private final String GAEILGE = "ga";
 
     private View rootView = null;
 
+    private final String API_URL = "http://www.dublinked.ie/cgi-bin/rtpi";
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
     private final String STOP_FORECAST = "stop_forecast";
@@ -117,6 +115,7 @@ public class LuasTimesFragment extends Fragment {
     private static AlarmManager alarmManager;
     private static BroadcastReceiver broadcastReceiver;
     private static PendingIntent pendingIntent;
+    private static StopNameIdMap mapStopNameId;
 
     private static String localeDefault;
     private static String notifyStopName;
@@ -127,6 +126,12 @@ public class LuasTimesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        // Initialise correct locale.
+        localeDefault = Locale.getDefault().toString();
+
+        // Instantiate a new StopNameIdMap.
+        mapStopNameId = new StopNameIdMap(localeDefault);
 
         // Initialise user interface.
         initTabs();
@@ -438,9 +443,100 @@ public class LuasTimesFragment extends Fragment {
      * @param stopName The stop for which to load a stop forecast.
      */
     public void loadStopForecast(String stopName) {
+        /*
+         * Dublinked is protected by HTTP Basic auth. Send the username and password as
+         * part of the request. This username and password should not be important from a
+         * security perspective, as the auth is just used as a simple rate limiter.
+         */
+        final String BASIC_AUTH =
+                "Basic " + Base64.encodeToString(
+                        (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
+                        Base64.NO_WRAP
+                );
+
+        // Keep track of the currently-focused tab.
         currentTab = tabHost.getCurrentTabTag();
 
-        new FetchLuasTimes().execute(stopName);
+        setIsLoading(currentTab, true);
+
+        /*
+         * Prepare Retrofit API call.
+         */
+        final RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(API_URL)
+                .build();
+
+        ApiMethods methods = restAdapter.create(ApiMethods.class);
+
+        Callback callback = new Callback() {
+            @Override
+            public void success(Object o, Response response) {
+                // Cast the returned Object to a usable ApiTimes object.
+                ApiTimes apiTimes = (ApiTimes) o;
+
+                // Then create a stop forecast with this data.
+                StopForecast stopForecast = createStopForecast(apiTimes);
+
+                clearStopForecast();
+
+                // Update the stop forecast.
+                updateStopForecast(stopForecast);
+
+                // Stop the refresh animations.
+                setIsLoading(currentTab, false);
+                redLineSwipeRefreshLayout.setRefreshing(false);
+                greenLineSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Log.e(LOG_TAG, "Failure in call to server.");
+                Log.e(LOG_TAG, retrofitError.getMessage());
+            }
+        };
+
+        /*
+         * Call API and get stop forecast from server.
+         */
+        methods.getStopForecast(
+                BASIC_AUTH,
+                API_FORMAT,
+                mapStopNameId.get(stopName),
+                callback
+        );
+    }
+
+    private StopForecast createStopForecast(ApiTimes apiTimes) {
+        StopForecast stopForecast = new StopForecast();
+
+        for (Result result : apiTimes.results) {
+            Tram tram = new Tram(
+                    // Strip out the annoying "LUAS " prefix from the destination.
+                    result.destination.replace("LUAS ", ""),
+                    result.direction,
+                    result.duetime
+            );
+
+            switch(tram.getDirection()) {
+                case "I":
+                    stopForecast.addInboundTram(tram);
+
+                    break;
+
+                case "O":
+                    stopForecast.addOutboundTram(tram);
+
+                    break;
+
+                default:
+                    // If for some reason the direction doesn't make sense.
+                    Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+            }
+        }
+
+        stopForecast.setErrorMessage(apiTimes.getErrorMessage());
+
+        return stopForecast;
     }
 
     /**
@@ -755,6 +851,370 @@ public class LuasTimesFragment extends Fragment {
         });
     }
 
+    private void updateStopForecast(StopForecast sf) {
+        EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
+
+        switch (currentTab) {
+            case RED_LINE:
+                // If a valid stop forecast exists...
+                if (sf != null) {
+                    textViewMessageTitle =
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_message_title
+                            );
+
+                    textViewMessage =
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_message
+                            );
+
+                    if (sf.getErrorMessage().equals("")) {
+                        /*
+                         * No error message on server. Change the message title TextView to
+                         * green and set a default success message.
+                         */
+                        textViewMessageTitle.setBackgroundResource(R.color.message_success);
+                        textViewMessage.setText(
+                                getResources().getString(R.string.message_success)
+                        );
+                    } else if (sf.getErrorMessage().equalsIgnoreCase("No Results")) {
+                        textViewMessageTitle.setBackgroundResource(R.color.message_not_running);
+                        textViewMessage.setText(
+                                getResources().getString(R.string.message_not_running)
+                        );
+                    } else {
+                        /*
+                         * Change the color of the message title TextView to red and set the
+                         * error message from the server.
+                         */
+                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
+                        textViewMessage.setText(sf.getErrorMessage());
+                    }
+
+                    /*
+                     * Create arrays of TextView objects for each entry in the TableLayout.
+                     */
+                    initStopForecast(RED_LINE);
+
+                    /*
+                     * Pull in all trams from the StopForecast, but only display up to three
+                     * inbound and outbound trams.
+                     */
+                    if (sf.getInboundTrams() != null) {
+                        if (sf.getInboundTrams().size() == 0) {
+                            textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
+                        } else {
+                            String inboundTram;
+
+                            for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                                if (i < 3) {
+                                    if (localeDefault.startsWith(GAEILGE)) {
+                                        inboundTram = mapEnglishGaeilge.get(
+                                                sf.getInboundTrams()
+                                                        .get(i)
+                                                        .getDestination()
+                                        );
+                                    } else {
+                                        inboundTram = sf.getInboundTrams()
+                                                .get(i)
+                                                .getDestination();
+                                    }
+
+                                    textViewInboundStopNames[i].setText(
+                                            inboundTram
+                                    );
+
+                                    if (sf.getInboundTrams()
+                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                        String dueMinutes;
+
+                                        if (localeDefault.startsWith(GAEILGE)) {
+                                            dueMinutes = mapEnglishGaeilge.get("DUE");
+                                        } else {
+                                            dueMinutes = "DUE";
+                                        }
+
+                                        textViewInboundStopTimes[i].setText(
+                                                dueMinutes
+                                        );
+                                    } else if (localeDefault.startsWith(GAEILGE)) {
+                                        textViewInboundStopTimes[i].setText(
+                                                sf.getInboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " nóim"
+                                        );
+                                    } else if (Integer.parseInt(sf.getInboundTrams()
+                                            .get(i).getDueMinutes()) > 1) {
+                                        textViewInboundStopTimes[i].setText(
+                                                sf.getInboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " mins"
+                                        );
+                                    } else {
+                                        textViewInboundStopTimes[i].setText(
+                                                sf.getInboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " min"
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (sf.getOutboundTrams() != null) {
+                        if (sf.getOutboundTrams().size() == 0) {
+                            textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
+                        } else {
+                            String outboundTram;
+
+                            for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                                if (i < 3) {
+                                    if (localeDefault.startsWith(GAEILGE)) {
+                                        outboundTram = mapEnglishGaeilge.get(
+                                                sf.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDestination()
+                                        );
+                                    } else {
+                                        outboundTram =
+                                                sf.getOutboundTrams().get(i).getDestination();
+                                    }
+
+                                    textViewOutboundStopNames[i].setText(outboundTram);
+
+                                    if (sf.getOutboundTrams()
+                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                        String dueMinutes;
+
+                                        if (localeDefault.startsWith(GAEILGE)) {
+                                            dueMinutes = mapEnglishGaeilge.get("DUE");
+                                        } else {
+                                            dueMinutes = "DUE";
+                                        }
+
+                                        textViewOutboundStopTimes[i].setText(
+                                                dueMinutes
+                                        );
+                                    } else if (localeDefault.startsWith(GAEILGE)) {
+                                        textViewOutboundStopTimes[i].setText(
+                                                sf.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " nóim"
+                                        );
+                                    } else if (Integer.parseInt(sf.getOutboundTrams()
+                                            .get(i).getDueMinutes()) > 1) {
+                                        textViewOutboundStopTimes[i].setText(
+                                                sf.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " mins"
+                                        );
+                                    } else {
+                                        textViewOutboundStopTimes[i].setText(
+                                                sf.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " min"
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    /*
+                     * If no stop forecast can be retrieved, set a generic error message and
+                     * change the color of the message title box red.
+                     */
+                    textViewMessageTitle =
+                            (TextView) rootView.findViewById(
+                                    R.id.red_line_textview_message_title
+                            );
+                    textViewMessageTitle.setBackgroundResource(R.color.message_error);
+
+                    textViewMessage =
+                            (TextView) rootView.findViewById(R.id.red_line_textview_message);
+                    textViewMessage.setText(R.string.message_error);
+                }
+
+                break;
+
+            case GREEN_LINE:
+                // If a valid stop forecast exists...
+                if (sf != null) {
+                    textViewMessageTitle =
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_message_title
+                            );
+
+                    textViewMessage =
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_message
+                            );
+
+                    if (sf.getErrorMessage().equals("")) {
+                        /*
+                         * No error message on server. Change the message title TextView to
+                         * green and set a default success message.
+                         */
+                        textViewMessageTitle.setBackgroundResource(R.color.message_success);
+                        textViewMessage.setText(
+                                getResources().getString(R.string.message_success)
+                        );
+                    } else if (sf.getErrorMessage().equalsIgnoreCase("No Results")) {
+                        textViewMessageTitle.setBackgroundResource(R.color.message_not_running);
+                        textViewMessage.setText(
+                                getResources().getString(R.string.message_not_running)
+                        );
+                    } else {
+                        /*
+                         * Change the color of the message title TextView to red and set the
+                         * error message from the server.
+                         */
+                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
+                        textViewMessage.setText(sf.getErrorMessage());
+                    }
+
+                    /*
+                     * Create arrays of TextView objects for each entry in the TableLayout.
+                     */
+                    initStopForecast(GREEN_LINE);
+
+                    /*
+                     * Pull in all trams from the StopForecast, but only display up to three
+                     * inbound and outbound trams.
+                     */
+                    if (sf.getInboundTrams() != null) {
+                        if (sf.getInboundTrams().size() == 0) {
+                            textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
+                        } else {
+                            String inboundTram;
+
+                            for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                                if (i < 3) {
+                                    if (localeDefault.startsWith(GAEILGE)) {
+                                        inboundTram = mapEnglishGaeilge.get(
+                                                sf.getInboundTrams()
+                                                        .get(i)
+                                                        .getDestination());
+                                    } else {
+                                        inboundTram =
+                                                sf.getInboundTrams()
+                                                        .get(i)
+                                                        .getDestination();
+                                    }
+
+                                    textViewInboundStopNames[i].setText(inboundTram);
+
+                                    if (sf.getInboundTrams()
+                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                        String dueMinutes;
+
+                                        if (localeDefault.startsWith(GAEILGE)) {
+                                            dueMinutes = mapEnglishGaeilge.get("DUE");
+                                        } else {
+                                            dueMinutes = "DUE";
+                                        }
+
+                                        textViewInboundStopTimes[i].setText(
+                                                dueMinutes
+                                        );
+                                    } else if (Integer.parseInt(sf.getInboundTrams()
+                                            .get(i).getDueMinutes()) > 1) {
+                                        textViewInboundStopTimes[i].setText(
+                                                sf.getInboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " mins"
+                                        );
+                                    } else {
+                                        textViewInboundStopTimes[i].setText(
+                                                sf.getInboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " min"
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (sf.getOutboundTrams() != null) {
+                        if (sf.getOutboundTrams().size() == 0) {
+                            textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
+                        } else {
+                            String outboundTram;
+
+                            for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                                if (i < 3) {
+                                    if (localeDefault.startsWith(GAEILGE)) {
+                                        outboundTram = mapEnglishGaeilge.get(
+                                                sf.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDestination()
+                                        );
+                                    } else {
+                                        outboundTram =
+                                                sf.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDestination();
+                                    }
+
+                                    textViewOutboundStopNames[i].setText(outboundTram);
+
+                                    if (sf.getOutboundTrams()
+                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                        String dueMinutes;
+
+                                        if (localeDefault.startsWith(GAEILGE)) {
+                                            dueMinutes = mapEnglishGaeilge.get("DUE");
+                                        } else {
+                                            dueMinutes = "DUE";
+                                        }
+
+                                        textViewOutboundStopTimes[i].setText(
+                                                dueMinutes
+                                        );
+                                    } else if (Integer.parseInt(sf.getOutboundTrams()
+                                            .get(i).getDueMinutes()) > 1) {
+                                        textViewOutboundStopTimes[i].setText(
+                                                sf.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " mins"
+                                        );
+                                    } else {
+                                        textViewOutboundStopTimes[i].setText(
+                                                sf.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDueMinutes() + " min"
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    /*
+                     * If no stop forecast can be retrieved, set a generic error message and
+                     * change the color of the message title box red.
+                     */
+                    textViewMessageTitle =
+                            (TextView) rootView.findViewById(
+                                    R.id.green_line_textview_message_title
+                            );
+                    textViewMessageTitle.setBackgroundResource(R.color.message_error);
+
+                    textViewMessage =
+                            (TextView) rootView.findViewById(R.id.green_line_textview_message);
+                    textViewMessage.setText(R.string.message_error);
+                }
+
+                break;
+
+            default:
+                // If for some reason the current selected tab doesn't make sense.
+                Log.e(LOG_TAG, "Unknown tab.");
+        }
+    }
+
     public static class NotifyTimesReceiver extends BroadcastReceiver {
 
         private final String LOG_TAG = NotifyTimesReceiver.class.getSimpleName();
@@ -893,708 +1353,6 @@ public class LuasTimesFragment extends Fragment {
                     AlarmManager.ELAPSED_REALTIME_WAKEUP,
                     SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
             );
-        }
-    }
-
-    public class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {
-
-        private final String LOG_TAG = FetchLuasTimes.class.getSimpleName();
-
-        private final String GAEILGE = "ga";
-
-        private final String localeDefault;
-
-        Map<String, String> stopCodes;
-
-        public FetchLuasTimes() {
-            localeDefault = Locale.getDefault().toString();
-
-            /*
-             * If the user's default locale is set to Irish (Gaeilge), build a Map
-             * of Irish stop names:codes.
-             * If not, default to English.
-             */
-            if (localeDefault.startsWith(GAEILGE)) {
-                stopCodes = new HashMap<String, String>() {
-                    {
-                        // Red Line
-                        put("Iosta na Rinne", "LUAS57");
-                        put("Duga Spencer", "LUAS56");
-                        put("Cearnóg an Mhéara - CNÉ", "LUAS55");
-                        put("Duga Sheoirse", "LUAS54");
-                        put("Conghaile", "LUAS23");
-                        put("Busáras", "LUAS22");
-                        put("Sráid na Mainistreach", "LUAS21");
-                        put("Jervis", "LUAS20");
-                        put("Na Ceithre Cúirteanna", "LUAS19");
-                        put("Margadh na Feirme", "LUAS18");
-                        put("Árd-Mhúsaem", "LUAS17");
-                        put("Heuston", "LUAS16");
-                        put("Ospidéal San Séamas", "LUAS15");
-                        put("Fatima", "LUAS14");
-                        put("Rialto", "LUAS13");
-                        put("Bóthar na Siúire", "LUAS12");
-                        put("An Droichead Órga", "LUAS11");
-                        put("Droimeanach", "LUAS10");
-                        put("An Capall Dubh", "LUAS9");
-                        put("An Cloigín Gorm", "LUAS8");
-                        put("An Chill Mhór", "LUAS7");
-                        put("An Bhó Dhearg", "LUAS6");
-                        put("Coill an Rí", "LUAS5");
-                        put("Belgard", "LUAS4");
-                        put("Baile an Chócaigh", "LUAS3");
-                        put("Ospidéal Thamhlachta", "LUAS2");
-                        put("Tamhlacht", "LUAS1");
-                        put("Fothar Chardain", "LUAS49");
-                        put("Baile an tSíbrigh", "LUAS50");
-                        put("Campas Gnó Iarthar na Cathrach", "LUAS51");
-                        put("Baile Uí Fhoirtcheirn", "LUAS52");
-                        put("Teach Sagard", "LUAS53");
-
-                        // Green Line
-                        put("Faiche Stiabhna", "LUAS24");
-                        put("Sráid Fhearchair", "LUAS25");
-                        put("Charlemont", "LUAS26");
-                        put("Raghnallach", "LUAS27");
-                        put("Coill na Feá", "LUAS28");
-                        put("Cowper", "LUAS29");
-                        put("Baile an Mhuilinn", "LUAS30");
-                        put("Na Glasáin", "LUAS31");
-                        put("Dún Droma", "LUAS32");
-                        put("Baile Amhlaoibh", "LUAS33");
-                        put("Cill Mochuda", "LUAS34");
-                        put("Stigh Lorgan", "LUAS35");
-                        put("Áth an Ghainimh", "LUAS36");
-                        put("An Pháirc Láir", "LUAS37");
-                        put("Gleann an Chairn", "LUAS38");
-                        put("An Eachrais", "LUAS39");
-                        put("Gleann Bhaile na Lobhar", "LUAS40");
-                        put("Coill Bhaile Uí Ógáin", "LUAS42");
-                        put("Carraig Mhaighin", "LUAS44");
-                        put("Baile an Locháin", "LUAS46");
-                        put("Coill na Silíní", "LUAS47");
-                        put("Gleann Bhríde", "LUAS48");
-                    }
-                };
-            } else {
-                stopCodes = new HashMap<String, String>() {
-                    {
-                        // Red Line
-                        put("The Point", "LUAS57");
-                        put("Spencer Dock", "LUAS56");
-                        put("Mayor Square - NCI", "LUAS55");
-                        put("George's Dock", "LUAS54");
-                        put("Connolly", "LUAS23");
-                        put("Busáras", "LUAS22");
-                        put("Abbey Street", "LUAS21");
-                        put("Jervis", "LUAS20");
-                        put("Four Courts", "LUAS19");
-                        put("Smithfield", "LUAS18");
-                        put("Museum", "LUAS17");
-                        put("Heuston", "LUAS16");
-                        put("James's", "LUAS15");
-                        put("Fatima", "LUAS14");
-                        put("Rialto", "LUAS13");
-                        put("Suir Road", "LUAS12");
-                        put("Goldenbridge", "LUAS11");
-                        put("Drimnagh", "LUAS10");
-                        put("Blackhorse", "LUAS9");
-                        put("Bluebell", "LUAS8");
-                        put("Kylemore", "LUAS7");
-                        put("Red Cow", "LUAS6");
-                        put("Kingswood", "LUAS5");
-                        put("Belgard", "LUAS4");
-                        put("Cookstown", "LUAS3");
-                        put("Hospital", "LUAS2");
-                        put("Tallaght", "LUAS1");
-                        put("Fettercairn", "LUAS49");
-                        put("Cheeverstown", "LUAS50");
-                        put("Citywest Campus", "LUAS51");
-                        put("Fortunestown", "LUAS52");
-                        put("Saggart", "LUAS53");
-
-                        // Green Line
-                        put("St. Stephen's Green", "LUAS24");
-                        put("Harcourt", "LUAS25");
-                        put("Charlemont", "LUAS26");
-                        put("Ranelagh", "LUAS27");
-                        put("Beechwood", "LUAS28");
-                        put("Cowper", "LUAS29");
-                        put("Milltown", "LUAS30");
-                        put("Windy Arbour", "LUAS31");
-                        put("Dundrum", "LUAS32");
-                        put("Balally", "LUAS33");
-                        put("Kilmacud", "LUAS34");
-                        put("Stillorgan", "LUAS35");
-                        put("Sandyford", "LUAS36");
-                        put("Central Park", "LUAS37");
-                        put("Glencairn", "LUAS38");
-                        put("The Gallops", "LUAS39");
-                        put("Leopardstown Valley", "LUAS40");
-                        put("Ballyogan Wood", "LUAS42");
-                        put("Carrickmines", "LUAS44");
-                        put("Laughanstown", "LUAS46");
-                        put("Cherrywood", "LUAS47");
-                        put("Brides Glen", "LUAS48");
-                    }
-                };
-            }
-        }
-
-        @Override
-        protected StopForecast doInBackground(String... params) {
-            /*
-             * Start by clearing the currently-displayed stop forecast.
-             */
-            if (params.length == 0)
-                return null;
-
-            HttpURLConnection httpUrlConnection = null;
-            BufferedReader reader = null;
-
-            String luasTimesJson = null;
-
-            // HTTP parameters to pass to the API.
-            String format = "json";
-            String stopName = params[0];
-            String stopId = stopCodes.get(stopName);
-
-            try {
-                setIsLoading(currentTab, true);
-
-                /*
-                 * Build the API URL.
-                 */
-                final String BASE_URL =
-                        "http://www.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?";
-                final String PARAM_STOPID = "stopid";
-                final String PARAM_FORMAT = "format";
-
-                Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                        .appendQueryParameter(PARAM_STOPID, stopId)
-                        .appendQueryParameter(PARAM_FORMAT, format)
-                        .build();
-
-                URL url = new URL(builtUri.toString());
-
-                /*
-                 * Dublinked is protected by HTTP Basic auth. Send the username and password as
-                 * part of the request. This username and password should not be important from a
-                 * security perspective, as the auth is just used as a simple rate limiter.
-                 */
-                final String BASIC_AUTH =
-                        "Basic " + Base64.encodeToString(
-                                (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
-                                Base64.NO_WRAP
-                        );
-
-                httpUrlConnection = (HttpURLConnection) url.openConnection();
-                httpUrlConnection.setRequestMethod("GET");
-                httpUrlConnection.setRequestProperty("Authorization", BASIC_AUTH);
-                httpUrlConnection.connect();
-
-                InputStream inputStream = httpUrlConnection.getInputStream();
-                StringBuilder stringBuilder = new StringBuilder();
-
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
-                }
-
-                if (inputStream == null || stringBuilder.length() == 0)
-                    luasTimesJson = null;
-                else
-                    luasTimesJson = stringBuilder.toString();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            } finally {
-                setIsLoading(currentTab, false);
-
-                if (httpUrlConnection != null)
-                    httpUrlConnection.disconnect();
-
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException ioe) {
-                        Log.e(LOG_TAG, "Error closing stream.", ioe);
-                    }
-                }
-            }
-
-            if (luasTimesJson != null) {
-                try {
-                    return getLuasDataFromJson(luasTimesJson);
-                } catch (JSONException je) {
-                    je.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(StopForecast sf) {
-            /*
-             * Only run if Fragment is attached to Activity. Without this check, the app is liable
-             * to crash when the screen is rotated many times in a given period of time.
-             */
-            if (isAdded()) {
-                clearStopForecast();
-
-                /*
-                 * Update UI elements specific to the tab currently selected.
-                 */
-                updateStopForecast(sf);
-
-                // Stop the refresh animation.
-                redLineSwipeRefreshLayout.setRefreshing(false);
-                greenLineSwipeRefreshLayout.setRefreshing(false);
-            }
-        }
-
-        private void updateStopForecast(StopForecast sf) {
-            EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
-
-            switch (currentTab) {
-                case RED_LINE:
-                    // If a valid stop forecast exists...
-                    if (sf != null) {
-                        textViewMessageTitle =
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_message_title
-                                );
-
-                        textViewMessage =
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_message
-                                );
-
-                        if (sf.getErrorMessage().equals("")) {
-                            /*
-                             * No error message on server. Change the message title TextView to
-                             * green and set a default success message.
-                             */
-                            textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                            textViewMessage.setText(
-                                    getResources().getString(R.string.message_success)
-                            );
-                        } else {
-                            /*
-                             * Change the color of the message title TextView to red and set the
-                             * error message from the server.
-                             */
-                            textViewMessageTitle.setBackgroundResource(R.color.message_error);
-                            textViewMessage.setText(sf.getErrorMessage());
-                        }
-
-                        /*
-                         * Create arrays of TextView objects for each entry in the TableLayout.
-                         */
-                        initStopForecast(RED_LINE);
-
-                        /*
-                         * Pull in all trams from the StopForecast, but only display up to three
-                         * inbound and outbound trams.
-                         */
-                        if (sf.getInboundTrams() != null) {
-                            if (sf.getInboundTrams().size() == 0) {
-                                textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
-                            } else {
-                                String inboundTram;
-
-                                for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                                    if (i < 3) {
-                                        if (localeDefault.startsWith(GAEILGE)) {
-                                            inboundTram = mapEnglishGaeilge.get(
-                                                    sf.getInboundTrams()
-                                                            .get(i)
-                                                            .getDestination()
-                                            );
-                                        } else {
-                                            inboundTram = sf.getInboundTrams()
-                                                    .get(i)
-                                                    .getDestination();
-                                        }
-
-                                        textViewInboundStopNames[i].setText(
-                                                inboundTram
-                                        );
-
-                                        if (sf.getInboundTrams()
-                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                            String dueMinutes;
-
-                                            if (localeDefault.startsWith(GAEILGE)) {
-                                                dueMinutes = mapEnglishGaeilge.get("DUE");
-                                            } else {
-                                                dueMinutes = "DUE";
-                                            }
-
-                                            textViewInboundStopTimes[i].setText(
-                                                    dueMinutes
-                                            );
-                                        } else if (localeDefault.startsWith(GAEILGE)) {
-                                            textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " nóim"
-                                            );
-                                        } else if (Integer.parseInt(sf.getInboundTrams()
-                                                .get(i).getDueMinutes()) > 1) {
-                                            textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " mins"
-                                            );
-                                        } else {
-                                            textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " min"
-                                            );
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (sf.getOutboundTrams() != null) {
-                            if (sf.getOutboundTrams().size() == 0) {
-                                textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
-                            } else {
-                                String outboundTram;
-
-                                for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                                    if (i < 3) {
-                                        if (localeDefault.startsWith(GAEILGE)) {
-                                            outboundTram = mapEnglishGaeilge.get(
-                                                    sf.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDestination()
-                                            );
-                                        } else {
-                                            outboundTram =
-                                                    sf.getOutboundTrams().get(i).getDestination();
-                                        }
-
-                                        textViewOutboundStopNames[i].setText(outboundTram);
-
-                                        if (sf.getOutboundTrams()
-                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                            String dueMinutes;
-
-                                            if (localeDefault.startsWith(GAEILGE)) {
-                                                dueMinutes = mapEnglishGaeilge.get("DUE");
-                                            } else {
-                                                dueMinutes = "DUE";
-                                            }
-
-                                            textViewOutboundStopTimes[i].setText(
-                                                    dueMinutes
-                                            );
-                                        } else if (localeDefault.startsWith(GAEILGE)) {
-                                            textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " nóim"
-                                            );
-                                        } else if (Integer.parseInt(sf.getOutboundTrams()
-                                                .get(i).getDueMinutes()) > 1) {
-                                            textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " mins"
-                                            );
-                                        } else {
-                                            textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " min"
-                                            );
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        /*
-                         * If no stop forecast can be retrieved, set a generic error message and
-                         * change the color of the message title box red.
-                         */
-                        textViewMessageTitle =
-                                (TextView) rootView.findViewById(
-                                        R.id.red_line_textview_message_title
-                                );
-                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
-
-                        textViewMessage =
-                                (TextView) rootView.findViewById(R.id.red_line_textview_message);
-                        textViewMessage.setText(R.string.message_error);
-                    }
-
-                    break;
-
-                case GREEN_LINE:
-                    // If a valid stop forecast exists...
-                    if (sf != null) {
-                        textViewMessageTitle =
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_message_title
-                                );
-
-                        textViewMessage =
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_message
-                                );
-
-                        if (sf.getErrorMessage().equals("")) {
-                            /*
-                             * No error message on server. Change the message title TextView to
-                             * green and set a default success message.
-                             */
-                            textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                            textViewMessage.setText(
-                                    getResources().getString(R.string.message_success)
-                            );
-                        } else {
-                            /*
-                             * Change the color of the message title TextView to red and set the
-                             * error message from the server.
-                             */
-                            textViewMessageTitle.setBackgroundResource(R.color.message_error);
-                            textViewMessage.setText(sf.getErrorMessage());
-                        }
-
-                        /*
-                         * Create arrays of TextView objects for each entry in the TableLayout.
-                         */
-                        initStopForecast(GREEN_LINE);
-
-                        /*
-                         * Pull in all trams from the StopForecast, but only display up to three
-                         * inbound and outbound trams.
-                         */
-                        if (sf.getInboundTrams() != null) {
-                            if (sf.getInboundTrams().size() == 0) {
-                                textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
-                            } else {
-                                String inboundTram;
-
-                                for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                                    if (i < 3) {
-                                        if (localeDefault.startsWith(GAEILGE)) {
-                                            inboundTram = mapEnglishGaeilge.get(
-                                                    sf.getInboundTrams()
-                                                            .get(i)
-                                                            .getDestination());
-                                        } else {
-                                            inboundTram =
-                                                    sf.getInboundTrams()
-                                                    .get(i)
-                                                    .getDestination();
-                                        }
-
-                                        textViewInboundStopNames[i].setText(inboundTram);
-
-                                        if (sf.getInboundTrams()
-                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                            String dueMinutes;
-
-                                            if (localeDefault.startsWith(GAEILGE)) {
-                                                dueMinutes = mapEnglishGaeilge.get("DUE");
-                                            } else {
-                                                dueMinutes = "DUE";
-                                            }
-
-                                            textViewInboundStopTimes[i].setText(
-                                                    dueMinutes
-                                            );
-                                        } else if (Integer.parseInt(sf.getInboundTrams()
-                                                .get(i).getDueMinutes()) > 1) {
-                                            textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " mins"
-                                            );
-                                        } else {
-                                            textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " min"
-                                            );
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (sf.getOutboundTrams() != null) {
-                            if (sf.getOutboundTrams().size() == 0) {
-                                textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
-                            } else {
-                                String outboundTram;
-
-                                for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                                    if (i < 3) {
-                                        if (localeDefault.startsWith(GAEILGE)) {
-                                            outboundTram = mapEnglishGaeilge.get(
-                                                    sf.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDestination()
-                                            );
-                                        } else {
-                                            outboundTram =
-                                                    sf.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDestination();
-                                        }
-
-                                        textViewOutboundStopNames[i].setText(outboundTram);
-
-                                        if (sf.getOutboundTrams()
-                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                            String dueMinutes;
-
-                                            if (localeDefault.startsWith(GAEILGE)) {
-                                                dueMinutes = mapEnglishGaeilge.get("DUE");
-                                            } else {
-                                                dueMinutes = "DUE";
-                                            }
-
-                                            textViewOutboundStopTimes[i].setText(
-                                                    dueMinutes
-                                            );
-                                        } else if (Integer.parseInt(sf.getOutboundTrams()
-                                                .get(i).getDueMinutes()) > 1) {
-                                            textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " mins"
-                                            );
-                                        } else {
-                                            textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes() + " min"
-                                            );
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        /*
-                         * If no stop forecast can be retrieved, set a generic error message and
-                         * change the color of the message title box red.
-                         */
-                        textViewMessageTitle =
-                                (TextView) rootView.findViewById(
-                                        R.id.green_line_textview_message_title
-                                );
-                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
-
-                        textViewMessage =
-                                (TextView) rootView.findViewById(R.id.green_line_textview_message);
-                        textViewMessage.setText(R.string.message_error);
-                    }
-
-                    break;
-
-                default:
-                    // If for some reason the current selected tab doesn't make sense.
-                    Log.e(LOG_TAG, "Unknown tab.");
-            }
-        }
-
-        /**
-         * Take the String representing the complete forecast in JSON Format and
-         * pull out the data we need to construct the Strings needed for the wireframes.
-         *
-         * Fortunately parsing is easy: constructor takes the JSON string and converts it
-         * into an Object hierarchy for us.
-         */
-        private StopForecast getLuasDataFromJson(String forecastJsonStr)
-                throws JSONException {
-
-            StopForecast stopForecast = new StopForecast();
-
-            // These are the names of the JSON objects that need to be extracted.
-            final String LUAS_ERRORMESSAGE = "errormessage";
-            final String LUAS_RESULTS = "results";
-            final String LUAS_DESTINATION = "destination";
-            final String LUAS_DIRECTION = "direction";
-            final String LUAS_DUETIME = "duetime";
-
-            JSONObject tramsJson = new JSONObject(forecastJsonStr);
-
-            /*
-             * If a message is returned from the server, add it to the StopForecast object.
-             * Otherwise, set the message field to null.
-             */
-            if (tramsJson.has(LUAS_ERRORMESSAGE)) {
-                stopForecast.setErrorMessage(tramsJson.getString(LUAS_ERRORMESSAGE));
-            } else {
-                stopForecast.setErrorMessage(null);
-            }
-
-            /*
-             * If a list of trams is returned from the server, add it to the StopForecast object
-             * as an array of both inbound and output trams.
-             * Otherwise, set both fields to null.
-             */
-            if (tramsJson.has(LUAS_RESULTS)) {
-                JSONArray tramsArray = tramsJson.getJSONArray(LUAS_RESULTS);
-
-                Tram[] trams = new Tram[tramsArray.length()];
-
-                for (int i = 0; i < tramsArray.length(); i++) {
-                    String destination;
-                    String direction;
-                    String duetime;
-
-                    // Get the JSON object representing the trams.
-                    JSONObject tramObject = tramsArray.getJSONObject(i);
-
-                    // Strip out the annoying "LUAS " prefix from the destination.
-                    destination = tramObject.getString(LUAS_DESTINATION).replace("LUAS ", "");
-
-                    direction = tramObject.getString(LUAS_DIRECTION);
-                    duetime = tramObject.getString(LUAS_DUETIME);
-
-                    trams[i] = new Tram(destination, direction, duetime);
-
-                    switch (trams[i].getDirection()) {
-                        case "I":
-                            stopForecast.addInboundTram(trams[i]);
-
-                            break;
-
-                        case "O":
-                            stopForecast.addOutboundTram(trams[i]);
-
-                            break;
-
-                        default:
-                            // If for some reason the direction doesn't make sense.
-                            Log.e(LOG_TAG, "Invalid direction: " + trams[i].getDirection());
-                    }
-                }
-            } else {
-                /*
-                 * If there is no "trams" object in the JSON returned from the server,
-                 * there are no inbound or outbound trams forecast. This can happen
-                 * frequently for some stops, such as Connolly, which ceases service
-                 * earlier than others.
-                 * In this case, set empty ArrayLists for inbound and outbound trams.
-                 */
-                stopForecast.setInboundTrams(new ArrayList<Tram>());
-                stopForecast.setOutboundTrams(new ArrayList<Tram>());
-            }
-
-            return stopForecast;
         }
     }
 }

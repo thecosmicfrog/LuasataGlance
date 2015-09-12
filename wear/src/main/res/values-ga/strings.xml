@@ -18,6 +18,7 @@
         Main UI
     -->
     <string name="message_success">Gach seirbhís ag feidhmiú mar is gnáth</string>
+    <string name="message_not_running">Níl aon tramanna ag súil leis ag an stad</string>
     <string name="message_error">Fadhb ag fáil amanna ón gcóras Luas RTPI</string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
