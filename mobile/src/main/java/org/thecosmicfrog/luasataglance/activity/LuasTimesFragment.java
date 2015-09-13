@@ -54,12 +54,12 @@ import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.api.ApiTimes.Result;
-import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
-import org.thecosmicfrog.luasataglance.util.Auth;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
+import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.util.Auth;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,17 +78,16 @@ public class LuasTimesFragment extends Fragment {
 
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
 
-    private final String API_FORMAT = "json";
-    private final String GAEILGE = "ga";
-
     private View rootView = null;
 
+    private final String API_FORMAT = "json";
     private final String API_URL = "http://www.dublinked.ie/cgi-bin/rtpi";
+    private final String GAEILGE = "ga";
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
-    private final String STOP_FORECAST = "stop_forecast";
     private final String INBOUND = "inbound";
     private final String OUTBOUND = "outbound";
+    private final String STOP_FORECAST = "stop_forecast";
 
     private TabHost tabHost;
     private String currentTab;
@@ -471,21 +470,24 @@ public class LuasTimesFragment extends Fragment {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
-                // Cast the returned Object to a usable ApiTimes object.
-                ApiTimes apiTimes = (ApiTimes) o;
+                // Check Fragment is attached to Activity in order to avoid NullPointerExceptions.
+                if (isAdded()) {
+                    // Cast the returned Object to a usable ApiTimes object.
+                    ApiTimes apiTimes = (ApiTimes) o;
 
-                // Then create a stop forecast with this data.
-                StopForecast stopForecast = createStopForecast(apiTimes);
+                    // Then create a stop forecast with this data.
+                    StopForecast stopForecast = createStopForecast(apiTimes);
 
-                clearStopForecast();
+                    clearStopForecast();
 
-                // Update the stop forecast.
-                updateStopForecast(stopForecast);
+                    // Update the stop forecast.
+                    updateStopForecast(stopForecast);
 
-                // Stop the refresh animations.
-                setIsLoading(currentTab, false);
-                redLineSwipeRefreshLayout.setRefreshing(false);
-                greenLineSwipeRefreshLayout.setRefreshing(false);
+                    // Stop the refresh animations.
+                    setIsLoading(currentTab, false);
+                    redLineSwipeRefreshLayout.setRefreshing(false);
+                    greenLineSwipeRefreshLayout.setRefreshing(false);
+                }
             }
 
             @Override
@@ -886,7 +888,8 @@ public class LuasTimesFragment extends Fragment {
                         textViewMessage.setText(
                                 getResources().getString(R.string.message_success)
                         );
-                    } else if (sf.getErrorMessage().equalsIgnoreCase("No Results")) {
+                    } else if (sf.getErrorMessage().equalsIgnoreCase(
+                            getString(R.string.message_no_results))) {
                         textViewMessageTitle.setBackgroundResource(R.color.message_not_running);
                         textViewMessage.setText(
                                 getResources().getString(R.string.message_not_running)

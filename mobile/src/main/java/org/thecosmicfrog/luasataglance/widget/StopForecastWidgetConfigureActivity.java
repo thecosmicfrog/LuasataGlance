@@ -24,7 +24,7 @@ package org.thecosmicfrog.luasataglance.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -70,6 +70,12 @@ public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(
+                        getResources().getColor(R.color.luas_purple)
+                )
+        );
 
         /*
          * Set the result to CANCELED.  This will cause the widget host to cancel

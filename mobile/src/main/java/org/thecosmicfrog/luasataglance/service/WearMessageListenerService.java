@@ -21,8 +21,6 @@
 
 package org.thecosmicfrog.luasataglance.service;
 
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
@@ -32,31 +30,32 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.thecosmicfrog.luasataglance.api.ApiMethods;
+import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
+import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
 import org.thecosmicfrog.luasataglance.util.Auth;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class WearMessageListenerService extends WearableListenerService {
 
     private final String LOG_TAG = WearMessageListenerService.class.getSimpleName();
 
     private static GoogleApiClient googleApiClient;
+    private static String localeDefault;
+    private static StopNameIdMap mapStopNameId;
 
+    private final String API_FORMAT = "json";
+    private final String API_URL = "http://www.dublinked.ie/cgi-bin/rtpi";
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private static final String WEAR_PATH = "/wear";
     private String nodeId;
@@ -64,6 +63,12 @@ public class WearMessageListenerService extends WearableListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Initialise correct locale.
+        localeDefault = Locale.getDefault().toString();
+
+        // Instantiate a new StopNameIdMap.
+        mapStopNameId = new StopNameIdMap(localeDefault);
 
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addApi(Wearable.API)
@@ -91,7 +96,97 @@ public class WearMessageListenerService extends WearableListenerService {
     }
 
     public void fetchStopForecast(String stopName) {
-        new FetchLuasTimes().execute(stopName);
+        /*
+         * Dublinked is protected by HTTP Basic auth. Send the username and password as
+         * part of the request. This username and password should not be important from a
+         * security perspective, as the auth is just used as a simple rate limiter.
+         */
+        final String BASIC_AUTH =
+                "Basic " + Base64.encodeToString(
+                        (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
+                        Base64.NO_WRAP
+                );
+
+        /*
+         * Prepare Retrofit API call.
+         */
+        final RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(API_URL)
+                .build();
+
+        ApiMethods methods = restAdapter.create(ApiMethods.class);
+
+        Callback callback = new Callback() {
+            @Override
+            public void success(Object o, Response response) {
+                // Cast the returned Object to a usable ApiTimes object.
+                ApiTimes apiTimes = (ApiTimes) o;
+
+                // Then create a stop forecast with this data.
+                final StopForecast stopForecast = createStopForecast(apiTimes);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        reply(WEAR_PATH, stopForecast);
+                    }
+                }).start();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Log.e(LOG_TAG, "Failure in call to server.");
+                Log.e(LOG_TAG, retrofitError.getMessage());
+            }
+        };
+
+        /*
+         * Call API and get stop forecast from server.
+         */
+        methods.getStopForecast(
+                BASIC_AUTH,
+                API_FORMAT,
+                mapStopNameId.get(stopName),
+                callback
+        );
+    }
+
+    /**
+     * Create a usable stop forecast with the data returned from the server.
+     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
+     * @return Usable stop forecast.
+     */
+    private StopForecast createStopForecast(ApiTimes apiTimes) {
+        StopForecast stopForecast = new StopForecast();
+
+        for (ApiTimes.Result result : apiTimes.results) {
+            Tram tram = new Tram(
+                    // Strip out the annoying "LUAS " prefix from the destination.
+                    result.destination.replace("LUAS ", ""),
+                    result.direction,
+                    result.duetime
+            );
+
+            switch(tram.getDirection()) {
+                case "I":
+                    stopForecast.addInboundTram(tram);
+
+                    break;
+
+                case "O":
+                    stopForecast.addOutboundTram(tram);
+
+                    break;
+
+                default:
+                    // If for some reason the direction doesn't make sense.
+                    Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+            }
+        }
+
+        stopForecast.setErrorMessage(apiTimes.getErrorMessage());
+
+        return stopForecast;
     }
 
     private void reply(final String path, final StopForecast sf) {
@@ -114,258 +209,5 @@ public class WearMessageListenerService extends WearableListenerService {
 
         if (result.getStatus().isSuccess())
             Log.i(LOG_TAG, "Return message sent to: " + nodeId);
-    }
-
-    public class FetchLuasTimes extends AsyncTask<String, Void, StopForecast> {
-
-        private final String LOG_TAG = FetchLuasTimes.class.getSimpleName();
-
-        Map<String, String> stopCodes = new HashMap<String, String>() {
-            {
-                // Red Line
-                put("The Point", "LUAS57");
-                put("Spencer Dock", "LUAS56");
-                put("Mayor Square - NCI", "LUAS55");
-                put("George's Dock", "LUAS54");
-                put("Connolly", "LUAS23");
-                put("Busáras", "LUAS22");
-                put("Abbey Street", "LUAS21");
-                put("Jervis", "LUAS20");
-                put("Four Courts", "LUAS19");
-                put("Smithfield", "LUAS18");
-                put("Museum", "LUAS17");
-                put("Heuston", "LUAS16");
-                put("James's", "LUAS15");
-                put("Fatima", "LUAS14");
-                put("Rialto", "LUAS13");
-                put("Suir Road", "LUAS12");
-                put("Goldenbridge", "LUAS11");
-                put("Drimnagh", "LUAS10");
-                put("Blackhorse", "LUAS9");
-                put("Bluebell", "LUAS8");
-                put("Kylemore", "LUAS7");
-                put("Red Cow", "LUAS6");
-                put("Kingswood", "LUAS5");
-                put("Belgard", "LUAS4");
-                put("Cookstown", "LUAS3");
-                put("Hospital", "LUAS2");
-                put("Tallaght", "LUAS1");
-                put("Fettercairn", "LUAS49");
-                put("Cheeverstown", "LUAS50");
-                put("Citywest Campus", "LUAS51");
-                put("Fortunestown", "LUAS52");
-                put("Saggart", "LUAS53");
-
-                // Green Line
-                put("St. Stephen's Green", "LUAS24");
-                put("Harcourt", "LUAS25");
-                put("Charlemont", "LUAS26");
-                put("Ranelagh", "LUAS27");
-                put("Beechwood", "LUAS28");
-                put("Cowper", "LUAS29");
-                put("Milltown", "LUAS30");
-                put("Windy Arbour", "LUAS31");
-                put("Dundrum", "LUAS32");
-                put("Balally", "LUAS33");
-                put("Kilmacud", "LUAS34");
-                put("Stillorgan", "LUAS35");
-                put("Sandyford", "LUAS36");
-                put("Central Park", "LUAS37");
-                put("Glencairn", "LUAS38");
-                put("The Gallops", "LUAS39");
-                put("Leopardstown Valley", "LUAS40");
-                put("Ballyogan Wood", "LUAS42");
-                put("Carrickmines", "LUAS44");
-                put("Laughanstown", "LUAS46");
-                put("Cherrywood", "LUAS47");
-                put("Brides Glen", "LUAS48");
-            }
-        };
-
-        @Override
-        protected StopForecast doInBackground(String... params) {
-            if (params.length == 0)
-                return null;
-
-            HttpURLConnection httpUrlConnection = null;
-            BufferedReader reader = null;
-
-            String luasTimesJson = null;
-
-            // HTTP parameters to pass to the API.
-            String format = "json";
-            String stopName = params[0];
-            String stopId = stopCodes.get(stopName);
-
-            try {
-                /*
-                 * Build the API URL.
-                 */
-                final String BASE_URL =
-                        "http://www.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?";
-                final String PARAM_STOPID = "stopid";
-                final String PARAM_FORMAT = "format";
-
-                Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                        .appendQueryParameter(PARAM_STOPID, stopId)
-                        .appendQueryParameter(PARAM_FORMAT, format)
-                        .build();
-
-                URL url = new URL(builtUri.toString());
-
-                /*
-                 * Dublinked is protected by HTTP Basic auth. Send the username and password as
-                 * part of the request. This username and password should not be important from a
-                 * security perspective, as the auth is just used as a simple rate limiter.
-                 */
-                final String BASIC_AUTH =
-                        "Basic " + Base64.encodeToString(
-                                (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
-                                Base64.NO_WRAP
-                        );
-
-                httpUrlConnection = (HttpURLConnection) url.openConnection();
-                httpUrlConnection.setRequestMethod("GET");
-                httpUrlConnection.setRequestProperty("Authorization", BASIC_AUTH);
-                httpUrlConnection.connect();
-
-                InputStream inputStream = httpUrlConnection.getInputStream();
-                StringBuilder stringBuilder = new StringBuilder();
-
-                if (inputStream == null)
-                    luasTimesJson = null;
-
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
-                }
-
-                if (stringBuilder.length() == 0)
-                    luasTimesJson = null;
-
-                luasTimesJson = stringBuilder.toString();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            } finally {
-                if (httpUrlConnection != null)
-                    httpUrlConnection.disconnect();
-
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException ioe) {
-                        Log.e(LOG_TAG, "Error closing stream.", ioe);
-                    }
-                }
-            }
-
-            try {
-                return getLuasDataFromJson(luasTimesJson);
-            } catch (JSONException je) {
-                je.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(final StopForecast sf) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    reply(WEAR_PATH, sf);
-                }
-            }).start();
-        }
-
-        /**
-         * Take the String representing the complete forecast in JSON Format and
-         * pull out the data we need to construct the Strings needed for the wireframes.
-         *
-         * Fortunately parsing is easy: constructor takes the JSON string and converts it
-         * into an Object hierarchy for us.
-         */
-        private StopForecast getLuasDataFromJson(String forecastJsonStr)
-                throws JSONException {
-
-            StopForecast stopForecast = new StopForecast();
-
-            // These are the names of the JSON objects that need to be extracted.
-            final String LUAS_ERRORMESSAGE = "errormessage";
-            final String LUAS_RESULTS = "results";
-            final String LUAS_DESTINATION = "destination";
-            final String LUAS_DIRECTION = "direction";
-            final String LUAS_DUETIME = "duetime";
-
-            JSONObject tramsJson = new JSONObject(forecastJsonStr);
-
-            /*
-             * If a message is returned from the server, add it to the StopForecast object.
-             * Otherwise, set the message field to an empty String.
-             */
-            if (tramsJson.has(LUAS_ERRORMESSAGE)) {
-                stopForecast.setErrorMessage(tramsJson.getString(LUAS_ERRORMESSAGE));
-            } else {
-                stopForecast.setErrorMessage("");
-            }
-
-            /*
-             * If a list of trams is returned from the server, add it to the StopForecast object
-             * as an array of both inbound and output trams.
-             * Otherwise, set both fields to null.
-             */
-            if (tramsJson.has(LUAS_RESULTS)) {
-                JSONArray tramsArray = tramsJson.getJSONArray(LUAS_RESULTS);
-
-                Tram[] trams = new Tram[tramsArray.length()];
-
-                for (int i = 0; i < tramsArray.length(); i++) {
-                    String destination;
-                    String direction;
-                    String duetime;
-
-                    // Get the JSON object representing the trams.
-                    JSONObject tramObject = tramsArray.getJSONObject(i);
-
-                    // Strip out the annoying "LUAS " prefix from the destination.
-                    destination = tramObject.getString(LUAS_DESTINATION).replace("LUAS ", "");
-
-                    direction = tramObject.getString(LUAS_DIRECTION);
-                    duetime = tramObject.getString(LUAS_DUETIME);
-
-                    trams[i] = new Tram(destination, direction, duetime);
-
-                    switch (trams[i].getDirection()) {
-                        case "I":
-                            stopForecast.addInboundTram(trams[i]);
-
-                            break;
-
-                        case "O":
-                            stopForecast.addOutboundTram(trams[i]);
-
-                            break;
-
-                        default:
-                            // If for some reason the direction doesn't make sense.
-                            Log.e(LOG_TAG, "Invalid direction: " + trams[i].getDirection());
-                    }
-                }
-            } else {
-                /*
-                 * If there is no "trams" object in the JSON returned from the server,
-                 * there are no inbound or outbound trams forecast. This can happen
-                 * frequently for some stops, such as Connolly, which ceases service
-                 * earlier than others.
-                 * In this case, set empty ArrayLists for inbound and outbound trams.
-                 */
-                stopForecast.setInboundTrams(new ArrayList<Tram>());
-                stopForecast.setOutboundTrams(new ArrayList<Tram>());
-            }
-
-            return stopForecast;
-        }
     }
 }

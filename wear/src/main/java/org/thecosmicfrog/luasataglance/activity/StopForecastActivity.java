@@ -61,6 +61,10 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     private ProgressBar progressBarLoadingCircle;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView textViewStopName;
+    private TextView[] textViewInboundStopNames;
+    private TextView[] textViewInboundStopTimes;
+    private TextView[] textViewOutboundStopNames;
+    private TextView[] textViewOutboundStopTimes;
 
     private TimerTask timerTaskReload;
 
@@ -78,6 +82,31 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
+                /*
+                 * Create arrays of TextView objects for each entry in the TableLayout.
+                 */
+                textViewInboundStopNames = new TextView[]{
+                        (TextView) findViewById(R.id.textview_inbound_stop1_name),
+                        (TextView) findViewById(R.id.textview_inbound_stop2_name),
+                };
+
+                textViewInboundStopTimes = new TextView[]{
+                        (TextView) findViewById(R.id.textview_inbound_stop1_time),
+                        (TextView) findViewById(R.id.textview_inbound_stop2_time),
+                };
+
+                textViewOutboundStopNames = new TextView[]{
+                        (TextView) findViewById(R.id.textview_outbound_stop1_name),
+                        (TextView) findViewById(R.id.textview_outbound_stop2_name),
+                };
+
+                textViewOutboundStopTimes = new TextView[]{
+                        (TextView) findViewById(R.id.textview_outbound_stop1_time),
+                        (TextView) findViewById(R.id.textview_outbound_stop2_time),
+                };
+
+                clearStopForecast();
+
                 if (getIntent().hasExtra("stopName")) {
                     progressBarLoadingCircle =
                             (ProgressBar) findViewById(R.id.progressbar_loading_circle);
@@ -143,6 +172,27 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
             setIsLoading(true);
             requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
         }
+    }
+
+    /**
+     * Clear the stop forecast displayed in the current tab.
+     */
+    public void clearStopForecast() {
+        /*
+         * Clear the stop forecast.
+         */
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 2; i++) {
+                    textViewInboundStopNames[i].setText("");
+                    textViewInboundStopTimes[i].setText("");
+
+                    textViewOutboundStopNames[i].setText("");
+                    textViewOutboundStopTimes[i].setText("");
+                }
+            }
+        });
     }
 
     /**
@@ -218,6 +268,9 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
         }
     }
 
+    /**
+     * Initialise Google API Client.
+     */
     private void initGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -226,13 +279,16 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
         retrieveDeviceNode();
     }
 
+    /**
+     * Retrieve device node from connected device.
+     */
     private void retrieveDeviceNode() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if (googleApiClient != null &&
                         !(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
-                    Log.i(LOG_TAG, "Connecting...");
+                    Log.i(LOG_TAG, "Google API Client connecting...");
                     googleApiClient.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
                 }
 
@@ -266,6 +322,11 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                             TextView textViewStopName =
                                     (TextView) findViewById(R.id.textview_stop_name);
                                 textViewStopName.setBackgroundResource(R.color.message_success);
+                        } else if (sf.getErrorMessage().equalsIgnoreCase(
+                                getString(R.string.message_no_results))) {
+                            TextView textViewStopName =
+                                    (TextView) findViewById(R.id.textview_stop_name);
+                            textViewStopName.setBackgroundResource(R.color.message_not_running);
                         } else {
                             /*
                              * To make best use of the wearable's screen real estate, re-use one of
@@ -279,29 +340,6 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                                     (TextView) findViewById(R.id.textview_inbound_stop1_name);
                             textViewInboundStop1Name.setText(sf.getErrorMessage());
                         }
-
-                        /*
-                         * Create arrays of TextView objects for each entry in the TableLayout.
-                         */
-                        TextView[] textViewInboundStopNames = new TextView[]{
-                                (TextView) findViewById(R.id.textview_inbound_stop1_name),
-                                (TextView) findViewById(R.id.textview_inbound_stop2_name),
-                        };
-
-                        TextView[] textViewInboundStopTimes = new TextView[]{
-                                (TextView) findViewById(R.id.textview_inbound_stop1_time),
-                                (TextView) findViewById(R.id.textview_inbound_stop2_time),
-                        };
-
-                        TextView[] textViewOutboundStopNames = new TextView[]{
-                                (TextView) findViewById(R.id.textview_outbound_stop1_name),
-                                (TextView) findViewById(R.id.textview_outbound_stop2_name),
-                        };
-
-                        TextView[] textViewOutboundStopTimes = new TextView[]{
-                                (TextView) findViewById(R.id.textview_outbound_stop1_time),
-                                (TextView) findViewById(R.id.textview_outbound_stop2_time),
-                        };
 
                         /*
                          * Pull in all trams from the StopForecast, but only display up to two
@@ -322,17 +360,23 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                                 for (int i = 0; i < sf.getInboundTrams().size(); i++) {
                                     if (i < 2) {
                                         textViewInboundStopNames[i].setText(
-                                                sf.getInboundTrams().get(i).getDestination()
+                                                sf.getInboundTrams()
+                                                        .get(i)
+                                                        .getDestination()
                                         );
 
                                         if (sf.getInboundTrams()
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams().get(i).getDueMinutes()
+                                                    sf.getInboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes()
                                             );
                                         } else {
                                             textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams().get(i).getDueMinutes()  + "m"
+                                                    sf.getInboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes()  + "m"
                                             );
                                         }
                                     }
@@ -347,17 +391,23 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                                 for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
                                     if (i < 2) {
                                         textViewOutboundStopNames[i].setText(
-                                                sf.getOutboundTrams().get(i).getDestination()
+                                                sf.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDestination()
                                         );
 
                                         if (sf.getOutboundTrams()
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams().get(i).getDueMinutes()
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes()
                                             );
                                         } else {
                                             textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams().get(i).getDueMinutes()  + "m"
+                                                    sf.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes()  + "m"
                                             );
                                         }
                                     }

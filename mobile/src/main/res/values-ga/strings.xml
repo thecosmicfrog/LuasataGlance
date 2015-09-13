@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">32</string>
-    <string name="version_name">0.35b2</string>
+    <string name="version_code">34</string>
+    <string name="version_name">0.35b4</string>
 
     <!--
         Activities
@@ -64,7 +64,7 @@
         scáileáin chun cuir le do liosta de stadanna Luas ina úsáidtear go minic.</string>
 
     <!--
-    Notification
+        Notification
     -->
     <string name="notification_title">Am le fágáil!</string>
     <string name="notification_tram_expected">Beidh do thram ag fágáil ag\u0020</string>
@@ -79,6 +79,12 @@
     <string name="notify_when">Cén uair ar mhaith leat fógra a fháil faoin tram seo?</string>
     <string name="notify_successful">Fógra sceidealaithe.</string>
     <string name="notify_invalid_time">Am mícheart: Tá an tram le sroicheadh roimh sin.</string>
+
+    <!--
+        Widget
+    -->
+    <string name="widget_left_arrow">\u25C0</string>
+    <string name="widget_right_arrow">\u25B6</string>
 
     <!--
         Stop arrays

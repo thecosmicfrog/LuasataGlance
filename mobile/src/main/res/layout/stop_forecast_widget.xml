@@ -6,21 +6,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/relativelayout_stop_name"
+    <LinearLayout
+        android:id="@+id/linearlayout_stop_name"
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="22dp"
-        android:elevation="6dp">
+        android:weightSum="1"
+        android:elevation="6dp"
+        android:background="@color/message_success">
+
+        <TextView
+            android:id="@+id/textview_stop_name_left_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:layout_weight="0.075"
+            android:layout_marginLeft="3dp"
+            android:text="@string/widget_left_arrow" />
 
         <TextView
             android:id="@+id/textview_stop_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/message_success"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.85"
             android:textColor="#ffffff"
-            android:gravity="center_horizontal"
             android:textStyle="bold" />
-    </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textview_stop_name_right_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|end"
+            android:layout_weight="0.075"
+            android:layout_marginRight="3dp"
+            android:text="@string/widget_right_arrow" />
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

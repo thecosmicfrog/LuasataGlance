@@ -29,41 +29,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.util.Auth;
+import org.thecosmicfrog.luasataglance.api.ApiMethods;
+import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
+import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.util.Auth;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Implementation of App Widget functionality.
@@ -73,6 +68,10 @@ import java.util.TimerTask;
 public class StopForecastWidget extends AppWidgetProvider {
 
     private static final String LOG_TAG = StopForecastWidget.class.getSimpleName();
+
+    private static final String API_FORMAT = "json";
+    private static final String API_URL = "http://www.dublinked.ie/cgi-bin/rtpi";
+    private static final String GAEILGE = "ga";
 
     private static final String PREFS_NAME = "org.thecosmicfrog.luasataglane.StopForecastWidget";
     private static final String FILE_WIDGET_SELECTED_STOPS = "widget_selected_stops";
@@ -91,6 +90,8 @@ public class StopForecastWidget extends AppWidgetProvider {
     private static final int TEXTVIEW_OUTBOUND_STOP2_TIME = R.id.textview_outbound_stop2_time;
 
     private static final String WIDGET_CLICK_STOP_NAME = "WidgetClickStopName";
+    private static final String WIDGET_CLICK_LEFT_ARROW = "WidgetClickLeftArrow";
+    private static final String WIDGET_CLICK_RIGHT_ARROW = "WidgetClickRightArrow";
     private static final String WIDGET_CLICK_STOP_FORECAST = "WidgetClickStopForecast";
 
     private static int[] textViewInboundStopNames = {
@@ -123,6 +124,8 @@ public class StopForecastWidget extends AppWidgetProvider {
     private static List<CharSequence> listSelectedStops;
     private static int indexNextStopToLoad;
     private static EnglishGaeilgeMap mapEnglishGaeilge;
+    private static StopNameIdMap mapStopNameId;
+    private static String localeDefault;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -167,7 +170,25 @@ public class StopForecastWidget extends AppWidgetProvider {
          * If the user taps the stop name, switch to the next stop in their list of selected stops
          * for the widget.
          */
-        if (intent.getAction().equals(WIDGET_CLICK_STOP_NAME)) {
+        if (intent.getAction().equals(WIDGET_CLICK_LEFT_ARROW)) {
+            /*
+             * Reset the stop forecast timeout.
+             */
+            stopForecastTimeout(context, 0, STOP_FORECAST_TIMEOUT_MILLIS);
+
+            /*
+             * Move on to the previous index in the list. If we're on the first index, reset back to
+             * the last index [listSelectedStops.size() - 1].
+             */
+            if (indexNextStopToLoad != 0)
+                indexNextStopToLoad--;
+            else
+                indexNextStopToLoad = listSelectedStops.size() - 1;
+
+            loadStopForecast(context, listSelectedStops.get(indexNextStopToLoad).toString());
+        }
+
+        if (intent.getAction().equals(WIDGET_CLICK_RIGHT_ARROW)) {
             /*
              * Reset the stop forecast timeout.
              */
@@ -274,23 +295,33 @@ public class StopForecastWidget extends AppWidgetProvider {
 
         res = context.getResources();
 
+        // Initialise correct locale.
+        localeDefault = Locale.getDefault().toString();
+
         // Construct the RemoteViews object.
         views = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
 
         // Set up Intents to register taps on the widget.
-        Intent intentWidgetClickStopName = new Intent(context, StopForecastWidget.class);
+        Intent intentWidgetClickLeftArrow = new Intent(context, StopForecastWidget.class);
+        Intent intentWidgetClickRightArrow = new Intent(context, StopForecastWidget.class);
         Intent intentWidgetClickStopForecast = new Intent(context, StopForecastWidget.class);
 
-        intentWidgetClickStopName.setAction(WIDGET_CLICK_STOP_NAME);
+        intentWidgetClickLeftArrow.setAction(WIDGET_CLICK_LEFT_ARROW);
+        intentWidgetClickRightArrow.setAction(WIDGET_CLICK_RIGHT_ARROW);
         intentWidgetClickStopForecast.setAction(WIDGET_CLICK_STOP_FORECAST);
 
-        PendingIntent pendingIntentWidgetClickStopName =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopName, 0);
+        PendingIntent pendingIntentWidgetClickLeftArrow =
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickLeftArrow, 0);
+        PendingIntent pendingIntentWidgetClickRightArrow =
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickRightArrow, 0);
         PendingIntent pendingIntentWidgetClickStopForecast =
                 PendingIntent.getBroadcast(context, 0, intentWidgetClickStopForecast, 0);
 
         views.setOnClickPendingIntent(
-                R.id.relativelayout_stop_name, pendingIntentWidgetClickStopName
+                R.id.textview_stop_name_left_arrow, pendingIntentWidgetClickLeftArrow
+        );
+        views.setOnClickPendingIntent(
+                R.id.textview_stop_name_right_arrow, pendingIntentWidgetClickRightArrow
         );
         views.setOnClickPendingIntent(
                 R.id.linearlayout_stop_forecast, pendingIntentWidgetClickStopForecast
@@ -369,9 +400,12 @@ public class StopForecastWidget extends AppWidgetProvider {
      * @param context Context.
      * @param stopName The stop for which to load a stop forecast.
      */
-    static void loadStopForecast(Context context, String stopName) {
-        // Instantiate an object of EnglishGaeilgeMap.
+    static void loadStopForecast(final Context context, String stopName) {
+        // Instantiate a new EnglishGaeilgeMap.
         mapEnglishGaeilge = new EnglishGaeilgeMap();
+
+        // Instantiate a new StopNameIdMap.
+        mapStopNameId = new StopNameIdMap(localeDefault);
 
         // Set the stop name in the widget.
         views.setTextViewText(TEXTVIEW_STOP_NAME, stopName);
@@ -380,15 +414,97 @@ public class StopForecastWidget extends AppWidgetProvider {
         saveSelectedStopName(context, stopName);
 
         /*
-         * Create a two-field List containing the Context and stop name to load a stop forecast
-         * for. This is a slightly ugly way of ensuring the appropriate Context is worked on by the
-         * AsyncTask.
+         * Dublinked is protected by HTTP Basic auth. Send the username and password as
+         * part of the request. This username and password should not be important from a
+         * security perspective, as the auth is just used as a simple rate limiter.
          */
-        Object[] contextAndStopName = {context, stopName};
-        List<Object> listContextAndStopName = Arrays.asList(contextAndStopName);
+        final String BASIC_AUTH =
+                "Basic " + Base64.encodeToString(
+                        (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
+                        Base64.NO_WRAP
+                );
 
-        //noinspection unchecked
-        new FetchLuasTimes().execute(listContextAndStopName);
+        setIsLoading(context, true);
+
+        /*
+         * Prepare Retrofit API call.
+         */
+        final RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(API_URL)
+                .build();
+
+        ApiMethods methods = restAdapter.create(ApiMethods.class);
+
+        Callback callback = new Callback() {
+            @Override
+            public void success(Object o, Response response) {
+                // Cast the returned Object to a usable ApiTimes object.
+                ApiTimes apiTimes = (ApiTimes) o;
+
+                // Then create a stop forecast with this data.
+                StopForecast stopForecast = createStopForecast(apiTimes);
+
+                // Update the stop forecast.
+                updateStopForecast(context, stopForecast);
+
+                // Stop the refresh animations.
+                setIsLoading(context, false);
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Log.e(LOG_TAG, "Failure in call to server.");
+                Log.e(LOG_TAG, retrofitError.getMessage());
+            }
+        };
+
+        /*
+         * Call API and get stop forecast from server.
+         */
+        methods.getStopForecast(
+                BASIC_AUTH,
+                API_FORMAT,
+                mapStopNameId.get(stopName),
+                callback
+        );
+    }
+
+    /**
+     * Create a usable stop forecast with the data returned from the server.
+     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
+     * @return Usable stop forecast.
+     */
+    private static StopForecast createStopForecast(ApiTimes apiTimes) {
+        StopForecast stopForecast = new StopForecast();
+
+        for (ApiTimes.Result result : apiTimes.results) {
+            Tram tram = new Tram(
+                    // Strip out the annoying "LUAS " prefix from the destination.
+                    result.destination.replace("LUAS ", ""),
+                    result.direction,
+                    result.duetime
+            );
+
+            switch(tram.getDirection()) {
+                case "I":
+                    stopForecast.addInboundTram(tram);
+
+                    break;
+
+                case "O":
+                    stopForecast.addOutboundTram(tram);
+
+                    break;
+
+                default:
+                    // If for some reason the direction doesn't make sense.
+                    Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+            }
+        }
+
+        stopForecast.setErrorMessage(apiTimes.getErrorMessage());
+
+        return stopForecast;
     }
 
     /**
@@ -419,506 +535,169 @@ public class StopForecastWidget extends AppWidgetProvider {
         }
     }
 
-    static class FetchLuasTimes extends AsyncTask<List<Object>, Void, List<Object>> {
+    /**
+     * Update the current stop forecast with newer information from the server.
+     * @param context Context.
+     * @param sf Latest stop forecast from server.
+     */
+    private static void updateStopForecast(Context context, StopForecast sf) {
+        mapEnglishGaeilge = new EnglishGaeilgeMap();
 
-        private final String LOG_TAG = FetchLuasTimes.class.getSimpleName();
+        // If a valid stop forecast exists...
+        if (sf != null) {
+            if (sf.getErrorMessage() != null) {
+                if (sf.getErrorMessage().equals("")) {
+                    /*
+                     * No error message on server. Change the stop name TextView to green.
+                     */
+                    views.setInt(R.id.linearlayout_stop_name,
+                            "setBackgroundResource",
+                            R.color.message_success
+                    );
+                } else if (sf.getErrorMessage().equalsIgnoreCase(
+                        context.getString(R.string.message_no_results))) {
+                    views.setInt(R.id.linearlayout_stop_name,
+                            "setBackgroundResource",
+                            R.color.message_not_running
+                    );
+                } else {
+                    Log.w(LOG_TAG, "Server has returned a service disruption or error.");
 
-        private final String GAEILGE = "ga";
+                    views.setInt(R.id.linearlayout_stop_name,
+                            "setBackgroundResource",
+                            R.color.message_error
+                    );
 
-        private final String localeDefault;
-
-        Map<String, String> stopCodes;
-
-        public FetchLuasTimes() {
-            localeDefault = Locale.getDefault().toString();
+                    /*
+                     * To make best use of the widget's real estate, re-use one of the inbound
+                     * stop TextViews for the status message.
+                     */
+                    views.setTextViewText(
+                            R.id.textview_inbound_stop1_name,
+                            sf.getErrorMessage()
+                    );
+                }
+            }
 
             /*
-             * If the user's default locale is set to Irish (Gaeilge), build a Map
-             * of Irish stop names:codes.
-             * If not, default to English.
+             * Pull in all trams from the StopForecast, but only display up to two inbound
+             * and outbound trams.
              */
-            if (localeDefault.startsWith(GAEILGE)) {
-                stopCodes = new HashMap<String, String>() {
-                    {
-                        // Red Line
-                        put("Iosta na Rinne", "LUAS57");
-                        put("Duga Spencer", "LUAS56");
-                        put("Cearnóg an Mhéara - CNÉ", "LUAS55");
-                        put("Duga Sheoirse", "LUAS54");
-                        put("Conghaile", "LUAS23");
-                        put("Busáras", "LUAS22");
-                        put("Sráid na Mainistreach", "LUAS21");
-                        put("Jervis", "LUAS20");
-                        put("Na Ceithre Cúirteanna", "LUAS19");
-                        put("Margadh na Feirme", "LUAS18");
-                        put("Árd-Mhúsaem", "LUAS17");
-                        put("Heuston", "LUAS16");
-                        put("Ospidéal San Séamas", "LUAS15");
-                        put("Fatima", "LUAS14");
-                        put("Rialto", "LUAS13");
-                        put("Bóthar na Siúire", "LUAS12");
-                        put("An Droichead Órga", "LUAS11");
-                        put("Droimeanach", "LUAS10");
-                        put("An Capall Dubh", "LUAS9");
-                        put("An Cloigín Gorm", "LUAS8");
-                        put("An Chill Mhór", "LUAS7");
-                        put("An Bhó Dhearg", "LUAS6");
-                        put("Coill an Rí", "LUAS5");
-                        put("Belgard", "LUAS4");
-                        put("Baile an Chócaigh", "LUAS3");
-                        put("Ospidéal Thamhlachta", "LUAS2");
-                        put("Tamhlacht", "LUAS1");
-                        put("Fothar Chardain", "LUAS49");
-                        put("Baile an tSíbrigh", "LUAS50");
-                        put("Campas Gnó Iarthar na Cathrach", "LUAS51");
-                        put("Baile Uí Fhoirtcheirn", "LUAS52");
-                        put("Teach Sagard", "LUAS53");
+            if (sf.getInboundTrams() != null) {
+                if (sf.getInboundTrams().size() == 0) {
+                    views.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME,
+                            context.getResources().getString(R.string.no_trams_forecast)
+                    );
+                } else {
+                    String inboundTram;
 
-                        // Green Line
-                        put("Faiche Stiabhna", "LUAS24");
-                        put("Sráid Fhearchair", "LUAS25");
-                        put("Charlemont", "LUAS26");
-                        put("Raghnallach", "LUAS27");
-                        put("Coill na Feá", "LUAS28");
-                        put("Cowper", "LUAS29");
-                        put("Baile an Mhuilinn", "LUAS30");
-                        put("Na Glasáin", "LUAS31");
-                        put("Dún Droma", "LUAS32");
-                        put("Baile Amhlaoibh", "LUAS33");
-                        put("Cill Mochuda", "LUAS34");
-                        put("Stigh Lorgan", "LUAS35");
-                        put("Áth an Ghainimh", "LUAS36");
-                        put("An Pháirc Láir", "LUAS37");
-                        put("Gleann an Chairn", "LUAS38");
-                        put("An Eachrais", "LUAS39");
-                        put("Gleann Bhaile na Lobhar", "LUAS40");
-                        put("Coill Bhaile Uí Ógáin", "LUAS42");
-                        put("Carraig Mhaighin", "LUAS44");
-                        put("Baile an Locháin", "LUAS46");
-                        put("Coill na Silíní", "LUAS47");
-                        put("Gleann Bhríde", "LUAS48");
-                    }
-                };
-            } else {
-                stopCodes = new HashMap<String, String>() {
-                    {
-                        // Red Line
-                        put("The Point", "LUAS57");
-                        put("Spencer Dock", "LUAS56");
-                        put("Mayor Square - NCI", "LUAS55");
-                        put("George's Dock", "LUAS54");
-                        put("Connolly", "LUAS23");
-                        put("Busáras", "LUAS22");
-                        put("Abbey Street", "LUAS21");
-                        put("Jervis", "LUAS20");
-                        put("Four Courts", "LUAS19");
-                        put("Smithfield", "LUAS18");
-                        put("Museum", "LUAS17");
-                        put("Heuston", "LUAS16");
-                        put("James's", "LUAS15");
-                        put("Fatima", "LUAS14");
-                        put("Rialto", "LUAS13");
-                        put("Suir Road", "LUAS12");
-                        put("Goldenbridge", "LUAS11");
-                        put("Drimnagh", "LUAS10");
-                        put("Blackhorse", "LUAS9");
-                        put("Bluebell", "LUAS8");
-                        put("Kylemore", "LUAS7");
-                        put("Red Cow", "LUAS6");
-                        put("Kingswood", "LUAS5");
-                        put("Belgard", "LUAS4");
-                        put("Cookstown", "LUAS3");
-                        put("Hospital", "LUAS2");
-                        put("Tallaght", "LUAS1");
-                        put("Fettercairn", "LUAS49");
-                        put("Cheeverstown", "LUAS50");
-                        put("Citywest Campus", "LUAS51");
-                        put("Fortunestown", "LUAS52");
-                        put("Saggart", "LUAS53");
+                    for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                        if (i < 2) {
+                            if (localeDefault.startsWith(GAEILGE)) {
+                                inboundTram = mapEnglishGaeilge.get(
+                                        sf.getInboundTrams().get(i).getDestination()
+                                );
+                            } else {
+                                inboundTram = sf.getInboundTrams().get(i).getDestination();
+                            }
 
-                        // Green Line
-                        put("St. Stephen's Green", "LUAS24");
-                        put("Harcourt", "LUAS25");
-                        put("Charlemont", "LUAS26");
-                        put("Ranelagh", "LUAS27");
-                        put("Beechwood", "LUAS28");
-                        put("Cowper", "LUAS29");
-                        put("Milltown", "LUAS30");
-                        put("Windy Arbour", "LUAS31");
-                        put("Dundrum", "LUAS32");
-                        put("Balally", "LUAS33");
-                        put("Kilmacud", "LUAS34");
-                        put("Stillorgan", "LUAS35");
-                        put("Sandyford", "LUAS36");
-                        put("Central Park", "LUAS37");
-                        put("Glencairn", "LUAS38");
-                        put("The Gallops", "LUAS39");
-                        put("Leopardstown Valley", "LUAS40");
-                        put("Ballyogan Wood", "LUAS42");
-                        put("Carrickmines", "LUAS44");
-                        put("Laughanstown", "LUAS46");
-                        put("Cherrywood", "LUAS47");
-                        put("Brides Glen", "LUAS48");
-                    }
-                };
-            }
-        }
+                            views.setTextViewText(textViewInboundStopNames[i], inboundTram);
 
-        @SafeVarargs
-        @Override
-        protected final List<Object> doInBackground(List<Object>... params) {
-            if (params.length == 0)
-                return null;
+                            if (sf.getInboundTrams()
+                                    .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                String dueMinutes;
 
-            List<Object> listParams = params[0];
-
-            // Pull the Context out of the List.
-            Context context = (Context) listParams.get(0);
-
-            HttpURLConnection httpUrlConnection = null;
-            BufferedReader reader = null;
-
-            String luasTimesJson = null;
-
-            // HTTP parameters to pass to the API.
-            String format = "json";
-            String stopName = (String) listParams.get(1);
-            String stopId = stopCodes.get(stopName);
-
-            try {
-                setIsLoading(context, true);
-
-                // Build the API URL.
-                final String BASE_URL =
-                        "http://www.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?";
-                final String PARAM_STOPID = "stopid";
-                final String PARAM_FORMAT = "format";
-
-                Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                        .appendQueryParameter(PARAM_STOPID, stopId)
-                        .appendQueryParameter(PARAM_FORMAT, format)
-                        .build();
-
-                URL url = new URL(builtUri.toString());
-
-                /*
-                 * Dublinked is protected by HTTP Basic auth. Send the username and password as
-                 * part of the request. This username and password should not be important from a
-                 * security perspective, as the auth is just used as a simple rate limiter.
-                 */
-                final String BASIC_AUTH =
-                        "Basic " + Base64.encodeToString(
-                                (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
-                                Base64.NO_WRAP
-                        );
-
-                httpUrlConnection = (HttpURLConnection) url.openConnection();
-                httpUrlConnection.setRequestMethod("GET");
-                httpUrlConnection.setRequestProperty("Authorization", BASIC_AUTH);
-                httpUrlConnection.connect();
-
-                InputStream inputStream = httpUrlConnection.getInputStream();
-                StringBuilder stringBuilder = new StringBuilder();
-
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
-                }
-
-                if (inputStream == null || stringBuilder.length() == 0)
-                    luasTimesJson = null;
-                else
-                    luasTimesJson = stringBuilder.toString();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            } finally {
-                if (httpUrlConnection != null)
-                    httpUrlConnection.disconnect();
-
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException ioe) {
-                        Log.e(LOG_TAG, "Error closing stream.", ioe);
-                    }
-                }
-            }
-
-            if (luasTimesJson != null) {
-                try {
-                    StopForecast stopForecast = getLuasDataFromJson(luasTimesJson);
-                    Object[] contextAndStopForecast = {context, stopForecast};
-                    List<Object> listContextAndStopForecast = Arrays.asList(contextAndStopForecast);
-
-                    return listContextAndStopForecast;
-                } catch (JSONException je) {
-                    je.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Object> listContextAndStopForecast) {
-            Context context = (Context) listContextAndStopForecast.get(0);
-            StopForecast stopForecast = (StopForecast) listContextAndStopForecast.get(1);
-
-            updateStopForecast(context, stopForecast);
-            setIsLoading(context, false);
-
-            updateAppWidget(context, views);
-        }
-
-        /**
-         * Update the current stop forecast with newer information from the server.
-         * @param context Context.
-         * @param sf Latest stop forecast from server.
-         */
-        private void updateStopForecast(Context context, StopForecast sf) {
-            mapEnglishGaeilge = new EnglishGaeilgeMap();
-
-            // If a valid stop forecast exists...
-            if (sf != null) {
-                if (sf.getErrorMessage() != null) {
-                    if (sf.getErrorMessage().equals("")) {
-                        /*
-                         * No error message on server. Change the stop name TextView to green.
-                         */
-                        views.setInt(R.id.textview_stop_name,
-                                "setBackgroundResource",
-                                R.color.message_success
-                        );
-                    } else {
-                        Log.e(LOG_TAG, "Server has returned a service disruption or error.");
-
-                        views.setInt(R.id.textview_stop_name,
-                                "setBackgroundResource",
-                                R.color.message_error
-                        );
-
-                        /*
-                         * To make best use of the widget's real estate, re-use one of the inbound
-                         * stop TextViews for the status message.
-                         */
-                        views.setTextViewText(
-                                R.id.textview_inbound_stop1_name,
-                                sf.getErrorMessage()
-                        );
-                    }
-                }
-
-                /*
-                 * Pull in all trams from the StopForecast, but only display up to two inbound
-                 * and outbound trams.
-                 */
-                if (sf.getInboundTrams() != null) {
-                    if (sf.getInboundTrams().size() == 0) {
-                        views.setTextViewText(TEXTVIEW_INBOUND_STOP1_NAME,
-                                context.getResources().getString(R.string.no_trams_forecast)
-                        );
-                    } else {
-                        String inboundTram;
-
-                        for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                            if (i < 2) {
                                 if (localeDefault.startsWith(GAEILGE)) {
-                                    inboundTram = mapEnglishGaeilge.get(
-                                            sf.getInboundTrams().get(i).getDestination()
-                                    );
+                                    dueMinutes = mapEnglishGaeilge.get("DUE");
                                 } else {
-                                    inboundTram = sf.getInboundTrams().get(i).getDestination();
+                                    dueMinutes = "DUE";
                                 }
 
-                                views.setTextViewText(textViewInboundStopNames[i], inboundTram);
-
-                                if (sf.getInboundTrams()
-                                        .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                    String dueMinutes;
-
-                                    if (localeDefault.startsWith(GAEILGE)) {
-                                        dueMinutes = mapEnglishGaeilge.get("DUE");
-                                    } else {
-                                        dueMinutes = "DUE";
-                                    }
-
-                                    views.setTextViewText(
-                                            textViewInboundStopTimes[i],
-                                            dueMinutes
-                                    );
-                                } else if (localeDefault.startsWith(GAEILGE)) {
-                                    views.setTextViewText(
-                                            textViewInboundStopTimes[i],
-                                            sf.getInboundTrams().get(i).getDueMinutes() + "n"
-                                    );
-                                } else {
-                                    views.setTextViewText(
-                                            textViewInboundStopTimes[i],
-                                            sf.getInboundTrams().get(i).getDueMinutes() + "m"
-                                    );
-                                }
+                                views.setTextViewText(
+                                        textViewInboundStopTimes[i],
+                                        dueMinutes
+                                );
+                            } else if (localeDefault.startsWith(GAEILGE)) {
+                                views.setTextViewText(
+                                        textViewInboundStopTimes[i],
+                                        sf.getInboundTrams().get(i).getDueMinutes() + "n"
+                                );
+                            } else {
+                                views.setTextViewText(
+                                        textViewInboundStopTimes[i],
+                                        sf.getInboundTrams().get(i).getDueMinutes() + "m"
+                                );
                             }
                         }
                     }
                 }
+            }
 
-                if (sf.getOutboundTrams() != null) {
-                    if (sf.getOutboundTrams().size() == 0) {
-                        views.setTextViewText(TEXTVIEW_OUTBOUND_STOP1_NAME,
-                                context.getResources().getString(R.string.no_trams_forecast)
-                        );
-                    } else {
-                        String outboundTram;
+            if (sf.getOutboundTrams() != null) {
+                if (sf.getOutboundTrams().size() == 0) {
+                    views.setTextViewText(TEXTVIEW_OUTBOUND_STOP1_NAME,
+                            context.getResources().getString(R.string.no_trams_forecast)
+                    );
+                } else {
+                    String outboundTram;
 
-                        for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                            if (i < 2) {
+                    for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                        if (i < 2) {
+                            if (localeDefault.startsWith(GAEILGE)) {
+                                outboundTram = mapEnglishGaeilge.get(
+                                        sf.getOutboundTrams().get(i).getDestination()
+                                );
+                            } else {
+                                outboundTram = sf.getOutboundTrams().get(i).getDestination();
+                            }
+
+                            views.setTextViewText(textViewOutboundStopNames[i], outboundTram);
+
+                            if (sf.getOutboundTrams()
+                                    .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                String dueMinutes;
+
                                 if (localeDefault.startsWith(GAEILGE)) {
-                                    outboundTram = mapEnglishGaeilge.get(
-                                            sf.getOutboundTrams().get(i).getDestination()
-                                    );
+                                    dueMinutes = mapEnglishGaeilge.get("DUE");
                                 } else {
-                                    outboundTram = sf.getOutboundTrams().get(i).getDestination();
+                                    dueMinutes = "DUE";
                                 }
 
-                                views.setTextViewText(textViewOutboundStopNames[i], outboundTram);
-
-                                if (sf.getOutboundTrams()
-                                        .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                    String dueMinutes;
-
-                                    if (localeDefault.startsWith(GAEILGE)) {
-                                        dueMinutes = mapEnglishGaeilge.get("DUE");
-                                    } else {
-                                        dueMinutes = "DUE";
-                                    }
-
-                                    views.setTextViewText(
-                                            textViewOutboundStopTimes[i],
-                                            dueMinutes
-                                    );
-                                } else if (localeDefault.startsWith(GAEILGE)) {
-                                    views.setTextViewText(
-                                            textViewOutboundStopTimes[i],
-                                            sf.getOutboundTrams().get(i).getDueMinutes() + "n"
-                                    );
-                                } else {
-                                    views.setTextViewText(
-                                            textViewOutboundStopTimes[i],
-                                            sf.getOutboundTrams().get(i).getDueMinutes() + "m"
-                                    );
-                                }
+                                views.setTextViewText(
+                                        textViewOutboundStopTimes[i],
+                                        dueMinutes
+                                );
+                            } else if (localeDefault.startsWith(GAEILGE)) {
+                                views.setTextViewText(
+                                        textViewOutboundStopTimes[i],
+                                        sf.getOutboundTrams().get(i).getDueMinutes() + "n"
+                                );
+                            } else {
+                                views.setTextViewText(
+                                        textViewOutboundStopTimes[i],
+                                        sf.getOutboundTrams().get(i).getDueMinutes() + "m"
+                                );
                             }
                         }
                     }
                 }
-            } else {
-                Log.e(LOG_TAG, "Error in stop forecast (equals null).");
-
-                /*
-                 * If no stop forecast can be retrieved, set a generic error message and
-                 * change the color of the message title box red.
-                 */
-                views.setInt(TEXTVIEW_STOP_NAME,
-                        "setBackgroundResource",
-                        R.color.message_error
-                );
-
-                views.setTextViewText(
-                        TEXTVIEW_INBOUND_STOP1_NAME,
-                        res.getString(R.string.message_error)
-                );
             }
-        }
-
-        /**
-         * Take the String representing the complete forecast in JSON Format and
-         * pull out the data we need to construct the Strings needed for the wireframes.
-         *
-         * Fortunately parsing is easy: constructor takes the JSON string and converts it
-         * into an Object hierarchy for us.
-         * @param forecastJsonStr The latest stop forecast from the server, in JSON format.
-         */
-        private StopForecast getLuasDataFromJson(String forecastJsonStr)
-                throws JSONException {
-
-            StopForecast stopForecast = new StopForecast();
-
-            // These are the names of the JSON objects that need to be extracted.
-            final String LUAS_ERRORMESSAGE = "errormessage";
-            final String LUAS_RESULTS = "results";
-            final String LUAS_DESTINATION = "destination";
-            final String LUAS_DIRECTION = "direction";
-            final String LUAS_DUETIME = "duetime";
-
-            JSONObject tramsJson = new JSONObject(forecastJsonStr);
+        } else {
+            Log.e(LOG_TAG, "Error in stop forecast (equals null).");
 
             /*
-             * If a message is returned from the server, add it to the StopForecast object.
-             * Otherwise, set the message field to null.
+             * If no stop forecast can be retrieved, set a generic error message and
+             * change the color of the message title box red.
              */
-            if (tramsJson.has(LUAS_ERRORMESSAGE)) {
-                stopForecast.setErrorMessage(tramsJson.getString(LUAS_ERRORMESSAGE));
-            } else {
-                stopForecast.setErrorMessage(null);
-            }
+            views.setInt(TEXTVIEW_STOP_NAME,
+                    "setBackgroundResource",
+                    R.color.message_error
+            );
 
-            /*
-             * If a list of trams is returned from the server, add it to the StopForecast object
-             * as an array of both inbound and output trams.
-             * Otherwise, set both fields to null.
-             */
-            if (tramsJson.has(LUAS_RESULTS)) {
-                JSONArray tramsArray = tramsJson.getJSONArray(LUAS_RESULTS);
-
-                Tram[] trams = new Tram[tramsArray.length()];
-
-                for (int i = 0; i < tramsArray.length(); i++) {
-                    String destination;
-                    String direction;
-                    String duetime;
-
-                    // Get the JSON object representing the trams.
-                    JSONObject tramObject = tramsArray.getJSONObject(i);
-
-                    // Strip out the annoying "LUAS " prefix from the destination.
-                    destination = tramObject.getString(LUAS_DESTINATION).replace("LUAS ", "");
-
-                    direction = tramObject.getString(LUAS_DIRECTION);
-                    duetime = tramObject.getString(LUAS_DUETIME);
-
-                    trams[i] = new Tram(destination, direction, duetime);
-
-                    switch (trams[i].getDirection()) {
-                        case "I":
-                            stopForecast.addInboundTram(trams[i]);
-
-                            break;
-
-                        case "O":
-                            stopForecast.addOutboundTram(trams[i]);
-
-                            break;
-
-                        default:
-                            // If for some reason the direction doesn't make sense.
-                            Log.e(LOG_TAG, "Invalid direction: " + trams[i].getDirection());
-                    }
-                }
-            } else {
-                /*
-                 * If there is no "trams" object in the JSON returned from the server,
-                 * there are no inbound or outbound trams forecast. This can happen
-                 * frequently for some stops, such as Connolly, which ceases service
-                 * earlier than others.
-                 * In this case, set empty ArrayLists for inbound and outbound trams.
-                 */
-                stopForecast.setInboundTrams(new ArrayList<Tram>());
-                stopForecast.setOutboundTrams(new ArrayList<Tram>());
-            }
-
-            return stopForecast;
+            views.setTextViewText(
+                    TEXTVIEW_INBOUND_STOP1_NAME,
+                    res.getString(R.string.message_error)
+            );
         }
     }
 }
