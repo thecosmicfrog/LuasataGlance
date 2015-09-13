@@ -158,7 +158,7 @@
 
                                 <Space
                                     android:layout_width="match_parent"
-                                    android:layout_height="12dp" />
+                                    android:layout_height="8dp" />
 
                                 <TextView
                                     android:id="@+id/red_line_textview_inbound"
@@ -220,6 +220,21 @@
 
                                         <TextView
                                             android:id="@+id/red_line_textview_inbound_stop3_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
+
+                                    <TableRow
+                                        android:id="@+id/red_line_tablerow_inbound_stop4"
+                                        android:background="@android:drawable/list_selector_background">
+
+                                        <TextView
+                                            android:id="@+id/red_line_textview_inbound_stop4_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+
+                                        <TextView
+                                            android:id="@+id/red_line_textview_inbound_stop4_time"
                                             android:gravity="center_horizontal"
                                             android:textSize="16sp" />
                                     </TableRow>
@@ -289,6 +304,21 @@
 
                                         <TextView
                                             android:id="@+id/red_line_textview_outbound_stop3_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
+
+                                    <TableRow
+                                        android:id="@+id/red_line_tablerow_outbound_stop4"
+                                        android:background="@android:drawable/list_selector_background">
+
+                                        <TextView
+                                            android:id="@+id/red_line_textview_outbound_stop4_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+
+                                        <TextView
+                                            android:id="@+id/red_line_textview_outbound_stop4_time"
                                             android:gravity="center_horizontal"
                                             android:textSize="16sp" />
                                     </TableRow>
@@ -455,6 +485,21 @@
                                             android:gravity="center_horizontal"
                                             android:textSize="16sp" />
                                     </TableRow>
+
+                                    <TableRow
+                                        android:id="@+id/green_line_tablerow_inbound_stop4"
+                                        android:background="@android:drawable/list_selector_background">
+
+                                        <TextView
+                                            android:id="@+id/green_line_textview_inbound_stop4_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+
+                                        <TextView
+                                            android:id="@+id/green_line_textview_inbound_stop4_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
                                 </TableLayout>
 
                                 <Space
@@ -521,6 +566,21 @@
 
                                         <TextView
                                             android:id="@+id/green_line_textview_outbound_stop3_time"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+                                    </TableRow>
+
+                                    <TableRow
+                                        android:id="@+id/green_line_tablerow_outbound_stop4"
+                                        android:background="@android:drawable/list_selector_background">
+
+                                        <TextView
+                                            android:id="@+id/green_line_textview_outbound_stop4_name"
+                                            android:gravity="center_horizontal"
+                                            android:textSize="16sp" />
+
+                                        <TextView
+                                            android:id="@+id/green_line_textview_outbound_stop4_time"
                                             android:gravity="center_horizontal"
                                             android:textSize="16sp" />
                                     </TableRow>

@@ -602,6 +602,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.red_line_tablerow_inbound_stop2),
                         (TableRow) rootView.findViewById(
                                 R.id.red_line_tablerow_inbound_stop3),
+                        (TableRow) rootView.findViewById(
+                                R.id.red_line_tablerow_inbound_stop4)
                 };
 
                 tableRowOutboundStops = new TableRow[] {
@@ -611,6 +613,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.red_line_tablerow_outbound_stop2),
                         (TableRow) rootView.findViewById(
                                 R.id.red_line_tablerow_outbound_stop3),
+                        (TableRow) rootView.findViewById(
+                                R.id.red_line_tablerow_outbound_stop4)
                 };
 
                 textViewInboundStopNames = new TextView[] {
@@ -620,6 +624,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.red_line_textview_inbound_stop2_name),
                         (TextView) rootView.findViewById(
                                 R.id.red_line_textview_inbound_stop3_name),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_inbound_stop4_name)
                 };
 
                 textViewInboundStopTimes = new TextView[] {
@@ -629,6 +635,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.red_line_textview_inbound_stop2_time),
                         (TextView) rootView.findViewById(
                                 R.id.red_line_textview_inbound_stop3_time),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_inbound_stop4_time)
                 };
 
                 textViewOutboundStopNames = new TextView[] {
@@ -638,6 +646,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.red_line_textview_outbound_stop2_name),
                         (TextView) rootView.findViewById(
                                 R.id.red_line_textview_outbound_stop3_name),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_outbound_stop4_name)
                 };
 
                 textViewOutboundStopTimes = new TextView[] {
@@ -647,6 +657,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.red_line_textview_outbound_stop2_time),
                         (TextView) rootView.findViewById(
                                 R.id.red_line_textview_outbound_stop3_time),
+                        (TextView) rootView.findViewById(
+                                R.id.red_line_textview_outbound_stop4_time)
                 };
 
                 break;
@@ -659,6 +671,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.green_line_tablerow_inbound_stop2),
                         (TableRow) rootView.findViewById(
                                 R.id.green_line_tablerow_inbound_stop3),
+                        (TableRow) rootView.findViewById(
+                                R.id.green_line_tablerow_inbound_stop4)
                 };
 
                 tableRowOutboundStops = new TableRow[] {
@@ -668,6 +682,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.green_line_tablerow_outbound_stop2),
                         (TableRow) rootView.findViewById(
                                 R.id.green_line_tablerow_outbound_stop3),
+                        (TableRow) rootView.findViewById(
+                                R.id.green_line_tablerow_outbound_stop4)
                 };
 
                 textViewInboundStopNames = new TextView[] {
@@ -677,6 +693,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.green_line_textview_inbound_stop2_name),
                         (TextView) rootView.findViewById(
                                 R.id.green_line_textview_inbound_stop3_name),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_inbound_stop4_name)
                 };
 
                 textViewInboundStopTimes = new TextView[] {
@@ -686,6 +704,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.green_line_textview_inbound_stop2_time),
                         (TextView) rootView.findViewById(
                                 R.id.green_line_textview_inbound_stop3_time),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_inbound_stop4_time)
                 };
 
                 textViewOutboundStopNames = new TextView[] {
@@ -695,6 +715,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.green_line_textview_outbound_stop2_name),
                         (TextView) rootView.findViewById(
                                 R.id.green_line_textview_outbound_stop3_name),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_outbound_stop4_name)
                 };
 
                 textViewOutboundStopTimes = new TextView[] {
@@ -704,6 +726,8 @@ public class LuasTimesFragment extends Fragment {
                                 R.id.green_line_textview_outbound_stop2_time),
                         (TextView) rootView.findViewById(
                                 R.id.green_line_textview_outbound_stop3_time),
+                        (TextView) rootView.findViewById(
+                                R.id.green_line_textview_outbound_stop4_time)
                 };
 
                 break;
@@ -847,7 +871,7 @@ public class LuasTimesFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 4; i++) {
                     textViewInboundStopNames[i].setText("");
                     textViewInboundStopTimes[i].setText("");
 
@@ -919,7 +943,7 @@ public class LuasTimesFragment extends Fragment {
                             String inboundTram;
 
                             for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                                if (i < 3) {
+                                if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         inboundTram = mapEnglishGaeilge.get(
                                                 sf.getInboundTrams()
@@ -981,7 +1005,7 @@ public class LuasTimesFragment extends Fragment {
                             String outboundTram;
 
                             for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                                if (i < 3) {
+                                if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         outboundTram = mapEnglishGaeilge.get(
                                                 sf.getOutboundTrams()
@@ -1102,7 +1126,7 @@ public class LuasTimesFragment extends Fragment {
                             String inboundTram;
 
                             for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                                if (i < 3) {
+                                if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         inboundTram = mapEnglishGaeilge.get(
                                                 sf.getInboundTrams()
@@ -1156,7 +1180,7 @@ public class LuasTimesFragment extends Fragment {
                             String outboundTram;
 
                             for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                                if (i < 3) {
+                                if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         outboundTram = mapEnglishGaeilge.get(
                                                 sf.getOutboundTrams()
