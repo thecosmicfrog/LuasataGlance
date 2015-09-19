@@ -194,6 +194,12 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
+
                                     <TableRow
                                         android:id="@+id/red_line_tablerow_inbound_stop2"
                                         android:background="@android:drawable/list_selector_background">
@@ -209,6 +215,12 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
+
                                     <TableRow
                                         android:id="@+id/red_line_tablerow_inbound_stop3"
                                         android:background="@android:drawable/list_selector_background">
@@ -223,6 +235,12 @@
                                             android:gravity="center_horizontal"
                                             android:textSize="16sp" />
                                     </TableRow>
+
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
 
                                     <TableRow
                                         android:id="@+id/red_line_tablerow_inbound_stop4"
@@ -278,6 +296,12 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
+
                                     <TableRow
                                         android:id="@+id/red_line_tablerow_outbound_stop2"
                                         android:background="@android:drawable/list_selector_background">
@@ -293,6 +317,12 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
+
                                     <TableRow
                                         android:id="@+id/red_line_tablerow_outbound_stop3"
                                         android:background="@android:drawable/list_selector_background">
@@ -307,6 +337,12 @@
                                             android:gravity="center_horizontal"
                                             android:textSize="16sp" />
                                     </TableRow>
+
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
 
                                     <TableRow
                                         android:id="@+id/red_line_tablerow_outbound_stop4"
@@ -416,7 +452,7 @@
                                     android:textSize="16sp"
                                     android:ellipsize="none"
                                     android:maxLines="30"
-                                    android:scrollHorizontally="false"/>
+                                    android:scrollHorizontally="false" />
 
                                 <Space
                                     android:layout_width="match_parent"
@@ -456,6 +492,12 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
+
                                     <TableRow
                                         android:id="@+id/green_line_tablerow_inbound_stop2"
                                         android:background="@android:drawable/list_selector_background">
@@ -471,6 +513,12 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
+
                                     <TableRow
                                         android:id="@+id/green_line_tablerow_inbound_stop3"
                                         android:background="@android:drawable/list_selector_background">
@@ -485,6 +533,12 @@
                                             android:gravity="center_horizontal"
                                             android:textSize="16sp" />
                                     </TableRow>
+
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
 
                                     <TableRow
                                         android:id="@+id/green_line_tablerow_inbound_stop4"
@@ -540,6 +594,12 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
+
                                     <TableRow
                                         android:id="@+id/green_line_tablerow_outbound_stop2"
                                         android:background="@android:drawable/list_selector_background">
@@ -555,6 +615,12 @@
                                             android:textSize="16sp" />
                                     </TableRow>
 
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
+
                                     <TableRow
                                         android:id="@+id/green_line_tablerow_outbound_stop3"
                                         android:background="@android:drawable/list_selector_background">
@@ -569,6 +635,12 @@
                                             android:gravity="center_horizontal"
                                             android:textSize="16sp" />
                                     </TableRow>
+
+                                    <View
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="0.6dp"
+                                        android:visibility="visible"
+                                        android:background="@color/stop_forecast_border_grey" />
 
                                     <TableRow
                                         android:id="@+id/green_line_tablerow_outbound_stop4"

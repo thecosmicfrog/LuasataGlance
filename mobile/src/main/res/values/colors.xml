@@ -7,4 +7,5 @@
     <color name="spinner_background">#ffffffff</color>
     <color name="tab_red_line">#ffff4d4d</color>
     <color name="tab_green_line">#ff33ad5C</color>
+    <color name="stop_forecast_border_grey">#fff5f5f5</color>
 </resources>
