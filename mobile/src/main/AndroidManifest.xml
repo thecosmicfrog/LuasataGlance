@@ -4,7 +4,9 @@
     android:versionCode="@string/version_code"
     android:versionName="@string/version_name" >
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -80,6 +82,18 @@
         <receiver android:name=".activity.LuasTimesFragment$NotifyTimesReceiver" >
             <intent-filter>
                 <action android:name="org.thecosmicfrog.luasataglance.activity.NotifyTimeDialog" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.WidgetListenerService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <receiver android:name="org.thecosmicfrog.luasataglance.service.StartServiceAtBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>
