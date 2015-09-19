@@ -62,14 +62,6 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        ComponentName componentNameStopForecastWidget =
-                new ComponentName(context, StopForecastWidget.class);
-        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(componentNameStopForecastWidget);
-
-        String selectedStopName = loadSelectedStopName(context);
-
-        startWidgetListenerService(context, allWidgetIds, selectedStopName);
-
         // There may be multiple widgets active, so update all of them.
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
@@ -123,9 +115,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                     indexNextStopToLoad = listSelectedStops.size() - 1;
             }
 
-            String selectedStopName = listSelectedStops.get(indexNextStopToLoad).toString();
-
-            startWidgetListenerService(context, allWidgetIds, selectedStopName);
+            prepareLoadStopForecast(context, allWidgetIds);
         }
 
         if (intent.getAction().equals("WidgetClickRightArrow")) {
@@ -140,9 +130,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                     indexNextStopToLoad = 0;
             }
 
-            String selectedStopName = listSelectedStops.get(indexNextStopToLoad).toString();
-
-            startWidgetListenerService(context, allWidgetIds, selectedStopName);
+            prepareLoadStopForecast(context, allWidgetIds);
         }
 
         /*
@@ -161,16 +149,28 @@ public class StopForecastWidget extends AppWidgetProvider {
 
             stopForecastLastClickTime = SystemClock.elapsedRealtime();
 
-            String selectedStopName = listSelectedStops.get(indexNextStopToLoad).toString();
-
-            startWidgetListenerService(context, allWidgetIds, selectedStopName);
+            prepareLoadStopForecast(context, allWidgetIds);
         }
     }
 
-    static void startWidgetListenerService(
-            @NonNull Context context,
-            int[] allWidgetIds,
-            String selectedStopName) {
+    /**
+     * If we have a list of selected stops, get the next one we need to load, save it to local
+     * storage, then fire up the service.
+     * @param context Context.
+     * @param allWidgetIds Array of all widget IDs.
+     */
+    static void prepareLoadStopForecast(@NonNull Context context, int[] allWidgetIds) {
+        if (listSelectedStops != null) {
+            String selectedStopName = listSelectedStops.get(indexNextStopToLoad).toString();
+            saveSelectedStopName(context, selectedStopName);
+
+            startWidgetListenerService(context, allWidgetIds);
+        }
+    }
+
+    static void startWidgetListenerService(@NonNull Context context, int[] allWidgetIds) {
+        String selectedStopName = loadSelectedStopName(context);
+
         /*
          * Prepare an Intent to start the WidgetListenerService. Pass in all the widget IDs.
          */
@@ -200,6 +200,20 @@ public class StopForecastWidget extends AppWidgetProvider {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
 
         return prefs.getString("selectedStopName", null);
+    }
+
+    /**
+     * Save the currently-selected stop name to shared preferences.
+     * @param context Context.
+     * @param selectedStopName Name of the stop to save to shared preferences.
+     */
+    static void saveSelectedStopName(Context context, String selectedStopName) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
+
+        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
+
+        prefs.putString("selectedStopName", selectedStopName);
+        prefs.apply();
     }
 
     /**
