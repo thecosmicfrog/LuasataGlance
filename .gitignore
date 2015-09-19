@@ -1,7 +1,6 @@
 *.apk
 .DS_Store
 /build
-*.gradle
 .gradle
 /gradle
 *gradlew*

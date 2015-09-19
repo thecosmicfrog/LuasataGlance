@@ -95,7 +95,8 @@ public class WidgetListenerService extends Service {
     private List<CharSequence> listSelectedStops;
     private String localeDefault;
     private EnglishGaeilgeMap mapEnglishGaeilge;
-    private TimerTask timerTaskStopForecastTimeout;
+
+    private static TimerTask timerTaskStopForecastTimeout;
 
     public WidgetListenerService() {
     }
@@ -201,75 +202,98 @@ public class WidgetListenerService extends Service {
             final int widgetId,
             final RemoteViews views,
             String stopName) {
-        // API constants.
-        final String API_URL = "http://www.dublinked.ie/cgi-bin/rtpi";
-        final String API_FORMAT = "json";
+        if (stopName != null) {
+            // API constants.
+            final String API_URL = "http://www.dublinked.ie/cgi-bin/rtpi";
+            final String API_FORMAT = "json";
 
-        // Instantiate a new EnglishGaeilgeMap.
-        mapEnglishGaeilge = new EnglishGaeilgeMap();
+            // Instantiate a new EnglishGaeilgeMap.
+            mapEnglishGaeilge = new EnglishGaeilgeMap();
 
-        // Instantiate a new StopNameIdMap.
-        StopNameIdMap mapStopNameId = new StopNameIdMap(localeDefault);
+            // Instantiate a new StopNameIdMap.
+            StopNameIdMap mapStopNameId = new StopNameIdMap(localeDefault);
 
-        // Set the stop name in the widget.
-        views.setTextViewText(TEXTVIEW_STOP_NAME, stopName);
+            // Set the stop name in the widget.
+            views.setTextViewText(TEXTVIEW_STOP_NAME, stopName);
 
-        // Keep track of the selected stop.
-        saveSelectedStopName(context, stopName);
+            // Keep track of the selected stop.
+            saveSelectedStopName(context, stopName);
 
-        /*
-         * Dublinked is protected by HTTP Basic auth. Send the username and password as
-         * part of the request. This username and password should not be important from a
-         * security perspective, as the auth is just used as a simple rate limiter.
-         */
-        final String BASIC_AUTH =
-                "Basic " + Base64.encodeToString(
-                        (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
-                        Base64.NO_WRAP
-                );
+            /*
+             * Dublinked is protected by HTTP Basic auth. Send the username and password as
+             * part of the request. This username and password should not be important from a
+             * security perspective, as the auth is just used as a simple rate limiter.
+             */
+            final String BASIC_AUTH =
+                    "Basic " + Base64.encodeToString(
+                            (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
+                            Base64.NO_WRAP
+                    );
 
-        setIsLoading(appWidgetManager, widgetId, views, true);
+            setIsLoading(appWidgetManager, widgetId, views, true);
 
-        /*
-         * Prepare Retrofit API call.
-         */
-        final RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(API_URL)
-                .build();
+            /*
+             * Prepare Retrofit API call.
+             */
+            final RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(API_URL)
+                    .build();
 
-        ApiMethods methods = restAdapter.create(ApiMethods.class);
+            ApiMethods methods = restAdapter.create(ApiMethods.class);
 
-        Callback<ApiTimes> callback = new Callback<ApiTimes>() {
-            @Override
-            public void success(ApiTimes apiTimes, Response response) {
-                // Then create a stop forecast with this data.
-                StopForecast stopForecast = createStopForecast(apiTimes);
+            Callback<ApiTimes> callback = new Callback<ApiTimes>() {
+                @Override
+                public void success(ApiTimes apiTimes, Response response) {
+                    // Then create a stop forecast with this data.
+                    StopForecast stopForecast = createStopForecast(apiTimes);
 
-                // Update the stop forecast.
-                updateStopForecast(context, views, stopForecast);
+                    // Update the stop forecast.
+                    updateStopForecast(context, views, stopForecast);
 
-                appWidgetManager.updateAppWidget(widgetId, views);
+                    appWidgetManager.updateAppWidget(widgetId, views);
 
-                // Stop the refresh animations.
-                setIsLoading(appWidgetManager, widgetId, views, false);
-            }
+                    // Stop the refresh animations.
+                    setIsLoading(appWidgetManager, widgetId, views, false);
+                }
 
-            @Override
-            public void failure(RetrofitError retrofitError) {
-                Log.e(LOG_TAG, "Failure in call to server.");
-                Log.e(LOG_TAG, retrofitError.getMessage());
-            }
-        };
+                @Override
+                public void failure(RetrofitError retrofitError) {
+                    Log.e(LOG_TAG, "Failure during call to server.");
 
-        /*
-         * Call API and get stop forecast from server.
-         */
-        methods.getStopForecast(
-                BASIC_AUTH,
-                API_FORMAT,
-                mapStopNameId.get(stopName),
-                callback
-        );
+                    /*
+                     * If we get a message or a response from the server, there's likely an issue with
+                     * the client request or the server's response itself.
+                     */
+                    if (retrofitError.getMessage() != null)
+                        Log.e(LOG_TAG, retrofitError.getMessage());
+
+                    if (retrofitError.getResponse() != null) {
+                        Log.e(LOG_TAG, retrofitError.getResponse().getUrl());
+                        Log.e(LOG_TAG, Integer.toString(retrofitError.getResponse().getStatus()));
+                        Log.e(LOG_TAG, retrofitError.getResponse().getHeaders().toString());
+                        Log.e(LOG_TAG, retrofitError.getResponse().getBody().toString());
+                        Log.e(LOG_TAG, retrofitError.getResponse().getReason());
+                    }
+
+                    /*
+                     * If we don't receive a message or response, we can still get an idea of what's
+                     * going on by getting the "kind" of error.
+                     */
+                    if (retrofitError.getKind() != null)
+                        Log.e(LOG_TAG, retrofitError.getKind().toString());
+                }
+            };
+
+            /*
+             * Call API and get stop forecast from server.
+             */
+            methods.getStopForecast(
+                    BASIC_AUTH,
+                    API_FORMAT,
+                    mapStopNameId.get(stopName),
+                    callback
+            );
+        }
     }
 
     /**
