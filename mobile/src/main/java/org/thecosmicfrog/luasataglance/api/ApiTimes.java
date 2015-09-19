@@ -24,12 +24,13 @@ package org.thecosmicfrog.luasataglance.api;
 import java.util.List;
 
 public class ApiTimes {
-    public String errorcode;
-    public String errormessage;
-    public int numberofresults;
-    public String stopid;
-    public String timestamp;
-    public List<Result> results;
+
+    private String errorcode;
+    private String errormessage;
+    private int numberofresults;
+    private String stopid;
+    private String timestamp;
+    private List<Result> results;
 
     public class Result {
         public String duetime;
@@ -37,7 +38,27 @@ public class ApiTimes {
         public String destination;
     }
 
-    public String getErrorMessage() {
+    public String getErrorcode() {
+        return errorcode;
+    }
+
+    public String getErrormessage() {
         return errormessage;
+    }
+
+    public int getNumberofresults() {
+        return numberofresults;
+    }
+
+    public String getStopid() {
+        return stopid;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public List<Result> getResults() {
+        return results;
     }
 }

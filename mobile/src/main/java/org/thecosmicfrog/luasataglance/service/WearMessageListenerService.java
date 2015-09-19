@@ -159,7 +159,7 @@ public class WearMessageListenerService extends WearableListenerService {
     private StopForecast createStopForecast(ApiTimes apiTimes) {
         StopForecast stopForecast = new StopForecast();
 
-        for (ApiTimes.Result result : apiTimes.results) {
+        for (ApiTimes.Result result : apiTimes.getResults()) {
             Tram tram = new Tram(
                     // Strip out the annoying "LUAS " prefix from the destination.
                     result.destination.replace("LUAS ", ""),
@@ -184,7 +184,7 @@ public class WearMessageListenerService extends WearableListenerService {
             }
         }
 
-        stopForecast.setErrorMessage(apiTimes.getErrorMessage());
+        stopForecast.setErrorMessage(apiTimes.getErrormessage());
 
         return stopForecast;
     }

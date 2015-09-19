@@ -537,7 +537,7 @@ public class LuasTimesFragment extends Fragment {
     private StopForecast createStopForecast(ApiTimes apiTimes) {
         StopForecast stopForecast = new StopForecast();
 
-        for (Result result : apiTimes.results) {
+        for (Result result : apiTimes.getResults()) {
             Tram tram = new Tram(
                     // Strip out the annoying "LUAS " prefix from the destination.
                     result.destination.replace("LUAS ", ""),
@@ -562,7 +562,7 @@ public class LuasTimesFragment extends Fragment {
             }
         }
 
-        stopForecast.setErrorMessage(apiTimes.getErrorMessage());
+        stopForecast.setErrorMessage(apiTimes.getErrormessage());
 
         return stopForecast;
     }
