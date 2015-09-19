@@ -135,8 +135,29 @@ public class WearMessageListenerService extends WearableListenerService {
 
             @Override
             public void failure(RetrofitError retrofitError) {
-                Log.e(LOG_TAG, "Failure in call to server.");
-                Log.e(LOG_TAG, retrofitError.getMessage());
+                Log.e(LOG_TAG, "Failure during call to server.");
+
+                /*
+                 * If we get a message or a response from the server, there's likely an issue with
+                 * the client request or the server's response itself.
+                 */
+                if (retrofitError.getMessage() != null)
+                    Log.e(LOG_TAG, retrofitError.getMessage());
+
+                if (retrofitError.getResponse() != null) {
+                    Log.e(LOG_TAG, retrofitError.getResponse().getUrl());
+                    Log.e(LOG_TAG, Integer.toString(retrofitError.getResponse().getStatus()));
+                    Log.e(LOG_TAG, retrofitError.getResponse().getHeaders().toString());
+                    Log.e(LOG_TAG, retrofitError.getResponse().getBody().toString());
+                    Log.e(LOG_TAG, retrofitError.getResponse().getReason());
+                }
+
+                /*
+                 * If we don't receive a message or response, we can still get an idea of what's
+                 * going on by getting the "kind" of error.
+                 */
+                if (retrofitError.getKind() != null)
+                    Log.e(LOG_TAG, retrofitError.getKind().toString());
             }
         };
 
