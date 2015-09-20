@@ -48,16 +48,14 @@ import java.util.concurrent.TimeUnit;
 
 public class StopForecastActivity extends Activity implements MessageApi.MessageListener {
 
-    private final String LOG_TAG = StopForecastActivity.class.getSimpleName();
-
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private static final String MOBILE_PATH = "/mobile";
 
+    private final String LOG_TAG = StopForecastActivity.class.getSimpleName();
+
     private GoogleApiClient googleApiClient;
     private String nodeId;
-
     private WatchViewStub stub;
-
     private ProgressBar progressBarLoadingCircle;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView textViewStopName;
@@ -65,7 +63,6 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     private TextView[] textViewInboundStopTimes;
     private TextView[] textViewOutboundStopNames;
     private TextView[] textViewOutboundStopTimes;
-
     private TimerTask timerTaskReload;
 
     @Override

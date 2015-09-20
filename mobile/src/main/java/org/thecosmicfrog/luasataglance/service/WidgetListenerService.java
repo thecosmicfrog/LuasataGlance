@@ -194,6 +194,7 @@ public class WidgetListenerService extends Service {
      * @param context Context.
      * @param stopName The stop for which to load a stop forecast.
      */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private void loadStopForecast(
             final Context context,
             final AppWidgetManager appWidgetManager,

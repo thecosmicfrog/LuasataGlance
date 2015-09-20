@@ -52,8 +52,6 @@ public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
 
     private final String LOG_TAG = StopForecastWidgetConfigureActivity.class.getSimpleName();
 
-    private final String FILE_WIDGET_SELECTED_STOPS = "widget_selected_stops";
-
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private static final String PREFS_NAME =
             "org.thecosmicfrog.luasataglance.widget.StopForecastWidget";
@@ -158,6 +156,8 @@ public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        final String FILE_WIDGET_SELECTED_STOPS = "widget_selected_stops";
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.

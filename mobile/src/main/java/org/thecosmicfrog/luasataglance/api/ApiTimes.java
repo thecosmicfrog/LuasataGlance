@@ -37,4 +37,12 @@ public class ApiTimes {
     public List<Tram> getTrams() {
         return trams;
     }
+
+    public void setMessage(String m) {
+        message = m;
+    }
+
+    public void setTrams(List<Tram> t) {
+        trams = t;
+    }
 }

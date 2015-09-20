@@ -38,12 +38,11 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity {
 
-    private final String LOG_TAG = MainActivity.class.getSimpleName();
-
     private static final long CONNECTION_TIME_OUT_MS = 100;
 
-    private GoogleApiClient googleApiClient;
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private GoogleApiClient googleApiClient;
     private Button buttonRedLine;
     private Button buttonGreenLine;
 

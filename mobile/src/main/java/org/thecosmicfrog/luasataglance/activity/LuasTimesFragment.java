@@ -75,18 +75,16 @@ public class LuasTimesFragment extends Fragment {
 
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
 
-    private View rootView = null;
-
-    private final String API_ACTION = "times";
-    private final String API_URL_PREFIX = "https://api";
-    private final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
-    private final String GAEILGE = "ga";
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
     private final String INBOUND = "inbound";
     private final String OUTBOUND = "outbound";
-    private final String STOP_FORECAST = "stop_forecast";
 
+    private static int notifyStopTimeExpected;
+    private static StopNameIdMap mapStopNameId;
+    private static String localeDefault;
+
+    private View rootView = null;
     private TabHost tabHost;
     private String currentTab;
     private ProgressBar progressBarRedLineLoadingCircle;
@@ -97,8 +95,6 @@ public class LuasTimesFragment extends Fragment {
     private Spinner greenLineSpinnerStop;
     private SwipeRefreshLayout redLineSwipeRefreshLayout;
     private SwipeRefreshLayout greenLineSwipeRefreshLayout;
-    private TextView textViewMessageTitle;
-    private TextView textViewMessage;
     private LinearLayout linearLayoutSwipeRefreshTutorial;
     private TableRow[] tableRowInboundStops;
     private TableRow[] tableRowOutboundStops;
@@ -106,18 +102,7 @@ public class LuasTimesFragment extends Fragment {
     private TextView[] textViewInboundStopTimes;
     private TextView[] textViewOutboundStopNames;
     private TextView[] textViewOutboundStopTimes;
-
     private TimerTask timerTaskReload;
-
-    private static AlarmManager alarmManager;
-    private static BroadcastReceiver broadcastReceiver;
-    private static PendingIntent pendingIntent;
-    private static StopNameIdMap mapStopNameId;
-
-    private static String localeDefault;
-    private static String notifyStopName;
-    private static String notifyStopTimeStr;
-    private static int notifyStopTimeExpected;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -440,6 +425,10 @@ public class LuasTimesFragment extends Fragment {
      * @param stopName The stop for which to load a stop forecast.
      */
     public void loadStopForecast(String stopName) {
+        final String API_ACTION = "times";
+        final String API_URL_PREFIX = "https://api";
+        final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
+
         // Keep track of the currently-focused tab.
         currentTab = tabHost.getCurrentTabTag();
 
@@ -758,6 +747,8 @@ public class LuasTimesFragment extends Fragment {
      * Initialise OnClickListeners for a stop forecast.
      */
     private void initStopForecastOnClickListeners() {
+        final String STOP_FORECAST = "stop_forecast";
+
         localeDefault = Locale.getDefault().toString();
         final NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(localeDefault, STOP_FORECAST);
 
@@ -792,10 +783,10 @@ public class LuasTimesFragment extends Fragment {
      */
     private void showNotifyTimeDialog(String direction, int index, NotifyTimesMap mapNotifyTimes) {
         localeDefault = Locale.getDefault().toString();
+        String notifyStopTimeStr;
 
         switch (direction) {
             case INBOUND:
-                notifyStopName = textViewInboundStopNames[index].getText().toString();
                 notifyStopTimeStr = textViewInboundStopTimes[index].getText().toString();
 
                 if (notifyStopTimeStr.equals(""))
@@ -823,7 +814,6 @@ public class LuasTimesFragment extends Fragment {
                 break;
 
             case OUTBOUND:
-                notifyStopName = textViewOutboundStopNames[index].getText().toString();
                 notifyStopTimeStr = textViewOutboundStopTimes[index].getText().toString();
 
                 if (notifyStopTimeStr.equals(""))
@@ -900,8 +890,15 @@ public class LuasTimesFragment extends Fragment {
      * Draw stop forecast to screen.
      * @param sf StopForecast object containing data for requested stop.
      */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private void updateStopForecast(StopForecast sf) {
+        final String GAEILGE = "ga";
+
+        // Instantiate a new EnglishGaeilgeMap.
         EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
+
+        TextView textViewMessageTitle;
+        TextView textViewMessage;
 
         switch (currentTab) {
             case RED_LINE:
@@ -1311,7 +1308,7 @@ public class LuasTimesFragment extends Fragment {
         private void scheduleNotification(Context context,
                                           final int notifyTimeUserRequestedMins,
                                           int notifyDelayMillis) {
-            broadcastReceiver = new BroadcastReceiver() {
+            BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     /*
@@ -1376,14 +1373,14 @@ public class LuasTimesFragment extends Fragment {
                     new IntentFilter("org.thecosmicfrog.luasataglance")
             );
 
-            pendingIntent = PendingIntent.getBroadcast(
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     context,
                     0,
                     new Intent("org.thecosmicfrog.luasataglance"),
                     0
             );
 
-            alarmManager = (AlarmManager) context.getSystemService(
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(
                     Context.ALARM_SERVICE
             );
             alarmManager.set(

@@ -60,10 +60,8 @@ public final class Serializer {
             b.close();
 
             return o.readObject();
-        } catch (IOException ioe) {
-            Log.e(LOG_TAG, Log.getStackTraceString(ioe));
-        } catch (ClassNotFoundException cnfe) {
-            Log.e(LOG_TAG, Log.getStackTraceString(cnfe));
+        } catch (IOException | ClassNotFoundException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
 
         return null;

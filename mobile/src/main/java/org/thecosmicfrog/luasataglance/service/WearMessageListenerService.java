@@ -48,15 +48,12 @@ public class WearMessageListenerService extends WearableListenerService {
 
     private final String LOG_TAG = WearMessageListenerService.class.getSimpleName();
 
-    private static GoogleApiClient googleApiClient;
-    private static String localeDefault;
-    private static StopNameIdMap mapStopNameId;
-
-    private final String API_ACTION = "times";
-    private final String API_URL_PREFIX = "https://api";
-    private final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private static final String WEAR_PATH = "/wear";
+
+    private static GoogleApiClient googleApiClient;
+    private static StopNameIdMap mapStopNameId;
+
     private String nodeId;
 
     @Override
@@ -64,7 +61,7 @@ public class WearMessageListenerService extends WearableListenerService {
         super.onCreate();
 
         // Initialise correct locale.
-        localeDefault = Locale.getDefault().toString();
+        String localeDefault = Locale.getDefault().toString();
 
         // Instantiate a new StopNameIdMap.
         mapStopNameId = new StopNameIdMap(localeDefault);
@@ -79,6 +76,7 @@ public class WearMessageListenerService extends WearableListenerService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         Wearable.MessageApi.removeListener(googleApiClient, this);
     }
 
@@ -95,6 +93,10 @@ public class WearMessageListenerService extends WearableListenerService {
     }
 
     public void fetchStopForecast(String stopName) {
+        final String API_ACTION = "times";
+        final String API_URL_PREFIX = "https://api";
+        final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
+
         /*
          * Randomly choose an API endpoint to query. This provides load balancing and redundancy
          * in case of server failures.
