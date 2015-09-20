@@ -29,8 +29,8 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
-import org.thecosmicfrog.luasataglance.api.ApiMethodsRpa;
-import org.thecosmicfrog.luasataglance.api.ApiTimesRpa;
+import org.thecosmicfrog.luasataglance.api.ApiMethods;
+import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
@@ -117,13 +117,13 @@ public class WearMessageListenerService extends WearableListenerService {
                 .setEndpoint(apiUrl)
                 .build();
 
-        ApiMethodsRpa methods = restAdapter.create(ApiMethodsRpa.class);
+        ApiMethods methods = restAdapter.create(ApiMethods.class);
 
-        Callback<ApiTimesRpa> callback = new Callback<ApiTimesRpa>() {
+        Callback<ApiTimes> callback = new Callback<ApiTimes>() {
             @Override
-            public void success(ApiTimesRpa apiTimesRpa, Response response) {
+            public void success(ApiTimes apiTimes, Response response) {
                 // Then create a stop forecast with this data.
-                final StopForecast stopForecast = createStopForecast(apiTimesRpa);
+                final StopForecast stopForecast = createStopForecast(apiTimes);
 
                 new Thread(new Runnable() {
                     @Override
@@ -173,14 +173,14 @@ public class WearMessageListenerService extends WearableListenerService {
 
     /**
      * Create a usable stop forecast with the data returned from the server.
-     * @param apiTimesRpa ApiTimesRpa object created by Retrofit, containing raw stop forecast data.
+     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
      * @return Usable stop forecast.
      */
-    private StopForecast createStopForecast(ApiTimesRpa apiTimesRpa) {
+    private StopForecast createStopForecast(ApiTimes apiTimes) {
         StopForecast stopForecast = new StopForecast();
 
-        if (apiTimesRpa.getTrams() != null) {
-            for (Tram tram : apiTimesRpa.getTrams()) {
+        if (apiTimes.getTrams() != null) {
+            for (Tram tram : apiTimes.getTrams()) {
                 switch (tram.getDirection()) {
                     case "Inbound":
                         stopForecast.addInboundTram(tram);
@@ -199,7 +199,7 @@ public class WearMessageListenerService extends WearableListenerService {
             }
         }
 
-        stopForecast.setMessage(apiTimesRpa.getMessage());
+        stopForecast.setMessage(apiTimes.getMessage());
 
         return stopForecast;
     }

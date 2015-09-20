@@ -33,8 +33,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.api.ApiMethodsRpa;
-import org.thecosmicfrog.luasataglance.api.ApiTimesRpa;
+import org.thecosmicfrog.luasataglance.api.ApiMethods;
+import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
@@ -242,13 +242,13 @@ public class WidgetListenerService extends Service {
                     .setEndpoint(apiUrl)
                     .build();
 
-            ApiMethodsRpa methods = restAdapter.create(ApiMethodsRpa.class);
+            ApiMethods methods = restAdapter.create(ApiMethods.class);
 
-            Callback<ApiTimesRpa> callback = new Callback<ApiTimesRpa>() {
+            Callback<ApiTimes> callback = new Callback<ApiTimes>() {
                 @Override
-                public void success(ApiTimesRpa apiTimesRpa, Response response) {
+                public void success(ApiTimes apiTimes, Response response) {
                     // Then create a stop forecast with this data.
-                    StopForecast stopForecast = createStopForecast(apiTimesRpa);
+                    StopForecast stopForecast = createStopForecast(apiTimes);
 
                     // Update the stop forecast.
                     updateStopForecast(context, views, stopForecast);
@@ -300,14 +300,14 @@ public class WidgetListenerService extends Service {
 
     /**
      * Create a usable stop forecast with the data returned from the server.
-     * @param apiTimesRpa ApiTimesRpa object created by Retrofit, containing raw stop forecast data.
+     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
      * @return Usable stop forecast.
      */
-    private StopForecast createStopForecast(ApiTimesRpa apiTimesRpa) {
+    private StopForecast createStopForecast(ApiTimes apiTimes) {
         StopForecast stopForecast = new StopForecast();
 
-        if (apiTimesRpa.getTrams() != null) {
-            for (Tram tram : apiTimesRpa.getTrams()) {
+        if (apiTimes.getTrams() != null) {
+            for (Tram tram : apiTimes.getTrams()) {
                 switch (tram.getDirection()) {
                     case "Inbound":
                         stopForecast.addInboundTram(tram);
@@ -326,7 +326,7 @@ public class WidgetListenerService extends Service {
             }
         }
 
-        stopForecast.setMessage(apiTimesRpa.getMessage());
+        stopForecast.setMessage(apiTimes.getMessage());
 
         return stopForecast;
     }

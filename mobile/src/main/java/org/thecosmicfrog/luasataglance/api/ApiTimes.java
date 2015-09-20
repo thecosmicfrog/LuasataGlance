@@ -25,7 +25,7 @@ import org.thecosmicfrog.luasataglance.object.Tram;
 
 import java.util.List;
 
-public class ApiTimesRpa {
+public class ApiTimes {
 
     private String message;
     private List<Tram> trams;

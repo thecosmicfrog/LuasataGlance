@@ -21,44 +21,16 @@
 
 package org.thecosmicfrog.luasataglance.api;
 
-import java.util.List;
+import retrofit.Callback;
+import retrofit.http.GET;
+import retrofit.http.Query;
 
-public class ApiTimesDublinked {
+public interface ApiMethods {
 
-    private String errorcode;
-    private String errormessage;
-    private int numberofresults;
-    private String stopid;
-    private String timestamp;
-    private List<Result> results;
-
-    public class Result {
-        public String duetime;
-        public String direction;
-        public String destination;
-    }
-
-    public String getErrorcode() {
-        return errorcode;
-    }
-
-    public String getErrormessage() {
-        return errormessage;
-    }
-
-    public int getNumberofresults() {
-        return numberofresults;
-    }
-
-    public String getStopid() {
-        return stopid;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public List<Result> getResults() {
-        return results;
-    }
+    @GET("/luas-api.php")
+    void getStopForecast(
+            @Query("action") String action,
+            @Query("station") String station,
+            Callback<ApiTimes> cb
+    );
 }
