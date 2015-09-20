@@ -425,9 +425,9 @@ public class LuasTimesFragment extends Fragment {
      * @param stopName The stop for which to load a stop forecast.
      */
     public void loadStopForecast(String stopName) {
-        final String API_ACTION = "times";
         final String API_URL_PREFIX = "https://api";
         final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
+        final String API_ACTION = "times";
 
         // Keep track of the currently-focused tab.
         currentTab = tabHost.getCurrentTabTag();
@@ -904,6 +904,8 @@ public class LuasTimesFragment extends Fragment {
             case RED_LINE:
                 // If a valid stop forecast exists...
                 if (sf != null) {
+                    String message;
+
                     textViewMessageTitle =
                             (TextView) rootView.findViewById(
                                     R.id.red_line_textview_message_title
@@ -914,21 +916,27 @@ public class LuasTimesFragment extends Fragment {
                                     R.id.red_line_textview_message
                             );
 
-                    if (sf.getMessage().contains(
+                    if (localeDefault.startsWith(GAEILGE)) {
+                        message = getResources().getString(R.string.message_success);
+                    } else {
+                        message = sf.getMessage();
+                    }
+
+                    if (message.contains(
                             getResources().getString(R.string.message_success))) {
                         /*
                          * No error message on server. Change the message title TextView to
                          * green and set a default success message.
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                        textViewMessage.setText(sf.getMessage());
+                        textViewMessage.setText(message);
                     } else {
                         /*
                          * Change the color of the message title TextView to red and set the
                          * error message from the server.
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_error);
-                        textViewMessage.setText(sf.getMessage());
+                        textViewMessage.setText(message);
                     }
 
                     /*
@@ -1081,6 +1089,8 @@ public class LuasTimesFragment extends Fragment {
             case GREEN_LINE:
                 // If a valid stop forecast exists...
                 if (sf != null) {
+                    String message;
+
                     textViewMessageTitle =
                             (TextView) rootView.findViewById(
                                     R.id.green_line_textview_message_title
@@ -1091,21 +1101,27 @@ public class LuasTimesFragment extends Fragment {
                                     R.id.green_line_textview_message
                             );
 
-                    if (sf.getMessage().contains(
+                    if (localeDefault.startsWith(GAEILGE)) {
+                        message = getResources().getString(R.string.message_success);
+                    } else {
+                        message = sf.getMessage();
+                    }
+
+                    if (message.contains(
                             getResources().getString(R.string.message_success))) {
                         /*
                          * No error message on server. Change the message title TextView to
                          * green and set a default success message.
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                        textViewMessage.setText(sf.getMessage());
+                        textViewMessage.setText(message);
                     } else {
                         /*
                          * Change the color of the message title TextView to red and set the
                          * error message from the server.
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_error);
-                        textViewMessage.setText(sf.getMessage());
+                        textViewMessage.setText(message);
                     }
 
                     /*

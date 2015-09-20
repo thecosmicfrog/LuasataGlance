@@ -93,9 +93,9 @@ public class WearMessageListenerService extends WearableListenerService {
     }
 
     public void fetchStopForecast(String stopName) {
-        final String API_ACTION = "times";
         final String API_URL_PREFIX = "https://api";
         final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
+        final String API_ACTION = "times";
 
         /*
          * Randomly choose an API endpoint to query. This provides load balancing and redundancy

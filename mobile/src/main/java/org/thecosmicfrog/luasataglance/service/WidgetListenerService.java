@@ -195,17 +195,13 @@ public class WidgetListenerService extends Service {
      * @param stopName The stop for which to load a stop forecast.
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private void loadStopForecast(
-            final Context context,
-            final AppWidgetManager appWidgetManager,
-            final int widgetId,
-            final RemoteViews views,
-            String stopName) {
+    private void loadStopForecast(final Context context,final AppWidgetManager appWidgetManager,
+                                  final int widgetId, final RemoteViews views, String stopName) {
         if (stopName != null) {
             // API constants.
-            final String API_ACTION = "times";
             final String API_URL_PREFIX = "https://api";
             final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
+            final String API_ACTION = "times";
 
             // Instantiate a new EnglishGaeilgeMap.
             mapEnglishGaeilge = new EnglishGaeilgeMap();
@@ -465,12 +461,20 @@ public class WidgetListenerService extends Service {
     private void updateStopForecast(Context context, RemoteViews views, StopForecast sf) {
         final String GAEILGE = "ga";
 
+        String message;
+
+        if (localeDefault.startsWith(GAEILGE)) {
+            message = getResources().getString(R.string.message_success);
+        } else {
+            message = sf.getMessage();
+        }
+
         mapEnglishGaeilge = new EnglishGaeilgeMap();
 
         // If a valid stop forecast exists...
         if (sf != null) {
             if (sf.getMessage() != null) {
-                if (sf.getMessage().contains(getString(R.string.message_success))) {
+                if (message.contains(getString(R.string.message_success))) {
                     /*
                      * No error message on server. Change the stop name TextView to green.
                      */
@@ -494,7 +498,7 @@ public class WidgetListenerService extends Service {
                      */
                     views.setTextViewText(
                             R.id.textview_inbound_stop1_name,
-                            sf.getMessage()
+                            message
                     );
                 }
             }
