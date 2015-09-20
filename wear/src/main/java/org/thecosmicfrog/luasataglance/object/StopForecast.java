@@ -31,7 +31,7 @@ public class StopForecast implements Serializable {
 
     private final String LOG_TAG = StopForecast.class.getSimpleName();
 
-    private String errorMessage;
+    private String message;
     private List<Tram> inboundTrams;
     private List<Tram> outboundTrams;
 
@@ -52,8 +52,8 @@ public class StopForecast implements Serializable {
             outboundTrams.add(t);
     }
 
-    public void setErrorMessage(String e) {
-        errorMessage = e;
+    public void setMessage(String m) {
+        message = m;
     }
 
     public void setInboundTrams(List<Tram> i) {
@@ -64,8 +64,8 @@ public class StopForecast implements Serializable {
         outboundTrams = o;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getMessage() {
+        return message;
     }
 
     public List<Tram> getInboundTrams() {

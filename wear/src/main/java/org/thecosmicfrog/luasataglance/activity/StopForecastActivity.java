@@ -314,7 +314,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
                     // If a valid stop forecast exists...
                     if (sf != null) {
-                        if (sf.getErrorMessage().equals("")) {
+                        if (sf.getMessage().contains(getString(R.string.message_success))) {
                             /*
                              * No error message on server. Change the message title TextView to
                              * green and set a default success message.
@@ -322,11 +322,6 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                             TextView textViewStopName =
                                     (TextView) findViewById(R.id.textview_stop_name);
                                 textViewStopName.setBackgroundResource(R.color.message_success);
-                        } else if (sf.getErrorMessage().equalsIgnoreCase(
-                                getString(R.string.message_no_results))) {
-                            TextView textViewStopName =
-                                    (TextView) findViewById(R.id.textview_stop_name);
-                            textViewStopName.setBackgroundResource(R.color.message_not_running);
                         } else {
                             /*
                              * To make best use of the wearable's screen real estate, re-use one of
@@ -338,7 +333,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
                             TextView textViewInboundStop1Name =
                                     (TextView) findViewById(R.id.textview_inbound_stop1_name);
-                            textViewInboundStop1Name.setText(sf.getErrorMessage());
+                            textViewInboundStop1Name.setText(sf.getMessage());
                         }
 
                         /*

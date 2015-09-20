@@ -29,18 +29,16 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.api.ApiMethods;
-import org.thecosmicfrog.luasataglance.api.ApiTimes;
+import org.thecosmicfrog.luasataglance.api.ApiMethodsRpa;
+import org.thecosmicfrog.luasataglance.api.ApiTimesRpa;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
-import org.thecosmicfrog.luasataglance.util.Auth;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -204,8 +202,9 @@ public class WidgetListenerService extends Service {
             String stopName) {
         if (stopName != null) {
             // API constants.
-            final String API_URL = "http://www.dublinked.ie/cgi-bin/rtpi";
-            final String API_FORMAT = "json";
+            final String API_ACTION = "times";
+            final String API_URL_PREFIX = "https://api";
+            final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
 
             // Instantiate a new EnglishGaeilgeMap.
             mapEnglishGaeilge = new EnglishGaeilgeMap();
@@ -219,33 +218,37 @@ public class WidgetListenerService extends Service {
             // Keep track of the selected stop.
             saveSelectedStopName(context, stopName);
 
-            /*
-             * Dublinked is protected by HTTP Basic auth. Send the username and password as
-             * part of the request. This username and password should not be important from a
-             * security perspective, as the auth is just used as a simple rate limiter.
-             */
-            final String BASIC_AUTH =
-                    "Basic " + Base64.encodeToString(
-                            (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
-                            Base64.NO_WRAP
-                    );
-
             setIsLoading(appWidgetManager, widgetId, views, true);
+
+            /*
+             * Randomly choose an API endpoint to query. This provides load balancing and redundancy
+             * in case of server failures.
+             * All API endpoints are of the form: "apiN.thecosmicfrog.org", where N is determined by
+             * the formula below.
+             * The constant NUM_API_ENDPOINTS governs how many endpoints there currently are.
+             */
+            final int NUM_API_ENDPOINTS = 2;
+
+            String apiEndpointToQuery = Integer.toString(
+                    (int) (Math.random() * NUM_API_ENDPOINTS + 1)
+            );
+
+            String apiUrl = API_URL_PREFIX + apiEndpointToQuery + API_URL_POSTFIX;
 
             /*
              * Prepare Retrofit API call.
              */
             final RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint(API_URL)
+                    .setEndpoint(apiUrl)
                     .build();
 
-            ApiMethods methods = restAdapter.create(ApiMethods.class);
+            ApiMethodsRpa methods = restAdapter.create(ApiMethodsRpa.class);
 
-            Callback<ApiTimes> callback = new Callback<ApiTimes>() {
+            Callback<ApiTimesRpa> callback = new Callback<ApiTimesRpa>() {
                 @Override
-                public void success(ApiTimes apiTimes, Response response) {
+                public void success(ApiTimesRpa apiTimesRpa, Response response) {
                     // Then create a stop forecast with this data.
-                    StopForecast stopForecast = createStopForecast(apiTimes);
+                    StopForecast stopForecast = createStopForecast(apiTimesRpa);
 
                     // Update the stop forecast.
                     updateStopForecast(context, views, stopForecast);
@@ -288,8 +291,7 @@ public class WidgetListenerService extends Service {
              * Call API and get stop forecast from server.
              */
             methods.getStopForecast(
-                    BASIC_AUTH,
-                    API_FORMAT,
+                    API_ACTION,
                     mapStopNameId.get(stopName),
                     callback
             );
@@ -298,38 +300,33 @@ public class WidgetListenerService extends Service {
 
     /**
      * Create a usable stop forecast with the data returned from the server.
-     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
+     * @param apiTimesRpa ApiTimesRpa object created by Retrofit, containing raw stop forecast data.
      * @return Usable stop forecast.
      */
-    private StopForecast createStopForecast(ApiTimes apiTimes) {
+    private StopForecast createStopForecast(ApiTimesRpa apiTimesRpa) {
         StopForecast stopForecast = new StopForecast();
 
-        for (ApiTimes.Result result : apiTimes.getResults()) {
-            Tram tram = new Tram(
-                    // Strip out the annoying "LUAS " prefix from the destination.
-                    result.destination.replace("LUAS ", ""),
-                    result.direction,
-                    result.duetime
-            );
+        if (apiTimesRpa.getTrams() != null) {
+            for (Tram tram : apiTimesRpa.getTrams()) {
+                switch (tram.getDirection()) {
+                    case "Inbound":
+                        stopForecast.addInboundTram(tram);
 
-            switch(tram.getDirection()) {
-                case "I":
-                    stopForecast.addInboundTram(tram);
+                        break;
 
-                    break;
+                    case "Outbound":
+                        stopForecast.addOutboundTram(tram);
 
-                case "O":
-                    stopForecast.addOutboundTram(tram);
+                        break;
 
-                    break;
-
-                default:
-                    // If for some reason the direction doesn't make sense.
-                    Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+                    default:
+                        // If for some reason the direction doesn't make sense.
+                        Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+                }
             }
         }
 
-        stopForecast.setErrorMessage(apiTimes.getErrormessage());
+        stopForecast.setMessage(apiTimesRpa.getMessage());
 
         return stopForecast;
     }
@@ -471,8 +468,8 @@ public class WidgetListenerService extends Service {
 
         // If a valid stop forecast exists...
         if (sf != null) {
-            if (sf.getErrorMessage() != null) {
-                if (sf.getErrorMessage().equals("")) {
+            if (sf.getMessage() != null) {
+                if (sf.getMessage().contains(getString(R.string.message_success))) {
                     /*
                      * No error message on server. Change the stop name TextView to green.
                      */
@@ -480,13 +477,6 @@ public class WidgetListenerService extends Service {
                             R.id.linearlayout_stop_name,
                             "setBackgroundResource",
                             R.color.message_success
-                    );
-                } else if (sf.getErrorMessage().equalsIgnoreCase(
-                        context.getString(R.string.message_no_results))) {
-                    views.setInt(
-                            R.id.linearlayout_stop_name,
-                            "setBackgroundResource",
-                            R.color.message_not_running
                     );
                 } else {
                     Log.w(LOG_TAG, "Server has returned a service disruption or error.");
@@ -503,7 +493,7 @@ public class WidgetListenerService extends Service {
                      */
                     views.setTextViewText(
                             R.id.textview_inbound_stop1_name,
-                            sf.getErrorMessage()
+                            sf.getMessage()
                     );
                 }
             }

@@ -35,7 +35,6 @@ import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,15 +50,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.api.ApiMethods;
-import org.thecosmicfrog.luasataglance.api.ApiTimes;
-import org.thecosmicfrog.luasataglance.api.ApiTimes.Result;
+import org.thecosmicfrog.luasataglance.api.ApiMethodsRpa;
+import org.thecosmicfrog.luasataglance.api.ApiTimesRpa;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
-import org.thecosmicfrog.luasataglance.util.Auth;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,8 +77,9 @@ public class LuasTimesFragment extends Fragment {
 
     private View rootView = null;
 
-    private final String API_FORMAT = "json";
-    private final String API_URL = "http://www.dublinked.ie/cgi-bin/rtpi";
+    private final String API_ACTION = "times";
+    private final String API_URL_PREFIX = "https://api";
+    private final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
     private final String GAEILGE = "ga";
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
@@ -442,41 +440,42 @@ public class LuasTimesFragment extends Fragment {
      * @param stopName The stop for which to load a stop forecast.
      */
     public void loadStopForecast(String stopName) {
-        /*
-         * Dublinked is protected by HTTP Basic auth. Send the username and password as
-         * part of the request. This username and password should not be important from a
-         * security perspective, as the auth is just used as a simple rate limiter.
-         */
-        final String BASIC_AUTH =
-                "Basic " + Base64.encodeToString(
-                        (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
-                        Base64.NO_WRAP
-                );
-
         // Keep track of the currently-focused tab.
         currentTab = tabHost.getCurrentTabTag();
 
         setIsLoading(currentTab, true);
 
         /*
+         * Randomly choose an API endpoint to query. This provides load balancing and redundancy
+         * in case of server failures.
+         * All API endpoints are of the form: "apiN.thecosmicfrog.org", where N is determined by
+         * the formula below.
+         * The constant NUM_API_ENDPOINTS governs how many endpoints there currently are.
+         */
+        final int NUM_API_ENDPOINTS = 2;
+
+        String apiEndpointToQuery = Integer.toString(
+                (int) (Math.random() * NUM_API_ENDPOINTS + 1)
+        );
+
+        String apiUrl = API_URL_PREFIX + apiEndpointToQuery + API_URL_POSTFIX;
+
+        /*
          * Prepare Retrofit API call.
          */
         final RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(API_URL)
+                .setEndpoint(apiUrl)
                 .build();
 
-        ApiMethods methods = restAdapter.create(ApiMethods.class);
+        ApiMethodsRpa methods = restAdapter.create(ApiMethodsRpa.class);
 
-        Callback callback = new Callback() {
+        Callback<ApiTimesRpa> callback = new Callback<ApiTimesRpa>() {
             @Override
-            public void success(Object o, Response response) {
+            public void success(ApiTimesRpa apiTimesRpa, Response response) {
                 // Check Fragment is attached to Activity in order to avoid NullPointerExceptions.
                 if (isAdded()) {
-                    // Cast the returned Object to a usable ApiTimes object.
-                    ApiTimes apiTimes = (ApiTimes) o;
-
                     // Then create a stop forecast with this data.
-                    StopForecast stopForecast = createStopForecast(apiTimes);
+                    StopForecast stopForecast = createStopForecast(apiTimesRpa);
 
                     clearStopForecast();
 
@@ -522,8 +521,7 @@ public class LuasTimesFragment extends Fragment {
          * Call API and get stop forecast from server.
          */
         methods.getStopForecast(
-                BASIC_AUTH,
-                API_FORMAT,
+                API_ACTION,
                 mapStopNameId.get(stopName),
                 callback
         );
@@ -531,38 +529,34 @@ public class LuasTimesFragment extends Fragment {
 
     /**
      * Create a usable stop forecast with the data returned from the server.
-     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
+     * @param apiTimesRpa ApiTimesDublinked object created by Retrofit, containing raw stop forecast
+     *                    data.
      * @return Usable stop forecast.
      */
-    private StopForecast createStopForecast(ApiTimes apiTimes) {
+    private StopForecast createStopForecast(ApiTimesRpa apiTimesRpa) {
         StopForecast stopForecast = new StopForecast();
 
-        for (Result result : apiTimes.getResults()) {
-            Tram tram = new Tram(
-                    // Strip out the annoying "LUAS " prefix from the destination.
-                    result.destination.replace("LUAS ", ""),
-                    result.direction,
-                    result.duetime
-            );
+        if (apiTimesRpa.getTrams() != null) {
+            for (Tram tram : apiTimesRpa.getTrams()) {
+                switch (tram.getDirection()) {
+                    case "Inbound":
+                        stopForecast.addInboundTram(tram);
 
-            switch(tram.getDirection()) {
-                case "I":
-                    stopForecast.addInboundTram(tram);
+                        break;
 
-                    break;
+                    case "Outbound":
+                        stopForecast.addOutboundTram(tram);
 
-                case "O":
-                    stopForecast.addOutboundTram(tram);
+                        break;
 
-                    break;
-
-                default:
-                    // If for some reason the direction doesn't make sense.
-                    Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+                    default:
+                        // If for some reason the direction doesn't make sense.
+                        Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+                }
             }
         }
 
-        stopForecast.setErrorMessage(apiTimes.getErrormessage());
+        stopForecast.setMessage(apiTimesRpa.getMessage());
 
         return stopForecast;
     }
@@ -924,28 +918,21 @@ public class LuasTimesFragment extends Fragment {
                                     R.id.red_line_textview_message
                             );
 
-                    if (sf.getErrorMessage().equals("")) {
+                    if (sf.getMessage().contains(
+                            getResources().getString(R.string.message_success))) {
                         /*
                          * No error message on server. Change the message title TextView to
                          * green and set a default success message.
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                        textViewMessage.setText(
-                                getResources().getString(R.string.message_success)
-                        );
-                    } else if (sf.getErrorMessage().equalsIgnoreCase(
-                            getString(R.string.message_no_results))) {
-                        textViewMessageTitle.setBackgroundResource(R.color.message_not_running);
-                        textViewMessage.setText(
-                                getResources().getString(R.string.message_not_running)
-                        );
+                        textViewMessage.setText(sf.getMessage());
                     } else {
                         /*
                          * Change the color of the message title TextView to red and set the
                          * error message from the server.
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_error);
-                        textViewMessage.setText(sf.getErrorMessage());
+                        textViewMessage.setText(sf.getMessage());
                     }
 
                     /*
@@ -1108,27 +1095,21 @@ public class LuasTimesFragment extends Fragment {
                                     R.id.green_line_textview_message
                             );
 
-                    if (sf.getErrorMessage().equals("")) {
+                    if (sf.getMessage().contains(
+                            getResources().getString(R.string.message_success))) {
                         /*
                          * No error message on server. Change the message title TextView to
                          * green and set a default success message.
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                        textViewMessage.setText(
-                                getResources().getString(R.string.message_success)
-                        );
-                    } else if (sf.getErrorMessage().equalsIgnoreCase("No Results")) {
-                        textViewMessageTitle.setBackgroundResource(R.color.message_not_running);
-                        textViewMessage.setText(
-                                getResources().getString(R.string.message_not_running)
-                        );
+                        textViewMessage.setText(sf.getMessage());
                     } else {
                         /*
                          * Change the color of the message title TextView to red and set the
                          * error message from the server.
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_error);
-                        textViewMessage.setText(sf.getErrorMessage());
+                        textViewMessage.setText(sf.getMessage());
                     }
 
                     /*

@@ -20,7 +20,7 @@
     <string name="message">Awaiting Luas status&#8230;</string>
     <string name="message_title">Status</string>
     <string name="message_no_results">No Results</string>
-    <string name="message_success">All services operating normally</string>
+    <string name="message_success">normally</string>
     <string name="message_not_running">No trams expected at this stop</string>
     <string name="message_error"> Error retrieving times from Luas RTPI system.\n\nPlease check
         your network connection. If there are no issues, the Luas RTPI system may be down.

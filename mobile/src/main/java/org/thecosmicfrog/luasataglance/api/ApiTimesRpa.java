@@ -21,18 +21,20 @@
 
 package org.thecosmicfrog.luasataglance.api;
 
-import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.Query;
+import org.thecosmicfrog.luasataglance.object.Tram;
 
-public interface ApiMethods {
+import java.util.List;
 
-    @GET("/realtimebusinformation")
-    void getStopForecast(
-            @Header("Authorization") String authorization,
-            @Query("format") String format,
-            @Query("stopid") String stopid,
-            Callback<ApiTimes> cb
-    );
+public class ApiTimesRpa {
+
+    private String message;
+    private List<Tram> trams;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public List<Tram> getTrams() {
+        return trams;
+    }
 }

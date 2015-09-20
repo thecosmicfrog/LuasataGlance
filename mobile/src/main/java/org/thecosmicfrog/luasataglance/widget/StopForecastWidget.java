@@ -73,6 +73,7 @@ public class StopForecastWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
+            Log.i(LOG_TAG, "Widget deleted with ID: " + appWidgetId);
         }
     }
 

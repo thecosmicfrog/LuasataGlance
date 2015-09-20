@@ -23,7 +23,7 @@ package org.thecosmicfrog.luasataglance.api;
 
 import java.util.List;
 
-public class ApiTimes {
+public class ApiTimesDublinked {
 
     private String errorcode;
     private String errormessage;

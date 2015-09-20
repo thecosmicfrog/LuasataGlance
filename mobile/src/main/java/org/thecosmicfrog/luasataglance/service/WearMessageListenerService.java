@@ -21,7 +21,6 @@
 
 package org.thecosmicfrog.luasataglance.service;
 
-import android.util.Base64;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,12 +29,11 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
-import org.thecosmicfrog.luasataglance.api.ApiMethods;
-import org.thecosmicfrog.luasataglance.api.ApiTimes;
+import org.thecosmicfrog.luasataglance.api.ApiMethodsRpa;
+import org.thecosmicfrog.luasataglance.api.ApiTimesRpa;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
-import org.thecosmicfrog.luasataglance.util.Auth;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
 import java.util.Locale;
@@ -54,8 +52,9 @@ public class WearMessageListenerService extends WearableListenerService {
     private static String localeDefault;
     private static StopNameIdMap mapStopNameId;
 
-    private final String API_FORMAT = "json";
-    private final String API_URL = "http://www.dublinked.ie/cgi-bin/rtpi";
+    private final String API_ACTION = "times";
+    private final String API_URL_PREFIX = "https://api";
+    private final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private static final String WEAR_PATH = "/wear";
     private String nodeId;
@@ -97,33 +96,34 @@ public class WearMessageListenerService extends WearableListenerService {
 
     public void fetchStopForecast(String stopName) {
         /*
-         * Dublinked is protected by HTTP Basic auth. Send the username and password as
-         * part of the request. This username and password should not be important from a
-         * security perspective, as the auth is just used as a simple rate limiter.
+         * Randomly choose an API endpoint to query. This provides load balancing and redundancy
+         * in case of server failures.
+         * All API endpoints are of the form: "apiN.thecosmicfrog.org", where N is determined by
+         * the formula below.
+         * The constant NUM_API_ENDPOINTS governs how many endpoints there currently are.
          */
-        final String BASIC_AUTH =
-                "Basic " + Base64.encodeToString(
-                        (Auth.DUBLINKED_USER + ":" + Auth.DUBLINKED_PASS).getBytes(),
-                        Base64.NO_WRAP
-                );
+        final int NUM_API_ENDPOINTS = 2;
+
+        String apiEndpointToQuery = Integer.toString(
+                (int) (Math.random() * NUM_API_ENDPOINTS + 1)
+        );
+
+        String apiUrl = API_URL_PREFIX + apiEndpointToQuery + API_URL_POSTFIX;
 
         /*
          * Prepare Retrofit API call.
          */
         final RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(API_URL)
+                .setEndpoint(apiUrl)
                 .build();
 
-        ApiMethods methods = restAdapter.create(ApiMethods.class);
+        ApiMethodsRpa methods = restAdapter.create(ApiMethodsRpa.class);
 
-        Callback callback = new Callback() {
+        Callback<ApiTimesRpa> callback = new Callback<ApiTimesRpa>() {
             @Override
-            public void success(Object o, Response response) {
-                // Cast the returned Object to a usable ApiTimes object.
-                ApiTimes apiTimes = (ApiTimes) o;
-
+            public void success(ApiTimesRpa apiTimesRpa, Response response) {
                 // Then create a stop forecast with this data.
-                final StopForecast stopForecast = createStopForecast(apiTimes);
+                final StopForecast stopForecast = createStopForecast(apiTimesRpa);
 
                 new Thread(new Runnable() {
                     @Override
@@ -165,8 +165,7 @@ public class WearMessageListenerService extends WearableListenerService {
          * Call API and get stop forecast from server.
          */
         methods.getStopForecast(
-                BASIC_AUTH,
-                API_FORMAT,
+                API_ACTION,
                 mapStopNameId.get(stopName),
                 callback
         );
@@ -174,38 +173,33 @@ public class WearMessageListenerService extends WearableListenerService {
 
     /**
      * Create a usable stop forecast with the data returned from the server.
-     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
+     * @param apiTimesRpa ApiTimesRpa object created by Retrofit, containing raw stop forecast data.
      * @return Usable stop forecast.
      */
-    private StopForecast createStopForecast(ApiTimes apiTimes) {
+    private StopForecast createStopForecast(ApiTimesRpa apiTimesRpa) {
         StopForecast stopForecast = new StopForecast();
 
-        for (ApiTimes.Result result : apiTimes.getResults()) {
-            Tram tram = new Tram(
-                    // Strip out the annoying "LUAS " prefix from the destination.
-                    result.destination.replace("LUAS ", ""),
-                    result.direction,
-                    result.duetime
-            );
+        if (apiTimesRpa.getTrams() != null) {
+            for (Tram tram : apiTimesRpa.getTrams()) {
+                switch (tram.getDirection()) {
+                    case "Inbound":
+                        stopForecast.addInboundTram(tram);
 
-            switch(tram.getDirection()) {
-                case "I":
-                    stopForecast.addInboundTram(tram);
+                        break;
 
-                    break;
+                    case "Outbound":
+                        stopForecast.addOutboundTram(tram);
 
-                case "O":
-                    stopForecast.addOutboundTram(tram);
+                        break;
 
-                    break;
-
-                default:
-                    // If for some reason the direction doesn't make sense.
-                    Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+                    default:
+                        // If for some reason the direction doesn't make sense.
+                        Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+                }
             }
         }
 
-        stopForecast.setErrorMessage(apiTimes.getErrormessage());
+        stopForecast.setMessage(apiTimesRpa.getMessage());
 
         return stopForecast;
     }
