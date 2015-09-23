@@ -98,59 +98,61 @@ public class StopForecastWidget extends AppWidgetProvider {
         ComponentName thisWidget = new ComponentName(context, StopForecastWidget.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-        if (loadListSelectedStops(context) != null)
-            listSelectedStops = loadListSelectedStops(context);
+        listSelectedStops = loadListSelectedStops(context);
 
-        /*
-         * If a user taps one of the widget arrows, move to the next/previous stop.
-         */
-        if (intent.getAction().equals("WidgetClickLeftArrow")) {
+        if (listSelectedStops != null) {
+
             /*
-             * Move on to the previous index in the list. If we're on the first index, reset back to
-             * the last index [listSelectedStops.size() - 1].
+             * If a user taps one of the widget arrows, move to the next/previous stop.
              */
-            if (listSelectedStops != null) {
-                if (indexNextStopToLoad != 0)
-                    indexNextStopToLoad--;
-                else
-                    indexNextStopToLoad = listSelectedStops.size() - 1;
+            if (intent.getAction().equals("WidgetClickLeftArrow")) {
+                /*
+                 * Move on to the previous index in the list. If we're on the first index, reset back to
+                 * the last index [listSelectedStops.size() - 1].
+                 */
+                if (listSelectedStops != null) {
+                    if (indexNextStopToLoad != 0)
+                        indexNextStopToLoad--;
+                    else
+                        indexNextStopToLoad = listSelectedStops.size() - 1;
+                }
+
+                prepareLoadStopForecast(context, allWidgetIds);
             }
 
-            prepareLoadStopForecast(context, allWidgetIds);
-        }
+            if (intent.getAction().equals("WidgetClickRightArrow")) {
+                /*
+                 * Move on to the next index in the list. If we're on the last index, reset back to the
+                 * first index (0).
+                 */
+                if (listSelectedStops != null) {
+                    if (indexNextStopToLoad != listSelectedStops.size() - 1)
+                        indexNextStopToLoad++;
+                    else
+                        indexNextStopToLoad = 0;
+                }
 
-        if (intent.getAction().equals("WidgetClickRightArrow")) {
-            /*
-             * Move on to the next index in the list. If we're on the last index, reset back to the
-             * first index (0).
-             */
-            if (listSelectedStops != null) {
-                if (indexNextStopToLoad != listSelectedStops.size() - 1)
-                    indexNextStopToLoad++;
-                else
-                    indexNextStopToLoad = 0;
+                prepareLoadStopForecast(context, allWidgetIds);
             }
 
-            prepareLoadStopForecast(context, allWidgetIds);
-        }
-
-        /*
-         * If the user taps the stop forecast display, load the forecast for that stop, setting up
-         * a timeout as well.
-         */
-        if (intent.getAction().equals("WidgetClickStopForecast")) {
-            final int LOAD_LIMIT_MILLIS = 4000;
-
             /*
-             * Induce an artificial limit on number of allowed sequential clicks in order to prevent
-             * server hammering.
+             * If the user taps the stop forecast display, load the forecast for that stop, setting up
+             * a timeout as well.
              */
-            if (SystemClock.elapsedRealtime() - stopForecastLastClickTime < LOAD_LIMIT_MILLIS)
-                return;
+            if (intent.getAction().equals("WidgetClickStopForecast")) {
+                final int LOAD_LIMIT_MILLIS = 4000;
 
-            stopForecastLastClickTime = SystemClock.elapsedRealtime();
+                /*
+                 * Induce an artificial limit on number of allowed sequential clicks in order to prevent
+                 * server hammering.
+                 */
+                if (SystemClock.elapsedRealtime() - stopForecastLastClickTime < LOAD_LIMIT_MILLIS)
+                    return;
 
-            prepareLoadStopForecast(context, allWidgetIds);
+                stopForecastLastClickTime = SystemClock.elapsedRealtime();
+
+                prepareLoadStopForecast(context, allWidgetIds);
+            }
         }
     }
 
@@ -177,6 +179,7 @@ public class StopForecastWidget extends AppWidgetProvider {
          */
         Intent intentWidgetListenerService =
                 new Intent(context.getApplicationContext(), WidgetListenerService.class);
+        intentWidgetListenerService.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         intentWidgetListenerService.putExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_IDS,
                 allWidgetIds
@@ -193,7 +196,7 @@ public class StopForecastWidget extends AppWidgetProvider {
     /**
      * Load the currently-selected stop name from shared preferences.
      * @param context Context
-     * @return Selected stop name.
+     * @return Selected stop name, or null if none found.
      */
     static String loadSelectedStopName(Context context) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
@@ -207,14 +210,16 @@ public class StopForecastWidget extends AppWidgetProvider {
      * Save the currently-selected stop name to shared preferences.
      * @param context Context.
      * @param selectedStopName Name of the stop to save to shared preferences.
+     * @return Successfully saved.
      */
-    static void saveSelectedStopName(Context context, String selectedStopName) {
+    static boolean saveSelectedStopName(Context context, String selectedStopName) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
 
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
 
         prefs.putString("selectedStopName", selectedStopName);
-        prefs.apply();
+
+        return prefs.commit();
     }
 
     /**
@@ -295,6 +300,6 @@ public class StopForecastWidget extends AppWidgetProvider {
         );
 
         // Instruct the widget manager to update the widget.
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
     }
 }

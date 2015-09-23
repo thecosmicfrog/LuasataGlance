@@ -153,7 +153,7 @@ public class WidgetListenerService extends Service {
                             intent.getStringExtra("selectedStopName")
                     );
 
-                    appWidgetManager.updateAppWidget(widgetId, views);
+                    appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
                 }
             }
         }
@@ -186,7 +186,6 @@ public class WidgetListenerService extends Service {
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 
         return networkInfo != null && networkInfo.isConnected();
-
     }
 
     /**
@@ -250,7 +249,7 @@ public class WidgetListenerService extends Service {
                     // Update the stop forecast.
                     updateStopForecast(context, views, stopForecast);
 
-                    appWidgetManager.updateAppWidget(widgetId, views);
+                    appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
 
                     // Stop the refresh animations.
                     setIsLoading(appWidgetManager, widgetId, views, false);
@@ -343,7 +342,7 @@ public class WidgetListenerService extends Service {
                 loading
         );
 
-        appWidgetManager.updateAppWidget(widgetId, views);
+        appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
     }
 
     /**
@@ -367,14 +366,16 @@ public class WidgetListenerService extends Service {
      * Save the currently-selected stop name to shared preferences.
      * @param context Context.
      * @param selectedStopName Name of the stop to save to shared preferences.
+     * @return Successfully saved.
      */
-    private void saveSelectedStopName(Context context, String selectedStopName) {
+    private boolean saveSelectedStopName(Context context, String selectedStopName) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
 
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
 
         prefs.putString("selectedStopName", selectedStopName);
-        prefs.apply();
+
+        return prefs.commit();
     }
 
     /**
@@ -405,7 +406,7 @@ public class WidgetListenerService extends Service {
                         getResources().getString(R.string.tap_to_load_times)
                 );
 
-                appWidgetManager.updateAppWidget(widgetId, views);
+                appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
             }
         };
 
