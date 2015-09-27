@@ -116,6 +116,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                         public void onRefresh() {
                             // Start the refresh animation.
                             swipeRefreshLayout.setRefreshing(true);
+
                             requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
                         }
                     });
@@ -131,8 +132,10 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     protected void onPause() {
         super.onPause();
 
-        // Stop the auto-reload TimerTask so as to prevent multiple TimerTasks running each time
-        // the Activity is started.
+        /*
+         * Stop the auto-reload TimerTask so as to prevent multiple TimerTasks running each time
+         * the Activity is started.
+         */
         timerTaskReload.cancel();
     }
 
@@ -155,8 +158,10 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     protected void onDestroy() {
         super.onDestroy();
 
-        // Stop the auto-reload TimerTask so as to prevent multiple TimerTasks running each time
-        // the Activity is started.
+        /*
+         * Stop the auto-reload TimerTask so as to prevent multiple TimerTasks running each time
+         * the Activity is started.
+         */
         timerTaskReload.cancel();
 
         // Remove the MessageListener.
@@ -167,6 +172,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus) {
             setIsLoading(true);
+
             requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
         }
     }
@@ -175,9 +181,6 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
      * Clear the stop forecast displayed in the current tab.
      */
     public void clearStopForecast() {
-        /*
-         * Clear the stop forecast.
-         */
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -205,6 +208,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                     @Override
                     public void run() {
                         setIsLoading(true);
+
                         requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
                     }
                 });
@@ -245,6 +249,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                     if (googleApiClient != null &&
                             !(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
                         Log.i(LOG_TAG, "Connecting...");
+
                         googleApiClient.blockingConnect(
                                 CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS
                         );
@@ -286,6 +291,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                 if (googleApiClient != null &&
                         !(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
                     Log.i(LOG_TAG, "Google API Client connecting...");
+
                     googleApiClient.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
                 }
 
