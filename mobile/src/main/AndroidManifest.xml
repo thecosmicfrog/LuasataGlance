@@ -62,13 +62,13 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".activity.LuasTimesFragment$NotifyTimesReceiver" >
+        <receiver android:name=".receiver.NotifyTimesReceiver" >
             <intent-filter>
                 <action android:name="org.thecosmicfrog.luasataglance.activity.NotifyTimeDialog" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".service.StartServiceAtBootReceiver">
+        <receiver android:name=".receiver.StartServiceAtBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

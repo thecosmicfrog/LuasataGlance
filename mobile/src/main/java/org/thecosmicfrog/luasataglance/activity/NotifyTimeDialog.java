@@ -41,13 +41,7 @@ public class NotifyTimeDialog extends Dialog {
 
     private final String LOG_TAG = NotifyTimeDialog.class.getSimpleName();
 
-    private final String DIALOG = "dialog";
-
     private Map<String, Integer> mapNotifyTimes;
-
-    private Button buttonNotifyTime;
-
-    private String localeDefault;
 
     public NotifyTimeDialog() {
         super(null);
@@ -58,7 +52,9 @@ public class NotifyTimeDialog extends Dialog {
     public NotifyTimeDialog(Context context) {
         super(context);
 
-        localeDefault = Locale.getDefault().toString();
+        final String DIALOG = "dialog";
+
+        String localeDefault = Locale.getDefault().toString();
 
         setTitle(R.string.notify_title);
 
@@ -77,7 +73,7 @@ public class NotifyTimeDialog extends Dialog {
         adapterNotifyTime.setDropDownViewResource(R.layout.spinner_stops);
         spinnerNotifyTime.setAdapter(adapterNotifyTime);
 
-        buttonNotifyTime = (Button) findViewById(R.id.button_notifytime);
+        Button buttonNotifyTime = (Button) findViewById(R.id.button_notifytime);
         buttonNotifyTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

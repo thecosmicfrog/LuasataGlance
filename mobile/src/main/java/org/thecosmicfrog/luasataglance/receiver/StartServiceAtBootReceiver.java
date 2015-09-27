@@ -19,7 +19,7 @@
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.thecosmicfrog.luasataglance.service;
+package org.thecosmicfrog.luasataglance.receiver;
 
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
 import org.thecosmicfrog.luasataglance.widget.StopForecastWidget;
 
 public class StartServiceAtBootReceiver extends BroadcastReceiver {

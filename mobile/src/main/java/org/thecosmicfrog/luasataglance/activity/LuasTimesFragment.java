@@ -21,19 +21,9 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
-import android.app.AlarmManager;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PorterDuff;
-import android.media.RingtoneManager;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,6 +47,7 @@ import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,7 +71,6 @@ public class LuasTimesFragment extends Fragment {
     private final String INBOUND = "inbound";
     private final String OUTBOUND = "outbound";
 
-    private static int notifyStopTimeExpected;
     private static StopNameIdMap mapStopNameId;
     private static String localeDefault;
 
@@ -807,7 +797,10 @@ public class LuasTimesFragment extends Fragment {
                     return;
                 }
 
-                notifyStopTimeExpected = mapNotifyTimes.get(notifyStopTimeStr);
+                Preferences.saveNotifyStopTimeExpected(
+                        getActivity(),
+                        mapNotifyTimes.get(notifyStopTimeStr)
+                );
 
                 new NotifyTimeDialog(getActivity()).show();
 
@@ -834,7 +827,10 @@ public class LuasTimesFragment extends Fragment {
                     return;
                 }
 
-                notifyStopTimeExpected = mapNotifyTimes.get(notifyStopTimeStr);
+                Preferences.saveNotifyStopTimeExpected(
+                        getActivity(),
+                        mapNotifyTimes.get(notifyStopTimeStr)
+                );
 
                 new NotifyTimeDialog(getActivity()).show();
 
@@ -1262,147 +1258,6 @@ public class LuasTimesFragment extends Fragment {
             default:
                 // If for some reason the current selected tab doesn't make sense.
                 Log.e(LOG_TAG, "Unknown tab.");
-        }
-    }
-
-    public static class NotifyTimesReceiver extends BroadcastReceiver {
-
-        private final String LOG_TAG = NotifyTimesReceiver.class.getSimpleName();
-
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-            final int notifyTimeUserRequestedMins = intent.getIntExtra("notifyTime", 5);
-            final int NOTIFY_TIME_SAFETY_NET_MILLIS = 30000;
-
-            /*
-             * Define when a user should be notified that their tram is on its way. To do this, we
-             * simply take the number of minutes the tram is expected in and subtract the due time
-             * the user has asked to be notified at.
-             *
-             * 1 minute can be the difference between missing and catching a tram. Always insert an
-             * artificial 30 second "safety net".
-             * Example: If the user has set a notification that should fire after 5 minutes, the
-             *          notification will actually fire after 4.5 minutes.
-             */
-            int notifyDelayMillis =
-                    (notifyStopTimeExpected - notifyTimeUserRequestedMins)
-                            * 60000
-                            - NOTIFY_TIME_SAFETY_NET_MILLIS;
-
-            /*
-             * If the notification time makes no sense, inform the user and don't proceed.
-             */
-            if (notifyDelayMillis < 0) {
-                Toast.makeText(
-                        context,
-                        context.getResources().getString(R.string.notify_invalid_time),
-                        Toast.LENGTH_LONG
-                ).show();
-
-                return;
-            }
-
-            /*
-             * Inform user the notification has been scheduled successfully.
-             */
-            Toast.makeText(
-                    context,
-                    context.getResources().getString(R.string.notify_successful),
-                    Toast.LENGTH_SHORT
-            ).show();
-
-            scheduleNotification(context, notifyTimeUserRequestedMins, notifyDelayMillis);
-        }
-
-        /**
-         * Schedule notification for tram.
-         * @param context Context.
-         * @param notifyTimeUserRequestedMins Minutes before tram arrival the user has requested to
-         *                                    be notified at.
-         * @param notifyDelayMillis Milliseconds to wait before firing off notification.
-         */
-        private void scheduleNotification(Context context,
-                                          final int notifyTimeUserRequestedMins,
-                                          int notifyDelayMillis) {
-            BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    /*
-                     * Create a StringBuilder in order to format the notification message correctly.
-                     * Start by adding a message telling the user their tram is expected in
-                     * N.
-                     */
-                    StringBuilder stringBuilderContentText = new StringBuilder();
-                    stringBuilderContentText.append(
-                            context.getResources().getString(R.string.notification_tram_expected)
-                    ).append(
-                            Integer.toString(notifyTimeUserRequestedMins)
-                    );
-
-                    /*
-                     * Append either "minutes" or "minute" depending on the time chosen.
-                     */
-                    if (notifyTimeUserRequestedMins > 1)
-                        stringBuilderContentText.append(
-                                context.getResources().getString(R.string.notification_minutes)
-                        );
-                    else
-                        stringBuilderContentText.append(
-                                context.getResources().getString(R.string.notification_minute)
-                        );
-
-                    /*
-                     * Create the NotificationBuilder, setting an appropriate title and the message
-                     * built in the StringBuilder. The default notification sound should be played
-                     * and the device should vibrate twice for 1 second with a 1 second delay
-                     * between them.
-                     */
-                    NotificationCompat.Builder notificationBuilder =
-                            new NotificationCompat.Builder(context)
-                                    .setSmallIcon(R.drawable.laag_logo)
-                                    .setContentTitle(
-                                            context.getResources().getString(
-                                                    R.string.notification_title
-                                            )
-                                    )
-                                    .setContentText(stringBuilderContentText.toString())
-                                    .setVibrate(new long[] {100, 1000, 1000, 1000, 1000})
-                                    .setSound(
-                                            RingtoneManager.getDefaultUri(
-                                                    RingtoneManager.TYPE_NOTIFICATION
-                                            )
-                                    );
-
-                    /*
-                     * Create a NotificationManager and display the notification to the user.
-                     */
-                    NotificationManager notificationManager =
-                            (NotificationManager) context.getSystemService(
-                                    Context.NOTIFICATION_SERVICE
-                            );
-                    notificationManager.notify(1, notificationBuilder.build());
-                }
-            };
-
-            context.getApplicationContext().registerReceiver(
-                    broadcastReceiver,
-                    new IntentFilter("org.thecosmicfrog.luasataglance")
-            );
-
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    0,
-                    new Intent("org.thecosmicfrog.luasataglance"),
-                    0
-            );
-
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(
-                    Context.ALARM_SERVICE
-            );
-            alarmManager.set(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
-            );
         }
     }
 }
