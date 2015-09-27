@@ -35,6 +35,7 @@ import android.widget.RemoteViews;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
+import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -90,7 +91,7 @@ public class StopForecastWidget extends AppWidgetProvider {
         ComponentName thisWidget = new ComponentName(context, StopForecastWidget.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-        int indexNextStopToLoad = loadIndexNextStopToLoad(context);
+        int indexNextStopToLoad = Preferences.loadIndexNextStopToLoad(context);
         List listSelectedStops = loadListSelectedStops(context);
 
         if (listSelectedStops != null) {
@@ -107,7 +108,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                 else
                     indexNextStopToLoad = listSelectedStops.size() - 1;
 
-                saveIndexNextStopToLoad(context, indexNextStopToLoad);
+                Preferences.saveIndexNextStopToLoad(context, indexNextStopToLoad);
 
                 prepareLoadStopForecast(context, allWidgetIds);
             }
@@ -122,7 +123,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                 else
                     indexNextStopToLoad = 0;
 
-                saveIndexNextStopToLoad(context, indexNextStopToLoad);
+                Preferences.saveIndexNextStopToLoad(context, indexNextStopToLoad);
 
                 prepareLoadStopForecast(context, allWidgetIds);
             }
@@ -158,17 +159,17 @@ public class StopForecastWidget extends AppWidgetProvider {
         List listSelectedStops = loadListSelectedStops(context);
 
         if (listSelectedStops != null) {
-            int indexNextStopToLoad = loadIndexNextStopToLoad(context);
+            int indexNextStopToLoad = Preferences.loadIndexNextStopToLoad(context);
 
             String selectedStopName = listSelectedStops.get(indexNextStopToLoad).toString();
-            saveSelectedStopName(context, selectedStopName);
+            Preferences.saveSelectedStopName(context, selectedStopName);
 
             startWidgetListenerService(context, allWidgetIds);
         }
     }
 
     static void startWidgetListenerService(@NonNull Context context, int[] allWidgetIds) {
-        String selectedStopName = loadSelectedStopName(context);
+        String selectedStopName = Preferences.loadSelectedStopName(context);
 
         /*
          * Prepare an Intent to start the WidgetListenerService. Pass in all the widget IDs.
@@ -189,65 +190,7 @@ public class StopForecastWidget extends AppWidgetProvider {
         context.startService(intentWidgetListenerService);
     }
 
-    /**
-     * Load the currently-selected stop name from shared preferences.
-     * @param context Context
-     * @return Selected stop name, or null if none found.
-     */
-    static String loadSelectedStopName(Context context) {
-        final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
 
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
-        return prefs.getString("selectedStopName", null);
-    }
-
-    /**
-     * Save the currently-selected stop name to shared preferences.
-     * @param context Context.
-     * @param selectedStopName Name of the stop to save to shared preferences.
-     * @return Successfully saved.
-     */
-    static boolean saveSelectedStopName(Context context, String selectedStopName) {
-        final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
-
-        SharedPreferences.Editor prefs =
-                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
-
-        prefs.putString("selectedStopName", selectedStopName);
-
-        return prefs.commit();
-    }
-
-    /**
-     * Load index of the next stop to load from shared preferences.
-     * @param context Context
-     * @return Index of the next stop to load, or 0 (first list entry) if none found.
-     */
-    static int loadIndexNextStopToLoad(Context context) {
-        final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
-
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
-        return prefs.getInt("indexNextStopToLoad", 0);
-    }
-
-    /**
-     * Save the currently-selected stop name to shared preferences.
-     * @param context Context.
-     * @param indexNextStopToLoad Index of the next stop to load to save to shared preferences.
-     * @return Successfully saved.
-     */
-    static boolean saveIndexNextStopToLoad(Context context, int indexNextStopToLoad) {
-        final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
-
-        SharedPreferences.Editor prefs =
-                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
-
-        prefs.putInt("indexNextStopToLoad", indexNextStopToLoad);
-
-        return prefs.commit();
-    }
 
     /**
      * Load list of user-selected stops from file.
