@@ -773,66 +773,16 @@ public class LuasTimesFragment extends Fragment {
      */
     private void showNotifyTimeDialog(String direction, int index, NotifyTimesMap mapNotifyTimes) {
         localeDefault = Locale.getDefault().toString();
-        String notifyStopTimeStr;
+        String notifyStopTimeStr = "";
 
         switch (direction) {
             case INBOUND:
                 notifyStopTimeStr = textViewInboundStopTimes[index].getText().toString();
 
-                if (notifyStopTimeStr.equals(""))
-                    return;
-
-                if (notifyStopTimeStr.equalsIgnoreCase("DUE")
-                        || notifyStopTimeStr.equalsIgnoreCase("AM")
-                        || notifyStopTimeStr.equalsIgnoreCase("1 min")
-                        || notifyStopTimeStr.equalsIgnoreCase("1 nóim")
-                        || notifyStopTimeStr.equalsIgnoreCase("2 mins")
-                        || notifyStopTimeStr.equalsIgnoreCase("2 nóim")) {
-                    Toast.makeText(
-                            getActivity(),
-                            getResources().getString(R.string.cannot_schedule_notification),
-                            Toast.LENGTH_LONG
-                    ).show();
-
-                    return;
-                }
-
-                Preferences.saveNotifyStopTimeExpected(
-                        getActivity(),
-                        mapNotifyTimes.get(notifyStopTimeStr)
-                );
-
-                new NotifyTimeDialog(getActivity()).show();
-
                 break;
 
             case OUTBOUND:
                 notifyStopTimeStr = textViewOutboundStopTimes[index].getText().toString();
-
-                if (notifyStopTimeStr.equals(""))
-                    return;
-
-                if (notifyStopTimeStr.equalsIgnoreCase("DUE")
-                        || notifyStopTimeStr.equalsIgnoreCase("AM")
-                        || notifyStopTimeStr.equalsIgnoreCase("1 min")
-                        || notifyStopTimeStr.equalsIgnoreCase("1 nóim")
-                        || notifyStopTimeStr.equalsIgnoreCase("2 mins")
-                        || notifyStopTimeStr.equalsIgnoreCase("2 nóim")) {
-                    Toast.makeText(
-                            getActivity(),
-                            getResources().getString(R.string.cannot_schedule_notification),
-                            Toast.LENGTH_LONG
-                    ).show();
-
-                    return;
-                }
-
-                Preferences.saveNotifyStopTimeExpected(
-                        getActivity(),
-                        mapNotifyTimes.get(notifyStopTimeStr)
-                );
-
-                new NotifyTimeDialog(getActivity()).show();
 
                 break;
 
@@ -840,6 +790,31 @@ public class LuasTimesFragment extends Fragment {
                 // If for some reason the direction doesn't make sense.
                 Log.e(LOG_TAG, "Invalid direction: " + direction);
         }
+
+        if (notifyStopTimeStr.equals(""))
+            return;
+
+        if (notifyStopTimeStr.equalsIgnoreCase("DUE")
+                || notifyStopTimeStr.equalsIgnoreCase("AM")
+                || notifyStopTimeStr.equalsIgnoreCase("1 min")
+                || notifyStopTimeStr.equalsIgnoreCase("1 nóim")
+                || notifyStopTimeStr.equalsIgnoreCase("2 mins")
+                || notifyStopTimeStr.equalsIgnoreCase("2 nóim")) {
+            Toast.makeText(
+                    getActivity(),
+                    getResources().getString(R.string.cannot_schedule_notification),
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+        Preferences.saveNotifyStopTimeExpected(
+                getActivity(),
+                mapNotifyTimes.get(notifyStopTimeStr)
+        );
+
+        new NotifyTimeDialog(getActivity()).show();
     }
 
     /**
