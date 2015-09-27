@@ -43,7 +43,6 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Implementation of App Widget functionality.
@@ -54,11 +53,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     private static final String LOG_TAG = StopForecastWidget.class.getSimpleName();
 
-    private static int indexNextStopToLoad = 0;
-    private static List<CharSequence> listSelectedStops;
     private static long stopForecastLastClickTime = 0;
-
-    static String localeDefault;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -80,9 +75,6 @@ public class StopForecastWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         Log.i(LOG_TAG, "Widget first created.");
-
-        // Initialise correct locale.
-        localeDefault = Locale.getDefault().toString();
     }
 
     @Override
@@ -98,53 +90,53 @@ public class StopForecastWidget extends AppWidgetProvider {
         ComponentName thisWidget = new ComponentName(context, StopForecastWidget.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-        listSelectedStops = loadListSelectedStops(context);
+        int indexNextStopToLoad = loadIndexNextStopToLoad(context);
+        List listSelectedStops = loadListSelectedStops(context);
 
         if (listSelectedStops != null) {
-
             /*
              * If a user taps one of the widget arrows, move to the next/previous stop.
              */
             if (intent.getAction().equals("WidgetClickLeftArrow")) {
                 /*
-                 * Move on to the previous index in the list. If we're on the first index, reset back to
-                 * the last index [listSelectedStops.size() - 1].
+                 * Move on to the previous index in the list. If we're on the first index, reset
+                 * back to the last index [listSelectedStops.size() - 1].
                  */
-                if (listSelectedStops != null) {
-                    if (indexNextStopToLoad != 0)
-                        indexNextStopToLoad--;
-                    else
-                        indexNextStopToLoad = listSelectedStops.size() - 1;
-                }
+                if (indexNextStopToLoad != 0)
+                    indexNextStopToLoad--;
+                else
+                    indexNextStopToLoad = listSelectedStops.size() - 1;
+
+                saveIndexNextStopToLoad(context, indexNextStopToLoad);
 
                 prepareLoadStopForecast(context, allWidgetIds);
             }
 
             if (intent.getAction().equals("WidgetClickRightArrow")) {
                 /*
-                 * Move on to the next index in the list. If we're on the last index, reset back to the
-                 * first index (0).
+                 * Move on to the next index in the list. If we're on the last index, reset back to
+                 * the first index (0).
                  */
-                if (listSelectedStops != null) {
-                    if (indexNextStopToLoad != listSelectedStops.size() - 1)
-                        indexNextStopToLoad++;
-                    else
-                        indexNextStopToLoad = 0;
-                }
+                if (indexNextStopToLoad != listSelectedStops.size() - 1)
+                    indexNextStopToLoad++;
+                else
+                    indexNextStopToLoad = 0;
+
+                saveIndexNextStopToLoad(context, indexNextStopToLoad);
 
                 prepareLoadStopForecast(context, allWidgetIds);
             }
 
             /*
-             * If the user taps the stop forecast display, load the forecast for that stop, setting up
-             * a timeout as well.
+             * If the user taps the stop forecast display, load the forecast for that stop, setting
+             * up a timeout as well.
              */
             if (intent.getAction().equals("WidgetClickStopForecast")) {
                 final int LOAD_LIMIT_MILLIS = 4000;
 
                 /*
-                 * Induce an artificial limit on number of allowed sequential clicks in order to prevent
-                 * server hammering.
+                 * Induce an artificial limit on number of allowed sequential clicks in order to
+                 * prevent server hammering.
                  */
                 if (SystemClock.elapsedRealtime() - stopForecastLastClickTime < LOAD_LIMIT_MILLIS)
                     return;
@@ -163,7 +155,11 @@ public class StopForecastWidget extends AppWidgetProvider {
      * @param allWidgetIds Array of all widget IDs.
      */
     static void prepareLoadStopForecast(@NonNull Context context, int[] allWidgetIds) {
+        List listSelectedStops = loadListSelectedStops(context);
+
         if (listSelectedStops != null) {
+            int indexNextStopToLoad = loadIndexNextStopToLoad(context);
+
             String selectedStopName = listSelectedStops.get(indexNextStopToLoad).toString();
             saveSelectedStopName(context, selectedStopName);
 
@@ -201,7 +197,7 @@ public class StopForecastWidget extends AppWidgetProvider {
     static String loadSelectedStopName(Context context) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
 
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
         return prefs.getString("selectedStopName", null);
     }
@@ -215,9 +211,40 @@ public class StopForecastWidget extends AppWidgetProvider {
     static boolean saveSelectedStopName(Context context, String selectedStopName) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
 
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
         prefs.putString("selectedStopName", selectedStopName);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Load index of the next stop to load from shared preferences.
+     * @param context Context
+     * @return Index of the next stop to load, or 0 (first list entry) if none found.
+     */
+    static int loadIndexNextStopToLoad(Context context) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getInt("indexNextStopToLoad", 0);
+    }
+
+    /**
+     * Save the currently-selected stop name to shared preferences.
+     * @param context Context.
+     * @param indexNextStopToLoad Index of the next stop to load to save to shared preferences.
+     * @return Successfully saved.
+     */
+    static boolean saveIndexNextStopToLoad(Context context, int indexNextStopToLoad) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.putInt("indexNextStopToLoad", indexNextStopToLoad);
 
         return prefs.commit();
     }
@@ -240,7 +267,7 @@ public class StopForecastWidget extends AppWidgetProvider {
             ObjectInput objectInput = new ObjectInputStream(buffer);
 
             //noinspection unchecked
-            listSelectedStops = (List<CharSequence>) objectInput.readObject();
+            List listSelectedStops = (List<CharSequence>) objectInput.readObject();
 
             return listSelectedStops;
         } catch (ClassNotFoundException | FileNotFoundException fnfe) {
@@ -264,9 +291,6 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-        // Initialise correct locale.
-        localeDefault = Locale.getDefault().toString();
-
         // Construct the RemoteViews object.
         RemoteViews views =
                 new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);

@@ -59,7 +59,6 @@ import retrofit.client.Response;
 public class WidgetListenerService extends Service {
 
     private final String LOG_TAG = WidgetListenerService.class.getSimpleName();
-
     private final int TEXTVIEW_STOP_NAME = R.id.textview_stop_name;
     private final int TEXTVIEW_INBOUND_STOP1_NAME = R.id.textview_inbound_stop1_name;
     private final int TEXTVIEW_INBOUND_STOP1_TIME = R.id.textview_inbound_stop1_time;
@@ -69,6 +68,8 @@ public class WidgetListenerService extends Service {
     private final int TEXTVIEW_OUTBOUND_STOP1_TIME = R.id.textview_outbound_stop1_time;
     private final int TEXTVIEW_OUTBOUND_STOP2_NAME = R.id.textview_outbound_stop2_name;
     private final int TEXTVIEW_OUTBOUND_STOP2_TIME = R.id.textview_outbound_stop2_time;
+
+    private static TimerTask timerTaskStopForecastTimeout;
 
     private int[] textViewInboundStopNames = {
             TEXTVIEW_INBOUND_STOP1_NAME,
@@ -90,11 +91,9 @@ public class WidgetListenerService extends Service {
             TEXTVIEW_OUTBOUND_STOP2_TIME
     };
 
+    private EnglishGaeilgeMap mapEnglishGaeilge;
     private List<CharSequence> listSelectedStops;
     private String localeDefault;
-    private EnglishGaeilgeMap mapEnglishGaeilge;
-
-    private static TimerTask timerTaskStopForecastTimeout;
 
     public WidgetListenerService() {
     }
@@ -260,8 +259,8 @@ public class WidgetListenerService extends Service {
                     Log.e(LOG_TAG, "Failure during call to server.");
 
                     /*
-                     * If we get a message or a response from the server, there's likely an issue with
-                     * the client request or the server's response itself.
+                     * If we get a message or a response from the server, there's likely an issue
+                     * with the client request or the server's response itself.
                      */
                     if (retrofitError.getMessage() != null)
                         Log.e(LOG_TAG, retrofitError.getMessage());
@@ -371,7 +370,8 @@ public class WidgetListenerService extends Service {
     private boolean saveSelectedStopName(Context context, String selectedStopName) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance.StopForecastWidget";
 
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
 
         prefs.putString("selectedStopName", selectedStopName);
 
