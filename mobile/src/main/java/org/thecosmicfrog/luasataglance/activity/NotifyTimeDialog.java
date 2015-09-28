@@ -37,13 +37,13 @@ import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class NotifyTimeDialog extends Dialog {
+class NotifyTimeDialog extends Dialog {
 
     private final String LOG_TAG = NotifyTimeDialog.class.getSimpleName();
 
     private Map<String, Integer> mapNotifyTimes;
 
-    public NotifyTimeDialog() {
+    private NotifyTimeDialog() {
         super(null);
 
         Log.wtf(LOG_TAG, "There is no default constructor here. Go away.");

@@ -26,7 +26,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -48,11 +49,11 @@ import java.util.List;
 /**
  * The configuration screen for the {@link StopForecastWidget StopForecastWidget} AppWidget.
  */
-public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
+public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
 
     private final String LOG_TAG = StopForecastWidgetConfigureActivity.class.getSimpleName();
 
-    int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private static final String PREFS_NAME =
             "org.thecosmicfrog.luasataglance.widget.StopForecastWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
@@ -71,7 +72,7 @@ public class StopForecastWidgetConfigureActivity extends ActionBarActivity {
 
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(
-                        getResources().getColor(R.color.luas_purple)
+                        ContextCompat.getColor(getApplication(), R.color.luas_purple)
                 )
         );
 

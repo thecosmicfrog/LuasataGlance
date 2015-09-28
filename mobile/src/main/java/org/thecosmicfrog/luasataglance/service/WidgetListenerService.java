@@ -69,27 +69,27 @@ public class WidgetListenerService extends Service {
     private final int TEXTVIEW_OUTBOUND_STOP2_NAME = R.id.textview_outbound_stop2_name;
     private final int TEXTVIEW_OUTBOUND_STOP2_TIME = R.id.textview_outbound_stop2_time;
 
-    private static TimerTask timerTaskStopForecastTimeout;
-
-    private int[] textViewInboundStopNames = {
+    private final int[] TEXTVIEW_INBOUND_STOP_NAMES = {
             TEXTVIEW_INBOUND_STOP1_NAME,
             TEXTVIEW_INBOUND_STOP2_NAME
     };
 
-    private int[] textViewInboundStopTimes = {
+    private final int[] TEXTVIEW_INBOUND_STOP_TIMES = {
             TEXTVIEW_INBOUND_STOP1_TIME,
             TEXTVIEW_INBOUND_STOP2_TIME
     };
 
-    private int[] textViewOutboundStopNames = {
+    private final int[] TEXTVIEW_OUTBOUND_STOP_NAMES = {
             TEXTVIEW_OUTBOUND_STOP1_NAME,
             TEXTVIEW_OUTBOUND_STOP2_NAME
     };
 
-    private int[] textViewOutboundStopTimes = {
+    private final int[] TEXTVIEW_OUTBOUND_STOP_TIMES = {
             TEXTVIEW_OUTBOUND_STOP1_TIME,
             TEXTVIEW_OUTBOUND_STOP2_TIME
     };
+
+    private static TimerTask timerTaskStopForecastTimeout;
 
     private EnglishGaeilgeMap mapEnglishGaeilge;
     private List<CharSequence> listSelectedStops;
@@ -127,7 +127,6 @@ public class WidgetListenerService extends Service {
                             appWidgetManager,
                             widgetId,
                             views,
-                            0,
                             STOP_FORECAST_TIMEOUT_MILLIS
                     );
 
@@ -353,11 +352,11 @@ public class WidgetListenerService extends Service {
          * Clear the stop forecast.
          */
         for (int i = 0; i < 2; i++) {
-            remoteViewToClear.setTextViewText(textViewInboundStopNames[i], "");
-            remoteViewToClear.setTextViewText(textViewInboundStopTimes[i], "");
+            remoteViewToClear.setTextViewText(TEXTVIEW_INBOUND_STOP_NAMES[i], "");
+            remoteViewToClear.setTextViewText(TEXTVIEW_INBOUND_STOP_TIMES[i], "");
 
-            remoteViewToClear.setTextViewText(textViewOutboundStopNames[i], "");
-            remoteViewToClear.setTextViewText(textViewOutboundStopTimes[i], "");
+            remoteViewToClear.setTextViewText(TEXTVIEW_OUTBOUND_STOP_NAMES[i], "");
+            remoteViewToClear.setTextViewText(TEXTVIEW_OUTBOUND_STOP_TIMES[i], "");
         }
     }
 
@@ -384,7 +383,9 @@ public class WidgetListenerService extends Service {
      * This is a necessary evil due to their currently being no way for a widget to know when it
      * is "active" or "visible to the user". This implementation is in order to not hammer the
      * battery and network.
-     * @param delayTimeMillis The delay (ms) before starting the timer.
+     * @param appWidgetManager AppWidgetManager.
+     * @param widgetId App widget ID.
+     * @param views RemoteViews.
      * @param timeoutTimeMillis The period (ms) after which the stop forecast should be considered
      *                          expired and cleared.
      */
@@ -392,8 +393,9 @@ public class WidgetListenerService extends Service {
             final AppWidgetManager appWidgetManager,
             final int widgetId,
             final RemoteViews views,
-            int delayTimeMillis,
             int timeoutTimeMillis) {
+        final int DELAY_TIME_MILLIS = 0;
+
         if (timerTaskStopForecastTimeout != null)
             timerTaskStopForecastTimeout.cancel();
 
@@ -410,7 +412,7 @@ public class WidgetListenerService extends Service {
             }
         };
 
-        new Timer().schedule(timerTaskStopForecastTimeout, delayTimeMillis, timeoutTimeMillis);
+        new Timer().schedule(timerTaskStopForecastTimeout, DELAY_TIME_MILLIS, timeoutTimeMillis);
     }
 
     /**
@@ -527,7 +529,7 @@ public class WidgetListenerService extends Service {
                                 inboundTram = sf.getInboundTrams().get(i).getDestination();
                             }
 
-                            views.setTextViewText(textViewInboundStopNames[i], inboundTram);
+                            views.setTextViewText(TEXTVIEW_INBOUND_STOP_NAMES[i], inboundTram);
 
                             if (sf.getInboundTrams()
                                     .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
@@ -540,17 +542,17 @@ public class WidgetListenerService extends Service {
                                 }
 
                                 views.setTextViewText(
-                                        textViewInboundStopTimes[i],
+                                        TEXTVIEW_INBOUND_STOP_TIMES[i],
                                         dueMinutes
                                 );
                             } else if (localeDefault.startsWith(GAEILGE)) {
                                 views.setTextViewText(
-                                        textViewInboundStopTimes[i],
+                                        TEXTVIEW_INBOUND_STOP_TIMES[i],
                                         sf.getInboundTrams().get(i).getDueMinutes() + "n"
                                 );
                             } else {
                                 views.setTextViewText(
-                                        textViewInboundStopTimes[i],
+                                        TEXTVIEW_INBOUND_STOP_TIMES[i],
                                         sf.getInboundTrams().get(i).getDueMinutes() + "m"
                                 );
                             }
@@ -578,7 +580,7 @@ public class WidgetListenerService extends Service {
                                 outboundTram = sf.getOutboundTrams().get(i).getDestination();
                             }
 
-                            views.setTextViewText(textViewOutboundStopNames[i], outboundTram);
+                            views.setTextViewText(TEXTVIEW_OUTBOUND_STOP_NAMES[i], outboundTram);
 
                             if (sf.getOutboundTrams()
                                     .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
@@ -591,17 +593,17 @@ public class WidgetListenerService extends Service {
                                 }
 
                                 views.setTextViewText(
-                                        textViewOutboundStopTimes[i],
+                                        TEXTVIEW_OUTBOUND_STOP_TIMES[i],
                                         dueMinutes
                                 );
                             } else if (localeDefault.startsWith(GAEILGE)) {
                                 views.setTextViewText(
-                                        textViewOutboundStopTimes[i],
+                                        TEXTVIEW_OUTBOUND_STOP_TIMES[i],
                                         sf.getOutboundTrams().get(i).getDueMinutes() + "n"
                                 );
                             } else {
                                 views.setTextViewText(
-                                        textViewOutboundStopTimes[i],
+                                        TEXTVIEW_OUTBOUND_STOP_TIMES[i],
                                         sf.getOutboundTrams().get(i).getDueMinutes() + "m"
                                 );
                             }

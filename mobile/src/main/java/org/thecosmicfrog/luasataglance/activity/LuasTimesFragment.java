@@ -24,6 +24,7 @@ package org.thecosmicfrog.luasataglance.activity;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -135,14 +136,14 @@ public class LuasTimesFragment extends Fragment {
         displaySwipeRefreshTutorial();
 
         /*
-         * Reload stop forecast every 10 seconds.
+         * Reload stop forecast.
          * Induce 10 second delay if app is launching from cold start (timerTaskReload == null) in
          * order to prevent two HTTP requests in rapid succession.
          */
         if (timerTaskReload == null)
-            autoReloadStopForecast(10000, 10000);
+            autoReloadStopForecast(10000);
         else
-            autoReloadStopForecast(0, 10000);
+            autoReloadStopForecast(0);
     }
 
     @Override
@@ -177,12 +178,12 @@ public class LuasTimesFragment extends Fragment {
          * Set appropriate colours for Red and Green Line tabs.
          */
         tabHost.getTabWidget().getChildAt(0).getBackground().setColorFilter(
-                getResources().getColor(R.color.tab_red_line),
+                ContextCompat.getColor(getContext(), R.color.tab_red_line),
                 PorterDuff.Mode.SRC_ATOP
         );
 
         tabHost.getTabWidget().getChildAt(1).getBackground().setColorFilter(
-                getResources().getColor(R.color.tab_green_line),
+                ContextCompat.getColor(getContext(), R.color.tab_green_line),
                 PorterDuff.Mode.SRC_ATOP
         );
 
@@ -365,9 +366,10 @@ public class LuasTimesFragment extends Fragment {
     /**
      * Automatically reload the stop forecast after a defined period.
      * @param delayTimeMillis The delay (ms) before starting the timer.
-     * @param reloadTimeMillis The period (ms) after which the stop forecast should reload.
      */
-    private void autoReloadStopForecast(int delayTimeMillis, int reloadTimeMillis) {
+    private void autoReloadStopForecast(int delayTimeMillis) {
+        final int RELOAD_TIME_MILLIS = 10000;
+
         timerTaskReload = new TimerTask() {
             @Override
             public void run() {
@@ -407,14 +409,14 @@ public class LuasTimesFragment extends Fragment {
         };
 
         // Schedule the auto-reload task to run.
-        new Timer().schedule(timerTaskReload, delayTimeMillis, reloadTimeMillis);
+        new Timer().schedule(timerTaskReload, delayTimeMillis, RELOAD_TIME_MILLIS);
     }
 
     /**
      * Load the stop forecast for a particular stop.
      * @param stopName The stop for which to load a stop forecast.
      */
-    public void loadStopForecast(String stopName) {
+    private void loadStopForecast(String stopName) {
         final String API_URL_PREFIX = "https://api";
         final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
         final String API_ACTION = "times";
@@ -546,7 +548,7 @@ public class LuasTimesFragment extends Fragment {
      * @param line Name of tab in which progress circle should spin.
      * @param loading Whether or not progress circle should spin.
      */
-    public void setIsLoading(final String line, final boolean loading) {
+    private void setIsLoading(final String line, final boolean loading) {
         /*
          * Only run if Fragment is attached to Activity. Without this check, the app is liable
          * to crash when the screen is rotated many times in a given period of time.
@@ -820,7 +822,7 @@ public class LuasTimesFragment extends Fragment {
     /**
      * Clear the stop forecast displayed in the current tab.
      */
-    public void clearStopForecast() {
+    private void clearStopForecast() {
         /*
          * Initialise the stop forecast based on which tab is selected.
          */

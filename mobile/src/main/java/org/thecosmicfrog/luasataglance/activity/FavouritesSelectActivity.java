@@ -23,8 +23,9 @@ package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -48,7 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FavouritesSelectActivity extends ActionBarActivity {
+public class FavouritesSelectActivity extends AppCompatActivity {
 
     private final String LOG_TAG = FavouritesSelectActivity.class.getSimpleName();
 
@@ -65,7 +66,7 @@ public class FavouritesSelectActivity extends ActionBarActivity {
 
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(
-                        getResources().getColor(R.color.luas_purple)
+                        ContextCompat.getColor(getApplication(), R.color.luas_purple)
                 )
         );
 

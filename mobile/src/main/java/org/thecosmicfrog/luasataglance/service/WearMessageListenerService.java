@@ -92,7 +92,7 @@ public class WearMessageListenerService extends WearableListenerService {
         }
     }
 
-    public void fetchStopForecast(String stopName) {
+    private void fetchStopForecast(String stopName) {
         final String API_URL_PREFIX = "https://api";
         final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
         final String API_ACTION = "times";

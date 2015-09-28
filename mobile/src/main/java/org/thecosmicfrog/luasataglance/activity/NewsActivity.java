@@ -22,26 +22,27 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import org.thecosmicfrog.luasataglance.R;
 
-public class NewsActivity extends ActionBarActivity {
-
-    private final String URL_NEWS = "http://m.luas.ie/travel-updates.html";
-    private WebView webViewNews;
+public class NewsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final String URL_NEWS = "http://m.luas.ie/travel-updates.html";
+
         setContentView(R.layout.activity_news);
 
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(
-                        getResources().getColor(R.color.luas_purple)
+                        ContextCompat.getColor(getApplication(), R.color.luas_purple)
                 )
         );
 
@@ -49,7 +50,7 @@ public class NewsActivity extends ActionBarActivity {
          * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
          * browser is liable to open.
          */
-        webViewNews = (WebView) findViewById(R.id.webview_news);
+        WebView webViewNews = (WebView) findViewById(R.id.webview_news);
         webViewNews.setWebViewClient(new WebViewClient());
 
         // Load the "Travel Updates" section of the Luas mobile website.

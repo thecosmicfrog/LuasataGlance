@@ -25,14 +25,14 @@ import java.util.HashMap;
 
 public class NotifyTimesMap extends HashMap<String, Integer> {
 
-    private final String GAEILGE = "ga";
-    private final String DIALOG = "dialog";
-    private final String STOP_FORECAST = "stop_forecast";
-
-    private String minsBeforeArrival;
-    private String mins;
-
     public NotifyTimesMap(String locale, String type) {
+        final String DIALOG = "dialog";
+        final String GAEILGE = "ga";
+        final String STOP_FORECAST = "stop_forecast";
+
+        String minsBeforeArrival;
+        String mins;
+
         if (locale.startsWith(GAEILGE)) {
             minsBeforeArrival = "nóim roimh theacht";
             mins = "nóim";

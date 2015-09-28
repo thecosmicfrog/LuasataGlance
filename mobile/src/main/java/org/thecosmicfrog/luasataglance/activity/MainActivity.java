@@ -25,14 +25,15 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import org.thecosmicfrog.luasataglance.R;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
 
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(
-                        getResources().getColor(R.color.luas_purple)
+                        ContextCompat.getColor(getApplication(), R.color.luas_purple)
                 )
         );
     }

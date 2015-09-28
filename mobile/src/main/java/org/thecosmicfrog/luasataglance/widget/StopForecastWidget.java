@@ -169,7 +169,7 @@ public class StopForecastWidget extends AppWidgetProvider {
      * @param context Context.
      * @param allWidgetIds Array of all widget IDs.
      */
-    static void prepareLoadStopForecast(@NonNull Context context, int[] allWidgetIds) {
+    private static void prepareLoadStopForecast(@NonNull Context context, int[] allWidgetIds) {
         List listSelectedStops = loadListSelectedStops(context);
 
         if (listSelectedStops != null) {
@@ -187,7 +187,7 @@ public class StopForecastWidget extends AppWidgetProvider {
      * @param context Context.
      * @param allWidgetIds Array of all widget IDs.
      */
-    static void startWidgetListenerService(@NonNull Context context, int[] allWidgetIds) {
+    private static void startWidgetListenerService(@NonNull Context context, int[] allWidgetIds) {
         String selectedStopName = Preferences.loadSelectedStopName(context);
 
         /*
@@ -216,7 +216,7 @@ public class StopForecastWidget extends AppWidgetProvider {
      * @param context Context.
      * @return List of user-selected stops.
      */
-    static List<CharSequence> loadListSelectedStops(Context context) {
+    private static List<CharSequence> loadListSelectedStops(Context context) {
         final String FILE_WIDGET_SELECTED_STOPS = "widget_selected_stops";
 
         try {

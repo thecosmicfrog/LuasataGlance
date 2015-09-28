@@ -23,7 +23,6 @@ package org.thecosmicfrog.luasataglance.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 public final class Preferences {
     /**

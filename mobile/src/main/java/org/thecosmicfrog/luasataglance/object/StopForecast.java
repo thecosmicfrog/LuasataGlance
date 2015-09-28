@@ -36,8 +36,8 @@ public class StopForecast implements Serializable {
     private List<Tram> outboundTrams;
 
     public StopForecast() {
-        inboundTrams = new ArrayList<Tram>();
-        outboundTrams = new ArrayList<Tram>();
+        inboundTrams = new ArrayList<>();
+        outboundTrams = new ArrayList<>();
     }
 
     public void addInboundTram(Tram t) {

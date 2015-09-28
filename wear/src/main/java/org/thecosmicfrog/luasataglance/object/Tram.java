@@ -37,14 +37,6 @@ public class Tram implements Serializable {
         dueMinutes = du;
     }
 
-    @Override
-    public String toString() {
-        if (Integer.parseInt(dueMinutes) > 1)
-            return String.format("%s\t%s\t%s", destination, dueMinutes + " mins");
-
-        return String.format("%s\t%s\t%s", destination, dueMinutes + " min");
-    }
-
     public String getDestination() {
         return destination;
     }

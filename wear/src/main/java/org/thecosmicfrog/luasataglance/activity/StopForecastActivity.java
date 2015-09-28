@@ -180,7 +180,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
     /**
      * Clear the stop forecast displayed in the current tab.
      */
-    public void clearStopForecast() {
+    private void clearStopForecast() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -225,7 +225,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
      * runOnUiThread() method. Parameters must be final due to Java scope restrictions.
      * @param loading Whether or not progress circle should spin.
      */
-    public void setIsLoading(final boolean loading) {
+    private void setIsLoading(final boolean loading) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
