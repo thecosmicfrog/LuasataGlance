@@ -267,6 +267,6 @@ public class StopForecastWidget extends AppWidgetProvider {
         );
 
         // Instruct the widget manager to update the widget.
-        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
+        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 }
