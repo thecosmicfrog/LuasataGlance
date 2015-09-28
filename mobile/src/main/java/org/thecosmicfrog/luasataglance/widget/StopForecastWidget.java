@@ -27,13 +27,13 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.activity.MainActivity;
 import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
@@ -96,7 +96,21 @@ public class StopForecastWidget extends AppWidgetProvider {
 
         if (listSelectedStops != null) {
             /*
-             * If a user taps one of the widget arrows, move to the next/previous stop.
+             * If the user taps the stop name, open the app at that stop.
+             */
+            if (intent.getAction().equals("WidgetClickStopName")) {
+                String stopName = Preferences.loadSelectedStopName(context);
+
+                context.startActivity(
+                        new Intent(
+                                context,
+                                MainActivity.class
+                        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).putExtra("stopName", stopName)
+                );
+            }
+
+            /*
+             * If the user taps one of the widget arrows, move to the next/previous stop.
              */
             if (intent.getAction().equals("WidgetClickLeftArrow")) {
                 /*
@@ -168,6 +182,11 @@ public class StopForecastWidget extends AppWidgetProvider {
         }
     }
 
+    /**
+     * Start WidgetListenerService, passing in the selected stop name.
+     * @param context Context.
+     * @param allWidgetIds Array of all widget IDs.
+     */
     static void startWidgetListenerService(@NonNull Context context, int[] allWidgetIds) {
         String selectedStopName = Preferences.loadSelectedStopName(context);
 
@@ -241,14 +260,18 @@ public class StopForecastWidget extends AppWidgetProvider {
         /*
          * Set up Intents to register taps on the widget.
          */
+        Intent intentWidgetClickStopName = new Intent(context, StopForecastWidget.class);
         Intent intentWidgetClickLeftArrow = new Intent(context, StopForecastWidget.class);
         Intent intentWidgetClickRightArrow = new Intent(context, StopForecastWidget.class);
         Intent intentWidgetClickStopForecast = new Intent(context, StopForecastWidget.class);
 
+        intentWidgetClickStopName.setAction("WidgetClickStopName");
         intentWidgetClickLeftArrow.setAction("WidgetClickLeftArrow");
         intentWidgetClickRightArrow.setAction("WidgetClickRightArrow");
         intentWidgetClickStopForecast.setAction("WidgetClickStopForecast");
 
+        PendingIntent pendingIntentWidgetClickStopName =
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopName, 0);
         PendingIntent pendingIntentWidgetClickLeftArrow =
                 PendingIntent.getBroadcast(context, 0, intentWidgetClickLeftArrow, 0);
         PendingIntent pendingIntentWidgetClickRightArrow =
@@ -256,6 +279,9 @@ public class StopForecastWidget extends AppWidgetProvider {
         PendingIntent pendingIntentWidgetClickStopForecast =
                 PendingIntent.getBroadcast(context, 0, intentWidgetClickStopForecast, 0);
 
+        views.setOnClickPendingIntent(
+                R.id.textview_stop_name, pendingIntentWidgetClickStopName
+        );
         views.setOnClickPendingIntent(
                 R.id.textview_stop_name_left_arrow, pendingIntentWidgetClickLeftArrow
         );

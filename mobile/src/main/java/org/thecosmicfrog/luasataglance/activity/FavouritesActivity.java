@@ -110,10 +110,11 @@ public class FavouritesActivity extends ActionBarActivity {
                      */
                     String stopName = adapterFavouriteStops.getItem(position).toString();
 
-                    startActivity(new Intent(
+                    startActivity(
+                            new Intent(
                                     getApplicationContext(),
-                                    MainActivity.class)
-                                    .putExtra("stopName", stopName)
+                                    MainActivity.class
+                            ).putExtra("stopName", stopName)
                     );
                 }
             });
