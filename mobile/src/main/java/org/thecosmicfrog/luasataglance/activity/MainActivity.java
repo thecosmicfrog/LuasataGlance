@@ -67,13 +67,6 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_favourites) {
-            startActivity(new Intent(
-                            getApplicationContext(),
-                            FavouritesActivity.class)
-            );
-        }
-
         if (id == R.id.action_news) {
             startActivity(new Intent(
                             getApplicationContext(),

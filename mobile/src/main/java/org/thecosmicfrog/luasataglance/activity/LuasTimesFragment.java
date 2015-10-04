@@ -21,8 +21,10 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -196,6 +198,21 @@ public class LuasTimesFragment extends Fragment {
             public void onTabChanged(String tabId) {
                 currentTab = tabHost.getCurrentTabTag();
                 initStopForecast(currentTab);
+            }
+        });
+
+        /*
+         * Use a Floating Action Button (FAB) to open the Favourites Activity.
+         */
+        FloatingActionButton fabFavourites =
+                (FloatingActionButton) rootView.findViewById(R.id.floating_action_button);
+        fabFavourites.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(
+                                getContext(),
+                                FavouritesActivity.class
+                        )
+                );
             }
         });
 

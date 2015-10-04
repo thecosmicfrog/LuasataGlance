@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="favourites_yellow">#fffdd835</color>
     <color name="luas_purple">#ff4d3475</color>
     <color name="message_success">#ff006600</color>
     <color name="message_not_running">#fff1A82e</color>
