@@ -114,4 +114,35 @@ public final class Preferences {
 
         return prefs.commit();
     }
+
+    /**
+     * Whether or not a particular tutorial has been completed by the user.
+     * @param context Context
+     * @return Tutorial completed.
+     */
+    public static boolean loadHasRunOnce(Context context, String tutorialName) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getBoolean(tutorialName, false);
+    }
+
+    /**
+     * Store boolean value of whether a particular tutorial have been completed by the user.
+     * @param context Context.
+     * @param tutorialName Tutorial that has been completed or not.
+     * @param hasRun Whether or not tutorial has been completed.
+     * @return Successfully saved.
+     */
+    public static boolean saveHasRunOnce(Context context, String tutorialName, boolean hasRun) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.putBoolean(tutorialName, hasRun);
+
+        return prefs.commit();
+    }
 }

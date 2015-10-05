@@ -52,8 +52,6 @@ import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -68,11 +66,13 @@ import retrofit.client.Response;
 public class LuasTimesFragment extends Fragment {
 
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
-
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
     private final String INBOUND = "inbound";
     private final String OUTBOUND = "outbound";
+    private final String TUTORIAL_SWIPE_REFRESH = "swipe_refresh";
+    private final String TUTORIAL_NOTIFICATIONS = "notifications";
+    private final String TUTORIAL_FAVOURITES = "favourites";
 
     private static StopNameIdMap mapStopNameId;
     private static String localeDefault;
@@ -89,6 +89,8 @@ public class LuasTimesFragment extends Fragment {
     private SwipeRefreshLayout redLineSwipeRefreshLayout;
     private SwipeRefreshLayout greenLineSwipeRefreshLayout;
     private LinearLayout linearLayoutSwipeRefreshTutorial;
+    private LinearLayout linearLayoutNotificationsTutorial;
+    private LinearLayout linearLayoutFavouritesTutorial;
     private TableRow[] tableRowInboundStops;
     private TableRow[] tableRowOutboundStops;
     private TextView[] textViewInboundStopNames;
@@ -135,7 +137,7 @@ public class LuasTimesFragment extends Fragment {
         super.onResume();
 
         // Display tutorial for SwipeRefreshLayout, if required.
-        displaySwipeRefreshTutorial();
+        displayTutorial(TUTORIAL_SWIPE_REFRESH, true);
 
         /*
          * Reload stop forecast.
@@ -208,6 +210,8 @@ public class LuasTimesFragment extends Fragment {
                 (FloatingActionButton) rootView.findViewById(R.id.floating_action_button);
         fabFavourites.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                displayTutorial(TUTORIAL_FAVOURITES, false);
+
                 startActivity(new Intent(
                                 getContext(),
                                 FavouritesActivity.class
@@ -220,7 +224,7 @@ public class LuasTimesFragment extends Fragment {
          * Set up Red Line tab.
          */
         progressBarRedLineLoadingCircle =
-                (ProgressBar) rootView.findViewById(R.id.red_line_progressbar_loading_circle);
+                (ProgressBar) rootView.findViewById(R.id.red_line_progressbar_loading_bar);
         setIsLoading(RED_LINE, false);
 
         redLineSpinnerStop = (Spinner) rootView.findViewById(R.id.red_line_spinner_stop);
@@ -241,9 +245,15 @@ public class LuasTimesFragment extends Fragment {
             }
         });
 
-        // Only display the SwipeRefreshLayout tutorial in the Red Line tab for simplicity.
-        linearLayoutSwipeRefreshTutorial
-                = (LinearLayout) rootView.findViewById(R.id.linearlayout_swipe_refresh_tutorial);
+        /*
+         * Only display the tutorials in the Red Line tab for simplicity.
+         */
+        linearLayoutSwipeRefreshTutorial =
+                (LinearLayout) rootView.findViewById(R.id.linearlayout_swipe_refresh_tutorial);
+        linearLayoutNotificationsTutorial =
+                (LinearLayout) rootView.findViewById(R.id.linearlayout_notifications_tutorial);
+        linearLayoutFavouritesTutorial =
+                (LinearLayout) rootView.findViewById(R.id.linearlayout_favourites_tutorial);
 
         redLineSwipeRefreshLayout =
                 (SwipeRefreshLayout) rootView.findViewById(R.id.red_line_swiperefreshlayout);
@@ -251,8 +261,11 @@ public class LuasTimesFragment extends Fragment {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        // Hide the SwipeRefreshTutorial, if it is visible.
-                        linearLayoutSwipeRefreshTutorial.setVisibility(View.GONE);
+                        // Hide the SwipeRefreshLayout tutorial, if it is visible.
+                        displayTutorial(TUTORIAL_SWIPE_REFRESH, false);
+
+                        // Show the notifications tutorial.
+                        displayTutorial(TUTORIAL_NOTIFICATIONS, true);
 
                         // Start by clearing the currently-displayed stop forecast.
                         clearStopForecast();
@@ -267,7 +280,7 @@ public class LuasTimesFragment extends Fragment {
          * Set up Green Line tab.
          */
         progressBarGreenLineLoadingCircle =
-                (ProgressBar) rootView.findViewById(R.id.green_line_progressbar_loading_circle);
+                (ProgressBar) rootView.findViewById(R.id.green_line_progressbar_loading_bar);
         setIsLoading(GREEN_LINE, false);
 
         greenLineSpinnerStop = (Spinner) rootView.findViewById(R.id.green_line_spinner_stop);
@@ -307,45 +320,73 @@ public class LuasTimesFragment extends Fragment {
 
     /**
      * Determine if this is the first time the app has been launched and, if so, display a brief
-     * tutorial on how to use the SwipeRefreshLayout to reload a stop forecast.
+     * tutorial on how to use a particular feature of the app.
      */
-    private void displaySwipeRefreshTutorial() {
-        /*
-         * Start by making sure the TextView isn't displayed. This should only display
-         * when a user has no favourites saved.
-         */
-        linearLayoutSwipeRefreshTutorial
-                = (LinearLayout) rootView.findViewById(R.id.linearlayout_swipe_refresh_tutorial);
-        linearLayoutSwipeRefreshTutorial.setVisibility(View.GONE);
-
-        try {
-            final String FILE_HAS_RUN_ONCE = "has_run_once";
-
-            /*
-             * If the swipe_refresh_first_time file doesn't exist, this is likely the first time the
-             * user has launched the app. Handle the exception gracefully by displaying a TextView
-             * with instructions on how to use the SwipeRefreshLayout to reload the stop forecast.
-             */
-            File fileHasRunOnce =
-                    new File(getActivity().getFilesDir().getPath() + "/" + FILE_HAS_RUN_ONCE);
-
-            if (!fileHasRunOnce.exists()) {
-                Log.i(LOG_TAG, "First time launching. Displaying SwipeRefreshLayout tutorial.");
-
+    private void displayTutorial(String tutorial, boolean shouldDisplay) {
+        switch(tutorial) {
+            case TUTORIAL_SWIPE_REFRESH:
                 linearLayoutSwipeRefreshTutorial
                         = (LinearLayout) rootView.findViewById(
                         R.id.linearlayout_swipe_refresh_tutorial
                 );
-                linearLayoutSwipeRefreshTutorial.setVisibility(View.VISIBLE);
 
-                // Create a new blank file to signify the user has run app at least once.
-                if (fileHasRunOnce.createNewFile())
-                    Log.i(LOG_TAG, "File created: " + FILE_HAS_RUN_ONCE);
-                else
-                    Log.e(LOG_TAG, "Failed to write file: " + FILE_HAS_RUN_ONCE);
-            }
-        } catch (IOException ioe) {
-            Log.e(LOG_TAG, Log.getStackTraceString(ioe));
+                if (shouldDisplay) {
+                    if (!Preferences.loadHasRunOnce(getContext(), tutorial)) {
+                        Log.i(LOG_TAG, "First time launching. Displaying swipe refresh tutorial.");
+
+                        linearLayoutSwipeRefreshTutorial.setVisibility(View.VISIBLE);
+
+                        Preferences.saveHasRunOnce(getContext(), tutorial, true);
+                    }
+                } else {
+                    linearLayoutSwipeRefreshTutorial.setVisibility(View.GONE);
+                }
+
+                break;
+
+            case TUTORIAL_NOTIFICATIONS:
+                linearLayoutNotificationsTutorial
+                        = (LinearLayout) rootView.findViewById(
+                        R.id.linearlayout_notifications_tutorial
+                );
+
+                if (shouldDisplay) {
+                    if (!Preferences.loadHasRunOnce(getContext(), tutorial)) {
+                        Log.i(LOG_TAG, "First time launching. Displaying notifications tutorial.");
+
+                        linearLayoutNotificationsTutorial.setVisibility(View.VISIBLE);
+
+                        Preferences.saveHasRunOnce(getContext(), tutorial, true);
+                    }
+                } else {
+                    linearLayoutNotificationsTutorial.setVisibility(View.GONE);
+                }
+
+                break;
+
+            case TUTORIAL_FAVOURITES:
+                linearLayoutFavouritesTutorial
+                        = (LinearLayout) rootView.findViewById(
+                        R.id.linearlayout_favourites_tutorial
+                );
+
+                if (shouldDisplay) {
+                    if (!Preferences.loadHasRunOnce(getContext(), tutorial)) {
+                        Log.i(LOG_TAG, "First time launching. Displaying favourites tutorial.");
+
+                        linearLayoutFavouritesTutorial.setVisibility(View.VISIBLE);
+
+                        Preferences.saveHasRunOnce(getContext(), tutorial, true);
+                    }
+                } else {
+                    linearLayoutFavouritesTutorial.setVisibility(View.GONE);
+                }
+
+                break;
+
+            default:
+                // If for some reason the specified tutorial doesn't make sense.
+                Log.wtf(LOG_TAG, "Invalid tutorial specified.");
         }
     }
 
@@ -417,7 +458,8 @@ public class LuasTimesFragment extends Fragment {
                                     break;
 
                                 default:
-                                    Log.e(LOG_TAG, "Invalid line specified.");
+                                    // If for some reason the line doesn't make sense.
+                                    Log.wtf(LOG_TAG, "Invalid line specified.");
                             }
                         }
                     });
@@ -548,7 +590,7 @@ public class LuasTimesFragment extends Fragment {
 
                     default:
                         // If for some reason the direction doesn't make sense.
-                        Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
+                        Log.wtf(LOG_TAG, "Invalid direction: " + tram.getDirection());
                 }
             }
         }
@@ -579,7 +621,7 @@ public class LuasTimesFragment extends Fragment {
                             if (loading)
                                 progressBarRedLineLoadingCircle.setVisibility(View.VISIBLE);
                             else
-                                progressBarRedLineLoadingCircle.setVisibility(View.GONE);
+                                progressBarRedLineLoadingCircle.setVisibility(View.INVISIBLE);
 
                             break;
 
@@ -587,13 +629,13 @@ public class LuasTimesFragment extends Fragment {
                             if (loading)
                                 progressBarGreenLineLoadingCircle.setVisibility(View.VISIBLE);
                             else
-                                progressBarGreenLineLoadingCircle.setVisibility(View.GONE);
+                                progressBarGreenLineLoadingCircle.setVisibility(View.INVISIBLE);
 
                             break;
 
                         default:
                             // If for some reason the line doesn't make sense.
-                            Log.e(LOG_TAG, "Invalid line specified.");
+                            Log.wtf(LOG_TAG, "Invalid line specified.");
                     }
                 }
             });
@@ -746,7 +788,7 @@ public class LuasTimesFragment extends Fragment {
 
             default:
                 // If for some reason the line doesn't make sense.
-                Log.e(LOG_TAG, "Invalid line specified.");
+                Log.wtf(LOG_TAG, "Invalid line specified.");
         }
 
         initStopForecastOnClickListeners();
@@ -807,7 +849,7 @@ public class LuasTimesFragment extends Fragment {
 
             default:
                 // If for some reason the direction doesn't make sense.
-                Log.e(LOG_TAG, "Invalid direction: " + direction);
+                Log.wtf(LOG_TAG, "Invalid direction: " + direction);
         }
 
         if (notifyStopTimeStr.equals(""))
@@ -827,6 +869,12 @@ public class LuasTimesFragment extends Fragment {
 
             return;
         }
+
+        // We're done with the notifications tutorial. Hide it.
+        displayTutorial(TUTORIAL_NOTIFICATIONS, false);
+
+        // Then, display the final tutorial.
+        displayTutorial(TUTORIAL_FAVOURITES, true);
 
         Preferences.saveNotifyStopTimeExpected(
                 getActivity(),
@@ -856,7 +904,7 @@ public class LuasTimesFragment extends Fragment {
 
             default:
                 // If for some reason the line doesn't make sense.
-                Log.e(LOG_TAG, "Invalid line specified.");
+                Log.wtf(LOG_TAG, "Invalid line specified.");
         }
 
         /*
@@ -1251,7 +1299,7 @@ public class LuasTimesFragment extends Fragment {
 
             default:
                 // If for some reason the current selected tab doesn't make sense.
-                Log.e(LOG_TAG, "Unknown tab.");
+                Log.wtf(LOG_TAG, "Unknown tab.");
         }
     }
 }

@@ -40,25 +40,18 @@
 
                     <Space
                         android:layout_width="match_parent"
-                        android:layout_height="10dp" />
+                        android:layout_height="2dp" />
 
-                    <RelativeLayout
-                        android:layout_width="fill_parent"
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:id="@+id/red_line_progressbar_loading_bar"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="16dp">
-
-                        <ProgressBar
-                            style="?android:attr/progressBarStyleSmall"
-                            android:id="@+id/red_line_progressbar_loading_circle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true" />
-                    </RelativeLayout>
+                        android:indeterminateOnly="true" />
 
                     <Space
                         android:layout_width="match_parent"
-                        android:layout_height="10dp" />
+                        android:layout_height="2dp" />
 
                     <!--
                         Hack to allow background of spinner's "arrow" to have a custom color.
@@ -153,6 +146,66 @@
                                         android:paddingTop="12dp"
                                         android:paddingBottom="12dp"
                                         android:text="@string/swipe_refresh_tutorial"
+                                        android:textSize="16sp"
+                                        android:background="@android:color/white" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/linearlayout_notifications_tutorial"
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:id="@+id/textview_notifications_information"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:paddingLeft="12dp"
+                                        android:paddingRight="12dp"
+                                        android:paddingTop="12dp"
+                                        android:text="@string/information"
+                                        android:textSize="16sp"
+                                        android:background="@android:color/white" />
+
+                                    <TextView
+                                        android:id="@+id/textview_notifications_tutorial"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingRight="12dp"
+                                        android:paddingTop="12dp"
+                                        android:paddingBottom="12dp"
+                                        android:text="@string/notifications_tutorial"
+                                        android:textSize="16sp"
+                                        android:background="@android:color/white" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/linearlayout_favourites_tutorial"
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:id="@+id/textview_favourites_information"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:paddingLeft="12dp"
+                                        android:paddingRight="12dp"
+                                        android:paddingTop="12dp"
+                                        android:text="@string/information"
+                                        android:textSize="16sp"
+                                        android:background="@android:color/white" />
+
+                                    <TextView
+                                        android:id="@+id/textview_favourites_tutorial"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingRight="12dp"
+                                        android:paddingTop="12dp"
+                                        android:paddingBottom="12dp"
+                                        android:text="@string/favourites_tutorial"
                                         android:textSize="16sp"
                                         android:background="@android:color/white" />
                                 </LinearLayout>
@@ -373,25 +426,18 @@
 
                     <Space
                         android:layout_width="match_parent"
-                        android:layout_height="10dp" />
+                        android:layout_height="2dp" />
 
-                    <RelativeLayout
-                        android:layout_width="fill_parent"
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:id="@+id/green_line_progressbar_loading_bar"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="16dp">
-
-                        <ProgressBar
-                            style="?android:attr/progressBarStyleSmall"
-                            android:id="@+id/green_line_progressbar_loading_circle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true" />
-                    </RelativeLayout>
+                        android:indeterminateOnly="true" />
 
                     <Space
                         android:layout_width="match_parent"
-                        android:layout_height="10dp" />
+                        android:layout_height="2dp" />
 
                     <!--
                         Hack to allow background of spinner's "arrow" to have a custom color.

@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">45</string>
-    <string name="version_name">0.45</string>
+    <string name="version_code">47</string>
+    <string name="version_name">0.47</string>
 
     <!--
         Activities
@@ -29,11 +29,19 @@
     <string name="swipe_refresh_tutorial">Times will update <b>every 10 seconds</b>.\nYou can also
         manually update by swiping down with your finger. Try it now to dismiss this message!
     </string>
+    <string name="notifications_tutorial">Great! You can also schedule notifications for incoming
+        trams. Just tap on a tram below to try it out.
+    </string>
+    <string name="favourites_tutorial">Perfect! Okay, one last thing. See that Star button down in
+        the bottom-right corner? That lets you save your favourite stops for quick access. Try
+        tapping it now.
+    </string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
     <string name="tap_to_load_times"><b>Tap to load times</b></string>
-    <string name="cannot_schedule_notification">Tram is due shortly. Cannot schedule notification.</string>
+    <string name="cannot_schedule_notification">Tram is due shortly. Cannot schedule notification.
+    </string>
 
     <!--
         Actions
