@@ -60,6 +60,8 @@ public class StopForecastWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them.
         for (int appWidgetId : appWidgetIds) {
+            Log.i(LOG_TAG, "Widget updating with ID: " + appWidgetId);
+
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
 

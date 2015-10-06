@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public final class Preferences {
+
     /**
      * Load the currently-selected stop name from shared preferences.
      * @param context Context

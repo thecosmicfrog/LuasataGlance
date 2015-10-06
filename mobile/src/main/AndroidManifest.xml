@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.thecosmicfrog.luasataglance"
-    android:versionCode="@string/version_code"
-    android:versionName="@string/version_name" >
+    package="org.thecosmicfrog.luasataglance" >
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -31,20 +29,7 @@
 
         <activity
             android:name=".activity.FavouritesSelectActivity"
-            android:label="@string/title_activity_favourites_select"
-            android:parentActivityName=".activity.FavouritesActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.FavouritesActivity" />
-        </activity>
-
-        <activity
-            android:name=".activity.FavouritesActivity"
-            android:label="@string/title_activity_favourites"
-            android:parentActivityName=".activity.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+            android:label="@string/title_activity_favourites_select" >
         </activity>
 
         <activity
@@ -92,8 +77,7 @@
 
         <service
             android:name=".service.WidgetListenerService"
-            android:enabled="true"
-            android:exported="true" >
+            android:enabled="true" >
         </service>
     </application>
 </manifest>

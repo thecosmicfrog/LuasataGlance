@@ -159,7 +159,7 @@ public class WidgetListenerService extends Service {
         stopSelf();
 
         // Necessary? Trivial? Further research required.
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override

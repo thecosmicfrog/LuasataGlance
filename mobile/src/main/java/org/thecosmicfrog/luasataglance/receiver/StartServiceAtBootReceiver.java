@@ -32,6 +32,7 @@ import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
 import org.thecosmicfrog.luasataglance.widget.StopForecastWidget;
 
 public class StartServiceAtBootReceiver extends BroadcastReceiver {
+
     private final String LOG_TAG = StopForecastWidget.class.getSimpleName();
 
     @Override
