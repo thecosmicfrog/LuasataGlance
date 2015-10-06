@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">45</string>
-    <string name="version_name">0.45</string>
+    <string name="version_code">47</string>
+    <string name="version_name">0.47</string>
 
     <!--
         Activities
@@ -27,11 +27,20 @@
     <string name="swipe_refresh_tutorial">Déanfar na hamanna a uasdátú <b>gach 10 soicind</b>.\nIs
         féidir leat freisin uasdátú trí tarraingt síos le do mhear. Déan é anois le fáil ré leis an
         teachtaireacht seo!</string>
+    <string name="notifications_tutorial">Iontach! Tá tú tar théis clárú le fógraí a fháil do
+        thramanaí le teacht. Ní gá ach brú ar an tram thíos chun é a thriail.
+    </string>
+    <string name="favourites_tutorial">Foirfe! Ní gá ach rud amháin eile a dhéanamh. Tabhair faoi
+        deara an \u2605 thíos? Ligean sé sí dhuit do chuid stadanna is fearr leat a shábháil. Bain
+        triail as anois.
+    </string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
     <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
     <string name="tap_to_load_times"><b>Cliceáil amanna a fháil</b></string>
-    <string name="cannot_schedule_notification">Tá an tram sroichte go luath: Ní féidir fógra a sceideal.</string>
+    <string name="cannot_schedule_notification">Tá an tram sroichte go luath: Ní féidir fógra a
+        sceideal.
+    </string>
 
     <!--
         Actions
@@ -60,6 +69,8 @@
     <!--
         Favourites
     -->
+    <string name="favourites_title">Stadanna fearr leat</string>
+    <string name="favourites_edit">Eagar</string>
     <string name="favourites_none_selected">Tosóidh muid!\n\nBrú an cnap Athrígh ar bharr an
         scáileáin chun cuir le do liosta de stadanna Luas ina úsáidtear go minic.</string>
 

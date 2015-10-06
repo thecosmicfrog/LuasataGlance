@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">45</string>
-    <string name="version_name">0.45</string>
+    <string name="version_code">47</string>
+    <string name="version_name">0.47</string>
 
     <!--
         Activities

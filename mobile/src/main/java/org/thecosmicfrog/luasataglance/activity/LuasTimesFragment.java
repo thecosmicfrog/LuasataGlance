@@ -21,11 +21,11 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -204,7 +204,7 @@ public class LuasTimesFragment extends Fragment {
         });
 
         /*
-         * Use a Floating Action Button (FAB) to open the Favourites Activity.
+         * Use a Floating Action Button (FAB) to open the Favourites Dialog.
          */
         FloatingActionButton fabFavourites =
                 (FloatingActionButton) rootView.findViewById(R.id.floating_action_button);
@@ -212,11 +212,12 @@ public class LuasTimesFragment extends Fragment {
             public void onClick(View v) {
                 displayTutorial(TUTORIAL_FAVOURITES, false);
 
-                startActivity(new Intent(
-                                getContext(),
-                                FavouritesActivity.class
-                        )
-                );
+                /*
+                 * Open Favourites DialogFragment.
+                 */
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FavouritesDialog favouritesDialog = new FavouritesDialog();
+                favouritesDialog.show(fragmentManager, "dialog_favourites");
             }
         });
 
