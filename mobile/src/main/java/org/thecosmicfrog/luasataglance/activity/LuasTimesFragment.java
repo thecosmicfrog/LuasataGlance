@@ -36,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TableRow;
@@ -356,8 +357,6 @@ public class LuasTimesFragment extends Fragment {
                         Log.i(LOG_TAG, "First time launching. Displaying notifications tutorial.");
 
                         linearLayoutNotificationsTutorial.setVisibility(View.VISIBLE);
-
-                        Preferences.saveHasRunOnce(getContext(), tutorial, true);
                     }
                 } else {
                     linearLayoutNotificationsTutorial.setVisibility(View.GONE);
@@ -870,6 +869,17 @@ public class LuasTimesFragment extends Fragment {
 
             return;
         }
+
+        /*
+         * When the user opens the notification dialog as part of the tutorial, scroll back up to
+         * the top so that the next tutorial is definitely visible. This should only ever run once.
+         */
+        if (!Preferences.loadHasRunOnce(getContext(), TUTORIAL_NOTIFICATIONS)) {
+            ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.red_line_scrollview);
+            scrollView.setScrollY(0);
+        }
+
+        Preferences.saveHasRunOnce(getContext(), TUTORIAL_NOTIFICATIONS, true);
 
         // We're done with the notifications tutorial. Hide it.
         displayTutorial(TUTORIAL_NOTIFICATIONS, false);

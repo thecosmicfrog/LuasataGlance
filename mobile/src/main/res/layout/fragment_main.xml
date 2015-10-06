@@ -90,7 +90,7 @@
                                 android:orientation="vertical"
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
-                                android:paddingBottom="70dp">
+                                android:paddingBottom="80dp">
 
                                 <TextView
                                     android:id="@+id/red_line_textview_message_title"
@@ -476,7 +476,7 @@
                                 android:orientation="vertical"
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
-                                android:paddingBottom="70dp">
+                                android:paddingBottom="80dp">
 
                                 <TextView
                                     android:id="@+id/green_line_textview_message_title"
