@@ -28,13 +28,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -89,9 +89,9 @@ public class LuasTimesFragment extends Fragment {
     private Spinner greenLineSpinnerStop;
     private SwipeRefreshLayout redLineSwipeRefreshLayout;
     private SwipeRefreshLayout greenLineSwipeRefreshLayout;
-    private LinearLayout linearLayoutSwipeRefreshTutorial;
-    private LinearLayout linearLayoutNotificationsTutorial;
-    private LinearLayout linearLayoutFavouritesTutorial;
+    private CardView cardViewTutorialSwipeRefresh;
+    private CardView cardViewTutorialNotifications;
+    private CardView cardViewTutorialFavourites;
     private TableRow[] tableRowInboundStops;
     private TableRow[] tableRowOutboundStops;
     private TextView[] textViewInboundStopNames;
@@ -250,12 +250,12 @@ public class LuasTimesFragment extends Fragment {
         /*
          * Only display the tutorials in the Red Line tab for simplicity.
          */
-        linearLayoutSwipeRefreshTutorial =
-                (LinearLayout) rootView.findViewById(R.id.linearlayout_swipe_refresh_tutorial);
-        linearLayoutNotificationsTutorial =
-                (LinearLayout) rootView.findViewById(R.id.linearlayout_notifications_tutorial);
-        linearLayoutFavouritesTutorial =
-                (LinearLayout) rootView.findViewById(R.id.linearlayout_favourites_tutorial);
+        cardViewTutorialSwipeRefresh =
+                (CardView) rootView.findViewById(R.id.cardview_tutorial_swipe_refresh);
+        cardViewTutorialNotifications =
+                (CardView) rootView.findViewById(R.id.cardview_tutorial_notifications);
+        cardViewTutorialFavourites =
+                (CardView) rootView.findViewById(R.id.cardview_tutorial_favourites);
 
         redLineSwipeRefreshLayout =
                 (SwipeRefreshLayout) rootView.findViewById(R.id.red_line_swiperefreshlayout);
@@ -327,59 +327,59 @@ public class LuasTimesFragment extends Fragment {
     private void displayTutorial(String tutorial, boolean shouldDisplay) {
         switch(tutorial) {
             case TUTORIAL_SWIPE_REFRESH:
-                linearLayoutSwipeRefreshTutorial
-                        = (LinearLayout) rootView.findViewById(
-                        R.id.linearlayout_swipe_refresh_tutorial
+                cardViewTutorialSwipeRefresh
+                        = (CardView) rootView.findViewById(
+                        R.id.cardview_tutorial_swipe_refresh
                 );
 
                 if (shouldDisplay) {
                     if (!Preferences.loadHasRunOnce(getContext(), tutorial)) {
                         Log.i(LOG_TAG, "First time launching. Displaying swipe refresh tutorial.");
 
-                        linearLayoutSwipeRefreshTutorial.setVisibility(View.VISIBLE);
+                        cardViewTutorialSwipeRefresh.setVisibility(View.VISIBLE);
 
                         Preferences.saveHasRunOnce(getContext(), tutorial, true);
                     }
                 } else {
-                    linearLayoutSwipeRefreshTutorial.setVisibility(View.GONE);
+                    cardViewTutorialSwipeRefresh.setVisibility(View.GONE);
                 }
 
                 break;
 
             case TUTORIAL_NOTIFICATIONS:
-                linearLayoutNotificationsTutorial
-                        = (LinearLayout) rootView.findViewById(
-                        R.id.linearlayout_notifications_tutorial
+                cardViewTutorialNotifications
+                        = (CardView) rootView.findViewById(
+                        R.id.cardview_tutorial_notifications
                 );
 
                 if (shouldDisplay) {
                     if (!Preferences.loadHasRunOnce(getContext(), tutorial)) {
                         Log.i(LOG_TAG, "First time launching. Displaying notifications tutorial.");
 
-                        linearLayoutNotificationsTutorial.setVisibility(View.VISIBLE);
+                        cardViewTutorialNotifications.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    linearLayoutNotificationsTutorial.setVisibility(View.GONE);
+                    cardViewTutorialNotifications.setVisibility(View.GONE);
                 }
 
                 break;
 
             case TUTORIAL_FAVOURITES:
-                linearLayoutFavouritesTutorial
-                        = (LinearLayout) rootView.findViewById(
-                        R.id.linearlayout_favourites_tutorial
+                cardViewTutorialFavourites
+                        = (CardView) rootView.findViewById(
+                        R.id.cardview_tutorial_favourites
                 );
 
                 if (shouldDisplay) {
                     if (!Preferences.loadHasRunOnce(getContext(), tutorial)) {
                         Log.i(LOG_TAG, "First time launching. Displaying favourites tutorial.");
 
-                        linearLayoutFavouritesTutorial.setVisibility(View.VISIBLE);
+                        cardViewTutorialFavourites.setVisibility(View.VISIBLE);
 
                         Preferences.saveHasRunOnce(getContext(), tutorial, true);
                     }
                 } else {
-                    linearLayoutFavouritesTutorial.setVisibility(View.GONE);
+                    cardViewTutorialFavourites.setVisibility(View.GONE);
                 }
 
                 break;
