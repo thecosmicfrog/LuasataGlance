@@ -21,6 +21,7 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -191,6 +192,22 @@ public class LuasTimesFragment extends Fragment {
                 ContextCompat.getColor(getContext(), R.color.tab_green_line),
                 PorterDuff.Mode.SRC_ATOP
         );
+
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
+            TextView textViewTabText =
+                    (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(
+                            android.R.id.title
+                    );
+
+            // Set the text color of the tabs to white.
+            textViewTabText.setTextColor(
+                    ContextCompat.getColor(getContext(),
+                            android.R.color.white)
+            );
+
+            // Increase the default text size.
+            textViewTabText.setTextSize(15.0f);
+        }
 
         /*
          * When the tab changes, keep track of which is the currently-focused tab, then

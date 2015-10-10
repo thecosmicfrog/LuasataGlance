@@ -2,6 +2,7 @@
 <resources>
     <color name="favourites_yellow">#fffdd835</color>
     <color name="luas_purple">#ff4d3475</color>
+    <color name="luas_purple_statusbar">#ff3f2a5f</color>
     <color name="message_success">#ff006600</color>
     <color name="message_not_running">#fff1A82e</color>
     <color name="message_error">#ffe00000</color>
