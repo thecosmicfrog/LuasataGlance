@@ -27,7 +27,8 @@
     </string>
     <string name="information">\u2139</string>
     <string name="swipe_refresh_tutorial">Times will update <b>every 10 seconds</b>.\nYou can also
-        manually update by swiping down with your finger. Try it now to dismiss this message!
+        manually update by swiping down with your finger from the <b>Status</b> box. Try it now to
+        dismiss this message!
     </string>
     <string name="notifications_tutorial">Great! You can also schedule notifications for incoming
         trams. Just tap on a tram below to try it out.
@@ -71,8 +72,8 @@
     -->
     <string name="favourites_title">Favourites</string>
     <string name="favourites_edit">Edit</string>
-    <string name="favourites_none_selected">Let\'s get started!\n\nTap the Edit button in the
-        top-right corner of the screen to start adding your most frequently-used Luas stops.
+    <string name="favourites_none_selected">Let\'s get started!\n\nTap the purple <b>Edit</b> button
+        in the top-right corner of this dialog to start adding your most frequently-used Luas stops.
     </string>
 
     <!--
