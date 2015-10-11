@@ -21,7 +21,8 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
-import android.graphics.Color;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -32,6 +33,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -68,6 +72,7 @@ import retrofit.client.Response;
 public class LuasTimesFragment extends Fragment {
 
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
+    private final String GAEILGE = "ga";
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
     private final String INBOUND = "inbound";
@@ -80,6 +85,7 @@ public class LuasTimesFragment extends Fragment {
     private static String localeDefault;
 
     private View rootView = null;
+    private Menu menu;
     private TabHost tabHost;
     private String currentTab;
     private ProgressBar progressBarRedLineLoadingCircle;
@@ -105,6 +111,8 @@ public class LuasTimesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        setHasOptionsMenu(true);
 
         // Initialise correct locale.
         localeDefault = Locale.getDefault().toString();
@@ -160,6 +168,44 @@ public class LuasTimesFragment extends Fragment {
         timerTaskReload.cancel();
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        // Set the menu to a class variable for easy manipulation.
+        this.menu = menu;
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_news || id == R.id.action_news_alert) {
+            startActivity(new Intent(
+                            getContext(),
+                            NewsActivity.class)
+            );
+        }
+
+        if (id == R.id.action_about) {
+            View dialogAbout = getActivity().getLayoutInflater().inflate(R.layout.dialog_about, null);
+
+            new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.app_name)
+                    .setView(dialogAbout)
+                    .show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Initialise both tabs.
      */
@@ -172,12 +218,12 @@ public class LuasTimesFragment extends Fragment {
 
         TabHost.TabSpec tabSpec = tabHost.newTabSpec(RED_LINE);
         tabSpec.setContent(R.id.tab_red_line);
-        tabSpec.setIndicator("Red Line");
+        tabSpec.setIndicator(getResources().getString(R.string.tab_red_line));
         tabHost.addTab(tabSpec);
 
         tabSpec = tabHost.newTabSpec(GREEN_LINE);
         tabSpec.setContent(R.id.tab_green_line);
-        tabSpec.setIndicator("Green Line");
+        tabSpec.setIndicator(getResources().getString(R.string.tab_green_line));
         tabHost.addTab(tabSpec);
 
         /*
@@ -958,8 +1004,6 @@ public class LuasTimesFragment extends Fragment {
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private void updateStopForecast(StopForecast sf) {
-        final String GAEILGE = "ga";
-
         // Instantiate a new EnglishGaeilgeMap.
         EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
 
@@ -996,6 +1040,12 @@ public class LuasTimesFragment extends Fragment {
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_success);
                         textViewMessage.setText(message);
+
+                        /*
+                         * Make the Alert menu item invisible.
+                         */
+                        MenuItem menuItemNewsAlert = menu.findItem(R.id.action_news_alert);
+                        menuItemNewsAlert.setVisible(false);
                     } else {
                         /*
                          * Change the color of the message title TextView to red and set the
@@ -1003,6 +1053,12 @@ public class LuasTimesFragment extends Fragment {
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_error);
                         textViewMessage.setText(message);
+
+                        /*
+                         * Make the Alert menu item visible.
+                         */
+                        MenuItem menuItemNewsAlert = menu.findItem(R.id.action_news_alert);
+                        menuItemNewsAlert.setVisible(true);
                     }
 
                     /*
@@ -1181,6 +1237,12 @@ public class LuasTimesFragment extends Fragment {
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_success);
                         textViewMessage.setText(message);
+
+                        /*
+                         * Make the Alert menu item invisible.
+                         */
+                        MenuItem menuItemNewsAlert = menu.findItem(R.id.action_news_alert);
+                        menuItemNewsAlert.setVisible(false);
                     } else {
                         /*
                          * Change the color of the message title TextView to red and set the
@@ -1188,6 +1250,12 @@ public class LuasTimesFragment extends Fragment {
                          */
                         textViewMessageTitle.setBackgroundResource(R.color.message_error);
                         textViewMessage.setText(message);
+
+                        /*
+                         * Make the Alert menu item visible.
+                         */
+                        MenuItem menuItemNewsAlert = menu.findItem(R.id.action_news_alert);
+                        menuItemNewsAlert.setVisible(true);
                     }
 
                     /*

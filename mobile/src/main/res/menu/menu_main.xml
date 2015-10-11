@@ -6,6 +6,14 @@
     tools:context=".MainActivity">
 
     <item
+        android:id="@+id/action_news_alert"
+        android:title="@string/action_news_alert"
+        android:icon="@drawable/ic_error_outline_red"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        android:visible="false" />
+
+    <item
         android:id="@+id/action_news"
         android:title="@string/action_news"
         android:orderInCategory="50"

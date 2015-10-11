@@ -50,6 +50,7 @@
     <string name="action_favourites_edit">Athraigh</string>
     <string name="action_favourites_save">Sábháil</string>
     <string name="action_news">Nuacht Luas</string>
+    <string name="action_news_alert">Airdeall</string>
     <string name="action_reload">Athnuaigh</string>
 
     <!--
