@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">50</string>
-    <string name="version_name">0.50</string>
+    <string name="version_code">51</string>
+    <string name="version_name">0.51</string>
 
     <!--
         Activities
@@ -17,6 +17,8 @@
     <!--
         Main UI
     -->
+    <string name="tab_red_line">Líne Dhearg</string>
+    <string name="tab_green_line">Líne Uaine</string>
     <string name="message">Ag fanacht d\'stádas Luas&#8230;</string>
     <string name="message_title">Stádas</string>
     <string name="message_success">Gach seirbhís ag feidhmiú mar is gnáth</string>
