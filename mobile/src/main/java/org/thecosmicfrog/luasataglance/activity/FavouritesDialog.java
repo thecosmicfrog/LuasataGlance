@@ -49,7 +49,7 @@ import java.util.List;
 
 public class FavouritesDialog extends DialogFragment {
 
-    private final String LOG_TAG = NotifyTimeDialog.class.getSimpleName();
+    private final String LOG_TAG = FavouritesDialog.class.getSimpleName();
 
     private ArrayAdapter<CharSequence> adapterFavouriteStops;
     private List<CharSequence> listFavouriteStops;

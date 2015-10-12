@@ -10,5 +10,5 @@
         android:title="@string/action_favourites_save"
         android:icon="@android:drawable/ic_menu_save"
         android:orderInCategory="100"
-        app:showAsAction="always" />
+        app:showAsAction="always|withText" />
 </menu>
