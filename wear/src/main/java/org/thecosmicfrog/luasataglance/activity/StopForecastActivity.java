@@ -221,7 +221,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
     /**
      * Make progress circle spin or not spin.
-     * Must run on UI thread as only this thread can change views. This is achieved using the
+     * Must run on UI thread as only this thread can change view. This is achieved using the
      * runOnUiThread() method. Parameters must be final due to Java scope restrictions.
      * @param loading Whether or not progress circle should spin.
      */

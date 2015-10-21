@@ -44,7 +44,7 @@
 
                     <ProgressBar
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:id="@+id/red_line_progressbar_loading_bar"
+                        android:id="@+id/red_line_progressbar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:indeterminateOnly="true" />
@@ -53,23 +53,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp" />
 
-                    <!--
-                        Hack to allow background of spinner's "arrow" to have a custom color.
-                        Just setting the background property of the Spinner item causes the arrow
-                        to disappear. Simplest solution is to create a RelativeLayout around the
-                        Spinner and set the background of that.
-                    -->
-                    <android.support.v7.widget.CardView
+                    <org.thecosmicfrog.luasataglance.view.SpinnerCardView
+                        android:id="@+id/red_line_spinner_card_view"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/spinner_background">
-
-                        <Spinner
-                            android:id="@+id/red_line_spinner_stop"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:spinnerMode="dropdown" />
-                    </android.support.v7.widget.CardView>
+                        android:layout_height="wrap_content" />
 
                     <Space
                         android:layout_width="match_parent"
@@ -91,38 +78,10 @@
                                 android:layout_height="fill_parent"
                                 android:paddingBottom="80dp">
 
-                                <android.support.v7.widget.CardView
+                                <org.thecosmicfrog.luasataglance.view.StatusCardView
+                                    android:id="@+id/red_line_statuscardview"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-
-                                    <LinearLayout
-                                        android:orientation="vertical"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
-
-                                        <TextView
-                                            android:id="@+id/red_line_textview_message_title"
-                                            android:text="@string/message_title"
-                                            android:textStyle="bold"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@color/message_success"
-                                            android:textColor="@android:color/white"
-                                            android:gravity="center_horizontal" />
-
-                                        <TextView
-                                            android:id="@+id/red_line_textview_message"
-                                            android:text="@string/message"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@android:color/white"
-                                            android:gravity="center_horizontal"
-                                            android:textSize="16sp"
-                                            android:ellipsize="none"
-                                            android:maxLines="30"
-                                            android:scrollHorizontally="false" />
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
+                                    android:layout_height="wrap_content" />
 
                                 <Space
                                     android:layout_width="match_parent"
@@ -237,231 +196,23 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="8dp" />
 
-                                <android.support.v7.widget.CardView
+                                <org.thecosmicfrog.luasataglance.view.StopForecastCardView
+                                    android:id="@+id/red_line_inbound_stopforecastcardview"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-
-                                    <LinearLayout
-                                        android:orientation="vertical"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
-
-                                        <TextView
-                                            android:id="@+id/red_line_textview_inbound"
-                                            android:text="@string/inbound"
-                                            android:textStyle="bold"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@color/luas_purple"
-                                            android:gravity="center_horizontal"
-                                            android:textColor="@android:color/white" />
-
-                                        <TableLayout
-                                            android:id="@+id/red_line_tablelayout_inbound"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@android:color/white"
-                                            android:stretchColumns="*">
-
-                                            <TableRow
-                                                android:id="@+id/red_line_tablerow_inbound_stop1"
-                                                android:background=
-                                                    "@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_inbound_stop1_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_inbound_stop1_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/red_line_tablerow_inbound_stop2"
-                                                android:background=
-                                                    "@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_inbound_stop2_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_inbound_stop2_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/red_line_tablerow_inbound_stop3"
-                                                android:background=
-                                                    "@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_inbound_stop3_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_inbound_stop3_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/red_line_tablerow_inbound_stop4"
-                                                android:background=
-                                                    "@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_inbound_stop4_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_inbound_stop4_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-                                        </TableLayout>
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
+                                    android:layout_height="wrap_content" />
 
                                 <Space
                                     android:layout_width="match_parent"
                                     android:layout_height="10dp" />
 
-                                <android.support.v7.widget.CardView
+                                <org.thecosmicfrog.luasataglance.view.StopForecastCardView
+                                    android:id="@+id/red_line_outbound_stopforecastcardview"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content" />
 
-                                    <LinearLayout
-                                        android:orientation="vertical"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
-
-                                        <TextView
-                                            android:id="@+id/red_line_textview_outbound"
-                                            android:text="@string/outbound"
-                                            android:textStyle="bold"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@color/luas_purple"
-                                            android:gravity="center_horizontal"
-                                            android:textColor="@android:color/white" />
-
-                                        <TableLayout
-                                            android:id="@+id/red_line_tablelayout_outbound"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@android:color/white"
-                                            android:stretchColumns="*">
-
-                                            <TableRow
-                                                android:id="@+id/red_line_tablerow_outbound_stop1"
-                                                android:background=
-                                                    "@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_outbound_stop1_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_outbound_stop1_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/red_line_tablerow_outbound_stop2"
-                                                android:background=
-                                                    "@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_outbound_stop2_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_outbound_stop2_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/red_line_tablerow_outbound_stop3"
-                                                android:background=
-                                                    "@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_outbound_stop3_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_outbound_stop3_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/red_line_tablerow_outbound_stop4"
-                                                android:background=
-                                                    "@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_outbound_stop4_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/red_line_textview_outbound_stop4_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-                                        </TableLayout>
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
+                                <Space
+                                    android:layout_width="match_parent"
+                                    android:layout_height="10dp" />
                             </LinearLayout>
                         </ScrollView>
                     </android.support.v4.widget.SwipeRefreshLayout>
@@ -481,7 +232,7 @@
 
                     <ProgressBar
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:id="@+id/green_line_progressbar_loading_bar"
+                        android:id="@+id/green_line_progressbar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:indeterminateOnly="true" />
@@ -490,23 +241,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp" />
 
-                    <!--
-                        Hack to allow background of spinner's "arrow" to have a custom color.
-                        Just setting the background property of the Spinner item causes the arrow
-                        to disappear. Simplest solution is to create a RelativeLayout around the
-                        Spinner and set the background of that.
-                    -->
-                    <android.support.v7.widget.CardView
+                    <org.thecosmicfrog.luasataglance.view.SpinnerCardView
+                        android:id="@+id/green_line_spinner_card_view"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/spinner_background">
-
-                        <Spinner
-                            android:id="@+id/green_line_spinner_stop"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:spinnerMode="dropdown" />
-                    </android.support.v7.widget.CardView>
+                        android:layout_height="wrap_content" />
 
                     <Space
                         android:layout_width="match_parent"
@@ -528,260 +266,32 @@
                                 android:layout_height="fill_parent"
                                 android:paddingBottom="80dp">
 
-                                <android.support.v7.widget.CardView
+                                <org.thecosmicfrog.luasataglance.view.StatusCardView
+                                    android:id="@+id/green_line_statuscardview"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-
-                                    <LinearLayout
-                                        android:orientation="vertical"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
-
-                                        <TextView
-                                            android:id="@+id/green_line_textview_message_title"
-                                            android:text="@string/message_title"
-                                            android:textStyle="bold"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@color/message_success"
-                                            android:textColor="@android:color/white"
-                                            android:gravity="center_horizontal" />
-
-                                        <TextView
-                                            android:id="@+id/green_line_textview_message"
-                                            android:text="@string/message"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@android:color/white"
-                                            android:gravity="center_horizontal"
-                                            android:textSize="16sp"
-                                            android:ellipsize="none"
-                                            android:maxLines="30"
-                                            android:scrollHorizontally="false" />
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
+                                    android:layout_height="wrap_content" />
 
                                 <Space
                                     android:layout_width="match_parent"
                                     android:layout_height="20dp" />
 
-                                <android.support.v7.widget.CardView
+                                <org.thecosmicfrog.luasataglance.view.StopForecastCardView
+                                    android:id="@+id/green_line_inbound_stopforecastcardview"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <LinearLayout
-                                        android:orientation="vertical"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
-
-                                        <TextView
-                                            android:id="@+id/green_line_textview_inbound"
-                                            android:text="@string/inbound"
-                                            android:textStyle="bold"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@color/luas_purple"
-                                            android:gravity="center_horizontal"
-                                            android:textColor="@android:color/white" />
-
-                                        <TableLayout
-                                            android:id="@+id/green_line_tablelayout_inbound"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@android:color/white"
-                                            android:stretchColumns="*">
-
-                                            <TableRow
-                                                android:id="@+id/green_line_tablerow_inbound_stop1"
-                                                android:background="@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_inbound_stop1_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_inbound_stop1_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/green_line_tablerow_inbound_stop2"
-                                                android:background="@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_inbound_stop2_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_inbound_stop2_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/green_line_tablerow_inbound_stop3"
-                                                android:background="@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_inbound_stop3_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_inbound_stop3_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/green_line_tablerow_inbound_stop4"
-                                                android:background="@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_inbound_stop4_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_inbound_stop4_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-                                        </TableLayout>
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
+                                    android:layout_height="wrap_content" />
 
                                 <Space
                                     android:layout_width="match_parent"
                                     android:layout_height="10dp" />
 
-                                <android.support.v7.widget.CardView
+                                <org.thecosmicfrog.luasataglance.view.StopForecastCardView
+                                    android:id="@+id/green_line_outbound_stopforecastcardview"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content" />
 
-                                    <LinearLayout
-                                        android:orientation="vertical"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
-
-                                        <TextView
-                                            android:id="@+id/green_line_textview_outbound"
-                                            android:text="@string/outbound"
-                                            android:textStyle="bold"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@color/luas_purple"
-                                            android:gravity="center_horizontal"
-                                            android:textColor="@android:color/white" />
-
-                                        <TableLayout
-                                            android:id="@+id/green_line_tablelayout_outbound"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:background="@android:color/white"
-                                            android:stretchColumns="*">
-
-                                            <TableRow
-                                                android:id="@+id/green_line_tablerow_outbound_stop1"
-                                                android:background="@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_outbound_stop1_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_outbound_stop1_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/green_line_tablerow_outbound_stop2"
-                                                android:background="@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_outbound_stop2_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_outbound_stop2_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/green_line_tablerow_outbound_stop3"
-                                                android:background="@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_outbound_stop3_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_outbound_stop3_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-
-                                            <View
-                                                android:layout_width="fill_parent"
-                                                android:layout_height="0.6dp"
-                                                android:visibility="visible"
-                                                android:background="@color/stop_forecast_border_grey" />
-
-                                            <TableRow
-                                                android:id="@+id/green_line_tablerow_outbound_stop4"
-                                                android:background="@android:drawable/list_selector_background">
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_outbound_stop4_name"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-
-                                                <TextView
-                                                    android:id="@+id/green_line_textview_outbound_stop4_time"
-                                                    android:gravity="center_horizontal"
-                                                    android:textSize="16sp" />
-                                            </TableRow>
-                                        </TableLayout>
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
+                                <Space
+                                    android:layout_width="match_parent"
+                                    android:layout_height="10dp" />
                             </LinearLayout>
                         </ScrollView>
                     </android.support.v4.widget.SwipeRefreshLayout>

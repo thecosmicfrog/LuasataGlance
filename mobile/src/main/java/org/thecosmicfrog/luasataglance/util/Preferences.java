@@ -31,12 +31,12 @@ public final class Preferences {
      * @param context Context
      * @return Selected stop name, or null if none found.
      */
-    public static String loadSelectedStopName(Context context) {
+    public static String loadSelectedStopName(Context context, String line) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
 
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
-        return prefs.getString("selectedStopName", null);
+        return prefs.getString(line + "_selectedStopName", null);
     }
 
     /**
@@ -45,13 +45,43 @@ public final class Preferences {
      * @param selectedStopName Name of the stop to save to shared preferences.
      * @return Successfully saved.
      */
-    public static boolean saveSelectedStopName(Context context, String selectedStopName) {
+    public static boolean saveSelectedStopName(Context context, String line, String selectedStopName) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
 
         SharedPreferences.Editor prefs =
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
-        prefs.putString("selectedStopName", selectedStopName);
+        prefs.putString(line + "_selectedStopName", selectedStopName);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Load the currently-selected stop name from shared preferences.
+     * @param context Context
+     * @return Selected stop name, or null if none found.
+     */
+    public static String loadWidgetSelectedStopName(Context context) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getString("widgetSelectedStopName", null);
+    }
+
+    /**
+     * Save the currently-selected stop name to shared preferences.
+     * @param context Context.
+     * @param widgetSelectedStopName Name of the stop to save to shared preferences.
+     * @return Successfully saved.
+     */
+    public static boolean saveWidgetSelectedStopName(Context context, String widgetSelectedStopName) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.putString("widgetSelectedStopName", widgetSelectedStopName);
 
         return prefs.commit();
     }

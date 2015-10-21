@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textview_status_title"
+            android:text="@string/message_title"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/message_success"
+            android:textColor="@android:color/white"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/textview_status"
+            android:text="@string/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:gravity="center_horizontal"
+            android:textSize="16sp"
+            android:ellipsize="none"
+            android:maxLines="30"
+            android:scrollHorizontally="false" />
+    </LinearLayout>
+</merge>

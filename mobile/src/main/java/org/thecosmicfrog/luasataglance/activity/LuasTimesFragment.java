@@ -30,7 +30,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,24 +38,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TabHost;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
-import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
-import org.thecosmicfrog.luasataglance.object.Tram;
 import org.thecosmicfrog.luasataglance.util.Preferences;
+import org.thecosmicfrog.luasataglance.view.SpinnerCardView;
+import org.thecosmicfrog.luasataglance.view.StatusCardView;
+import org.thecosmicfrog.luasataglance.view.StopForecastCardView;
+import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -75,8 +70,6 @@ public class LuasTimesFragment extends Fragment {
     private final String GAEILGE = "ga";
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
-    private final String INBOUND = "inbound";
-    private final String OUTBOUND = "outbound";
     private final String TUTORIAL_SWIPE_REFRESH = "swipe_refresh";
     private final String TUTORIAL_NOTIFICATIONS = "notifications";
     private final String TUTORIAL_FAVOURITES = "favourites";
@@ -88,23 +81,16 @@ public class LuasTimesFragment extends Fragment {
     private Menu menu;
     private TabHost tabHost;
     private String currentTab;
-    private ProgressBar progressBarRedLineLoadingCircle;
-    private ProgressBar progressBarGreenLineLoadingCircle;
-    private ArrayAdapter<CharSequence> redLineAdapterStop;
-    private ArrayAdapter<CharSequence> greenLineAdapterStop;
-    private Spinner redLineSpinnerStop;
-    private Spinner greenLineSpinnerStop;
+    private SpinnerCardView redLineSpinnerCardView;
+    private SpinnerCardView greenLineSpinnerCardView;
     private SwipeRefreshLayout redLineSwipeRefreshLayout;
     private SwipeRefreshLayout greenLineSwipeRefreshLayout;
-    private CardView cardViewTutorialSwipeRefresh;
-    private CardView cardViewTutorialNotifications;
-    private CardView cardViewTutorialFavourites;
-    private TableRow[] tableRowInboundStops;
-    private TableRow[] tableRowOutboundStops;
-    private TextView[] textViewInboundStopNames;
-    private TextView[] textViewInboundStopTimes;
-    private TextView[] textViewOutboundStopNames;
-    private TextView[] textViewOutboundStopTimes;
+    private StatusCardView redLineStatusCardView;
+    private StatusCardView greenLineStatusCardView;
+    private StopForecastCardView redLineInboundStopForecastCardView;
+    private StopForecastCardView redLineOutboundStopForecastCardView;
+    private StopForecastCardView greenLineInboundStopForecastCardView;
+    private StopForecastCardView greenLineOutboundStopForecastCardView;
     private TimerTask timerTaskReload;
 
     @Override
@@ -147,7 +133,7 @@ public class LuasTimesFragment extends Fragment {
         super.onResume();
 
         // Display tutorial for SwipeRefreshLayout, if required.
-        displayTutorial(TUTORIAL_SWIPE_REFRESH, true);
+        StopForecastUtil.displayTutorial(rootView, TUTORIAL_SWIPE_REFRESH, true);
 
         /*
          * Reload stop forecast.
@@ -195,7 +181,8 @@ public class LuasTimesFragment extends Fragment {
         }
 
         if (id == R.id.action_about) {
-            View dialogAbout = getActivity().getLayoutInflater().inflate(R.layout.dialog_about, null);
+            View dialogAbout =
+                    getActivity().getLayoutInflater().inflate(R.layout.dialog_about, null);
 
             new AlertDialog.Builder(getContext())
                     .setTitle(R.string.app_name)
@@ -210,8 +197,11 @@ public class LuasTimesFragment extends Fragment {
      * Initialise both tabs.
      */
     private void initTabs() {
+        /********************************
+         * BEGIN GENERAL FRAGMENT SETUP *
+         ********************************/
         /*
-         * Set up tabs.
+         * Set up TabHost.
          */
         tabHost = (TabHost) rootView.findViewById(R.id.tabHost);
         tabHost.setup();
@@ -263,7 +253,9 @@ public class LuasTimesFragment extends Fragment {
             @Override
             public void onTabChanged(String tabId) {
                 currentTab = tabHost.getCurrentTabTag();
-                initStopForecast(currentTab);
+
+                StopForecastUtil.clearLineStopForecast(rootView, currentTab);
+                loadStopForecast(Preferences.loadSelectedStopName(getContext(), currentTab));
             }
         });
 
@@ -274,7 +266,7 @@ public class LuasTimesFragment extends Fragment {
                 (FloatingActionButton) rootView.findViewById(R.id.floating_action_button);
         fabFavourites.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                displayTutorial(TUTORIAL_FAVOURITES, false);
+                StopForecastUtil.displayTutorial(rootView, TUTORIAL_FAVOURITES, false);
 
                 /*
                  * Open Favourites DialogFragment.
@@ -285,41 +277,54 @@ public class LuasTimesFragment extends Fragment {
             }
         });
 
-        /*
-         * Set up Red Line tab.
-         */
-        progressBarRedLineLoadingCircle =
-                (ProgressBar) rootView.findViewById(R.id.red_line_progressbar_loading_bar);
-        setIsLoading(RED_LINE, false);
-
-        redLineSpinnerStop = (Spinner) rootView.findViewById(R.id.red_line_spinner_stop);
-        redLineAdapterStop = ArrayAdapter.createFromResource(
-                getActivity(), R.array.red_line_array_stops, R.layout.spinner_stops
-        );
-        redLineAdapterStop.setDropDownViewResource(R.layout.spinner_stops);
-        redLineSpinnerStop.setAdapter(redLineAdapterStop);
-
-        redLineSpinnerStop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                loadStopForecast(redLineSpinnerStop.getItemAtPosition(position).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        /****************************
+         * BEGIN RED LINE TAB SETUP *
+         ****************************/
+        StopForecastUtil.setIsLoading(this, rootView, RED_LINE, false);
 
         /*
-         * Only display the tutorials in the Red Line tab for simplicity.
+         * Set up Spinner and onItemSelectedListener.
          */
-        cardViewTutorialSwipeRefresh =
-                (CardView) rootView.findViewById(R.id.cardview_tutorial_swipe_refresh);
-        cardViewTutorialNotifications =
-                (CardView) rootView.findViewById(R.id.cardview_tutorial_notifications);
-        cardViewTutorialFavourites =
-                (CardView) rootView.findViewById(R.id.cardview_tutorial_favourites);
+        redLineSpinnerCardView =
+                (SpinnerCardView) rootView.findViewById(R.id.red_line_spinner_card_view);
+        redLineSpinnerCardView.setLine(RED_LINE);
 
+        redLineSpinnerCardView.getSpinnerStops().setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                                               long id) {
+                        /*
+                         * Get the stop name from the current position of the Spinner, save it to
+                         * SharedPreferences, then load a stop forecast with it.
+                         */
+                        String selectedStopName =
+                                redLineSpinnerCardView
+                                        .getSpinnerStops().getItemAtPosition(position).toString();
+
+                        Preferences.saveSelectedStopName(
+                                getContext(),
+                                RED_LINE,
+                                selectedStopName
+                        );
+
+                        loadStopForecast(selectedStopName);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+
+        /*
+         * Set up Status CardView.
+         */
+        redLineStatusCardView =
+                (StatusCardView) rootView.findViewById(R.id.red_line_statuscardview);
+
+        /*
+         * Set up SwipeRefreshLayout.
+         */
         redLineSwipeRefreshLayout =
                 (SwipeRefreshLayout) rootView.findViewById(R.id.red_line_swiperefreshlayout);
         redLineSwipeRefreshLayout.setOnRefreshListener(
@@ -327,46 +332,88 @@ public class LuasTimesFragment extends Fragment {
                     @Override
                     public void onRefresh() {
                         // Hide the SwipeRefreshLayout tutorial, if it is visible.
-                        displayTutorial(TUTORIAL_SWIPE_REFRESH, false);
+                        StopForecastUtil.displayTutorial(rootView, TUTORIAL_SWIPE_REFRESH, false);
 
                         // Show the notifications tutorial.
-                        displayTutorial(TUTORIAL_NOTIFICATIONS, true);
+                        StopForecastUtil.displayTutorial(rootView, TUTORIAL_NOTIFICATIONS, true);
 
                         // Start by clearing the currently-displayed stop forecast.
-                        clearStopForecast();
+                        StopForecastUtil.clearLineStopForecast(rootView, RED_LINE);
 
                         // Start the refresh animation.
                         redLineSwipeRefreshLayout.setRefreshing(true);
-                        loadStopForecast(redLineSpinnerStop.getSelectedItem().toString());
+                        loadStopForecast(
+                                Preferences.loadSelectedStopName(getContext(), RED_LINE)
+                        );
+                    }
+                }
+        );
+
+        /*
+         * Set up stop forecast CardViews.
+         */
+        redLineInboundStopForecastCardView =
+                (StopForecastCardView) rootView.findViewById(
+                        R.id.red_line_inbound_stopforecastcardview
+                );
+        redLineInboundStopForecastCardView.setStopForecastDirection(
+                getResources().getString(R.string.inbound)
+        );
+
+        redLineOutboundStopForecastCardView =
+                (StopForecastCardView) rootView.findViewById(
+                        R.id.red_line_outbound_stopforecastcardview
+                );
+        redLineOutboundStopForecastCardView.setStopForecastDirection(
+                getResources().getString(R.string.outbound)
+        );
+
+        /******************************
+         * BEGIN GREEN LINE TAB SETUP *
+         ******************************/
+        /*
+         * Set up Spinner and onItemSelectedListener.
+         */
+        greenLineSpinnerCardView =
+                (SpinnerCardView) rootView.findViewById(R.id.green_line_spinner_card_view);
+        greenLineSpinnerCardView.setLine(GREEN_LINE);
+
+        greenLineSpinnerCardView.getSpinnerStops().setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                                               long id) {
+                        /*
+                         * Get the stop name from the current position of the Spinner, save it to
+                         * SharedPreferences, then load a stop forecast with it.
+                         */
+                        String selectedStopName =
+                                greenLineSpinnerCardView
+                                        .getSpinnerStops().getItemAtPosition(position).toString();
+
+                        Preferences.saveSelectedStopName(
+                                getContext(),
+                                GREEN_LINE,
+                                selectedStopName
+                        );
+
+                        loadStopForecast(selectedStopName);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
 
         /*
-         * Set up Green Line tab.
+         * Set up Status CardView.
          */
-        progressBarGreenLineLoadingCircle =
-                (ProgressBar) rootView.findViewById(R.id.green_line_progressbar_loading_bar);
-        setIsLoading(GREEN_LINE, false);
+        greenLineStatusCardView =
+                (StatusCardView) rootView.findViewById(R.id.green_line_statuscardview);
 
-        greenLineSpinnerStop = (Spinner) rootView.findViewById(R.id.green_line_spinner_stop);
-
-        greenLineAdapterStop = ArrayAdapter.createFromResource(
-                getActivity(), R.array.green_line_array_stops, R.layout.spinner_stops
-        );
-        greenLineAdapterStop.setDropDownViewResource(R.layout.spinner_stops);
-        greenLineSpinnerStop.setAdapter(greenLineAdapterStop);
-
-        greenLineSpinnerStop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                loadStopForecast(greenLineSpinnerStop.getItemAtPosition(position).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
+        /*
+         * Set up SwipeRefreshLayout.
+         */
         greenLineSwipeRefreshLayout =
                 (SwipeRefreshLayout) rootView.findViewById(R.id.green_line_swiperefreshlayout);
         greenLineSwipeRefreshLayout.setOnRefreshListener(
@@ -374,83 +421,39 @@ public class LuasTimesFragment extends Fragment {
                     @Override
                     public void onRefresh() {
                         // Start by clearing the currently-displayed stop forecast.
-                        clearStopForecast();
+                        StopForecastUtil.clearLineStopForecast(rootView, GREEN_LINE);
 
                         // Start the refresh animation.
                         greenLineSwipeRefreshLayout.setRefreshing(true);
-                        loadStopForecast(greenLineSpinnerStop.getSelectedItem().toString());
+                        loadStopForecast(
+                                Preferences.loadSelectedStopName(getContext(), GREEN_LINE)
+                        );
                     }
                 });
-    }
 
-    /**
-     * Determine if this is the first time the app has been launched and, if so, display a brief
-     * tutorial on how to use a particular feature of the app.
-     */
-    private void displayTutorial(String tutorial, boolean shouldDisplay) {
-        switch(tutorial) {
-            case TUTORIAL_SWIPE_REFRESH:
-                cardViewTutorialSwipeRefresh
-                        = (CardView) rootView.findViewById(
-                        R.id.cardview_tutorial_swipe_refresh
+        /*
+         * Set up stop forecast CardViews.
+         */
+        greenLineInboundStopForecastCardView =
+                (StopForecastCardView) rootView.findViewById(
+                        R.id.green_line_inbound_stopforecastcardview
                 );
+        greenLineInboundStopForecastCardView.setStopForecastDirection(
+                getResources().getString(R.string.inbound)
+        );
 
-                if (shouldDisplay) {
-                    if (!Preferences.loadHasRunOnce(getContext(), tutorial)) {
-                        Log.i(LOG_TAG, "First time launching. Displaying swipe refresh tutorial.");
-
-                        cardViewTutorialSwipeRefresh.setVisibility(View.VISIBLE);
-
-                        Preferences.saveHasRunOnce(getContext(), tutorial, true);
-                    }
-                } else {
-                    cardViewTutorialSwipeRefresh.setVisibility(View.GONE);
-                }
-
-                break;
-
-            case TUTORIAL_NOTIFICATIONS:
-                cardViewTutorialNotifications
-                        = (CardView) rootView.findViewById(
-                        R.id.cardview_tutorial_notifications
+        greenLineOutboundStopForecastCardView =
+                (StopForecastCardView) rootView.findViewById(
+                        R.id.green_line_outbound_stopforecastcardview
                 );
+        greenLineOutboundStopForecastCardView.setStopForecastDirection(
+                getResources().getString(R.string.outbound)
+        );
 
-                if (shouldDisplay) {
-                    if (!Preferences.loadHasRunOnce(getContext(), tutorial)) {
-                        Log.i(LOG_TAG, "First time launching. Displaying notifications tutorial.");
-
-                        cardViewTutorialNotifications.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    cardViewTutorialNotifications.setVisibility(View.GONE);
-                }
-
-                break;
-
-            case TUTORIAL_FAVOURITES:
-                cardViewTutorialFavourites
-                        = (CardView) rootView.findViewById(
-                        R.id.cardview_tutorial_favourites
-                );
-
-                if (shouldDisplay) {
-                    if (!Preferences.loadHasRunOnce(getContext(), tutorial)) {
-                        Log.i(LOG_TAG, "First time launching. Displaying favourites tutorial.");
-
-                        cardViewTutorialFavourites.setVisibility(View.VISIBLE);
-
-                        Preferences.saveHasRunOnce(getContext(), tutorial, true);
-                    }
-                } else {
-                    cardViewTutorialFavourites.setVisibility(View.GONE);
-                }
-
-                break;
-
-            default:
-                // If for some reason the specified tutorial doesn't make sense.
-                Log.wtf(LOG_TAG, "Invalid tutorial specified.");
-        }
+        /*
+         * Set up onClickListeners for stop forecasts in both tabs.
+         */
+        StopForecastUtil.initStopForecastOnClickListeners(rootView);
     }
 
     /**
@@ -471,16 +474,12 @@ public class LuasTimesFragment extends Fragment {
 
         if (redLineListStops.contains(stopNameFromIntent)) {
             tabHost.setCurrentTab(0);
-            redLineSpinnerStop.setSelection(
-                    redLineAdapterStop
-                            .getPosition(stopNameFromIntent)
-            );
+
+            redLineSpinnerCardView.setSelection(stopNameFromIntent);
         } else if (greenLineListStops.contains(stopNameFromIntent)) {
             tabHost.setCurrentTab(1);
-            greenLineSpinnerStop.setSelection(
-                    greenLineAdapterStop
-                            .getPosition(stopNameFromIntent)
-            );
+
+            greenLineSpinnerCardView.setSelection(stopNameFromIntent);
         }
     }
 
@@ -508,14 +507,20 @@ public class LuasTimesFragment extends Fragment {
                             switch (currentTab) {
                                 case RED_LINE:
                                     loadStopForecast(
-                                            redLineSpinnerStop.getSelectedItem().toString()
+                                            Preferences.loadSelectedStopName(
+                                                    getContext(),
+                                                    RED_LINE
+                                            )
                                     );
 
                                     break;
 
                                 case GREEN_LINE:
                                     loadStopForecast(
-                                            greenLineSpinnerStop.getSelectedItem().toString()
+                                            Preferences.loadSelectedStopName(
+                                                    getContext(),
+                                                    GREEN_LINE
+                                            )
                                     );
 
                                     break;
@@ -539,6 +544,7 @@ public class LuasTimesFragment extends Fragment {
      * @param stopName The stop for which to load a stop forecast.
      */
     private void loadStopForecast(String stopName) {
+        final Fragment fragment = this;
         final String API_URL_PREFIX = "https://api";
         final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
         final String API_ACTION = "times";
@@ -546,7 +552,7 @@ public class LuasTimesFragment extends Fragment {
         // Keep track of the currently-focused tab.
         currentTab = tabHost.getCurrentTabTag();
 
-        setIsLoading(currentTab, true);
+        StopForecastUtil.setIsLoading(this, rootView, currentTab, true);
 
         /*
          * Randomly choose an API endpoint to query. This provides load balancing and redundancy
@@ -578,15 +584,15 @@ public class LuasTimesFragment extends Fragment {
                 // Check Fragment is attached to Activity in order to avoid NullPointerExceptions.
                 if (isAdded()) {
                     // Then create a stop forecast with this data.
-                    StopForecast stopForecast = createStopForecast(apiTimes);
+                    StopForecast stopForecast = StopForecastUtil.createStopForecast(apiTimes);
 
-                    clearStopForecast();
+                    StopForecastUtil.clearLineStopForecast(rootView, currentTab);
 
                     // Update the stop forecast.
                     updateStopForecast(stopForecast);
 
                     // Stop the refresh animations.
-                    setIsLoading(currentTab, false);
+                    StopForecastUtil.setIsLoading(fragment, rootView, currentTab, false);
                     redLineSwipeRefreshLayout.setRefreshing(false);
                     greenLineSwipeRefreshLayout.setRefreshing(false);
                 }
@@ -631,374 +637,6 @@ public class LuasTimesFragment extends Fragment {
     }
 
     /**
-     * Create a usable stop forecast with the data returned from the server.
-     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
-     * @return Usable stop forecast.
-     */
-    private StopForecast createStopForecast(ApiTimes apiTimes) {
-        StopForecast stopForecast = new StopForecast();
-
-        if (apiTimes.getTrams() != null) {
-            for (Tram tram : apiTimes.getTrams()) {
-                switch (tram.getDirection()) {
-                    case "Inbound":
-                        stopForecast.addInboundTram(tram);
-
-                        break;
-
-                    case "Outbound":
-                        stopForecast.addOutboundTram(tram);
-
-                        break;
-
-                    default:
-                        // If for some reason the direction doesn't make sense.
-                        Log.wtf(LOG_TAG, "Invalid direction: " + tram.getDirection());
-                }
-            }
-        }
-
-        stopForecast.setMessage(apiTimes.getMessage());
-
-        return stopForecast;
-    }
-
-    /**
-     * Make progress circle spin or not spin.
-     * Must run on UI thread as only this thread can change views. This is achieved using the
-     * runOnUiThread() method. Parameters must be final due to Java scope restrictions.
-     * @param line Name of tab in which progress circle should spin.
-     * @param loading Whether or not progress circle should spin.
-     */
-    private void setIsLoading(final String line, final boolean loading) {
-        /*
-         * Only run if Fragment is attached to Activity. Without this check, the app is liable
-         * to crash when the screen is rotated many times in a given period of time.
-         */
-        if (isAdded()) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    switch (line) {
-                        case RED_LINE:
-                            if (loading)
-                                progressBarRedLineLoadingCircle.setVisibility(View.VISIBLE);
-                            else
-                                progressBarRedLineLoadingCircle.setVisibility(View.INVISIBLE);
-
-                            break;
-
-                        case GREEN_LINE:
-                            if (loading)
-                                progressBarGreenLineLoadingCircle.setVisibility(View.VISIBLE);
-                            else
-                                progressBarGreenLineLoadingCircle.setVisibility(View.INVISIBLE);
-
-                            break;
-
-                        default:
-                            // If for some reason the line doesn't make sense.
-                            Log.wtf(LOG_TAG, "Invalid line specified.");
-                    }
-                }
-            });
-        }
-    }
-
-    /**
-     * Initialise the arrays which hold a stop forecast.
-     * @param line Line for which to initialise stop forecast arrays.
-     */
-    private void initStopForecast(String line) {
-        switch (line) {
-            case RED_LINE:
-                tableRowInboundStops = new TableRow[] {
-                        (TableRow) rootView.findViewById(
-                                R.id.red_line_tablerow_inbound_stop1),
-                        (TableRow) rootView.findViewById(
-                                R.id.red_line_tablerow_inbound_stop2),
-                        (TableRow) rootView.findViewById(
-                                R.id.red_line_tablerow_inbound_stop3),
-                        (TableRow) rootView.findViewById(
-                                R.id.red_line_tablerow_inbound_stop4)
-                };
-
-                tableRowOutboundStops = new TableRow[] {
-                        (TableRow) rootView.findViewById(
-                                R.id.red_line_tablerow_outbound_stop1),
-                        (TableRow) rootView.findViewById(
-                                R.id.red_line_tablerow_outbound_stop2),
-                        (TableRow) rootView.findViewById(
-                                R.id.red_line_tablerow_outbound_stop3),
-                        (TableRow) rootView.findViewById(
-                                R.id.red_line_tablerow_outbound_stop4)
-                };
-
-                textViewInboundStopNames = new TextView[] {
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_inbound_stop1_name),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_inbound_stop2_name),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_inbound_stop3_name),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_inbound_stop4_name)
-                };
-
-                textViewInboundStopTimes = new TextView[] {
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_inbound_stop1_time),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_inbound_stop2_time),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_inbound_stop3_time),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_inbound_stop4_time)
-                };
-
-                textViewOutboundStopNames = new TextView[] {
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_outbound_stop1_name),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_outbound_stop2_name),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_outbound_stop3_name),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_outbound_stop4_name)
-                };
-
-                textViewOutboundStopTimes = new TextView[] {
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_outbound_stop1_time),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_outbound_stop2_time),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_outbound_stop3_time),
-                        (TextView) rootView.findViewById(
-                                R.id.red_line_textview_outbound_stop4_time)
-                };
-
-                break;
-
-            case GREEN_LINE:
-                tableRowInboundStops = new TableRow[] {
-                        (TableRow) rootView.findViewById(
-                                R.id.green_line_tablerow_inbound_stop1),
-                        (TableRow) rootView.findViewById(
-                                R.id.green_line_tablerow_inbound_stop2),
-                        (TableRow) rootView.findViewById(
-                                R.id.green_line_tablerow_inbound_stop3),
-                        (TableRow) rootView.findViewById(
-                                R.id.green_line_tablerow_inbound_stop4)
-                };
-
-                tableRowOutboundStops = new TableRow[] {
-                        (TableRow) rootView.findViewById(
-                                R.id.green_line_tablerow_outbound_stop1),
-                        (TableRow) rootView.findViewById(
-                                R.id.green_line_tablerow_outbound_stop2),
-                        (TableRow) rootView.findViewById(
-                                R.id.green_line_tablerow_outbound_stop3),
-                        (TableRow) rootView.findViewById(
-                                R.id.green_line_tablerow_outbound_stop4)
-                };
-
-                textViewInboundStopNames = new TextView[] {
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_inbound_stop1_name),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_inbound_stop2_name),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_inbound_stop3_name),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_inbound_stop4_name)
-                };
-
-                textViewInboundStopTimes = new TextView[] {
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_inbound_stop1_time),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_inbound_stop2_time),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_inbound_stop3_time),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_inbound_stop4_time)
-                };
-
-                textViewOutboundStopNames = new TextView[] {
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_outbound_stop1_name),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_outbound_stop2_name),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_outbound_stop3_name),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_outbound_stop4_name)
-                };
-
-                textViewOutboundStopTimes = new TextView[] {
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_outbound_stop1_time),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_outbound_stop2_time),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_outbound_stop3_time),
-                        (TextView) rootView.findViewById(
-                                R.id.green_line_textview_outbound_stop4_time)
-                };
-
-                break;
-
-            default:
-                // If for some reason the line doesn't make sense.
-                Log.wtf(LOG_TAG, "Invalid line specified.");
-        }
-
-        initStopForecastOnClickListeners();
-    }
-
-    /**
-     * Initialise OnClickListeners for a stop forecast.
-     */
-    private void initStopForecastOnClickListeners() {
-        final String STOP_FORECAST = "stop_forecast";
-
-        localeDefault = Locale.getDefault().toString();
-        final NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(localeDefault, STOP_FORECAST);
-
-        for (int i = 0; i < tableRowInboundStops.length; i++) {
-            final int index = i;
-
-            tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showNotifyTimeDialog(INBOUND, index, mapNotifyTimes);
-                }
-            });
-        }
-
-        for (int i = 0; i < tableRowOutboundStops.length; i++) {
-            final int index = i;
-
-            tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showNotifyTimeDialog(OUTBOUND, index, mapNotifyTimes);
-                }
-            });
-        }
-    }
-
-    /**
-     * Show dialog for choosing notification times.
-     * @param direction Tram direction (inbound or outbound).
-     * @param index Index representing which specific tram to notify for.
-     * @param mapNotifyTimes Map of human-readable due times to machine-readable integers.
-     */
-    private void showNotifyTimeDialog(String direction, int index, NotifyTimesMap mapNotifyTimes) {
-        localeDefault = Locale.getDefault().toString();
-        String notifyStopTimeStr = "";
-
-        switch (direction) {
-            case INBOUND:
-                notifyStopTimeStr = textViewInboundStopTimes[index].getText().toString();
-
-                break;
-
-            case OUTBOUND:
-                notifyStopTimeStr = textViewOutboundStopTimes[index].getText().toString();
-
-                break;
-
-            default:
-                // If for some reason the direction doesn't make sense.
-                Log.wtf(LOG_TAG, "Invalid direction: " + direction);
-        }
-
-        if (notifyStopTimeStr.equals(""))
-            return;
-
-        if (notifyStopTimeStr.equalsIgnoreCase("DUE")
-                || notifyStopTimeStr.equalsIgnoreCase("AM")
-                || notifyStopTimeStr.equalsIgnoreCase("1 min")
-                || notifyStopTimeStr.equalsIgnoreCase("1 nóim")
-                || notifyStopTimeStr.equalsIgnoreCase("2 mins")
-                || notifyStopTimeStr.equalsIgnoreCase("2 nóim")) {
-            Toast.makeText(
-                    getActivity(),
-                    getResources().getString(R.string.cannot_schedule_notification),
-                    Toast.LENGTH_LONG
-            ).show();
-
-            return;
-        }
-
-        /*
-         * When the user opens the notification dialog as part of the tutorial, scroll back up to
-         * the top so that the next tutorial is definitely visible. This should only ever run once.
-         */
-        if (!Preferences.loadHasRunOnce(getContext(), TUTORIAL_NOTIFICATIONS)) {
-            ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.red_line_scrollview);
-            scrollView.setScrollY(0);
-        }
-
-        Preferences.saveHasRunOnce(getContext(), TUTORIAL_NOTIFICATIONS, true);
-
-        // We're done with the notifications tutorial. Hide it.
-        displayTutorial(TUTORIAL_NOTIFICATIONS, false);
-
-        // Then, display the final tutorial.
-        displayTutorial(TUTORIAL_FAVOURITES, true);
-
-        Preferences.saveNotifyStopTimeExpected(
-                getActivity(),
-                mapNotifyTimes.get(notifyStopTimeStr)
-        );
-
-        new NotifyTimeDialog(getActivity()).show();
-    }
-
-    /**
-     * Clear the stop forecast displayed in the current tab.
-     */
-    private void clearStopForecast() {
-        /*
-         * Initialise the stop forecast based on which tab is selected.
-         */
-        switch (currentTab) {
-            case RED_LINE:
-                initStopForecast(RED_LINE);
-
-                break;
-
-            case GREEN_LINE:
-                initStopForecast(GREEN_LINE);
-
-                break;
-
-            default:
-                // If for some reason the line doesn't make sense.
-                Log.wtf(LOG_TAG, "Invalid line specified.");
-        }
-
-        /*
-         * Clear the stop forecast.
-         */
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 4; i++) {
-                    textViewInboundStopNames[i].setText("");
-                    textViewInboundStopTimes[i].setText("");
-
-                    textViewOutboundStopNames[i].setText("");
-                    textViewOutboundStopTimes[i].setText("");
-                }
-            }
-        });
-    }
-
-    /**
      * Draw stop forecast to screen.
      * @param sf StopForecast object containing data for requested stop.
      */
@@ -1007,24 +645,11 @@ public class LuasTimesFragment extends Fragment {
         // Instantiate a new EnglishGaeilgeMap.
         EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
 
-        TextView textViewMessageTitle;
-        TextView textViewMessage;
-
         switch (currentTab) {
             case RED_LINE:
                 // If a valid stop forecast exists...
                 if (sf != null) {
                     String message;
-
-                    textViewMessageTitle =
-                            (TextView) rootView.findViewById(
-                                    R.id.red_line_textview_message_title
-                            );
-
-                    textViewMessage =
-                            (TextView) rootView.findViewById(
-                                    R.id.red_line_textview_message
-                            );
 
                     if (localeDefault.startsWith(GAEILGE)) {
                         message = getResources().getString(R.string.message_success);
@@ -1038,8 +663,8 @@ public class LuasTimesFragment extends Fragment {
                          * No error message on server. Change the message title TextView to
                          * green and set a default success message.
                          */
-                        textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                        textViewMessage.setText(message);
+                        redLineStatusCardView.setStatus(message);
+                        redLineStatusCardView.setStatusColor(R.color.message_success);
 
                         /*
                          * Make the Alert menu item invisible.
@@ -1051,8 +676,8 @@ public class LuasTimesFragment extends Fragment {
                          * Change the color of the message title TextView to red and set the
                          * error message from the server.
                          */
-                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
-                        textViewMessage.setText(message);
+                        redLineStatusCardView.setStatus(message);
+                        redLineStatusCardView.setStatusColor(R.color.message_error);
 
                         /*
                          * Make the Alert menu item visible.
@@ -1062,17 +687,12 @@ public class LuasTimesFragment extends Fragment {
                     }
 
                     /*
-                     * Create arrays of TextView objects for each entry in the TableLayout.
-                     */
-                    initStopForecast(RED_LINE);
-
-                    /*
                      * Pull in all trams from the StopForecast, but only display up to three
                      * inbound and outbound trams.
                      */
                     if (sf.getInboundTrams() != null) {
                         if (sf.getInboundTrams().size() == 0) {
-                            textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
+                            redLineInboundStopForecastCardView.setNoTramsForecast();
                         } else {
                             String inboundTram;
 
@@ -1090,7 +710,8 @@ public class LuasTimesFragment extends Fragment {
                                                 .getDestination();
                                     }
 
-                                    textViewInboundStopNames[i].setText(
+                                    redLineInboundStopForecastCardView.setStopNames(
+                                            i,
                                             inboundTram
                                     );
 
@@ -1104,27 +725,28 @@ public class LuasTimesFragment extends Fragment {
                                             dueMinutes = "DUE";
                                         }
 
-                                        textViewInboundStopTimes[i].setText(
+                                        redLineInboundStopForecastCardView.setStopTimes(
+                                                i,
                                                 dueMinutes
                                         );
                                     } else if (localeDefault.startsWith(GAEILGE)) {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " nóim"
+                                        redLineInboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getInboundTrams().get(i).getDueMinutes()
+                                                        + " nóim"
                                         );
-                                    } else if (Integer.parseInt(sf.getInboundTrams()
-                                            .get(i).getDueMinutes()) > 1) {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " mins"
+                                    } else if (Integer.parseInt(
+                                            sf.getInboundTrams().get(i).getDueMinutes()) > 1) {
+                                        redLineInboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getInboundTrams().get(i).getDueMinutes()
+                                                        + " mins"
                                         );
                                     } else {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " min"
+                                        redLineInboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getInboundTrams().get(i).getDueMinutes()
+                                                        + " min"
                                         );
                                     }
                                 }
@@ -1134,7 +756,7 @@ public class LuasTimesFragment extends Fragment {
 
                     if (sf.getOutboundTrams() != null) {
                         if (sf.getOutboundTrams().size() == 0) {
-                            textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
+                            redLineOutboundStopForecastCardView.setNoTramsForecast();
                         } else {
                             String outboundTram;
 
@@ -1151,7 +773,10 @@ public class LuasTimesFragment extends Fragment {
                                                 sf.getOutboundTrams().get(i).getDestination();
                                     }
 
-                                    textViewOutboundStopNames[i].setText(outboundTram);
+                                    redLineOutboundStopForecastCardView.setStopNames(
+                                            i,
+                                            outboundTram
+                                    );
 
                                     if (sf.getOutboundTrams()
                                             .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
@@ -1163,27 +788,28 @@ public class LuasTimesFragment extends Fragment {
                                             dueMinutes = "DUE";
                                         }
 
-                                        textViewOutboundStopTimes[i].setText(
+                                        redLineOutboundStopForecastCardView.setStopTimes(
+                                                i,
                                                 dueMinutes
                                         );
                                     } else if (localeDefault.startsWith(GAEILGE)) {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " nóim"
+                                        redLineOutboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getOutboundTrams().get(i).getDueMinutes()
+                                                        + " nóim"
                                         );
-                                    } else if (Integer.parseInt(sf.getOutboundTrams()
-                                            .get(i).getDueMinutes()) > 1) {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " mins"
+                                    } else if (Integer.parseInt(
+                                            sf.getOutboundTrams().get(i).getDueMinutes()) > 1) {
+                                        redLineOutboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getOutboundTrams().get(i).getDueMinutes()
+                                                        + " mins"
                                         );
                                     } else {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " min"
+                                        redLineOutboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getOutboundTrams().get(i).getDueMinutes()
+                                                        + " min"
                                         );
                                     }
                                 }
@@ -1195,15 +821,10 @@ public class LuasTimesFragment extends Fragment {
                      * If no stop forecast can be retrieved, set a generic error message and
                      * change the color of the message title box red.
                      */
-                    textViewMessageTitle =
-                            (TextView) rootView.findViewById(
-                                    R.id.red_line_textview_message_title
-                            );
-                    textViewMessageTitle.setBackgroundResource(R.color.message_error);
-
-                    textViewMessage =
-                            (TextView) rootView.findViewById(R.id.red_line_textview_message);
-                    textViewMessage.setText(R.string.message_error);
+                    redLineStatusCardView.setStatus(
+                            getResources().getString(R.string.message_error)
+                    );
+                    redLineStatusCardView.setStatusColor(R.color.message_error);
                 }
 
                 break;
@@ -1212,16 +833,6 @@ public class LuasTimesFragment extends Fragment {
                 // If a valid stop forecast exists...
                 if (sf != null) {
                     String message;
-
-                    textViewMessageTitle =
-                            (TextView) rootView.findViewById(
-                                    R.id.green_line_textview_message_title
-                            );
-
-                    textViewMessage =
-                            (TextView) rootView.findViewById(
-                                    R.id.green_line_textview_message
-                            );
 
                     if (localeDefault.startsWith(GAEILGE)) {
                         message = getResources().getString(R.string.message_success);
@@ -1235,8 +846,8 @@ public class LuasTimesFragment extends Fragment {
                          * No error message on server. Change the message title TextView to
                          * green and set a default success message.
                          */
-                        textViewMessageTitle.setBackgroundResource(R.color.message_success);
-                        textViewMessage.setText(message);
+                        greenLineStatusCardView.setStatus(message);
+                        greenLineStatusCardView.setStatusColor(R.color.message_success);
 
                         /*
                          * Make the Alert menu item invisible.
@@ -1248,8 +859,8 @@ public class LuasTimesFragment extends Fragment {
                          * Change the color of the message title TextView to red and set the
                          * error message from the server.
                          */
-                        textViewMessageTitle.setBackgroundResource(R.color.message_error);
-                        textViewMessage.setText(message);
+                        greenLineStatusCardView.setStatus(message);
+                        greenLineStatusCardView.setStatusColor(R.color.message_error);
 
                         /*
                          * Make the Alert menu item visible.
@@ -1259,17 +870,12 @@ public class LuasTimesFragment extends Fragment {
                     }
 
                     /*
-                     * Create arrays of TextView objects for each entry in the TableLayout.
-                     */
-                    initStopForecast(GREEN_LINE);
-
-                    /*
                      * Pull in all trams from the StopForecast, but only display up to three
                      * inbound and outbound trams.
                      */
                     if (sf.getInboundTrams() != null) {
                         if (sf.getInboundTrams().size() == 0) {
-                            textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
+                            greenLineInboundStopForecastCardView.setNoTramsForecast();
                         } else {
                             String inboundTram;
 
@@ -1287,7 +893,10 @@ public class LuasTimesFragment extends Fragment {
                                                         .getDestination();
                                     }
 
-                                    textViewInboundStopNames[i].setText(inboundTram);
+                                    greenLineInboundStopForecastCardView.setStopNames(
+                                            i,
+                                            inboundTram
+                                    );
 
                                     if (sf.getInboundTrams()
                                             .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
@@ -1299,21 +908,28 @@ public class LuasTimesFragment extends Fragment {
                                             dueMinutes = "DUE";
                                         }
 
-                                        textViewInboundStopTimes[i].setText(
+                                        greenLineInboundStopForecastCardView.setStopTimes(
+                                                i,
                                                 dueMinutes
+                                        );
+                                    } else if (localeDefault.startsWith(GAEILGE)) {
+                                        greenLineInboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getInboundTrams().get(i).getDueMinutes()
+                                                        + " nóim"
                                         );
                                     } else if (Integer.parseInt(sf.getInboundTrams()
                                             .get(i).getDueMinutes()) > 1) {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " mins"
+                                        greenLineInboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getInboundTrams().get(i).getDueMinutes()
+                                                        + " mins"
                                         );
                                     } else {
-                                        textViewInboundStopTimes[i].setText(
-                                                sf.getInboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " min"
+                                        greenLineInboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getInboundTrams().get(i).getDueMinutes()
+                                                        + " min"
                                         );
                                     }
                                 }
@@ -1323,7 +939,7 @@ public class LuasTimesFragment extends Fragment {
 
                     if (sf.getOutboundTrams() != null) {
                         if (sf.getOutboundTrams().size() == 0) {
-                            textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
+                            greenLineOutboundStopForecastCardView.setNoTramsForecast();
                         } else {
                             String outboundTram;
 
@@ -1342,7 +958,10 @@ public class LuasTimesFragment extends Fragment {
                                                         .getDestination();
                                     }
 
-                                    textViewOutboundStopNames[i].setText(outboundTram);
+                                    greenLineOutboundStopForecastCardView.setStopNames(
+                                            i,
+                                            outboundTram
+                                    );
 
                                     if (sf.getOutboundTrams()
                                             .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
@@ -1354,21 +973,28 @@ public class LuasTimesFragment extends Fragment {
                                             dueMinutes = "DUE";
                                         }
 
-                                        textViewOutboundStopTimes[i].setText(
+                                        greenLineOutboundStopForecastCardView.setStopTimes(
+                                                i,
                                                 dueMinutes
+                                        );
+                                    } else if (localeDefault.startsWith(GAEILGE)) {
+                                        greenLineOutboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getOutboundTrams().get(i).getDueMinutes()
+                                                        + " nóim"
                                         );
                                     } else if (Integer.parseInt(sf.getOutboundTrams()
                                             .get(i).getDueMinutes()) > 1) {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " mins"
+                                        greenLineOutboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getOutboundTrams().get(i).getDueMinutes()
+                                                        + " mins"
                                         );
                                     } else {
-                                        textViewOutboundStopTimes[i].setText(
-                                                sf.getOutboundTrams()
-                                                        .get(i)
-                                                        .getDueMinutes() + " min"
+                                        greenLineOutboundStopForecastCardView.setStopTimes(
+                                                i,
+                                                sf.getOutboundTrams().get(i).getDueMinutes()
+                                                        + " min"
                                         );
                                     }
                                 }
@@ -1380,15 +1006,10 @@ public class LuasTimesFragment extends Fragment {
                      * If no stop forecast can be retrieved, set a generic error message and
                      * change the color of the message title box red.
                      */
-                    textViewMessageTitle =
-                            (TextView) rootView.findViewById(
-                                    R.id.green_line_textview_message_title
-                            );
-                    textViewMessageTitle.setBackgroundResource(R.color.message_error);
-
-                    textViewMessage =
-                            (TextView) rootView.findViewById(R.id.green_line_textview_message);
-                    textViewMessage.setText(R.string.message_error);
+                    greenLineStatusCardView.setStatus(
+                            getResources().getString(R.string.message_error)
+                    );
+                    greenLineStatusCardView.setStatusColor(R.color.message_error);
                 }
 
                 break;

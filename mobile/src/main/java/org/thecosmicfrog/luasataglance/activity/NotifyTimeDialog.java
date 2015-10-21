@@ -37,7 +37,7 @@ import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import java.util.Locale;
 import java.util.Map;
 
-class NotifyTimeDialog extends Dialog {
+public class NotifyTimeDialog extends Dialog {
 
     private final String LOG_TAG = NotifyTimeDialog.class.getSimpleName();
 
