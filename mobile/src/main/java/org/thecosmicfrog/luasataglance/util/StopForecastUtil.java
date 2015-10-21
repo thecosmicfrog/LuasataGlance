@@ -22,7 +22,6 @@
 package org.thecosmicfrog.luasataglance.util;
 
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -38,6 +37,7 @@ import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
 import org.thecosmicfrog.luasataglance.view.StopForecastCardView;
+import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 import java.util.Locale;
 
@@ -196,65 +196,79 @@ public final class StopForecastUtil {
      * @param shouldDisplay Whether or not tutorial should display.
      */
     public static void displayTutorial(View rootView, String tutorial, boolean shouldDisplay) {
-        CardView cardViewTutorialSwipeRefresh;
-        CardView cardViewTutorialNotifications;
-        CardView cardViewTutorialFavourites;
-
         switch(tutorial) {
             case TUTORIAL_SWIPE_REFRESH:
-                cardViewTutorialSwipeRefresh
-                        = (CardView) rootView.findViewById(
-                        R.id.cardview_tutorial_swipe_refresh
+                TutorialCardView tutorialCardViewSwipeRefresh =
+                        (TutorialCardView) rootView.findViewById(
+                                R.id.tutorialcardview_swipe_refresh
+                        );
+
+                tutorialCardViewSwipeRefresh.setTutorial(
+                        rootView.getContext().getResources().getText(
+                                R.string.swipe_refresh_tutorial
+                        )
                 );
 
                 if (shouldDisplay) {
                     if (!Preferences.loadHasRunOnce(rootView.getContext(), tutorial)) {
                         Log.i(LOG_TAG, "First time launching. Displaying swipe refresh tutorial.");
 
-                        cardViewTutorialSwipeRefresh.setVisibility(View.VISIBLE);
+                        tutorialCardViewSwipeRefresh.setVisibility(View.VISIBLE);
 
                         Preferences.saveHasRunOnce(rootView.getContext(), tutorial, true);
                     }
                 } else {
-                    cardViewTutorialSwipeRefresh.setVisibility(View.GONE);
+                    tutorialCardViewSwipeRefresh.setVisibility(View.GONE);
                 }
 
                 break;
 
             case TUTORIAL_NOTIFICATIONS:
-                cardViewTutorialNotifications
-                        = (CardView) rootView.findViewById(
-                        R.id.cardview_tutorial_notifications
+                TutorialCardView tutorialCardViewNotifications =
+                        (TutorialCardView) rootView.findViewById(
+                                R.id.tutorialcardview_notifications
+                        );
+
+                tutorialCardViewNotifications.setTutorial(
+                        rootView.getContext().getResources().getText(
+                                R.string.notifications_tutorial
+                        )
                 );
 
                 if (shouldDisplay) {
                     if (!Preferences.loadHasRunOnce(rootView.getContext(), tutorial)) {
                         Log.i(LOG_TAG, "First time launching. Displaying notifications tutorial.");
 
-                        cardViewTutorialNotifications.setVisibility(View.VISIBLE);
+                        tutorialCardViewNotifications.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    cardViewTutorialNotifications.setVisibility(View.GONE);
+                    tutorialCardViewNotifications.setVisibility(View.GONE);
                 }
 
                 break;
 
             case TUTORIAL_FAVOURITES:
-                cardViewTutorialFavourites
-                        = (CardView) rootView.findViewById(
-                        R.id.cardview_tutorial_favourites
+                TutorialCardView tutorialCardViewFavourites =
+                        (TutorialCardView) rootView.findViewById(
+                                R.id.tutorialcardview_favourites
+                        );
+
+                tutorialCardViewFavourites.setTutorial(
+                        rootView.getContext().getResources().getText(
+                                R.string.favourites_tutorial
+                        )
                 );
 
                 if (shouldDisplay) {
                     if (!Preferences.loadHasRunOnce(rootView.getContext(), tutorial)) {
                         Log.i(LOG_TAG, "First time launching. Displaying favourites tutorial.");
 
-                        cardViewTutorialFavourites.setVisibility(View.VISIBLE);
+                        tutorialCardViewFavourites.setVisibility(View.VISIBLE);
 
                         Preferences.saveHasRunOnce(rootView.getContext(), tutorial, true);
                     }
                 } else {
-                    cardViewTutorialFavourites.setVisibility(View.GONE);
+                    tutorialCardViewFavourites.setVisibility(View.GONE);
                 }
 
                 break;

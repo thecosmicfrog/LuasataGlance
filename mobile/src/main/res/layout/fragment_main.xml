@@ -87,110 +87,23 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="12dp" />
 
-                                <android.support.v7.widget.CardView
-                                    android:id="@+id/cardview_tutorial_swipe_refresh"
+                                <org.thecosmicfrog.luasataglance.view.TutorialCardView
+                                    android:id="@+id/tutorialcardview_swipe_refresh"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:visibility="gone">
+                                    android:visibility="gone" />
 
-                                    <LinearLayout
-                                        android:orientation="horizontal"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
-
-                                        <TextView
-                                            android:id="@+id/textview_swipe_refresh_information"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="match_parent"
-                                            android:paddingLeft="12dp"
-                                            android:paddingRight="12dp"
-                                            android:paddingTop="12dp"
-                                            android:text="@string/information"
-                                            android:textSize="16sp"
-                                            android:background="@android:color/white" />
-
-                                        <TextView
-                                            android:id="@+id/textview_swipe_refresh_tutorial"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:paddingRight="12dp"
-                                            android:paddingTop="12dp"
-                                            android:paddingBottom="12dp"
-                                            android:text="@string/swipe_refresh_tutorial"
-                                            android:textSize="16sp"
-                                            android:background="@android:color/white" />
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
-
-                                <android.support.v7.widget.CardView
-                                    android:id="@+id/cardview_tutorial_notifications"
+                                <org.thecosmicfrog.luasataglance.view.TutorialCardView
+                                    android:id="@+id/tutorialcardview_notifications"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:visibility="gone">
+                                    android:visibility="gone" />
 
-                                    <LinearLayout
-                                        android:orientation="horizontal"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
-
-                                        <TextView
-                                            android:id="@+id/textview_notifications_information"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="match_parent"
-                                            android:paddingLeft="12dp"
-                                            android:paddingRight="12dp"
-                                            android:paddingTop="12dp"
-                                            android:text="@string/information"
-                                            android:textSize="16sp"
-                                            android:background="@android:color/white" />
-
-                                        <TextView
-                                            android:id="@+id/textview_notifications_tutorial"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:paddingRight="12dp"
-                                            android:paddingTop="12dp"
-                                            android:paddingBottom="12dp"
-                                            android:text="@string/notifications_tutorial"
-                                            android:textSize="16sp"
-                                            android:background="@android:color/white" />
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
-
-                                <android.support.v7.widget.CardView
-                                    android:id="@+id/cardview_tutorial_favourites"
+                                <org.thecosmicfrog.luasataglance.view.TutorialCardView
+                                    android:id="@+id/tutorialcardview_favourites"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:visibility="gone">
-
-                                    <LinearLayout
-                                        android:orientation="horizontal"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
-
-                                        <TextView
-                                            android:id="@+id/textview_favourites_information"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="match_parent"
-                                            android:paddingLeft="12dp"
-                                            android:paddingRight="12dp"
-                                            android:paddingTop="12dp"
-                                            android:text="@string/information"
-                                            android:textSize="16sp"
-                                            android:background="@android:color/white" />
-
-                                        <TextView
-                                            android:id="@+id/textview_favourites_tutorial"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:paddingRight="12dp"
-                                            android:paddingTop="12dp"
-                                            android:paddingBottom="12dp"
-                                            android:text="@string/favourites_tutorial"
-                                            android:textSize="16sp"
-                                            android:background="@android:color/white" />
-                                    </LinearLayout>
-                                </android.support.v7.widget.CardView>
+                                    android:visibility="gone" />
 
                                 <Space
                                     android:layout_width="match_parent"
