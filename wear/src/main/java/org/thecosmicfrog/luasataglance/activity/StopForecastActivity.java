@@ -312,12 +312,13 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    StopForecast sf =
+                    StopForecast stopForecast =
                             (StopForecast) Serializer.deserialize(messageEvent.getData());
 
                     // If a valid stop forecast exists...
-                    if (sf != null) {
-                        if (sf.getMessage().contains(getString(R.string.message_success))) {
+                    if (stopForecast != null) {
+                        if (stopForecast.getMessage().contains(
+                                getString(R.string.message_success))) {
                             /*
                              * No error message on server. Change the message title TextView to
                              * green and set a default success message.
@@ -336,7 +337,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
                             TextView textViewInboundStop1Name =
                                     (TextView) findViewById(R.id.textview_inbound_stop1_name);
-                            textViewInboundStop1Name.setText(sf.getMessage());
+                            textViewInboundStop1Name.setText(stopForecast.getMessage());
                         }
 
                         /*
@@ -351,28 +352,28 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                             textViewOutboundStopTimes[i].setText("");
                         }
 
-                        if (sf.getInboundTrams() != null) {
-                            if (sf.getInboundTrams().size() == 0) {
+                        if (stopForecast.getInboundTrams() != null) {
+                            if (stopForecast.getInboundTrams().size() == 0) {
                                 textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
                             } else {
-                                for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                                for (int i = 0; i < stopForecast.getInboundTrams().size(); i++) {
                                     if (i < 2) {
                                         textViewInboundStopNames[i].setText(
-                                                sf.getInboundTrams()
+                                                stopForecast.getInboundTrams()
                                                         .get(i)
                                                         .getDestination()
                                         );
 
-                                        if (sf.getInboundTrams()
+                                        if (stopForecast.getInboundTrams()
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams()
+                                                    stopForecast.getInboundTrams()
                                                             .get(i)
                                                             .getDueMinutes()
                                             );
                                         } else {
                                             textViewInboundStopTimes[i].setText(
-                                                    sf.getInboundTrams()
+                                                    stopForecast.getInboundTrams()
                                                             .get(i)
                                                             .getDueMinutes()  + "m"
                                             );
@@ -382,28 +383,28 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                             }
                         }
 
-                        if (sf.getOutboundTrams() != null) {
-                            if (sf.getOutboundTrams().size() == 0) {
+                        if (stopForecast.getOutboundTrams() != null) {
+                            if (stopForecast.getOutboundTrams().size() == 0) {
                                 textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
                             } else {
-                                for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                                for (int i = 0; i < stopForecast.getOutboundTrams().size(); i++) {
                                     if (i < 2) {
                                         textViewOutboundStopNames[i].setText(
-                                                sf.getOutboundTrams()
+                                                stopForecast.getOutboundTrams()
                                                         .get(i)
                                                         .getDestination()
                                         );
 
-                                        if (sf.getOutboundTrams()
+                                        if (stopForecast.getOutboundTrams()
                                                 .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                             textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams()
+                                                    stopForecast.getOutboundTrams()
                                                             .get(i)
                                                             .getDueMinutes()
                                             );
                                         } else {
                                             textViewOutboundStopTimes[i].setText(
-                                                    sf.getOutboundTrams()
+                                                    stopForecast.getOutboundTrams()
                                                             .get(i)
                                                             .getDueMinutes()  + "m"
                                             );

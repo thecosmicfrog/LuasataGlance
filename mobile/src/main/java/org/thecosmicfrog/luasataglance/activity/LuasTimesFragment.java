@@ -637,10 +637,10 @@ public class LuasTimesFragment extends Fragment {
 
     /**
      * Draw stop forecast to screen.
-     * @param sf StopForecast object containing data for requested stop.
+     * @param stopForecast StopForecast object containing data for requested stop.
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private void updateStopForecast(StopForecast sf) {
+    private void updateStopForecast(StopForecast stopForecast) {
         final String GAEILGE = "ga";
         final int ONE = 1;
         final int MANY = 2;
@@ -652,13 +652,13 @@ public class LuasTimesFragment extends Fragment {
         switch (currentTab) {
             case RED_LINE:
                 // If a valid stop forecast exists...
-                if (sf != null) {
+                if (stopForecast != null) {
                     String status;
 
                     if (localeDefault.startsWith(GAEILGE)) {
                         status = getResources().getString(R.string.message_success);
                     } else {
-                        status = sf.getMessage();
+                        status = stopForecast.getMessage();
                     }
 
                     if (status.contains(
@@ -694,24 +694,25 @@ public class LuasTimesFragment extends Fragment {
                      * Pull in all trams from the StopForecast, but only display up to three
                      * inbound and outbound trams.
                      */
-                    if (sf.getInboundTrams() != null) {
-                        if (sf.getInboundTrams().size() == 0) {
+                    if (stopForecast.getInboundTrams() != null) {
+                        if (stopForecast.getInboundTrams().size() == 0) {
                             redLineInboundStopForecastCardView.setNoTramsForecast();
                         } else {
                             String inboundTram;
 
-                            for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                                String dueMinutes = sf.getInboundTrams().get(i).getDueMinutes();
+                            for (int i = 0; i < stopForecast.getInboundTrams().size(); i++) {
+                                String dueMinutes =
+                                        stopForecast.getInboundTrams().get(i).getDueMinutes();
 
                                 if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         inboundTram = mapEnglishGaeilge.get(
-                                                sf.getInboundTrams()
+                                                stopForecast.getInboundTrams()
                                                         .get(i)
                                                         .getDestination()
                                         );
                                     } else {
-                                        inboundTram = sf.getInboundTrams()
+                                        inboundTram = stopForecast.getInboundTrams()
                                                 .get(i)
                                                 .getDestination();
                                     }
@@ -747,25 +748,27 @@ public class LuasTimesFragment extends Fragment {
                         }
                     }
 
-                    if (sf.getOutboundTrams() != null) {
-                        if (sf.getOutboundTrams().size() == 0) {
+                    if (stopForecast.getOutboundTrams() != null) {
+                        if (stopForecast.getOutboundTrams().size() == 0) {
                             redLineOutboundStopForecastCardView.setNoTramsForecast();
                         } else {
                             String outboundTram;
 
-                            for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                                String dueMinutes = sf.getOutboundTrams().get(i).getDueMinutes();
+                            for (int i = 0; i < stopForecast.getOutboundTrams().size(); i++) {
+                                String dueMinutes =
+                                        stopForecast.getOutboundTrams().get(i).getDueMinutes();
 
                                 if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         outboundTram = mapEnglishGaeilge.get(
-                                                sf.getOutboundTrams()
+                                                stopForecast.getOutboundTrams()
                                                         .get(i)
                                                         .getDestination()
                                         );
                                     } else {
                                         outboundTram =
-                                                sf.getOutboundTrams().get(i).getDestination();
+                                                stopForecast.getOutboundTrams()
+                                                        .get(i).getDestination();
                                     }
 
                                     if (dueMinutes.equalsIgnoreCase(DUE)) {
@@ -813,13 +816,13 @@ public class LuasTimesFragment extends Fragment {
 
             case GREEN_LINE:
                 // If a valid stop forecast exists...
-                if (sf != null) {
+                if (stopForecast != null) {
                     String status;
 
                     if (localeDefault.startsWith(GAEILGE)) {
                         status = getResources().getString(R.string.message_success);
                     } else {
-                        status = sf.getMessage();
+                        status = stopForecast.getMessage();
                     }
 
                     if (status.contains(
@@ -855,24 +858,25 @@ public class LuasTimesFragment extends Fragment {
                      * Pull in all trams from the StopForecast, but only display up to three
                      * inbound and outbound trams.
                      */
-                    if (sf.getInboundTrams() != null) {
-                        if (sf.getInboundTrams().size() == 0) {
+                    if (stopForecast.getInboundTrams() != null) {
+                        if (stopForecast.getInboundTrams().size() == 0) {
                             greenLineInboundStopForecastCardView.setNoTramsForecast();
                         } else {
                             String inboundTram;
 
-                            for (int i = 0; i < sf.getInboundTrams().size(); i++) {
-                                String dueMinutes = sf.getInboundTrams().get(i).getDueMinutes();
+                            for (int i = 0; i < stopForecast.getInboundTrams().size(); i++) {
+                                String dueMinutes =
+                                        stopForecast.getInboundTrams().get(i).getDueMinutes();
 
                                 if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         inboundTram = mapEnglishGaeilge.get(
-                                                sf.getInboundTrams()
+                                                stopForecast.getInboundTrams()
                                                         .get(i)
                                                         .getDestination());
                                     } else {
                                         inboundTram =
-                                                sf.getInboundTrams()
+                                                stopForecast.getInboundTrams()
                                                         .get(i)
                                                         .getDestination();
                                     }
@@ -908,25 +912,26 @@ public class LuasTimesFragment extends Fragment {
                         }
                     }
 
-                    if (sf.getOutboundTrams() != null) {
-                        if (sf.getOutboundTrams().size() == 0) {
+                    if (stopForecast.getOutboundTrams() != null) {
+                        if (stopForecast.getOutboundTrams().size() == 0) {
                             greenLineOutboundStopForecastCardView.setNoTramsForecast();
                         } else {
                             String outboundTram;
 
-                            for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
-                                String dueMinutes = sf.getOutboundTrams().get(i).getDueMinutes();
+                            for (int i = 0; i < stopForecast.getOutboundTrams().size(); i++) {
+                                String dueMinutes =
+                                        stopForecast.getOutboundTrams().get(i).getDueMinutes();
 
                                 if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         outboundTram = mapEnglishGaeilge.get(
-                                                sf.getOutboundTrams()
+                                                stopForecast.getOutboundTrams()
                                                         .get(i)
                                                         .getDestination()
                                         );
                                     } else {
                                         outboundTram =
-                                                sf.getOutboundTrams()
+                                                stopForecast.getOutboundTrams()
                                                         .get(i)
                                                         .getDestination();
                                     }

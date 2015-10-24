@@ -459,9 +459,9 @@ public class WidgetListenerService extends Service {
     /**
      * Update the current stop forecast with newer information from the server.
      * @param context Context.
-     * @param sf Latest stop forecast from server.
+     * @param stopForecast Latest stop forecast from server.
      */
-    private void updateStopForecast(Context context, RemoteViews views, StopForecast sf) {
+    private void updateStopForecast(Context context, RemoteViews views, StopForecast stopForecast) {
         final String GAEILGE = "ga";
 
         String message;
@@ -469,14 +469,14 @@ public class WidgetListenerService extends Service {
         if (localeDefault.startsWith(GAEILGE)) {
             message = getResources().getString(R.string.message_success);
         } else {
-            message = sf.getMessage();
+            message = stopForecast.getMessage();
         }
 
         mapEnglishGaeilge = new EnglishGaeilgeMap();
 
         // If a valid stop forecast exists...
-        if (sf != null) {
-            if (sf.getMessage() != null) {
+        if (stopForecast != null) {
+            if (stopForecast.getMessage() != null) {
                 if (message.contains(getString(R.string.message_success))) {
                     /*
                      * No error message on server. Change the stop name TextView to green.
@@ -510,8 +510,8 @@ public class WidgetListenerService extends Service {
              * Pull in all trams from the StopForecast, but only display up to two inbound
              * and outbound trams.
              */
-            if (sf.getInboundTrams() != null) {
-                if (sf.getInboundTrams().size() == 0) {
+            if (stopForecast.getInboundTrams() != null) {
+                if (stopForecast.getInboundTrams().size() == 0) {
                     views.setTextViewText(
                             TEXTVIEW_INBOUND_STOP1_NAME,
                             context.getResources().getString(R.string.no_trams_forecast)
@@ -519,19 +519,20 @@ public class WidgetListenerService extends Service {
                 } else {
                     String inboundTram;
 
-                    for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                    for (int i = 0; i < stopForecast.getInboundTrams().size(); i++) {
                         if (i < 2) {
                             if (localeDefault.startsWith(GAEILGE)) {
                                 inboundTram = mapEnglishGaeilge.get(
-                                        sf.getInboundTrams().get(i).getDestination()
+                                        stopForecast.getInboundTrams().get(i).getDestination()
                                 );
                             } else {
-                                inboundTram = sf.getInboundTrams().get(i).getDestination();
+                                inboundTram =
+                                        stopForecast.getInboundTrams().get(i).getDestination();
                             }
 
                             views.setTextViewText(TEXTVIEW_INBOUND_STOP_NAMES[i], inboundTram);
 
-                            if (sf.getInboundTrams()
+                            if (stopForecast.getInboundTrams()
                                     .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                 String dueMinutes;
 
@@ -548,12 +549,12 @@ public class WidgetListenerService extends Service {
                             } else if (localeDefault.startsWith(GAEILGE)) {
                                 views.setTextViewText(
                                         TEXTVIEW_INBOUND_STOP_TIMES[i],
-                                        sf.getInboundTrams().get(i).getDueMinutes() + "n"
+                                        stopForecast.getInboundTrams().get(i).getDueMinutes() + "n"
                                 );
                             } else {
                                 views.setTextViewText(
                                         TEXTVIEW_INBOUND_STOP_TIMES[i],
-                                        sf.getInboundTrams().get(i).getDueMinutes() + "m"
+                                        stopForecast.getInboundTrams().get(i).getDueMinutes() + "m"
                                 );
                             }
                         }
@@ -561,8 +562,8 @@ public class WidgetListenerService extends Service {
                 }
             }
 
-            if (sf.getOutboundTrams() != null) {
-                if (sf.getOutboundTrams().size() == 0) {
+            if (stopForecast.getOutboundTrams() != null) {
+                if (stopForecast.getOutboundTrams().size() == 0) {
                     views.setTextViewText(
                             TEXTVIEW_OUTBOUND_STOP1_NAME,
                             context.getResources().getString(R.string.no_trams_forecast)
@@ -570,19 +571,20 @@ public class WidgetListenerService extends Service {
                 } else {
                     String outboundTram;
 
-                    for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                    for (int i = 0; i < stopForecast.getOutboundTrams().size(); i++) {
                         if (i < 2) {
                             if (localeDefault.startsWith(GAEILGE)) {
                                 outboundTram = mapEnglishGaeilge.get(
-                                        sf.getOutboundTrams().get(i).getDestination()
+                                        stopForecast.getOutboundTrams().get(i).getDestination()
                                 );
                             } else {
-                                outboundTram = sf.getOutboundTrams().get(i).getDestination();
+                                outboundTram =
+                                        stopForecast.getOutboundTrams().get(i).getDestination();
                             }
 
                             views.setTextViewText(TEXTVIEW_OUTBOUND_STOP_NAMES[i], outboundTram);
 
-                            if (sf.getOutboundTrams()
+                            if (stopForecast.getOutboundTrams()
                                     .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
                                 String dueMinutes;
 
@@ -599,12 +601,12 @@ public class WidgetListenerService extends Service {
                             } else if (localeDefault.startsWith(GAEILGE)) {
                                 views.setTextViewText(
                                         TEXTVIEW_OUTBOUND_STOP_TIMES[i],
-                                        sf.getOutboundTrams().get(i).getDueMinutes() + "n"
+                                        stopForecast.getOutboundTrams().get(i).getDueMinutes() + "n"
                                 );
                             } else {
                                 views.setTextViewText(
                                         TEXTVIEW_OUTBOUND_STOP_TIMES[i],
-                                        sf.getOutboundTrams().get(i).getDueMinutes() + "m"
+                                        stopForecast.getOutboundTrams().get(i).getDueMinutes() + "m"
                                 );
                             }
                         }
