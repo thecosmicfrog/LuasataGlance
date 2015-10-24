@@ -642,29 +642,32 @@ public class LuasTimesFragment extends Fragment {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private void updateStopForecast(StopForecast sf) {
         final String GAEILGE = "ga";
+        final int ONE = 1;
+        final int MANY = 2;
+        final String DUE = "DUE";
 
-        // Instantiate a new EnglishGaeilgeMap.
         EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
+        String pluralMins;
 
         switch (currentTab) {
             case RED_LINE:
                 // If a valid stop forecast exists...
                 if (sf != null) {
-                    String message;
+                    String status;
 
                     if (localeDefault.startsWith(GAEILGE)) {
-                        message = getResources().getString(R.string.message_success);
+                        status = getResources().getString(R.string.message_success);
                     } else {
-                        message = sf.getMessage();
+                        status = sf.getMessage();
                     }
 
-                    if (message.contains(
+                    if (status.contains(
                             getResources().getString(R.string.message_success))) {
                         /*
                          * No error message on server. Change the message title TextView to
                          * green and set a default success message.
                          */
-                        redLineStatusCardView.setStatus(message);
+                        redLineStatusCardView.setStatus(status);
                         redLineStatusCardView.setStatusColor(R.color.message_success);
 
                         /*
@@ -677,7 +680,7 @@ public class LuasTimesFragment extends Fragment {
                          * Change the color of the message title TextView to red and set the
                          * error message from the server.
                          */
-                        redLineStatusCardView.setStatus(message);
+                        redLineStatusCardView.setStatus(status);
                         redLineStatusCardView.setStatusColor(R.color.message_error);
 
                         /*
@@ -698,6 +701,8 @@ public class LuasTimesFragment extends Fragment {
                             String inboundTram;
 
                             for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                                String dueMinutes = sf.getInboundTrams().get(i).getDueMinutes();
+
                                 if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         inboundTram = mapEnglishGaeilge.get(
@@ -711,45 +716,32 @@ public class LuasTimesFragment extends Fragment {
                                                 .getDestination();
                                     }
 
+                                    if (dueMinutes.equalsIgnoreCase(DUE)) {
+                                        if (localeDefault.startsWith(GAEILGE))
+                                            dueMinutes = mapEnglishGaeilge.get(dueMinutes);
+
+                                        pluralMins = "";
+                                    } else if (Integer.parseInt(dueMinutes) > 1) {
+                                        pluralMins = getResources().getQuantityString(
+                                                R.plurals.mins,
+                                                MANY
+                                        );
+                                    } else {
+                                        pluralMins = getResources().getQuantityString(
+                                                R.plurals.mins,
+                                                ONE
+                                        );
+                                    }
+
                                     redLineInboundStopForecastCardView.setStopNames(
                                             i,
                                             inboundTram
                                     );
 
-                                    if (sf.getInboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        String dueMinutes;
-
-                                        if (localeDefault.startsWith(GAEILGE)) {
-                                            dueMinutes = mapEnglishGaeilge.get("DUE");
-                                        } else {
-                                            dueMinutes = "DUE";
-                                        }
-
-                                        redLineInboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                dueMinutes
-                                        );
-                                    } else if (localeDefault.startsWith(GAEILGE)) {
-                                        redLineInboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getInboundTrams().get(i).getDueMinutes()
-                                                        + " nóim"
-                                        );
-                                    } else if (Integer.parseInt(
-                                            sf.getInboundTrams().get(i).getDueMinutes()) > 1) {
-                                        redLineInboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getInboundTrams().get(i).getDueMinutes()
-                                                        + " mins"
-                                        );
-                                    } else {
-                                        redLineInboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getInboundTrams().get(i).getDueMinutes()
-                                                        + " min"
-                                        );
-                                    }
+                                    redLineInboundStopForecastCardView.setStopTimes(
+                                            i,
+                                            dueMinutes + pluralMins
+                                    );
                                 }
                             }
                         }
@@ -762,6 +754,8 @@ public class LuasTimesFragment extends Fragment {
                             String outboundTram;
 
                             for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                                String dueMinutes = sf.getOutboundTrams().get(i).getDueMinutes();
+
                                 if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         outboundTram = mapEnglishGaeilge.get(
@@ -774,45 +768,32 @@ public class LuasTimesFragment extends Fragment {
                                                 sf.getOutboundTrams().get(i).getDestination();
                                     }
 
+                                    if (dueMinutes.equalsIgnoreCase(DUE)) {
+                                        if (localeDefault.startsWith(GAEILGE))
+                                            dueMinutes = mapEnglishGaeilge.get(dueMinutes);
+
+                                        pluralMins = "";
+                                    } else if (Integer.parseInt(dueMinutes) > 1) {
+                                        pluralMins = getResources().getQuantityString(
+                                                R.plurals.mins,
+                                                MANY
+                                        );
+                                    } else {
+                                        pluralMins = getResources().getQuantityString(
+                                                R.plurals.mins,
+                                                ONE
+                                        );
+                                    }
+
                                     redLineOutboundStopForecastCardView.setStopNames(
                                             i,
                                             outboundTram
                                     );
 
-                                    if (sf.getOutboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        String dueMinutes;
-
-                                        if (localeDefault.startsWith(GAEILGE)) {
-                                            dueMinutes = mapEnglishGaeilge.get("DUE");
-                                        } else {
-                                            dueMinutes = "DUE";
-                                        }
-
-                                        redLineOutboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                dueMinutes
-                                        );
-                                    } else if (localeDefault.startsWith(GAEILGE)) {
-                                        redLineOutboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getOutboundTrams().get(i).getDueMinutes()
-                                                        + " nóim"
-                                        );
-                                    } else if (Integer.parseInt(
-                                            sf.getOutboundTrams().get(i).getDueMinutes()) > 1) {
-                                        redLineOutboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getOutboundTrams().get(i).getDueMinutes()
-                                                        + " mins"
-                                        );
-                                    } else {
-                                        redLineOutboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getOutboundTrams().get(i).getDueMinutes()
-                                                        + " min"
-                                        );
-                                    }
+                                    redLineOutboundStopForecastCardView.setStopTimes(
+                                            i,
+                                            dueMinutes + pluralMins
+                                    );
                                 }
                             }
                         }
@@ -833,21 +814,21 @@ public class LuasTimesFragment extends Fragment {
             case GREEN_LINE:
                 // If a valid stop forecast exists...
                 if (sf != null) {
-                    String message;
+                    String status;
 
                     if (localeDefault.startsWith(GAEILGE)) {
-                        message = getResources().getString(R.string.message_success);
+                        status = getResources().getString(R.string.message_success);
                     } else {
-                        message = sf.getMessage();
+                        status = sf.getMessage();
                     }
 
-                    if (message.contains(
+                    if (status.contains(
                             getResources().getString(R.string.message_success))) {
                         /*
                          * No error message on server. Change the message title TextView to
                          * green and set a default success message.
                          */
-                        greenLineStatusCardView.setStatus(message);
+                        greenLineStatusCardView.setStatus(status);
                         greenLineStatusCardView.setStatusColor(R.color.message_success);
 
                         /*
@@ -860,7 +841,7 @@ public class LuasTimesFragment extends Fragment {
                          * Change the color of the message title TextView to red and set the
                          * error message from the server.
                          */
-                        greenLineStatusCardView.setStatus(message);
+                        greenLineStatusCardView.setStatus(status);
                         greenLineStatusCardView.setStatusColor(R.color.message_error);
 
                         /*
@@ -881,6 +862,8 @@ public class LuasTimesFragment extends Fragment {
                             String inboundTram;
 
                             for (int i = 0; i < sf.getInboundTrams().size(); i++) {
+                                String dueMinutes = sf.getInboundTrams().get(i).getDueMinutes();
+
                                 if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         inboundTram = mapEnglishGaeilge.get(
@@ -894,45 +877,32 @@ public class LuasTimesFragment extends Fragment {
                                                         .getDestination();
                                     }
 
+                                    if (dueMinutes.equalsIgnoreCase(DUE)) {
+                                        if (localeDefault.startsWith(GAEILGE))
+                                            dueMinutes = mapEnglishGaeilge.get(dueMinutes);
+
+                                        pluralMins = "";
+                                    } else if (Integer.parseInt(dueMinutes) > 1) {
+                                        pluralMins = getResources().getQuantityString(
+                                                R.plurals.mins,
+                                                MANY
+                                        );
+                                    } else {
+                                        pluralMins = getResources().getQuantityString(
+                                                R.plurals.mins,
+                                                ONE
+                                        );
+                                    }
+
                                     greenLineInboundStopForecastCardView.setStopNames(
                                             i,
                                             inboundTram
                                     );
 
-                                    if (sf.getInboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        String dueMinutes;
-
-                                        if (localeDefault.startsWith(GAEILGE)) {
-                                            dueMinutes = mapEnglishGaeilge.get("DUE");
-                                        } else {
-                                            dueMinutes = "DUE";
-                                        }
-
-                                        greenLineInboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                dueMinutes
-                                        );
-                                    } else if (localeDefault.startsWith(GAEILGE)) {
-                                        greenLineInboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getInboundTrams().get(i).getDueMinutes()
-                                                        + " nóim"
-                                        );
-                                    } else if (Integer.parseInt(sf.getInboundTrams()
-                                            .get(i).getDueMinutes()) > 1) {
-                                        greenLineInboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getInboundTrams().get(i).getDueMinutes()
-                                                        + " mins"
-                                        );
-                                    } else {
-                                        greenLineInboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getInboundTrams().get(i).getDueMinutes()
-                                                        + " min"
-                                        );
-                                    }
+                                    greenLineInboundStopForecastCardView.setStopTimes(
+                                            i,
+                                            dueMinutes + pluralMins
+                                    );
                                 }
                             }
                         }
@@ -945,6 +915,8 @@ public class LuasTimesFragment extends Fragment {
                             String outboundTram;
 
                             for (int i = 0; i < sf.getOutboundTrams().size(); i++) {
+                                String dueMinutes = sf.getOutboundTrams().get(i).getDueMinutes();
+
                                 if (i < 4) {
                                     if (localeDefault.startsWith(GAEILGE)) {
                                         outboundTram = mapEnglishGaeilge.get(
@@ -959,45 +931,32 @@ public class LuasTimesFragment extends Fragment {
                                                         .getDestination();
                                     }
 
+                                    if (dueMinutes.equalsIgnoreCase(DUE)) {
+                                        if (localeDefault.startsWith(GAEILGE))
+                                            dueMinutes = mapEnglishGaeilge.get(dueMinutes);
+
+                                        pluralMins = "";
+                                    } else if (Integer.parseInt(dueMinutes) > 1) {
+                                        pluralMins = getResources().getQuantityString(
+                                                R.plurals.mins,
+                                                MANY
+                                        );
+                                    } else {
+                                        pluralMins = getResources().getQuantityString(
+                                                R.plurals.mins,
+                                                ONE
+                                        );
+                                    }
+
                                     greenLineOutboundStopForecastCardView.setStopNames(
                                             i,
                                             outboundTram
                                     );
 
-                                    if (sf.getOutboundTrams()
-                                            .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                        String dueMinutes;
-
-                                        if (localeDefault.startsWith(GAEILGE)) {
-                                            dueMinutes = mapEnglishGaeilge.get("DUE");
-                                        } else {
-                                            dueMinutes = "DUE";
-                                        }
-
-                                        greenLineOutboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                dueMinutes
-                                        );
-                                    } else if (localeDefault.startsWith(GAEILGE)) {
-                                        greenLineOutboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getOutboundTrams().get(i).getDueMinutes()
-                                                        + " nóim"
-                                        );
-                                    } else if (Integer.parseInt(sf.getOutboundTrams()
-                                            .get(i).getDueMinutes()) > 1) {
-                                        greenLineOutboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getOutboundTrams().get(i).getDueMinutes()
-                                                        + " mins"
-                                        );
-                                    } else {
-                                        greenLineOutboundStopForecastCardView.setStopTimes(
-                                                i,
-                                                sf.getOutboundTrams().get(i).getDueMinutes()
-                                                        + " min"
-                                        );
-                                    }
+                                    greenLineOutboundStopForecastCardView.setStopTimes(
+                                            i,
+                                            dueMinutes + pluralMins
+                                    );
                                 }
                             }
                         }

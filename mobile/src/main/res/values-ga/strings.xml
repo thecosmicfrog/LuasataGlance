@@ -38,11 +38,20 @@
     </string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
+    <string name="due">AM</string>
     <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
     <string name="tap_to_load_times"><b>Cliceáil amanna a fháil</b></string>
     <string name="cannot_schedule_notification">Tá an tram sroichte go luath: Ní féidir fógra a
         sceideal.
     </string>
+
+    <plurals name="mins">
+        <item quantity="one">&#160;nóim</item>
+        <item quantity="two">&#160;nóim</item>
+        <item quantity="few">&#160;nóim</item>
+        <item quantity="many">&#160;nóim</item>
+        <item quantity="other">&#160;nóim</item>
+    </plurals>
 
     <!--
         Actions
