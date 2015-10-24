@@ -230,11 +230,11 @@ public class StopForecastWidget extends AppWidgetProvider {
             InputStream buffer = new BufferedInputStream(fileInput);
             ObjectInput objectInput = new ObjectInputStream(buffer);
 
-            //noinspection unchecked
-            List listSelectedStops = (List<CharSequence>) objectInput.readObject();
+            @SuppressWarnings("unchecked")
+            List<CharSequence> listSelectedStops = (List<CharSequence>) objectInput.readObject();
 
             return listSelectedStops;
-        } catch (ClassNotFoundException | FileNotFoundException fnfe) {
+        } catch (ClassNotFoundException | FileNotFoundException e) {
             /*
              * If the favourites file doesn't exist, the user has probably not set up this
              * feature yet. Handle the exception gracefully by displaying a TextView with

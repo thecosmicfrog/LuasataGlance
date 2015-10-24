@@ -180,8 +180,8 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
 
                     file.close();
                 }
-            } catch (IOException ioe) {
-                Log.e(LOG_TAG, Log.getStackTraceString(ioe));
+            } catch (IOException e) {
+                Log.e(LOG_TAG, Log.getStackTraceString(e));
             }
 
             final Context context = StopForecastWidgetConfigureActivity.this;

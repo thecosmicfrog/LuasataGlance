@@ -44,8 +44,8 @@ public final class Serializer {
             baos.close();
 
             return baos.toByteArray();
-        } catch (IOException ioe) {
-            Log.e(LOG_TAG, Log.getStackTraceString(ioe));
+        } catch (IOException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
 
         return null;

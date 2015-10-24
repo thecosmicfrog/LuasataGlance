@@ -436,7 +436,7 @@ public class WidgetListenerService extends Service {
             listSelectedStops = (List<CharSequence>) objectInput.readObject();
 
             return listSelectedStops;
-        } catch (ClassNotFoundException | FileNotFoundException fnfe) {
+        } catch (ClassNotFoundException | FileNotFoundException e) {
             /*
              * If the favourites file doesn't exist, the user has probably not set up this
              * feature yet. Handle the exception gracefully by displaying a TextView with

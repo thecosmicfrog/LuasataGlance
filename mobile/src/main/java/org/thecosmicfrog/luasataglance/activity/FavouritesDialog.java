@@ -178,6 +178,7 @@ public class FavouritesDialog extends DialogFragment {
             /*
              * Read in List of favourite stops from file.
              */
+            @SuppressWarnings("unchecked")
             List<CharSequence> listFavouriteStops = (List<CharSequence>) objectInput.readObject();
 
             /*

@@ -34,8 +34,6 @@ import org.thecosmicfrog.luasataglance.util.Preferences;
 public class SpinnerCardView extends CardView {
 
     private final String LOG_TAG = SpinnerCardView.class.getSimpleName();
-    private final String RED_LINE = "red_line";
-    private final String GREEN_LINE = "green_line";
 
     private String line;
     private ArrayAdapter<CharSequence> adapterStops;
@@ -92,6 +90,9 @@ public class SpinnerCardView extends CardView {
      * @param line Line to initialise.
      */
     public void setLine(String line) {
+        final String RED_LINE = "red_line";
+        final String GREEN_LINE = "green_line";
+
         this.line = line;
         int resArrayStops = 0;
 

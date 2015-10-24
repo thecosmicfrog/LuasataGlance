@@ -129,6 +129,7 @@ public class FavouritesSelectActivity extends AppCompatActivity {
             InputStream buffer = new BufferedInputStream(fileInput);
             ObjectInput objectInput = new ObjectInputStream(buffer);
 
+            @SuppressWarnings("unchecked")
             List<CharSequence> listFavouriteStops = (List<CharSequence>) objectInput.readObject();
 
             /*
@@ -142,10 +143,10 @@ public class FavouritesSelectActivity extends AppCompatActivity {
                             ), true);
                 }
             }
-        } catch (FileNotFoundException fnfe) {
+        } catch (FileNotFoundException e) {
             Log.i(LOG_TAG, "Favourites file doesn't exist.");
-        } catch (ClassNotFoundException | IOException ioe) {
-            Log.e(LOG_TAG, Log.getStackTraceString(ioe));
+        } catch (ClassNotFoundException | IOException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
     }
 
@@ -175,8 +176,8 @@ public class FavouritesSelectActivity extends AppCompatActivity {
 
                     file.close();
                 }
-            } catch (IOException ioe) {
-                Log.e(LOG_TAG, Log.getStackTraceString(ioe));
+            } catch (IOException e) {
+                Log.e(LOG_TAG, Log.getStackTraceString(e));
             }
 
             // We're finished here. Close the activity.

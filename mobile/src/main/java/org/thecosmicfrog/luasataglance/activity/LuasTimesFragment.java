@@ -67,7 +67,6 @@ import retrofit.client.Response;
 public class LuasTimesFragment extends Fragment {
 
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
-    private final String GAEILGE = "ga";
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
     private final String TUTORIAL_SWIPE_REFRESH = "swipe_refresh";
@@ -642,6 +641,8 @@ public class LuasTimesFragment extends Fragment {
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private void updateStopForecast(StopForecast sf) {
+        final String GAEILGE = "ga";
+
         // Instantiate a new EnglishGaeilgeMap.
         EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
 
