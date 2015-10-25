@@ -29,29 +29,34 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Preferences;
+import org.thecosmicfrog.luasataglance.util.Serializer;
 
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class FavouritesActivity extends Activity {
+public class FavouritesActivity extends Activity implements MessageApi.MessageListener {
+
+    private static final long CONNECTION_TIME_OUT_MS = 100;
 
     private final String LOG_TAG = FavouritesActivity.class.getSimpleName();
+    private final String PATH_FAVOURITES_MOBILE = "/favourites_mobile";
+    private final String PATH_FAVOURITES_WEAR = "/favourites_wear";
 
+    private GoogleApiClient googleApiClient;
+    private String nodeId;
+    private WatchViewStub stub;
     private String shape;
-    private TextView textViewFavouritesNoneSelected;
-    private ImageButton imageButtonEdit;
     private ArrayAdapter<CharSequence> adapterFavouriteStops;
     private List<CharSequence> listFavouriteStops;
 
@@ -61,26 +66,53 @@ public class FavouritesActivity extends Activity {
 
         setContentView(R.layout.activity_favourites);
 
+        initGoogleApiClient();
+
+        retrieveDeviceNode();
+
+        // Add the MessageListener.
+        Wearable.MessageApi.addListener(googleApiClient, this);
+
         // Load the screen shape from shared preferences.
         shape = Preferences.loadScreenShape(getApplicationContext());
 
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
 
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                imageButtonEdit =
-                        (ImageButton) stub.findViewById(R.id.imagebutton_edit);
-                imageButtonEdit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(
-                                new Intent(getApplicationContext(), FavouritesSelectActivity.class)
-                        );
-                    }
-                });
+            }
+        });
+    }
 
-                listFavouriteStops = getListFavouriteStops(stub);
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        initGoogleApiClient();
+
+        retrieveDeviceNode();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Wearable.MessageApi.removeListener(googleApiClient, this);
+    }
+
+    @Override
+    public void onMessageReceived(final MessageEvent messageEvent) {
+        if (messageEvent.getPath().equals(PATH_FAVOURITES_WEAR)) {
+            drawFavourites(messageEvent);
+        }
+    }
+
+    private void drawFavourites(final MessageEvent messageEvent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                listFavouriteStops = (List<CharSequence>) Serializer.deserialize(messageEvent.getData());
 
                 /*
                  * ArrayAdapter for favourite stops.
@@ -130,110 +162,67 @@ public class FavouritesActivity extends Activity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-
-        /*
-         * Updates of the ListView must be performed on the UI thread.
-         */
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (listFavouriteStops != null) {
-                    /*
-                     * ArrayAdapter for favourite stops.
-                     * Alter the layout depending on the screen shape.
-                     */
-                    int layoutListViewFavourites;
-
-                    if (shape.equals("round")) {
-                        layoutListViewFavourites = R.layout.round_listview_favourites;
-                    }
-                    else
-                        layoutListViewFavourites = R.layout.rect_listview_favourites;
-
-                    adapterFavouriteStops = new ArrayAdapter<>(
-                            getApplicationContext(),
-                            layoutListViewFavourites,
-                            listFavouriteStops
-                    );
-
-                    listFavouriteStops = getListFavouriteStops(stub);
-
-                    textViewFavouritesNoneSelected
-                            = (TextView) stub.findViewById(R.id.textview_favourites_none_selected);
-                    textViewFavouritesNoneSelected.setVisibility(View.GONE);
-
-                    /*
-                     * Populate ListView with the user's favourite stops, as read from file.
-                     */
-                    ListView listViewFavouriteStops = (ListView) stub.findViewById(
-                            R.id.listview_favourite_stops
-                    );
-
-                    /*
-                     * Update ArrayAdapter with newly-selected favourite stops, then set it to the
-                     * ListView.
-                     */
-                    adapterFavouriteStops.clear();
-                    adapterFavouriteStops.addAll(listFavouriteStops);
-                    adapterFavouriteStops.notifyDataSetChanged();
-                    listViewFavouriteStops.setAdapter(adapterFavouriteStops);
-                }
-
-            }
-        });
+    private void initGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .build();
     }
 
-    private List<CharSequence> getListFavouriteStops(WatchViewStub stub) {
-        final String FILE_FAVOURITES = "favourites";
+    /**
+     * Retrieve device node from connected device.
+     */
+    private void retrieveDeviceNode() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (googleApiClient != null &&
+                        !(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
+                    Log.i(LOG_TAG, "Google API Client connecting...");
 
-        try {
-            /*
-             * Open input objects.
-             */
-            InputStream fileInput = getApplicationContext().openFileInput(FILE_FAVOURITES);
-            InputStream buffer = new BufferedInputStream(fileInput);
-            ObjectInput objectInput = new ObjectInputStream(buffer);
+                    googleApiClient.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
+                }
 
-            /*
-             * Read in List of favourite stops from file.
-             */
-            @SuppressWarnings("unchecked")
-            List<CharSequence> listFavouriteStops = (List<CharSequence>) objectInput.readObject();
+                NodeApi.GetConnectedNodesResult result =
+                        Wearable.NodeApi.getConnectedNodes(googleApiClient).await();
 
-            /*
-             * Close input objects.
-             */
-            objectInput.close();
-            buffer.close();
-            fileInput.close();
+                List<Node> nodes = result.getNodes();
 
-            return listFavouriteStops;
-        } catch (ClassNotFoundException | FileNotFoundException e) {
-            /*
-             * If the favourites file doesn't exist, the user has probably not set up this
-             * feature yet. Handle the exception gracefully by displaying a TextView with
-             * instructions on how to add favourites.
-             */
-            Log.i(LOG_TAG, "Favourites not yet set up.");
+                if (nodes.size() > 0) {
+                    nodeId = nodes.get(0).getId();
 
-            textViewFavouritesNoneSelected
-                    = (TextView) stub.findViewById(R.id.textview_favourites_none_selected);
-            textViewFavouritesNoneSelected.setVisibility(View.VISIBLE);
-        } catch (IOException e) {
-            /*
-             * Something has gone wrong; the file may have been corrupted. Delete the file.
-             */
-            Log.e(LOG_TAG, Log.getStackTraceString(e));
-            Log.i(LOG_TAG, "Deleting favourites file.");
-            getApplicationContext().deleteFile(FILE_FAVOURITES);
+                    requestFavouritesFromDevice();
+
+                }
+            }
+        }).start();
+    }
+
+    private void requestFavouritesFromDevice() {
+        if (nodeId != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (googleApiClient != null &&
+                            !(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
+                        Log.i(LOG_TAG, "Connecting...");
+
+                        googleApiClient.blockingConnect(
+                                CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS
+                        );
+                    }
+
+                    MessageApi.SendMessageResult result =
+                            Wearable.MessageApi.sendMessage(
+                                    googleApiClient,
+                                    nodeId,
+                                    PATH_FAVOURITES_MOBILE,
+                                    Serializer.serialize("")
+                            ).await();
+
+                    if (result.getStatus().isSuccess())
+                        Log.i(LOG_TAG, "Success sent to: " + nodeId);
+                }
+            }).start();
         }
-
-        // Something has gone wrong. Return an empty ArrayList.
-        return new ArrayList<>();
     }
 }

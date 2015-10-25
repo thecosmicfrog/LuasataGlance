@@ -36,6 +36,14 @@ import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +58,8 @@ public class WearMessageListenerService extends WearableListenerService {
 
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private static final String WEAR_PATH = "/wear";
+    private static final String PATH_FAVOURITES_MOBILE = "/favourites_mobile";
+    private static final String PATH_FAVOURITES_WEAR = "/favourites_wear";
 
     private static GoogleApiClient googleApiClient;
     private static StopNameIdMap mapStopNameId;
@@ -82,6 +92,14 @@ public class WearMessageListenerService extends WearableListenerService {
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
+        if (messageEvent.getPath().equals(PATH_FAVOURITES_MOBILE)) {
+            nodeId = messageEvent.getSourceNodeId();
+
+            List<CharSequence> listFavouriteStops = getListFavouriteStops();
+
+            replyFavourites(PATH_FAVOURITES_WEAR, listFavouriteStops);
+        }
+
         if (messageEvent.getPath().equals("/mobile")) {
             nodeId = messageEvent.getSourceNodeId();
 
@@ -130,7 +148,7 @@ public class WearMessageListenerService extends WearableListenerService {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        reply(WEAR_PATH, stopForecast);
+                        replyStopForecast(WEAR_PATH, stopForecast);
                     }
                 }).start();
             }
@@ -206,7 +224,29 @@ public class WearMessageListenerService extends WearableListenerService {
         return stopForecast;
     }
 
-    private void reply(final String path, final StopForecast sf) {
+    private void replyFavourites(final String path, List<CharSequence> listFavouriteStops) {
+        googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .addApi(Wearable.API)
+                .build();
+
+        if (googleApiClient != null &&
+                !(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
+            googleApiClient.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
+        }
+
+        MessageApi.SendMessageResult result =
+                Wearable.MessageApi.sendMessage(
+                        googleApiClient,
+                        nodeId,
+                        path,
+                        Serializer.serialize(listFavouriteStops)
+                ).await();
+
+        if (result.getStatus().isSuccess())
+            Log.i(LOG_TAG, "Return message sent to: " + nodeId);
+    }
+
+    private void replyStopForecast(final String path, final StopForecast sf) {
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addApi(Wearable.API)
                 .build();
@@ -226,5 +266,48 @@ public class WearMessageListenerService extends WearableListenerService {
 
         if (result.getStatus().isSuccess())
             Log.i(LOG_TAG, "Return message sent to: " + nodeId);
+    }
+
+    private List<CharSequence> getListFavouriteStops() {
+        final String FILE_FAVOURITES = "favourites";
+
+        try {
+            /*
+             * Open input objects.
+             */
+            InputStream fileInput = openFileInput(FILE_FAVOURITES);
+            InputStream buffer = new BufferedInputStream(fileInput);
+            ObjectInput objectInput = new ObjectInputStream(buffer);
+
+            /*
+             * Read in List of favourite stops from file.
+             */
+            @SuppressWarnings("unchecked")
+            List<CharSequence> listFavouriteStops = (List<CharSequence>) objectInput.readObject();
+
+            /*
+             * Close input objects.
+             */
+            objectInput.close();
+            buffer.close();
+            fileInput.close();
+
+            return listFavouriteStops;
+        } catch (ClassNotFoundException | FileNotFoundException e) {
+            /*
+             * If the favourites file doesn't exist, the user has probably not set up this
+             * feature yet. Handle the exception gracefully by displaying a TextView with
+             * instructions on how to add favourites.
+             */
+            Log.i(LOG_TAG, "Favourites not yet set up.");
+        } catch (IOException e) {
+            /*
+             * Something has gone wrong; the file may have been corrupted. Delete the file.
+             */
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        // Something has gone wrong. Return an empty ArrayList.
+        return new ArrayList<>();
     }
 }

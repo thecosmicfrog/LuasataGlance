@@ -38,10 +38,6 @@
             android:name=".activity.FavouritesActivity"
             android:label="@string/title_activity_favourites" >
         </activity>
-        <activity
-            android:name=".activity.FavouritesSelectActivity"
-            android:label="@string/title_activity_favourites_select" >
-        </activity>
     </application>
 
 </manifest>
