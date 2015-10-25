@@ -4,6 +4,7 @@
     <color name="button_green_line">#ff59ad40</color>
     <color name="button_red_line_clicked">#ffa12418</color>
     <color name="button_green_line_clicked">#ff326124</color>
+    <color name="button_favourites_clicked">#ff3f2a5f</color>
     <color name="luas_purple">#ff4d3475</color>
     <color name="message_success">#ff006600</color>
     <color name="message_not_running">#fff1A82e</color>

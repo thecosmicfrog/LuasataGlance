@@ -46,7 +46,7 @@ public class RedLineActivity extends Activity {
             public void onLayoutInflated(WatchViewStub stub) {
                 redLineAdapterStop = ArrayAdapter.createFromResource(
                       getApplicationContext(),
-                        R.array.red_line_stops_array,
+                        R.array.red_line_array_stops,
                         R.layout.listview_stops
                 );
 

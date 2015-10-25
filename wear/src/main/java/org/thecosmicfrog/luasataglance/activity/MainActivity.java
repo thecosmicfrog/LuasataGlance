@@ -27,12 +27,15 @@ import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +48,7 @@ public class MainActivity extends Activity {
     private GoogleApiClient googleApiClient;
     private Button buttonRedLine;
     private Button buttonGreenLine;
+    private ImageButton imageButtonFavourites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,25 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+
+        /*
+         * Set up an OnApplyWindowInsetsListener so that we know what shape the wearable's screen
+         * is (round or square). Save this value to shared preferences.
+         */
+        stub.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                stub.onApplyWindowInsets(insets);
+
+                if (insets.isRound())
+                    Preferences.saveScreenShape(getApplicationContext(), "round");
+                else
+                    Preferences.saveScreenShape(getApplicationContext(), "square");
+
+                return insets;
+            }
+        });
+
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
@@ -74,6 +97,17 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(getApplicationContext(), GreenLineActivity.class));
+                    }
+                });
+
+                imageButtonFavourites =
+                        (ImageButton) stub.findViewById(R.id.imagebutton_favourites);
+                imageButtonFavourites.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(
+                                new Intent(getApplicationContext(), FavouritesActivity.class)
+                        );
                     }
                 });
             }

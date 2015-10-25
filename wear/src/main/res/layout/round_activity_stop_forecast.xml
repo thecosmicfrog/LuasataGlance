@@ -66,14 +66,14 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
                 android:elevation="6dp">
 
                 <TableLayout
                     android:id="@+id/tablelayout_inbound"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
                     android:background="@android:color/white"
                     android:stretchColumns="*">
 
@@ -122,14 +122,14 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
                 android:elevation="6dp">
 
                 <TableLayout
                     android:id="@+id/tablelayout_outbound"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
                     android:background="@android:color/white"
                     android:stretchColumns="*">
 

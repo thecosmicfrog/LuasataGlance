@@ -46,7 +46,7 @@ public class GreenLineActivity extends Activity {
             public void onLayoutInflated(WatchViewStub stub) {
                 greenLineAdapterStop = ArrayAdapter.createFromResource(
                         getApplicationContext(),
-                        R.array.green_line_stops_array,
+                        R.array.green_line_array_stops,
                         R.layout.listview_stops
                 );
 

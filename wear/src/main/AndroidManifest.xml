@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.thecosmicfrog.luasataglance"
     android:versionCode="@string/version_code"
-    android:versionName="@string/version_name">
+    android:versionName="@string/version_name" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,10 +12,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault.Light">
+        android:theme="@android:style/Theme.DeviceDefault.Light" >
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,15 +24,24 @@
         </activity>
         <activity
             android:name=".activity.RedLineActivity"
-            android:label="@string/title_activity_red_line">
+            android:label="@string/title_activity_red_line" >
         </activity>
         <activity
             android:name=".activity.GreenLineActivity"
-            android:label="@string/title_activity_green_line">
+            android:label="@string/title_activity_green_line" >
         </activity>
         <activity
             android:name=".activity.StopForecastActivity"
-            android:label="@string/title_activity_stop_forecast">
+            android:label="@string/title_activity_stop_forecast" >
+        </activity>
+        <activity
+            android:name=".activity.FavouritesActivity"
+            android:label="@string/title_activity_favourites" >
+        </activity>
+        <activity
+            android:name=".activity.FavouritesSelectActivity"
+            android:label="@string/title_activity_favourites_select" >
         </activity>
     </application>
+
 </manifest>

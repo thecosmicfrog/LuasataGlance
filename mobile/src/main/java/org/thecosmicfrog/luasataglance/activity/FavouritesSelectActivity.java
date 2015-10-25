@@ -52,7 +52,6 @@ import java.util.List;
 public class FavouritesSelectActivity extends AppCompatActivity {
 
     private final String LOG_TAG = FavouritesSelectActivity.class.getSimpleName();
-
     private final String FILE_FAVOURITES = "favourites";
 
     private ArrayAdapter<String> adapterFavouriteStops;

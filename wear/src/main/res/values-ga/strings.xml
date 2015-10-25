@@ -25,6 +25,14 @@
     <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
 
     <!--
+        Favourites
+    -->
+    <string name="favourites_title">Stadanna fearr leat</string>
+    <string name="favourites_edit">Eagar</string>
+    <string name="favourites_none_selected">Tosóidh muid!\n\nBrú an cnap Athrígh ar bharr an
+        scáileáin chun cuir le do liosta de stadanna Luas ina úsáidtear go minic.</string>
+
+    <!--
         Stop arrays
     -->
     <string-array name="red_line_array_stops">

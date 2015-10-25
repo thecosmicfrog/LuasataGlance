@@ -1,0 +1,187 @@
+/**
+ * @author Aaron Hastings
+ *
+ * Copyright 2015 Aaron Hastings
+ *
+ * This file is part of Luas at a Glance.
+ *
+ * Luas at a Glance is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Luas at a Glance is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.thecosmicfrog.luasataglance.activity;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ListView;
+
+import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Preferences;
+import org.thecosmicfrog.luasataglance.util.Serializer;
+
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class FavouritesSelectActivity extends Activity {
+
+    private final String LOG_TAG = FavouritesSelectActivity.class.getSimpleName();
+    private final String FILE_FAVOURITES = "favourites";
+
+    private String shape;
+    private ImageButton imageButtonDone;
+    private ArrayAdapter<String> adapterFavouriteStops;
+    private SparseBooleanArray checkedItems;
+    private List<CharSequence> selectedItems;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_favourites_select);
+
+        // Load the screen shape from shared preferences.
+        shape = Preferences.loadScreenShape(getApplicationContext());
+
+        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+
+        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+            @Override
+            public void onLayoutInflated(WatchViewStub stub) {
+                imageButtonDone = (ImageButton) stub.findViewById(R.id.imagebutton_done);
+                imageButtonDone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            if (selectedItems != null && !selectedItems.isEmpty()) {
+                                FileOutputStream file = openFileOutput(FILE_FAVOURITES, Context.MODE_PRIVATE);
+                                file.write(Serializer.serialize(selectedItems));
+
+                                file.close();
+                            }
+                        } catch (IOException e) {
+                            Log.e(LOG_TAG, Log.getStackTraceString(e));
+                        }
+
+                        // We're finished here. Close the activity.
+                        finish();
+                    }
+                });
+
+                /*
+                 * Build arrays for Red Line and Green Line stops from resources, then create Lists
+                 * from those arrays. Finally, build a List of all stops by concatenating the first
+                 * two Lists.
+                 */
+                String[] redLineArrayStops = getResources().getStringArray(R.array.red_line_array_stops);
+                String[] greenLineArrayStops = getResources().getStringArray(R.array.green_line_array_stops);
+
+                List<String> redLineListStops = Arrays.asList(redLineArrayStops);
+                List<String> greenLineListStops = Arrays.asList(greenLineArrayStops);
+
+                List<String> listAllStops = new ArrayList<>(redLineListStops);
+                listAllStops.addAll(greenLineListStops);
+
+                /*
+                 * ArrayAdapter for favourite stops.
+                 * Alter the layout depending on the screen shape.
+                 */
+                int layoutCheckedTextViewStops;
+
+                if (shape.equals("round"))
+                    layoutCheckedTextViewStops = R.layout.round_checkedtextview_stops;
+                else
+                    layoutCheckedTextViewStops = R.layout.rect_checkedtextview_stops;
+
+                adapterFavouriteStops = new ArrayAdapter<>(
+                        getApplicationContext(),
+                        layoutCheckedTextViewStops,
+                        listAllStops
+                );
+
+                /*
+                 * Populate ListView with all stops on both lines.
+                 */
+                final ListView listViewStops = (ListView) findViewById(R.id.listview_stops);
+                listViewStops.setAdapter(adapterFavouriteStops);
+                listViewStops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        /*
+                         * When a list item is clicked, it is graphically "checked" and also added
+                         * to a List of all currently selected stops.
+                         */
+                        checkedItems = listViewStops.getCheckedItemPositions();
+                        selectedItems = new ArrayList<>();
+
+                        for (int i = 0; i < checkedItems.size(); i++) {
+                            int pos = checkedItems.keyAt(i);
+
+                            if (checkedItems.valueAt(i)) {
+                                selectedItems.add(adapterFavouriteStops.getItem(pos));
+                            }
+                        }
+                    }
+                });
+
+                /*
+                 * Keep the FavouritesSelectActivity in sync with the favourites file by ensuring
+                 * all favourite stops are already checked in the ListView.
+                 */
+                try {
+                    /*
+                     * Open the "favourites" file and read in the List object of favourite stops
+                     * contained within.
+                     */
+                    InputStream fileInput = openFileInput(FILE_FAVOURITES);
+                    InputStream buffer = new BufferedInputStream(fileInput);
+                    ObjectInput objectInput = new ObjectInputStream(buffer);
+
+                    @SuppressWarnings("unchecked")
+                    List<CharSequence> listFavouriteStops = (List<CharSequence>) objectInput.readObject();
+
+                    /*
+                     * Programmatically check the boxes of already-favourited stops.
+                     */
+                    for (int i = 0; i < listFavouriteStops.size(); i++) {
+                        if (listAllStops.contains(listFavouriteStops.get(i).toString())) {
+                            listViewStops.setItemChecked(
+                                    listAllStops.indexOf(
+                                            listFavouriteStops.get(i).toString()
+                                    ), true);
+                        }
+                    }
+                } catch (FileNotFoundException e) {
+                    Log.i(LOG_TAG, "Favourites file doesn't exist.");
+                } catch (ClassNotFoundException | IOException e) {
+                    Log.e(LOG_TAG, Log.getStackTraceString(e));
+                }
+            }
+        });
+    }
+}

@@ -12,6 +12,8 @@
     -->
     <string name="title_activity_red_line">Red Line</string>
     <string name="title_activity_green_line">Green Line</string>
+    <string name="title_activity_favourites">Favourites</string>
+    <string name="title_activity_favourites_select">Select Favourites</string>
     <string name="title_activity_stop_forecast">Stop Forecast</string>
 
     <!--
@@ -26,9 +28,18 @@
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
 
     <!--
+        Favourites
+    -->
+    <string name="favourites_title">Favourites</string>
+    <string name="favourites_edit">Edit</string>
+    <string name="favourites_none_selected">Let\'s get started!\n\nTap the purple <b>Edit</b> button
+        at the top of this screen to start adding your most frequently-used Luas stops.
+    </string>
+
+    <!--
         Stop arrays
     -->
-    <string-array name="red_line_stops_array">
+    <string-array name="red_line_array_stops">
         <item>The Point</item>
         <item>Spencer Dock</item>
         <item>Mayor Square - NCI</item>
@@ -63,7 +74,7 @@
         <item>Saggart</item>
     </string-array>
 
-    <string-array name="green_line_stops_array">
+    <string-array name="green_line_array_stops">
         <item>St. Stephen\'s Green</item>
         <item>Harcourt</item>
         <item>Charlemont</item>
