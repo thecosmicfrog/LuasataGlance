@@ -15,6 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="25dp"
-        android:paddingBottom="25dp">
-    </ListView>
+        android:paddingBottom="25dp"
+        android:clipToPadding="false" />
 </LinearLayout>
