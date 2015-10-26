@@ -55,11 +55,11 @@ import retrofit.client.Response;
 public class WearMessageListenerService extends WearableListenerService {
 
     private final String LOG_TAG = WearMessageListenerService.class.getSimpleName();
-
-    private static final long CONNECTION_TIME_OUT_MS = 100;
-    private static final String WEAR_PATH = "/wear";
-    private static final String PATH_FAVOURITES_MOBILE = "/favourites_mobile";
-    private static final String PATH_FAVOURITES_WEAR = "/favourites_wear";
+    private final long CONNECTION_TIME_OUT_MS = 100;
+    private final String PATH_FAVOURITES_MOBILE = "/favourites_mobile";
+    private final String PATH_FAVOURITES_WEAR = "/favourites_wear";
+    private final String PATH_STOPFORECAST_MOBILE = "/stopforecast_mobile";
+    private final String PATH_STOPFORECAST_WEAR = "/stopforecast_wear";
 
     private static GoogleApiClient googleApiClient;
     private static StopNameIdMap mapStopNameId;
@@ -100,7 +100,7 @@ public class WearMessageListenerService extends WearableListenerService {
             replyFavourites(PATH_FAVOURITES_WEAR, listFavouriteStops);
         }
 
-        if (messageEvent.getPath().equals("/mobile")) {
+        if (messageEvent.getPath().equals(PATH_STOPFORECAST_MOBILE)) {
             nodeId = messageEvent.getSourceNodeId();
 
             String stopName = Serializer.deserialize(messageEvent.getData()).toString();
@@ -148,7 +148,7 @@ public class WearMessageListenerService extends WearableListenerService {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        replyStopForecast(WEAR_PATH, stopForecast);
+                        replyStopForecast(PATH_STOPFORECAST_WEAR, stopForecast);
                     }
                 }).start();
             }
