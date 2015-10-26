@@ -179,6 +179,123 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
         }
     }
 
+    @Override
+    public void onMessageReceived(final MessageEvent messageEvent) {
+        if (messageEvent.getPath().equals(PATH_STOPFORECAST_WEAR)) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    StopForecast stopForecast =
+                            (StopForecast) Serializer.deserialize(messageEvent.getData());
+
+                    // If a valid stop forecast exists...
+                    if (stopForecast != null) {
+                        if (stopForecast.getMessage().contains(
+                                getString(R.string.message_success))) {
+                            /*
+                             * No error message on server. Change the message title TextView to
+                             * green and set a default success message.
+                             */
+                            TextView textViewStopName =
+                                    (TextView) findViewById(R.id.textview_stop_name);
+                                textViewStopName.setBackgroundResource(R.color.message_success);
+                        } else {
+                            /*
+                             * To make best use of the wearable's screen real estate, re-use one of
+                             * the inbound stop TextViews for the status message.
+                             */
+                            TextView textViewStopName =
+                                    (TextView) findViewById(R.id.textview_stop_name);
+                            textViewStopName.setBackgroundResource(R.color.message_error);
+
+                            TextView textViewInboundStop1Name =
+                                    (TextView) findViewById(R.id.textview_inbound_stop1_name);
+                            textViewInboundStop1Name.setText(stopForecast.getMessage());
+                        }
+
+                        /*
+                         * Pull in all trams from the StopForecast, but only display up to two
+                         * inbound and outbound trams. Start by clearing the TextViews.
+                         */
+                        for (int i = 0; i < 2; i++) {
+                            textViewInboundStopNames[i].setText("");
+                            textViewInboundStopTimes[i].setText("");
+
+                            textViewOutboundStopNames[i].setText("");
+                            textViewOutboundStopTimes[i].setText("");
+                        }
+
+                        if (stopForecast.getInboundTrams() != null) {
+                            if (stopForecast.getInboundTrams().size() == 0) {
+                                textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
+                            } else {
+                                for (int i = 0; i < stopForecast.getInboundTrams().size(); i++) {
+                                    if (i < 2) {
+                                        textViewInboundStopNames[i].setText(
+                                                stopForecast.getInboundTrams()
+                                                        .get(i)
+                                                        .getDestination()
+                                        );
+
+                                        if (stopForecast.getInboundTrams()
+                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                            textViewInboundStopTimes[i].setText(
+                                                    stopForecast.getInboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes()
+                                            );
+                                        } else {
+                                            textViewInboundStopTimes[i].setText(
+                                                    stopForecast.getInboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes()  + "m"
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (stopForecast.getOutboundTrams() != null) {
+                            if (stopForecast.getOutboundTrams().size() == 0) {
+                                textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
+                            } else {
+                                for (int i = 0; i < stopForecast.getOutboundTrams().size(); i++) {
+                                    if (i < 2) {
+                                        textViewOutboundStopNames[i].setText(
+                                                stopForecast.getOutboundTrams()
+                                                        .get(i)
+                                                        .getDestination()
+                                        );
+
+                                        if (stopForecast.getOutboundTrams()
+                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    stopForecast.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes()
+                                            );
+                                        } else {
+                                            textViewOutboundStopTimes[i].setText(
+                                                    stopForecast.getOutboundTrams()
+                                                            .get(i)
+                                                            .getDueMinutes()  + "m"
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Stop the refresh animations.
+                    swipeRefreshLayout.setRefreshing(false);
+                    setIsLoading(false);
+                }
+            });
+        }
+    }
+
     /**
      * Clear the stop forecast displayed in the current tab.
      */
@@ -304,122 +421,5 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                     nodeId = nodes.get(0).getId();
             }
         }).start();
-    }
-
-    @Override
-    public void onMessageReceived(final MessageEvent messageEvent) {
-        if (messageEvent.getPath().equals(PATH_STOPFORECAST_WEAR)) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    StopForecast stopForecast =
-                            (StopForecast) Serializer.deserialize(messageEvent.getData());
-
-                    // If a valid stop forecast exists...
-                    if (stopForecast != null) {
-                        if (stopForecast.getMessage().contains(
-                                getString(R.string.message_success))) {
-                            /*
-                             * No error message on server. Change the message title TextView to
-                             * green and set a default success message.
-                             */
-                            TextView textViewStopName =
-                                    (TextView) findViewById(R.id.textview_stop_name);
-                                textViewStopName.setBackgroundResource(R.color.message_success);
-                        } else {
-                            /*
-                             * To make best use of the wearable's screen real estate, re-use one of
-                             * the inbound stop TextViews for the status message.
-                             */
-                            TextView textViewStopName =
-                                    (TextView) findViewById(R.id.textview_stop_name);
-                            textViewStopName.setBackgroundResource(R.color.message_error);
-
-                            TextView textViewInboundStop1Name =
-                                    (TextView) findViewById(R.id.textview_inbound_stop1_name);
-                            textViewInboundStop1Name.setText(stopForecast.getMessage());
-                        }
-
-                        /*
-                         * Pull in all trams from the StopForecast, but only display up to two
-                         * inbound and outbound trams. Start by clearing the TextViews.
-                         */
-                        for (int i = 0; i < 2; i++) {
-                            textViewInboundStopNames[i].setText("");
-                            textViewInboundStopTimes[i].setText("");
-
-                            textViewOutboundStopNames[i].setText("");
-                            textViewOutboundStopTimes[i].setText("");
-                        }
-
-                        if (stopForecast.getInboundTrams() != null) {
-                            if (stopForecast.getInboundTrams().size() == 0) {
-                                textViewInboundStopNames[0].setText(R.string.no_trams_forecast);
-                            } else {
-                                for (int i = 0; i < stopForecast.getInboundTrams().size(); i++) {
-                                    if (i < 2) {
-                                        textViewInboundStopNames[i].setText(
-                                                stopForecast.getInboundTrams()
-                                                        .get(i)
-                                                        .getDestination()
-                                        );
-
-                                        if (stopForecast.getInboundTrams()
-                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                            textViewInboundStopTimes[i].setText(
-                                                    stopForecast.getInboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes()
-                                            );
-                                        } else {
-                                            textViewInboundStopTimes[i].setText(
-                                                    stopForecast.getInboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes()  + "m"
-                                            );
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (stopForecast.getOutboundTrams() != null) {
-                            if (stopForecast.getOutboundTrams().size() == 0) {
-                                textViewOutboundStopNames[0].setText(R.string.no_trams_forecast);
-                            } else {
-                                for (int i = 0; i < stopForecast.getOutboundTrams().size(); i++) {
-                                    if (i < 2) {
-                                        textViewOutboundStopNames[i].setText(
-                                                stopForecast.getOutboundTrams()
-                                                        .get(i)
-                                                        .getDestination()
-                                        );
-
-                                        if (stopForecast.getOutboundTrams()
-                                                .get(i).getDueMinutes().equalsIgnoreCase("DUE")) {
-                                            textViewOutboundStopTimes[i].setText(
-                                                    stopForecast.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes()
-                                            );
-                                        } else {
-                                            textViewOutboundStopTimes[i].setText(
-                                                    stopForecast.getOutboundTrams()
-                                                            .get(i)
-                                                            .getDueMinutes()  + "m"
-                                            );
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Stop the refresh animations.
-                    swipeRefreshLayout.setRefreshing(false);
-                    setIsLoading(false);
-                }
-            });
-        }
     }
 }
