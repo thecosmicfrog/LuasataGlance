@@ -55,7 +55,7 @@ import retrofit.client.Response;
 public class WearMessageListenerService extends WearableListenerService {
 
     private final String LOG_TAG = WearMessageListenerService.class.getSimpleName();
-    private final long CONNECTION_TIME_OUT_MS = 100;
+    private final long CONNECTION_TIME_OUT_MS = 5000;
     private final String PATH_FAVOURITES_MOBILE = "/favourites_mobile";
     private final String PATH_FAVOURITES_WEAR = "/favourites_wear";
     private final String PATH_STOPFORECAST_MOBILE = "/stopforecast_mobile";
