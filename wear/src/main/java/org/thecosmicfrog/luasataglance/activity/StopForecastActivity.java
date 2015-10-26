@@ -49,8 +49,8 @@ import java.util.concurrent.TimeUnit;
 public class StopForecastActivity extends Activity implements MessageApi.MessageListener {
 
     private final String LOG_TAG = StopForecastActivity.class.getSimpleName();
-    private final String PATH_STOPFORECAST_MOBILE = "/stopforecast_mobile";
-    private final String PATH_STOPFORECAST_WEAR = "/stopforecast_wear";
+    private final String PATH_STOPFORECAST_FETCH_MOBILE = "/stopforecast_fetch_mobile";
+    private final String PATH_STOPFORECAST_FETCH_WEAR = "/stopforecast_fetch_wear";
     private final long CONNECTION_TIME_OUT_MS = 5000;
 
 
@@ -181,7 +181,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
     @Override
     public void onMessageReceived(final MessageEvent messageEvent) {
-        if (messageEvent.getPath().equals(PATH_STOPFORECAST_WEAR)) {
+        if (messageEvent.getPath().equals(PATH_STOPFORECAST_FETCH_WEAR)) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -378,7 +378,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                             Wearable.MessageApi.sendMessage(
                                     googleApiClient,
                                     nodeId,
-                                    PATH_STOPFORECAST_MOBILE,
+                                    PATH_STOPFORECAST_FETCH_MOBILE,
                                     Serializer.serialize(stopName)
                             ).await();
 

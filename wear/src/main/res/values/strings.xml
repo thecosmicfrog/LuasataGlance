@@ -32,9 +32,9 @@
     -->
     <string name="favourites_title">Favourites</string>
     <string name="favourites_edit">Edit</string>
-    <string name="favourites_none_selected">Let\'s get started!\n\nTap the purple <b>Edit</b> button
-        at the top of this screen to start adding your most frequently-used Luas stops.
-    </string>
+    <string name="favourites_none_selected">No <b>Favourites</b> selected. Tap the button below to
+        open the mobile app and set up your favourite stops.</string>
+    <string name="favourites_opening_mobile">Opening mobile app</string>
 
     <!--
         Stop arrays

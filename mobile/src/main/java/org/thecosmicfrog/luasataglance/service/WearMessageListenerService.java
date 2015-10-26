@@ -21,6 +21,7 @@
 
 package org.thecosmicfrog.luasataglance.service;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,6 +30,7 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import org.thecosmicfrog.luasataglance.activity.MainActivity;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
@@ -56,10 +58,11 @@ public class WearMessageListenerService extends WearableListenerService {
 
     private final String LOG_TAG = WearMessageListenerService.class.getSimpleName();
     private final long CONNECTION_TIME_OUT_MS = 5000;
-    private final String PATH_FAVOURITES_MOBILE = "/favourites_mobile";
-    private final String PATH_FAVOURITES_WEAR = "/favourites_wear";
-    private final String PATH_STOPFORECAST_MOBILE = "/stopforecast_mobile";
-    private final String PATH_STOPFORECAST_WEAR = "/stopforecast_wear";
+    private final String PATH_FAVOURITES_OPEN_APP_MOBILE = "/favourites_open_app_mobile";
+    private final String PATH_FAVOURITES_FETCH_MOBILE = "/favourites_fetch_mobile";
+    private final String PATH_FAVOURITES_FETCH_WEAR = "/favourites_fetch_wear";
+    private final String PATH_STOPFORECAST_FETCH_MOBILE = "/stopforecast_fetch_mobile";
+    private final String PATH_STOPFORECAST_FETCH_WEAR = "/stopforecast_fetch_wear";
 
     private static GoogleApiClient googleApiClient;
     private static StopNameIdMap mapStopNameId;
@@ -92,15 +95,26 @@ public class WearMessageListenerService extends WearableListenerService {
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        if (messageEvent.getPath().equals(PATH_FAVOURITES_MOBILE)) {
+        if (messageEvent.getPath().equals(PATH_FAVOURITES_FETCH_MOBILE)) {
             nodeId = messageEvent.getSourceNodeId();
 
             List<CharSequence> listFavouriteStops = getListFavouriteStops();
 
-            replyFavourites(PATH_FAVOURITES_WEAR, listFavouriteStops);
+            replyFavourites(PATH_FAVOURITES_FETCH_WEAR, listFavouriteStops);
         }
 
-        if (messageEvent.getPath().equals(PATH_STOPFORECAST_MOBILE)) {
+        if (messageEvent.getPath().equals(PATH_FAVOURITES_OPEN_APP_MOBILE)) {
+            nodeId = messageEvent.getSourceNodeId();
+
+            startActivity(
+                    new Intent(
+                            this,
+                            MainActivity.class
+                    ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            );
+        }
+
+        if (messageEvent.getPath().equals(PATH_STOPFORECAST_FETCH_MOBILE)) {
             nodeId = messageEvent.getSourceNodeId();
 
             String stopName = Serializer.deserialize(messageEvent.getData()).toString();
@@ -148,7 +162,7 @@ public class WearMessageListenerService extends WearableListenerService {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        replyStopForecast(PATH_STOPFORECAST_WEAR, stopForecast);
+                        replyStopForecast(PATH_STOPFORECAST_FETCH_WEAR, stopForecast);
                     }
                 }).start();
             }

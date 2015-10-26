@@ -29,8 +29,9 @@
     -->
     <string name="favourites_title">Stadanna fearr leat</string>
     <string name="favourites_edit">Eagar</string>
-    <string name="favourites_none_selected">Tosóidh muid!\n\nBrú an cnap Athrígh ar bharr an
-        scáileáin chun cuir le do liosta de stadanna Luas ina úsáidtear go minic.</string>
+    <string name="favourites_none_selected">Níl aon <b>Rogha</b> déanta agat. Oscail
+        <b>Luas at a Glance</b> ar d\'fhón, agus brú an \u2605 chun tosú.</string>
+    <string name="favourites_opening_mobile">Tá app fón ag oscailt</string>
 
     <!--
         Stop arrays

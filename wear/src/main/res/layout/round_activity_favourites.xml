@@ -15,12 +15,45 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <ListView
-        android:id="@+id/listview_favourite_stops"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:paddingTop="25dp"
-        android:paddingBottom="25dp"
-        android:clipToPadding="false" />
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:id="@+id/linearlayout_favourites_none_selected"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textview_favourites_none_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="@string/favourites_none_selected"
+                android:background="@android:color/white" />
+
+            <ImageButton
+                android:id="@+id/imagebutton_favourites_none_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/ic_launcher"
+                android:contentDescription="@string/app_name" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/listview_favourite_stops"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
+            android:clipToPadding="false" />
+    </RelativeLayout>
 </RelativeLayout>
