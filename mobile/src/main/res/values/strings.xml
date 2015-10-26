@@ -42,18 +42,12 @@
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
     <string name="due">DUE</string>
+    <string name="min">min</string>
+    <string name="mins">mins</string>
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
     <string name="tap_to_load_times"><b>Tap to load times</b></string>
     <string name="cannot_schedule_notification">Tram is due shortly. Cannot schedule notification.
     </string>
-
-    <plurals name="mins">
-        <item quantity="one">&#160;min</item>
-        <item quantity="two">&#160;mins</item>
-        <item quantity="few">&#160;mins</item>
-        <item quantity="many">&#160;mins</item>
-        <item quantity="other">&#160;mins</item>
-    </plurals>
 
     <!--
         Actions

@@ -647,7 +647,9 @@ public class LuasTimesFragment extends Fragment {
         final String DUE = "DUE";
 
         EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
-        String pluralMins;
+        String min = " " + getResources().getString(R.string.min);
+        String mins = " " + getResources().getString(R.string.mins);
+        String minOrMins;
 
         switch (currentTab) {
             case RED_LINE:
@@ -721,17 +723,11 @@ public class LuasTimesFragment extends Fragment {
                                         if (localeDefault.startsWith(GAEILGE))
                                             dueMinutes = mapEnglishGaeilge.get(dueMinutes);
 
-                                        pluralMins = "";
+                                        minOrMins = "";
                                     } else if (Integer.parseInt(dueMinutes) > 1) {
-                                        pluralMins = getResources().getQuantityString(
-                                                R.plurals.mins,
-                                                MANY
-                                        );
+                                        minOrMins = mins;
                                     } else {
-                                        pluralMins = getResources().getQuantityString(
-                                                R.plurals.mins,
-                                                ONE
-                                        );
+                                        minOrMins = min;
                                     }
 
                                     redLineInboundStopForecastCardView.setStopNames(
@@ -741,7 +737,7 @@ public class LuasTimesFragment extends Fragment {
 
                                     redLineInboundStopForecastCardView.setStopTimes(
                                             i,
-                                            dueMinutes + pluralMins
+                                            dueMinutes + minOrMins
                                     );
                                 }
                             }
@@ -775,17 +771,11 @@ public class LuasTimesFragment extends Fragment {
                                         if (localeDefault.startsWith(GAEILGE))
                                             dueMinutes = mapEnglishGaeilge.get(dueMinutes);
 
-                                        pluralMins = "";
+                                        minOrMins = "";
                                     } else if (Integer.parseInt(dueMinutes) > 1) {
-                                        pluralMins = getResources().getQuantityString(
-                                                R.plurals.mins,
-                                                MANY
-                                        );
+                                        minOrMins = mins;
                                     } else {
-                                        pluralMins = getResources().getQuantityString(
-                                                R.plurals.mins,
-                                                ONE
-                                        );
+                                        minOrMins = min;
                                     }
 
                                     redLineOutboundStopForecastCardView.setStopNames(
@@ -795,7 +785,7 @@ public class LuasTimesFragment extends Fragment {
 
                                     redLineOutboundStopForecastCardView.setStopTimes(
                                             i,
-                                            dueMinutes + pluralMins
+                                            dueMinutes + minOrMins
                                     );
                                 }
                             }
@@ -885,17 +875,11 @@ public class LuasTimesFragment extends Fragment {
                                         if (localeDefault.startsWith(GAEILGE))
                                             dueMinutes = mapEnglishGaeilge.get(dueMinutes);
 
-                                        pluralMins = "";
+                                        minOrMins = "";
                                     } else if (Integer.parseInt(dueMinutes) > 1) {
-                                        pluralMins = getResources().getQuantityString(
-                                                R.plurals.mins,
-                                                MANY
-                                        );
+                                        minOrMins = mins;
                                     } else {
-                                        pluralMins = getResources().getQuantityString(
-                                                R.plurals.mins,
-                                                ONE
-                                        );
+                                        minOrMins = min;
                                     }
 
                                     greenLineInboundStopForecastCardView.setStopNames(
@@ -905,7 +889,7 @@ public class LuasTimesFragment extends Fragment {
 
                                     greenLineInboundStopForecastCardView.setStopTimes(
                                             i,
-                                            dueMinutes + pluralMins
+                                            dueMinutes + minOrMins
                                     );
                                 }
                             }
@@ -940,17 +924,11 @@ public class LuasTimesFragment extends Fragment {
                                         if (localeDefault.startsWith(GAEILGE))
                                             dueMinutes = mapEnglishGaeilge.get(dueMinutes);
 
-                                        pluralMins = "";
+                                        minOrMins = "";
                                     } else if (Integer.parseInt(dueMinutes) > 1) {
-                                        pluralMins = getResources().getQuantityString(
-                                                R.plurals.mins,
-                                                MANY
-                                        );
+                                        minOrMins = mins;
                                     } else {
-                                        pluralMins = getResources().getQuantityString(
-                                                R.plurals.mins,
-                                                ONE
-                                        );
+                                        minOrMins = min;
                                     }
 
                                     greenLineOutboundStopForecastCardView.setStopNames(
@@ -960,7 +938,7 @@ public class LuasTimesFragment extends Fragment {
 
                                     greenLineOutboundStopForecastCardView.setStopTimes(
                                             i,
-                                            dueMinutes + pluralMins
+                                            dueMinutes + minOrMins
                                     );
                                 }
                             }
