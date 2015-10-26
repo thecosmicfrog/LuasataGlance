@@ -82,6 +82,7 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
         shape = Preferences.loadScreenShape(getApplicationContext());
 
         stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub watchViewStub) {
@@ -246,7 +247,7 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
                     if (request.equals(REQUEST_FETCH_FAVOURITES))
                         requestFavouritesFromHost();
                     else if (request.equals(REQUEST_OPEN_MOBILE_APP))
-                        openFavouritesActivityOnHost();
+                        openMobileApp();
                 }
             }
         }).start();
@@ -288,7 +289,10 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
         }
     }
 
-    private void openFavouritesActivityOnHost() {
+    /**
+     * Request Luas at a Glance mobile app to open itself.
+     */
+    private void openMobileApp() {
         if (nodeId != null) {
             new Thread(new Runnable() {
                 @Override

@@ -24,8 +24,10 @@ package org.thecosmicfrog.luasataglance.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -132,6 +134,20 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
             }
         });
 
+        /*
+         * Use a Floating Action Button (FAB) to save the selected widget stops.
+         */
+        FloatingActionButton fabWidgetSave =
+                (FloatingActionButton) findViewById(R.id.fab_widget_save);
+        fabWidgetSave.setBackgroundTintList(
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.message_success))
+        );
+        fabWidgetSave.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                saveWidgetFavourites();
+            }
+        });
+
         // Find the widget id from the intent.
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -147,58 +163,36 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // Re-use the menu from the FavouritesSelectActivity.
-        getMenuInflater().inflate(R.menu.menu_favourites_select, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private void saveWidgetFavourites() {
         final String FILE_WIDGET_SELECTED_STOPS = "widget_selected_stops";
 
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        try {
+            if (selectedItems != null && !selectedItems.isEmpty()) {
+                FileOutputStream file = openFileOutput(
+                        FILE_WIDGET_SELECTED_STOPS,
+                        Context.MODE_PRIVATE
+                );
 
-        /*
-         * When the Save button is clicked, serialize the List of selected stops and write the
-         * resulting object to a file.
-         */
-        if (id == R.id.action_favourites_save) {
-            try {
-                if (selectedItems != null && !selectedItems.isEmpty()) {
-                    FileOutputStream file = openFileOutput(
-                            FILE_WIDGET_SELECTED_STOPS,
-                            Context.MODE_PRIVATE
-                    );
+                file.write(Serializer.serialize(selectedItems));
 
-                    file.write(Serializer.serialize(selectedItems));
-
-                    file.close();
-                }
-            } catch (IOException e) {
-                Log.e(LOG_TAG, Log.getStackTraceString(e));
+                file.close();
             }
-
-            final Context context = StopForecastWidgetConfigureActivity.this;
-
-            // It is the responsibility of the configuration activity to update the app widget.
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            StopForecastWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
-
-            // Make sure we pass back the original appWidgetId.
-            Intent resultValue = new Intent();
-            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-            setResult(RESULT_OK, resultValue);
-
-            // We're finished here. Close the activity.
-            finish();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
 
-        return super.onOptionsItemSelected(item);
+        final Context context = StopForecastWidgetConfigureActivity.this;
+
+        // It is the responsibility of the configuration activity to update the app widget.
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        StopForecastWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
+
+        // Make sure we pass back the original appWidgetId.
+        Intent resultValue = new Intent();
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        setResult(RESULT_OK, resultValue);
+
+        // We're finished here. Close the activity.
+        finish();
     }
 }

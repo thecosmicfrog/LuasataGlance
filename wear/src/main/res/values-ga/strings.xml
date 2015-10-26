@@ -29,9 +29,9 @@
     -->
     <string name="favourites_title">Stadanna fearr leat</string>
     <string name="favourites_edit">Eagar</string>
-    <string name="favourites_none_selected">Níl aon <b>Rogha</b> déanta agat. Oscail
-        <b>Luas at a Glance</b> ar d\'fhón, agus brú an \u2605 chun tosú.</string>
-    <string name="favourites_opening_mobile">Tá app fón ag oscailt</string>
+    <string name="favourites_none_selected">Níl aon <b>Rogha</b> déanta agat. Brú thíos chun an
+        aipp a oscailt, agus ansin roghnaigh do stadann is coitianta leat.</string>
+    <string name="favourites_opening_mobile">Ag oscailt an aipp</string>
 
     <!--
         Stop arrays

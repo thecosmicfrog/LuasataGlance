@@ -184,7 +184,6 @@ public class LuasTimesFragment extends Fragment {
                     getActivity().getLayoutInflater().inflate(R.layout.dialog_about, null);
 
             new AlertDialog.Builder(getContext())
-                    .setTitle(R.string.app_name)
                     .setView(dialogAbout)
                     .show();
         }
@@ -262,7 +261,7 @@ public class LuasTimesFragment extends Fragment {
          * Use a Floating Action Button (FAB) to open the Favourites Dialog.
          */
         FloatingActionButton fabFavourites =
-                (FloatingActionButton) rootView.findViewById(R.id.floating_action_button);
+                (FloatingActionButton) rootView.findViewById(R.id.fab_favourites);
         fabFavourites.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 StopForecastUtil.displayTutorial(rootView, TUTORIAL_FAVOURITES, false);

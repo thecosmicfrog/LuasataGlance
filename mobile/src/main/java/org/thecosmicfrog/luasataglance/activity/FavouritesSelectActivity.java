@@ -22,7 +22,9 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +39,7 @@ import android.widget.ListView;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Serializer;
+import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -116,6 +119,20 @@ public class FavouritesSelectActivity extends AppCompatActivity {
         });
 
         /*
+         * Use a Floating Action Button (FAB) to save the selected Favourites.
+         */
+        FloatingActionButton fabFavouritesSave =
+                (FloatingActionButton) findViewById(R.id.fab_favourites_save);
+        fabFavouritesSave.setBackgroundTintList(
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.message_success))
+        );
+        fabFavouritesSave.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                saveFavourites();
+            }
+        });
+
+        /*
          * Keep the FavouritesSelectActivity in sync with the favourites file by ensuring
          * all favourite stops are already checked in the ListView.
          */
@@ -149,40 +166,19 @@ public class FavouritesSelectActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_favourites_select, menu);
-        return true;
-    }
+    private void saveFavourites() {
+        try {
+            if (selectedItems != null && !selectedItems.isEmpty()) {
+                FileOutputStream file = openFileOutput(FILE_FAVOURITES, Context.MODE_PRIVATE);
+                file.write(Serializer.serialize(selectedItems));
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        /*
-         * When the Save button is clicked, serialize the List of selected stops and write the
-         * resulting object to a file.
-         */
-        if (id == R.id.action_favourites_save) {
-            try {
-                if (selectedItems != null && !selectedItems.isEmpty()) {
-                    FileOutputStream file = openFileOutput(FILE_FAVOURITES, Context.MODE_PRIVATE);
-                    file.write(Serializer.serialize(selectedItems));
-
-                    file.close();
-                }
-            } catch (IOException e) {
-                Log.e(LOG_TAG, Log.getStackTraceString(e));
+                file.close();
             }
-
-            // We're finished here. Close the activity.
-            finish();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
 
-        return super.onOptionsItemSelected(item);
+        // We're finished here. Close the activity.
+        finish();
     }
 }

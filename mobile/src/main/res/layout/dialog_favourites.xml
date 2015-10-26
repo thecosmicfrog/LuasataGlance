@@ -32,9 +32,8 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:backgroundTint="@color/luas_purple"
-            android:background="@color/luas_purple"
-            android:src="@android:drawable/ic_menu_edit"
+            android:background="@android:color/white"
+            android:src="@drawable/ic_mode_edit"
             android:contentDescription="@string/favourites_edit" />
     </RelativeLayout>
 
