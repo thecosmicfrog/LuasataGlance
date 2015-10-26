@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
@@ -47,18 +48,16 @@ import java.util.concurrent.TimeUnit;
 
 public class FavouritesActivity extends Activity implements MessageApi.MessageListener {
 
-    private static final long CONNECTION_TIME_OUT_MS = 100;
-
     private final String LOG_TAG = FavouritesActivity.class.getSimpleName();
     private final String PATH_FAVOURITES_MOBILE = "/favourites_mobile";
     private final String PATH_FAVOURITES_WEAR = "/favourites_wear";
+    private final long CONNECTION_TIME_OUT_MS = 5000;
 
     private GoogleApiClient googleApiClient;
     private String nodeId;
     private WatchViewStub stub;
     private String shape;
     private ArrayAdapter<CharSequence> adapterFavouriteStops;
-    private List<CharSequence> listFavouriteStops;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,51 +67,52 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
 
         initGoogleApiClient();
 
-        retrieveDeviceNode();
-
         // Add the MessageListener.
         Wearable.MessageApi.addListener(googleApiClient, this);
+
+        retrieveDeviceNode();
 
         // Load the screen shape from shared preferences.
         shape = Preferences.loadScreenShape(getApplicationContext());
 
         stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            @Override
-            public void onLayoutInflated(WatchViewStub stub) {
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        initGoogleApiClient();
-
-        retrieveDeviceNode();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
+        // Remove the MessageListener.
         Wearable.MessageApi.removeListener(googleApiClient, this);
     }
 
     @Override
     public void onMessageReceived(final MessageEvent messageEvent) {
         if (messageEvent.getPath().equals(PATH_FAVOURITES_WEAR)) {
-            drawFavourites(messageEvent);
+            /*
+             * We've received a reply from the host. Create a new List and draw it to the screen.
+             */
+            List <CharSequence> listFavouriteStops =
+                    (List<CharSequence>) Serializer.deserialize(messageEvent.getData());
+
+            drawFavourites(listFavouriteStops);
         }
     }
 
-    private void drawFavourites(final MessageEvent messageEvent) {
+    /**
+     * Draw the List of favourite stops to the screen.
+     * @param listFavouriteStops List of favourite stops from host device.
+     */
+    private void drawFavourites(final List<CharSequence> listFavouriteStops) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                listFavouriteStops = (List<CharSequence>) Serializer.deserialize(messageEvent.getData());
+                /*
+                 * Hide the loading circle.
+                 */
+                ProgressBar progressBarLoadingCircle =
+                        (ProgressBar) findViewById(R.id.progressbar_loading_circle);
+                progressBarLoadingCircle.setVisibility(View.GONE);
 
                 /*
                  * ArrayAdapter for favourite stops.
@@ -138,30 +138,33 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
                         R.id.listview_favourite_stops
                 );
 
-                if (listFavouriteStops != null) {
-                    listViewFavouriteStops.setAdapter(adapterFavouriteStops);
-                    listViewFavouriteStops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            /*
-                             * When a favourite stop is clicked, open the MainActivity, passing the stop
-                             * name as an extra parameter.
-                             */
-                            String stopName = adapterFavouriteStops.getItem(position).toString();
+                listViewFavouriteStops.setAdapter(adapterFavouriteStops);
+                listViewFavouriteStops.setOnItemClickListener(
+                        new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position,
+                                            long id) {
+                        /*
+                         * When a favourite stop is clicked, open the MainActivity, passing the
+                         * stop name as an extra parameter.
+                         */
+                        String stopName = adapterFavouriteStops.getItem(position).toString();
 
-                            startActivity(
-                                    new Intent(
-                                            getApplicationContext(),
-                                            StopForecastActivity.class
-                                    ).putExtra("stopName", stopName)
-                            );
-                        }
-                    });
-                }
+                        startActivity(
+                                new Intent(
+                                        getApplicationContext(),
+                                        StopForecastActivity.class
+                                ).putExtra("stopName", stopName)
+                        );
+                    }
+                });
             }
         });
     }
 
+    /**
+     * Initialise Google API Client.
+     */
     private void initGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -190,14 +193,16 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
                 if (nodes.size() > 0) {
                     nodeId = nodes.get(0).getId();
 
-                    requestFavouritesFromDevice();
-
+                    requestFavouritesFromHost();
                 }
             }
         }).start();
     }
 
-    private void requestFavouritesFromDevice() {
+    /**
+     * Send a message to the device host, requesting its List of Favourites.
+     */
+    private void requestFavouritesFromHost() {
         if (nodeId != null) {
             new Thread(new Runnable() {
                 @Override
@@ -211,6 +216,10 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
                         );
                     }
 
+                    /*
+                     * This is just a message to the host to let it know we want its List of
+                     * Favourites. As such, its message body can be empty.
+                     */
                     MessageApi.SendMessageResult result =
                             Wearable.MessageApi.sendMessage(
                                     googleApiClient,

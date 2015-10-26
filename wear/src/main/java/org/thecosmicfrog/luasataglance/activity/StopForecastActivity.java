@@ -48,14 +48,13 @@ import java.util.concurrent.TimeUnit;
 
 public class StopForecastActivity extends Activity implements MessageApi.MessageListener {
 
-    private static final long CONNECTION_TIME_OUT_MS = 100;
-    private static final String MOBILE_PATH = "/mobile";
-
     private final String LOG_TAG = StopForecastActivity.class.getSimpleName();
+    private final String MOBILE_PATH = "/mobile";
+    private final long CONNECTION_TIME_OUT_MS = 5000;
+
 
     private GoogleApiClient googleApiClient;
     private String nodeId;
-    private WatchViewStub stub;
     private ProgressBar progressBarLoadingCircle;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView textViewStopName;
@@ -75,7 +74,9 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
         // Add the MessageListener.
         Wearable.MessageApi.addListener(googleApiClient, this);
 
-        stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        retrieveDeviceNode();
+
+        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
@@ -277,8 +278,6 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build();
-
-        retrieveDeviceNode();
     }
 
     /**

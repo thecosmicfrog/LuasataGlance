@@ -41,10 +41,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity {
 
-    private static final long CONNECTION_TIME_OUT_MS = 100;
-
     private final String LOG_TAG = MainActivity.class.getSimpleName();
-    private final String PATH_FAVOURITES = "/favourites";
+    private final long CONNECTION_TIME_OUT_MS = 5000;
 
     private GoogleApiClient googleApiClient;
     private Button buttonRedLine;
@@ -115,6 +113,9 @@ public class MainActivity extends Activity {
         });
     }
 
+    /**
+     * Initialise Google API Client.
+     */
     private void initGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
