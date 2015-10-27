@@ -34,9 +34,7 @@
                     android:id="@+id/tab_red_line"
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin">
+                    android:layout_height="fill_parent">
 
                     <Space
                         android:layout_width="match_parent"
@@ -55,8 +53,10 @@
 
                     <org.thecosmicfrog.luasataglance.view.SpinnerCardView
                         android:id="@+id/red_line_spinner_card_view"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin" />
 
                     <Space
                         android:layout_width="match_parent"
@@ -70,7 +70,10 @@
                         <ScrollView
                             android:id="@+id/red_line_scrollview"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:paddingLeft="@dimen/activity_horizontal_margin"
+                            android:paddingRight="@dimen/activity_horizontal_margin"
+                            android:clipToPadding="false">
 
                             <LinearLayout
                                 android:orientation="vertical"
@@ -135,9 +138,7 @@
                     android:id="@+id/tab_green_line"
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin">
+                    android:layout_height="fill_parent">
 
                     <Space
                         android:layout_width="match_parent"
@@ -156,8 +157,10 @@
 
                     <org.thecosmicfrog.luasataglance.view.SpinnerCardView
                         android:id="@+id/green_line_spinner_card_view"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin" />
 
                     <Space
                         android:layout_width="match_parent"
@@ -171,7 +174,10 @@
                         <ScrollView
                             android:id="@+id/green_line_scrollview"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:paddingLeft="@dimen/activity_horizontal_margin"
+                            android:paddingRight="@dimen/activity_horizontal_margin"
+                            android:clipToPadding="false">
 
                             <LinearLayout
                                 android:orientation="vertical"
