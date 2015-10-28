@@ -146,12 +146,8 @@ public final class StopForecastUtil {
         if (notifyStopTimeStr.equals(""))
             return;
 
-        if (notifyStopTimeStr.equalsIgnoreCase("DUE")
-                || notifyStopTimeStr.equalsIgnoreCase("AM")
-                || notifyStopTimeStr.equalsIgnoreCase("1 min")
-                || notifyStopTimeStr.equalsIgnoreCase("1 nóim")
-                || notifyStopTimeStr.equalsIgnoreCase("2 mins")
-                || notifyStopTimeStr.equalsIgnoreCase("2 nóim")) {
+        if (notifyStopTimeStr.matches(
+                rootView.getResources().getString(R.string.due) + "|" + "1 .*|2 .*")) {
             Toast.makeText(
                     rootView.getContext(),
                     rootView.getContext().getResources().getString(
