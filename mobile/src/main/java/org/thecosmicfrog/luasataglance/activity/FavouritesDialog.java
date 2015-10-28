@@ -98,18 +98,31 @@ public class FavouritesDialog extends DialogFragment {
             listViewFavouriteStops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String stopName = adapterFavouriteStops.getItem(position).toString();
+
                     /*
                      * When a favourite stop is clicked, open the MainActivity, passing the stop
                      * name as an extra parameter.
+                     * Since we don't want to litter the back stack with multiple instances of
+                     * MainActivity, we also clear the top task. Also disable the new Activity
+                     * animation to make the transition seamless.
                      */
-                    String stopName = adapterFavouriteStops.getItem(position).toString();
-
                     getContext().startActivity(
                             new Intent(
                                     getContext(),
                                     MainActivity.class
-                            ).putExtra("stopName", stopName)
+                            ).putExtra(
+                                    "stopName",
+                                    stopName
+                            ).setFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            ).setFlags(
+                                    Intent.FLAG_ACTIVITY_NO_ANIMATION
+                            )
                     );
+
+                    // We're done here. Dismiss the dialog.
+                    getDialog().dismiss();
                 }
             });
         }
