@@ -22,6 +22,7 @@
 package org.thecosmicfrog.luasataglance.receiver;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -128,17 +129,18 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                  * Create the NotificationBuilder, setting an appropriate title and the message
                  * built in the StringBuilder. The default notification sound should be played
                  * and the device should vibrate twice for 1 second with a 1 second delay
-                 * between them.
+                 * between them. Setting MAX priority due to the time-sensitive nature of trams.
                  */
                 NotificationCompat.Builder notificationBuilder =
                         new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.laag_logo)
+                                .setPriority(Notification.PRIORITY_MAX)
                                 .setContentTitle(
                                         context.getResources().getString(
                                                 R.string.notification_title
                                         )
                                 )
                                 .setContentText(stringBuilderContentText.toString())
+                                .setSmallIcon(R.drawable.laag_logo_notification)
                                 .setVibrate(new long[] {100, 1000, 1000, 1000, 1000})
                                 .setSound(
                                         RingtoneManager.getDefaultUri(
