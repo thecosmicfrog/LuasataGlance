@@ -33,6 +33,7 @@ import android.widget.Spinner;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
+import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.util.Locale;
 import java.util.Map;
@@ -84,14 +85,17 @@ public class NotifyTimeDialog extends Dialog {
                 Intent intent = new Intent();
                 intent.setAction("org.thecosmicfrog.luasataglance.activity.NotifyTimeDialog");
                 intent.putExtra(
+                        "notifyStopName",
+                        Preferences.loadNotifyStopName(getContext())
+                );
+
+                intent.putExtra(
                         "notifyTime",
                         mapNotifyTimes.get(spinnerNotifyTime.getSelectedItem().toString())
                 );
 
                 // Send the Intent.
                 getContext().sendBroadcast(intent);
-
-                Log.i(LOG_TAG, "Intent broadcast.");
 
                 // Dismiss the Dialog.
                 dismiss();

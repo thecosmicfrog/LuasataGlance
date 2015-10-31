@@ -21,6 +21,7 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,5 +62,15 @@ public class MainActivity extends AppCompatActivity {
                             R.color.luas_purple_statusbar)
             );
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        /*
+         * If the Intent has changed, update the Activity's Intent.
+         */
+        setIntent(intent);
     }
 }

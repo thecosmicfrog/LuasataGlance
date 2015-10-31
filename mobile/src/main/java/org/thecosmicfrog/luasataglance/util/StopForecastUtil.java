@@ -36,6 +36,7 @@ import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.view.SpinnerCardView;
 import org.thecosmicfrog.luasataglance.view.StopForecastCardView;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
@@ -56,6 +57,15 @@ public final class StopForecastUtil {
      * @param rootView Root View.
      */
     public static void initStopForecastOnClickListeners(final View rootView) {
+        final SpinnerCardView redLineSpinnerCardView =
+                (SpinnerCardView) rootView.findViewById(
+                        R.id.red_line_spinner_card_view
+                );
+        final SpinnerCardView greenLineSpinnerCardView =
+                (SpinnerCardView) rootView.findViewById(
+                        R.id.green_line_spinner_card_view
+                );
+
         final StopForecastCardView redLineInboundStopForecastCardView =
                 (StopForecastCardView) rootView.findViewById(
                         R.id.red_line_inbound_stopforecastcardview
@@ -90,6 +100,7 @@ public final class StopForecastUtil {
                 public void onClick(View v) {
                     showNotifyTimeDialog(
                             rootView,
+                            redLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
                             redLineInboundStopForecastCardView.getTextViewStopTimes(),
                             index
                     );
@@ -101,6 +112,7 @@ public final class StopForecastUtil {
                 public void onClick(View v) {
                     showNotifyTimeDialog(
                             rootView,
+                            redLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
                             redLineOutboundStopForecastCardView.getTextViewStopTimes(),
                             index
                     );
@@ -112,6 +124,7 @@ public final class StopForecastUtil {
                 public void onClick(View v) {
                     showNotifyTimeDialog(
                             rootView,
+                            greenLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
                             greenLineInboundStopForecastCardView.getTextViewStopTimes(),
                             index
                     );
@@ -123,6 +136,7 @@ public final class StopForecastUtil {
                 public void onClick(View v) {
                     showNotifyTimeDialog(
                             rootView,
+                            greenLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
                             greenLineOutboundStopForecastCardView.getTextViewStopTimes(),
                             index
                     );
@@ -134,11 +148,12 @@ public final class StopForecastUtil {
     /**
      * Show dialog for choosing notification times.
      * @param rootView Root View.
+     * @param stopName Stop name to notify for.
      * @param textViewStopTimes Array of TextViews for times in a stop forecast.
      * @param index Index representing which specific tram to notify for.
      */
-    public static void showNotifyTimeDialog(View rootView, TextView[] textViewStopTimes,
-                                            int index) {
+    public static void showNotifyTimeDialog(View rootView, String stopName,
+                                            TextView[] textViewStopTimes, int index) {
         String localeDefault = Locale.getDefault().toString();
         String notifyStopTimeStr = textViewStopTimes[index].getText().toString();
         NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(localeDefault, STOP_FORECAST);
@@ -175,6 +190,11 @@ public final class StopForecastUtil {
 
         // Then, display the final tutorial.
         displayTutorial(rootView, TUTORIAL_FAVOURITES, true);
+
+        Preferences.saveNotifyStopName(
+                rootView.getContext(),
+                stopName
+        );
 
         Preferences.saveNotifyStopTimeExpected(
                 rootView.getContext(),

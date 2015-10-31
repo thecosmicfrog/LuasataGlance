@@ -35,17 +35,21 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.activity.MainActivity;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
 public class NotifyTimesReceiver extends BroadcastReceiver {
 
     private final String LOG_TAG = NotifyTimesReceiver.class.getSimpleName();
+    private final int REQUEST_CODE_OPEN_MAIN_ACTIVITY = 0;
+    private final int REQUEST_CODE_SCHEDULE_NOTIFICATION = 1;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
         final int notifyTimeUserRequestedMins = intent.getIntExtra("notifyTime", 5);
         final int NOTIFY_TIME_SAFETY_NET_MILLIS = 30000;
 
+        String notifyStopNameExpected = Preferences.loadNotifyStopName(context);
         int notifyStopTimeExpected = Preferences.loadNotifyStopTimeExpected(context);
 
         /*
@@ -85,17 +89,24 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                 Toast.LENGTH_SHORT
         ).show();
 
-        scheduleNotification(context, notifyTimeUserRequestedMins, notifyDelayMillis);
+        scheduleNotification(
+                context,
+                notifyStopNameExpected,
+                notifyTimeUserRequestedMins,
+                notifyDelayMillis
+        );
     }
 
     /**
      * Schedule notification for tram.
      * @param context Context.
+     * @param notifyStopName Name of stop to notify for.
      * @param notifyTimeUserRequestedMins Minutes before tram arrival the user has requested to
      *                                    be notified at.
      * @param notifyDelayMillis Milliseconds to wait before firing off notification.
      */
     private void scheduleNotification(Context context,
+                                      final String notifyStopName,
                                       final int notifyTimeUserRequestedMins,
                                       int notifyDelayMillis) {
         BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -126,6 +137,26 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                     );
 
                 /*
+                 * Prepare an Intent/PendingIntent to open the MainActivity with the
+                 * stop-to-notify-for as a String extra.
+                 */
+                Intent intentOpenMainActivity = new Intent(context, MainActivity.class);
+                intentOpenMainActivity.setAction(
+                        "org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver"
+                );
+                intentOpenMainActivity.setFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                );
+                intentOpenMainActivity.putExtra("notifyStopName", notifyStopName);
+
+                PendingIntent pendingIntentOpenMainActivity = PendingIntent.getActivity(
+                        context,
+                        REQUEST_CODE_OPEN_MAIN_ACTIVITY,
+                        intentOpenMainActivity,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+                /*
                  * Create the NotificationBuilder, setting an appropriate title and the message
                  * built in the StringBuilder. The default notification sound should be played
                  * and the device should vibrate twice for 1 second with a 1 second delay
@@ -134,6 +165,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                 NotificationCompat.Builder notificationBuilder =
                         new NotificationCompat.Builder(context)
                                 .setPriority(Notification.PRIORITY_MAX)
+                                .setContentIntent(pendingIntentOpenMainActivity)
                                 .setContentTitle(
                                         context.getResources().getString(
                                                 R.string.notification_title
@@ -146,7 +178,8 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                                         RingtoneManager.getDefaultUri(
                                                 RingtoneManager.TYPE_NOTIFICATION
                                         )
-                                );
+                                )
+                                .setAutoCancel(true);
 
                 /*
                  * Create a NotificationManager and display the notification to the user.
@@ -166,9 +199,9 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
-                0,
+                REQUEST_CODE_SCHEDULE_NOTIFICATION,
                 new Intent("org.thecosmicfrog.luasataglance"),
-                0
+                PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(

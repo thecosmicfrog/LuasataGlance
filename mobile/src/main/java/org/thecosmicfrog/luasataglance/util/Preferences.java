@@ -45,7 +45,8 @@ public final class Preferences {
      * @param selectedStopName Name of the stop to save to shared preferences.
      * @return Successfully saved.
      */
-    public static boolean saveSelectedStopName(Context context, String line, String selectedStopName) {
+    public static boolean saveSelectedStopName(Context context, String line,
+                                               String selectedStopName) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
 
         SharedPreferences.Editor prefs =
@@ -75,7 +76,8 @@ public final class Preferences {
      * @param widgetSelectedStopName Name of the stop to save to shared preferences.
      * @return Successfully saved.
      */
-    public static boolean saveWidgetSelectedStopName(Context context, String widgetSelectedStopName) {
+    public static boolean saveWidgetSelectedStopName(Context context,
+                                                     String widgetSelectedStopName) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
 
         SharedPreferences.Editor prefs =
@@ -112,6 +114,36 @@ public final class Preferences {
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
         prefs.putInt("indexNextStopToLoad", indexNextStopToLoad);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Load name of stop-to-notify-for from shared preferences.
+     * @param context Context
+     * @return Stop-to-notify-for.
+     */
+    public static String loadNotifyStopName(Context context) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getString("notifyStopName", null);
+    }
+
+    /**
+     * Save name of stop-to-notify-for to shared preferences.
+     * @param context Context.
+     * @param notifyStopName Name of stop to notify for.
+     * @return Successfully saved.
+     */
+    public static boolean saveNotifyStopName(Context context, String notifyStopName) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.putString("notifyStopName", notifyStopName);
 
         return prefs.commit();
     }

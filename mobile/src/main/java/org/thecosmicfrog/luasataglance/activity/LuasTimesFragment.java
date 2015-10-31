@@ -108,9 +108,13 @@ public class LuasTimesFragment extends Fragment {
         // Initialise user interface.
         initTabs();
 
-        // If a Favourite stop brought us to this activity, load that stop's forecast.
+        /*
+         * If a Favourite stop brought us to this Activity, load that stop's forecast.
+         */
         if (getActivity().getIntent().hasExtra("stopName")) {
-            setTabAndSpinner();
+            String stopName = getActivity().getIntent().getStringExtra("stopName");
+
+            setTabAndSpinner(stopName);
         }
 
         // Keep track of the currently-focused tab.
@@ -130,6 +134,13 @@ public class LuasTimesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        /*
+         * If a tapped notification brought us to this Activity, load the forecast for the stop
+         * sent with that Intent.
+         */
+        if (getActivity().getIntent().hasExtra("notifyStopName"))
+            setTabAndSpinner(getActivity().getIntent().getStringExtra("notifyStopName"));
 
         // Display tutorial for SwipeRefreshLayout, if required.
         StopForecastUtil.displayTutorial(rootView, TUTORIAL_SWIPE_REFRESH, true);
@@ -457,7 +468,7 @@ public class LuasTimesFragment extends Fragment {
     /**
      * Set the current tab and the position of the Spinner.
      */
-    private void setTabAndSpinner() {
+    private void setTabAndSpinner(String stopName) {
         String[] redLineArrayStops = getResources().getStringArray(
                 R.array.red_line_array_stops
         );
@@ -468,16 +479,14 @@ public class LuasTimesFragment extends Fragment {
         List<String> redLineListStops = Arrays.asList(redLineArrayStops);
         List<String> greenLineListStops = Arrays.asList(greenLineArrayStops);
 
-        String stopNameFromIntent = getActivity().getIntent().getStringExtra("stopName");
-
-        if (redLineListStops.contains(stopNameFromIntent)) {
+        if (redLineListStops.contains(stopName)) {
             tabHost.setCurrentTab(0);
 
-            redLineSpinnerCardView.setSelection(stopNameFromIntent);
-        } else if (greenLineListStops.contains(stopNameFromIntent)) {
+            redLineSpinnerCardView.setSelection(stopName);
+        } else if (greenLineListStops.contains(stopName)) {
             tabHost.setCurrentTab(1);
 
-            greenLineSpinnerCardView.setSelection(stopNameFromIntent);
+            greenLineSpinnerCardView.setSelection(stopName);
         }
     }
 
