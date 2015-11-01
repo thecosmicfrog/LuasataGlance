@@ -12,7 +12,8 @@
     -->
     <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
-    <string name="title_activity_news">Luas News</string>
+    <string name="title_activity_news_luas_news">Luas News</string>
+    <string name="title_activity_news_travel_updates">Travel Updates</string>
 
     <!--
         Main UI

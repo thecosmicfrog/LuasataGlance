@@ -36,7 +36,10 @@ public class NewsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final String URL_NEWS = "http://m.luas.ie/travel-updates.html";
+        final String NEWS_TYPE = "newsType";
+        final String NEWS_TYPE_TRAVEL_UPDATES = "travelUpdates";
+        final String URL_NEWS = "http://m.luas.ie/news/";
+        final String URL_TRAVEL_UPDATES = "http://m.luas.ie/travel-updates.html";
 
         setContentView(R.layout.activity_news);
 
@@ -53,7 +56,19 @@ public class NewsActivity extends AppCompatActivity {
         WebView webViewNews = (WebView) findViewById(R.id.webview_news);
         webViewNews.setWebViewClient(new WebViewClient());
 
-        // Load the "Travel Updates" section of the Luas mobile website.
-        webViewNews.loadUrl(URL_NEWS);
+        /*
+         * Load either the "Travel Updates" or "News" section of the Luas mobile website.
+         */
+        if (getIntent().hasExtra(NEWS_TYPE)) {
+            if (getIntent().getStringExtra(NEWS_TYPE).equals(NEWS_TYPE_TRAVEL_UPDATES)) {
+                setTitle(getResources().getString(R.string.title_activity_news_travel_updates));
+
+                webViewNews.loadUrl(URL_TRAVEL_UPDATES);
+            } else {
+                setTitle(getResources().getString(R.string.title_activity_news_luas_news));
+
+                webViewNews.loadUrl(URL_NEWS);
+            }
+        }
     }
 }

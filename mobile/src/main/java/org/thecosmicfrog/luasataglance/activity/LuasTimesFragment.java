@@ -69,6 +69,8 @@ public class LuasTimesFragment extends Fragment {
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
+    private final String STOP_NAME = "stopName";
+    private final String NOTIFY_STOP_NAME = "notifyStopName";
     private final String TUTORIAL_SWIPE_REFRESH = "swipe_refresh";
     private final String TUTORIAL_NOTIFICATIONS = "notifications";
     private final String TUTORIAL_FAVOURITES = "favourites";
@@ -111,8 +113,8 @@ public class LuasTimesFragment extends Fragment {
         /*
          * If a Favourite stop brought us to this Activity, load that stop's forecast.
          */
-        if (getActivity().getIntent().hasExtra("stopName")) {
-            String stopName = getActivity().getIntent().getStringExtra("stopName");
+        if (getActivity().getIntent().hasExtra(STOP_NAME)) {
+            String stopName = getActivity().getIntent().getStringExtra(STOP_NAME);
 
             setTabAndSpinner(stopName);
         }
@@ -139,8 +141,8 @@ public class LuasTimesFragment extends Fragment {
          * If a tapped notification brought us to this Activity, load the forecast for the stop
          * sent with that Intent.
          */
-        if (getActivity().getIntent().hasExtra("notifyStopName"))
-            setTabAndSpinner(getActivity().getIntent().getStringExtra("notifyStopName"));
+        if (getActivity().getIntent().hasExtra(NOTIFY_STOP_NAME))
+            setTabAndSpinner(getActivity().getIntent().getStringExtra(NOTIFY_STOP_NAME));
 
         // Display tutorial for SwipeRefreshLayout, if required.
         StopForecastUtil.displayTutorial(rootView, TUTORIAL_SWIPE_REFRESH, true);
@@ -178,15 +180,30 @@ public class LuasTimesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        final String NEWS_TYPE = "newsType";
+        final String NEWS_TYPE_LUAS_NEWS = "luasNews";
+        final String NEWS_TYPE_TRAVEL_UPDATES = "travelUpdates";
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_news || id == R.id.action_news_alert) {
-            startActivity(new Intent(
+        if (id == R.id.action_news) {
+            startActivity(
+                    new Intent(
                             getContext(),
-                            NewsActivity.class)
+                            NewsActivity.class
+                    ).putExtra(NEWS_TYPE, NEWS_TYPE_LUAS_NEWS)
+            );
+        }
+
+        if (id == R.id.action_news_alert) {
+            startActivity(
+                    new Intent(
+                            getContext(),
+                            NewsActivity.class
+                    ).putExtra(NEWS_TYPE, NEWS_TYPE_TRAVEL_UPDATES)
             );
         }
 
