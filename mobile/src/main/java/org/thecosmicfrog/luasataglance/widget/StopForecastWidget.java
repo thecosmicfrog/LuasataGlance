@@ -53,6 +53,12 @@ import java.util.List;
 public class StopForecastWidget extends AppWidgetProvider {
 
     private static final String LOG_TAG = StopForecastWidget.class.getSimpleName();
+    private static final String STOP_NAME = "stopName";
+    private static final String SELECTED_STOP_NAME = "selectedStopName";
+    private static final String WIDGET_CLICK_STOP_NAME = "WidgetClickStopName";
+    private static final String WIDGET_CLICK_LEFT_ARROW = "WidgetClickLeftArrow";
+    private static final String WIDGET_CLICK_RIGHT_ARROW = "WidgetClickRightArrow";
+    private static final String WIDGET_CLICK_STOP_FORECAST = "WidgetClickStopForecast";
 
     private static long stopForecastLastClickTime = 0;
 
@@ -100,21 +106,21 @@ public class StopForecastWidget extends AppWidgetProvider {
             /*
              * If the user taps the stop name, open the app at that stop.
              */
-            if (intent.getAction().equals("WidgetClickStopName")) {
+            if (intent.getAction().equals(WIDGET_CLICK_STOP_NAME)) {
                 String stopName = Preferences.loadWidgetSelectedStopName(context);
 
                 context.startActivity(
                         new Intent(
                                 context,
                                 MainActivity.class
-                        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).putExtra("stopName", stopName)
+                        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).putExtra(STOP_NAME, stopName)
                 );
             }
 
             /*
              * If the user taps one of the widget arrows, move to the next/previous stop.
              */
-            if (intent.getAction().equals("WidgetClickLeftArrow")) {
+            if (intent.getAction().equals(WIDGET_CLICK_LEFT_ARROW)) {
                 /*
                  * Move on to the previous index in the list. If we're on the first index, reset
                  * back to the last index [listSelectedStops.size() - 1].
@@ -129,7 +135,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                 prepareLoadStopForecast(context, allWidgetIds);
             }
 
-            if (intent.getAction().equals("WidgetClickRightArrow")) {
+            if (intent.getAction().equals(WIDGET_CLICK_RIGHT_ARROW)) {
                 /*
                  * Move on to the next index in the list. If we're on the last index, reset back to
                  * the first index (0).
@@ -148,7 +154,7 @@ public class StopForecastWidget extends AppWidgetProvider {
              * If the user taps the stop forecast display, load the forecast for that stop, setting
              * up a timeout as well.
              */
-            if (intent.getAction().equals("WidgetClickStopForecast")) {
+            if (intent.getAction().equals(WIDGET_CLICK_STOP_FORECAST)) {
                 final int LOAD_LIMIT_MILLIS = 4000;
 
                 /*
@@ -203,7 +209,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                 allWidgetIds
         );
         intentWidgetListenerService.putExtra(
-                "selectedStopName",
+                SELECTED_STOP_NAME,
                 selectedStopName
         );
 
@@ -267,10 +273,10 @@ public class StopForecastWidget extends AppWidgetProvider {
         Intent intentWidgetClickRightArrow = new Intent(context, StopForecastWidget.class);
         Intent intentWidgetClickStopForecast = new Intent(context, StopForecastWidget.class);
 
-        intentWidgetClickStopName.setAction("WidgetClickStopName");
-        intentWidgetClickLeftArrow.setAction("WidgetClickLeftArrow");
-        intentWidgetClickRightArrow.setAction("WidgetClickRightArrow");
-        intentWidgetClickStopForecast.setAction("WidgetClickStopForecast");
+        intentWidgetClickStopName.setAction(WIDGET_CLICK_STOP_NAME);
+        intentWidgetClickLeftArrow.setAction(WIDGET_CLICK_LEFT_ARROW);
+        intentWidgetClickRightArrow.setAction(WIDGET_CLICK_RIGHT_ARROW);
+        intentWidgetClickStopForecast.setAction(WIDGET_CLICK_STOP_FORECAST);
 
         PendingIntent pendingIntentWidgetClickStopName =
                 PendingIntent.getBroadcast(context, 0, intentWidgetClickStopName, 0);

@@ -41,12 +41,14 @@ import org.thecosmicfrog.luasataglance.util.Preferences;
 public class NotifyTimesReceiver extends BroadcastReceiver {
 
     private final String LOG_TAG = NotifyTimesReceiver.class.getSimpleName();
+    private final String NOTIFY_STOP_NAME = "notifyStopName";
+    private final String NOTIFY_TIME = "notifyTime";
     private final int REQUEST_CODE_OPEN_MAIN_ACTIVITY = 0;
     private final int REQUEST_CODE_SCHEDULE_NOTIFICATION = 1;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        final int notifyTimeUserRequestedMins = intent.getIntExtra("notifyTime", 5);
+        final int notifyTimeUserRequestedMins = intent.getIntExtra(NOTIFY_TIME, 5);
         final int NOTIFY_TIME_SAFETY_NET_MILLIS = 30000;
 
         String notifyStopNameExpected = Preferences.loadNotifyStopName(context);
@@ -141,13 +143,11 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                  * stop-to-notify-for as a String extra.
                  */
                 Intent intentOpenMainActivity = new Intent(context, MainActivity.class);
-                intentOpenMainActivity.setAction(
-                        "org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver"
-                );
+                intentOpenMainActivity.setAction(NotifyTimesReceiver.class.getName());
                 intentOpenMainActivity.setFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP
                 );
-                intentOpenMainActivity.putExtra("notifyStopName", notifyStopName);
+                intentOpenMainActivity.putExtra(NOTIFY_STOP_NAME, notifyStopName);
 
                 PendingIntent pendingIntentOpenMainActivity = PendingIntent.getActivity(
                         context,

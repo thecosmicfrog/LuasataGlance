@@ -41,6 +41,8 @@ import java.util.Map;
 public class NotifyTimeDialog extends Dialog {
 
     private final String LOG_TAG = NotifyTimeDialog.class.getSimpleName();
+    private final String NOTIFY_STOP_NAME = "notifyStopName";
+    private final String NOTIFY_TIME = "notifyTime";
 
     private Map<String, Integer> mapNotifyTimes;
 
@@ -83,14 +85,14 @@ public class NotifyTimeDialog extends Dialog {
                  * LuasTimesFragment.
                  */
                 Intent intent = new Intent();
-                intent.setAction("org.thecosmicfrog.luasataglance.activity.NotifyTimeDialog");
+                intent.setAction(NotifyTimeDialog.class.getName());
                 intent.putExtra(
-                        "notifyStopName",
+                        NOTIFY_STOP_NAME,
                         Preferences.loadNotifyStopName(getContext())
                 );
 
                 intent.putExtra(
-                        "notifyTime",
+                        NOTIFY_TIME,
                         mapNotifyTimes.get(spinnerNotifyTime.getSelectedItem().toString())
                 );
 

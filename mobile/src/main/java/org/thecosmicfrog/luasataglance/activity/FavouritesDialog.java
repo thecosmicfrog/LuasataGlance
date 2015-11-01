@@ -50,6 +50,7 @@ import java.util.List;
 public class FavouritesDialog extends DialogFragment {
 
     private final String LOG_TAG = FavouritesDialog.class.getSimpleName();
+    private final String STOP_NAME = "stopName";
 
     private ArrayAdapter<CharSequence> adapterFavouriteStops;
     private List<CharSequence> listFavouriteStops;
@@ -112,7 +113,7 @@ public class FavouritesDialog extends DialogFragment {
                                     getContext(),
                                     MainActivity.class
                             ).putExtra(
-                                    "stopName",
+                                    STOP_NAME,
                                     stopName
                             ).setFlags(
                                     Intent.FLAG_ACTIVITY_CLEAR_TOP
