@@ -1,8 +1,8 @@
-org.thecosmicfrog.luasataglance
 org.thecosmicfrog.luasataglance.activity
 org.thecosmicfrog.luasataglance.api
 org.thecosmicfrog.luasataglance.object
 org.thecosmicfrog.luasataglance.receiver
 org.thecosmicfrog.luasataglance.service
 org.thecosmicfrog.luasataglance.util
+org.thecosmicfrog.luasataglance.view
 org.thecosmicfrog.luasataglance.widget
