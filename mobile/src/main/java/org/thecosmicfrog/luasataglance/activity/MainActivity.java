@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
+        /*
+         * Set ActionBar colour and lower its elevation.
+         */
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(
                         ContextCompat.getColor(getApplication(), R.color.luas_purple)
@@ -53,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setElevation(0);
 
+        /*
+         * Set status bar colour.
+         */
         if (Build.VERSION.SDK_INT >= 21) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

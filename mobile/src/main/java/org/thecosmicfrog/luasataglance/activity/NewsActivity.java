@@ -22,9 +22,12 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -43,11 +46,27 @@ public class NewsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_news);
 
+        /*
+         * Set ActionBar colour.
+         */
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(
                         ContextCompat.getColor(getApplication(), R.color.luas_purple)
                 )
         );
+
+        /*
+         * Set status bar colour.
+         */
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(
+                    ContextCompat.getColor(getApplicationContext(),
+                            R.color.luas_purple_statusbar)
+            );
+        }
 
         /*
          * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
