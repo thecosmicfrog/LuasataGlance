@@ -20,6 +20,7 @@
     -->
     <string name="tab_red_line">Líne Dhearg</string>
     <string name="tab_green_line">Líne Uaine</string>
+    <string name="select_a_stop">Roghnaigh stad\u2026</string>
     <string name="message">Ag fanacht d\'stádas Luas&#8230;</string>
     <string name="message_title">Stádas</string>
     <string name="message_success">Gach seirbhís ag feidhmiú mar is gnáth</string>
@@ -108,6 +109,7 @@
         Stop arrays
     -->
     <string-array name="red_line_array_stops">
+        <item>Roghnaigh stad\u2026</item>
         <item>Iosta na Rinne</item>
         <item>Duga Spencer</item>
         <item>Cearnóg an Mhéara - CNÉ</item>
@@ -143,6 +145,7 @@
     </string-array>
 
     <string-array name="green_line_array_stops">
+        <item>Roghnaigh stad\u2026</item>
         <item>Faiche Stiabhna</item>
         <item>Sráid Fhearchair</item>
         <item>Charlemont</item>

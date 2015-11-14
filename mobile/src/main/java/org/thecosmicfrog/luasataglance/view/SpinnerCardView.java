@@ -29,7 +29,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.util.Preferences;
 
 public class SpinnerCardView extends CardView {
 
@@ -77,12 +76,6 @@ public class SpinnerCardView extends CardView {
         );
         adapterStops.setDropDownViewResource(R.layout.spinner_stops);
         spinnerStops.setAdapter(adapterStops);
-
-        Preferences.saveSelectedStopName(
-                getContext(),
-                line,
-                spinnerStops.getSelectedItem().toString()
-        );
     }
 
     /**

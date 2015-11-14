@@ -38,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -69,6 +70,7 @@ public class LuasTimesFragment extends Fragment {
     private final String LOG_TAG = LuasTimesFragment.class.getSimpleName();
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
+    private final String NO_LINE = "no_line";
     private final String STOP_NAME = "stopName";
     private final String NOTIFY_STOP_NAME = "notifyStopName";
     private final String TUTORIAL_SWIPE_REFRESH = "swipe_refresh";
@@ -93,6 +95,8 @@ public class LuasTimesFragment extends Fragment {
     private StopForecastCardView greenLineInboundStopForecastCardView;
     private StopForecastCardView greenLineOutboundStopForecastCardView;
     private TimerTask timerTaskReload;
+    private boolean redLineShouldAutoReload = false;
+    private boolean greenLineShouldAutoReload = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,6 +114,9 @@ public class LuasTimesFragment extends Fragment {
         // Initialise user interface.
         initTabs();
 
+        // Keep track of the currently-focused tab.
+        currentTab = tabHost.getCurrentTabTag();
+
         /*
          * If a Favourite stop brought us to this Activity, load that stop's forecast.
          */
@@ -117,10 +124,11 @@ public class LuasTimesFragment extends Fragment {
             String stopName = getActivity().getIntent().getStringExtra(STOP_NAME);
 
             setTabAndSpinner(stopName);
-        }
+        } else if (Preferences.loadSelectedStopName(getContext(), NO_LINE) != null) {
+            String stopName = Preferences.loadSelectedStopName(getContext(), NO_LINE);
 
-        // Keep track of the currently-focused tab.
-        currentTab = tabHost.getCurrentTabTag();
+            setTabAndSpinner(stopName);
+        }
 
         return rootView;
     }
@@ -279,9 +287,40 @@ public class LuasTimesFragment extends Fragment {
             @Override
             public void onTabChanged(String tabId) {
                 currentTab = tabHost.getCurrentTabTag();
+                Spinner currentTabSpinnerStops;
 
-                StopForecastUtil.clearLineStopForecast(rootView, currentTab);
-                loadStopForecast(Preferences.loadSelectedStopName(getContext(), currentTab));
+                /*
+                 * Initialise a temporary Spinner object to determine whether we should load stops
+                 * for that line. The only time shouldn't is when the Spinner's selected item is
+                 * "Select a stop..."
+                 */
+                switch(currentTab) {
+                    case RED_LINE:
+                        currentTabSpinnerStops = redLineSpinnerCardView.getSpinnerStops();
+
+                        break;
+
+                    case GREEN_LINE:
+                        currentTabSpinnerStops = greenLineSpinnerCardView.getSpinnerStops();
+
+                        break;
+
+                    default:
+                        // If for some reason the current selected tab doesn't make sense.
+                        Log.wtf(LOG_TAG, "Unknown tab.");
+
+                        // Just initialise it to the Red Line Spinner by default.
+                        currentTabSpinnerStops = redLineSpinnerCardView.getSpinnerStops();
+                }
+
+                /*
+                 * If the Spinner's selected item is not "Select a stop...", load a stop forecast
+                 * for that line.
+                 */
+                if (currentTabSpinnerStops.getSelectedItemPosition() != 0) {
+                    StopForecastUtil.clearLineStopForecast(rootView, currentTab);
+                    loadStopForecast(Preferences.loadSelectedStopName(getContext(), currentTab));
+                }
             }
         });
 
@@ -320,6 +359,20 @@ public class LuasTimesFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position,
                                                long id) {
+                        /*
+                         * If the Spinner's selected item is "Select a stop...", we don't need to
+                         * do anything. Just clear the stop forecast and get out of here.
+                         */
+                        if (position == 0) {
+                            redLineShouldAutoReload = false;
+
+                            StopForecastUtil.clearLineStopForecast(rootView, RED_LINE);
+
+                            return;
+                        }
+
+                        redLineShouldAutoReload = true;
+
                         /*
                          * Get the stop name from the current position of the Spinner, save it to
                          * SharedPreferences, then load a stop forecast with it.
@@ -397,6 +450,8 @@ public class LuasTimesFragment extends Fragment {
         /******************************
          * BEGIN GREEN LINE TAB SETUP *
          ******************************/
+        StopForecastUtil.setIsLoading(this, rootView, GREEN_LINE, false);
+
         /*
          * Set up Spinner and onItemSelectedListener.
          */
@@ -409,6 +464,20 @@ public class LuasTimesFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position,
                                                long id) {
+                        /*
+                         * If the Spinner's selected item is "Select a stop...", we don't need to
+                         * do anything. Just clear the stop forecast and get out of here.
+                         */
+                        if (position == 0) {
+                            greenLineShouldAutoReload = false;
+
+                            StopForecastUtil.clearLineStopForecast(rootView, GREEN_LINE);
+
+                            return;
+                        }
+
+                        greenLineShouldAutoReload = true;
+
                         /*
                          * Get the stop name from the current position of the Spinner, save it to
                          * SharedPreferences, then load a stop forecast with it.
@@ -500,10 +569,26 @@ public class LuasTimesFragment extends Fragment {
             tabHost.setCurrentTab(0);
 
             redLineSpinnerCardView.setSelection(stopName);
+
+            /*
+             * We also want the "other" tab to load its last-selected stop for the sake of
+             * consistency.
+             */
+            greenLineSpinnerCardView.setSelection(
+                    Preferences.loadSelectedStopName(getContext(), GREEN_LINE)
+            );
         } else if (greenLineListStops.contains(stopName)) {
             tabHost.setCurrentTab(1);
 
             greenLineSpinnerCardView.setSelection(stopName);
+
+            /*
+             * We also want the "other" tab to load its last-selected stop for the sake of
+             * consistency.
+             */
+            redLineSpinnerCardView.setSelection(
+                    Preferences.loadSelectedStopName(getContext(), RED_LINE)
+            );
         }
     }
 
@@ -530,22 +615,24 @@ public class LuasTimesFragment extends Fragment {
                         public void run() {
                             switch (currentTab) {
                                 case RED_LINE:
-                                    loadStopForecast(
-                                            Preferences.loadSelectedStopName(
-                                                    getContext(),
-                                                    RED_LINE
-                                            )
-                                    );
+                                    if (redLineShouldAutoReload)
+                                        loadStopForecast(
+                                                Preferences.loadSelectedStopName(
+                                                        getContext(),
+                                                        RED_LINE
+                                                )
+                                        );
 
                                     break;
 
                                 case GREEN_LINE:
-                                    loadStopForecast(
-                                            Preferences.loadSelectedStopName(
-                                                    getContext(),
-                                                    GREEN_LINE
-                                            )
-                                    );
+                                    if (greenLineShouldAutoReload)
+                                        loadStopForecast(
+                                                Preferences.loadSelectedStopName(
+                                                        getContext(),
+                                                        GREEN_LINE
+                                                )
+                                        );
 
                                     break;
 

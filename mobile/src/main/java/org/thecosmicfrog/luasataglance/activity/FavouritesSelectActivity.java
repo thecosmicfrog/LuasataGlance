@@ -88,6 +88,11 @@ public class FavouritesSelectActivity extends AppCompatActivity {
         List<String> listAllStops = new ArrayList<>(redLineListStops);
         listAllStops.addAll(greenLineListStops);
 
+        // Remove the two "Select a stop..." entries from the List.
+        for (int i = 0; i < 2; i++) {
+            listAllStops.remove(getResources().getString(R.string.select_a_stop));
+        }
+
         // ArrayAdapter for favourite stops.
         adapterFavouriteStops = new ArrayAdapter<>(
                 getApplicationContext(),

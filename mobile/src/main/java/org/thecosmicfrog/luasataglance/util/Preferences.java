@@ -36,6 +36,10 @@ public final class Preferences {
 
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
+        if (line.equalsIgnoreCase("no_line")) {
+            return prefs.getString("selectedStopName", null);
+        }
+
         return prefs.getString(line + "_selectedStopName", null);
     }
 
@@ -52,6 +56,11 @@ public final class Preferences {
         SharedPreferences.Editor prefs =
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
+        /*
+         * Save two preferences. The currently-selected stop name, and the same thing but with a
+         * currently-selected tab prefix.
+         */
+        prefs.putString("selectedStopName", selectedStopName);
         prefs.putString(line + "_selectedStopName", selectedStopName);
 
         return prefs.commit();
