@@ -73,7 +73,7 @@ public class LuasTimesFragment extends Fragment {
     private final String NO_LINE = "no_line";
     private final String STOP_NAME = "stopName";
     private final String NOTIFY_STOP_NAME = "notifyStopName";
-    private final String TUTORIAL_SWIPE_REFRESH = "swipe_refresh";
+    private final String TUTORIAL_SELECT_STOP = "select_stop";
     private final String TUTORIAL_NOTIFICATIONS = "notifications";
     private final String TUTORIAL_FAVOURITES = "favourites";
 
@@ -152,8 +152,8 @@ public class LuasTimesFragment extends Fragment {
         if (getActivity().getIntent().hasExtra(NOTIFY_STOP_NAME))
             setTabAndSpinner(getActivity().getIntent().getStringExtra(NOTIFY_STOP_NAME));
 
-        // Display tutorial for SwipeRefreshLayout, if required.
-        StopForecastUtil.displayTutorial(rootView, TUTORIAL_SWIPE_REFRESH, true);
+        // Display tutorial for selecting a stop, if required.
+        StopForecastUtil.displayTutorial(rootView, TUTORIAL_SELECT_STOP, true);
 
         /*
          * Reload stop forecast.
@@ -366,12 +366,20 @@ public class LuasTimesFragment extends Fragment {
                         if (position == 0) {
                             redLineShouldAutoReload = false;
 
+                            redLineSwipeRefreshLayout.setEnabled(false);
+
                             StopForecastUtil.clearLineStopForecast(rootView, RED_LINE);
 
                             return;
                         }
 
                         redLineShouldAutoReload = true;
+
+                        // Hide the select stop tutorial, if it is visible.
+                        StopForecastUtil.displayTutorial(rootView, TUTORIAL_SELECT_STOP, false);
+
+                        // Show the notifications tutorial.
+                        StopForecastUtil.displayTutorial(rootView, TUTORIAL_NOTIFICATIONS, true);
 
                         /*
                          * Get the stop name from the current position of the Spinner, save it to
@@ -410,12 +418,6 @@ public class LuasTimesFragment extends Fragment {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        // Hide the SwipeRefreshLayout tutorial, if it is visible.
-                        StopForecastUtil.displayTutorial(rootView, TUTORIAL_SWIPE_REFRESH, false);
-
-                        // Show the notifications tutorial.
-                        StopForecastUtil.displayTutorial(rootView, TUTORIAL_NOTIFICATIONS, true);
-
                         // Start by clearing the currently-displayed stop forecast.
                         StopForecastUtil.clearLineStopForecast(rootView, RED_LINE);
 
@@ -470,6 +472,8 @@ public class LuasTimesFragment extends Fragment {
                          */
                         if (position == 0) {
                             greenLineShouldAutoReload = false;
+
+                            greenLineSwipeRefreshLayout.setEnabled(false);
 
                             StopForecastUtil.clearLineStopForecast(rootView, GREEN_LINE);
 

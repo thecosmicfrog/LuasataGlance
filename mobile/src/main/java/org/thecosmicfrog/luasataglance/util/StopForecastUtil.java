@@ -22,6 +22,7 @@
 package org.thecosmicfrog.luasataglance.util;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -47,7 +48,7 @@ public final class StopForecastUtil {
     private static final String LOG_TAG = StopForecastUtil.class.getSimpleName();
     private static final String RED_LINE = "red_line";
     private static final String GREEN_LINE = "green_line";
-    private static final String TUTORIAL_SWIPE_REFRESH = "swipe_refresh";
+    private static final String TUTORIAL_SELECT_STOP = "select_stop";
     private static final String TUTORIAL_NOTIFICATIONS = "notifications";
     private static final String TUTORIAL_FAVOURITES = "favourites";
     private static final String STOP_FORECAST = "stop_forecast";
@@ -212,29 +213,37 @@ public final class StopForecastUtil {
      * @param shouldDisplay Whether or not tutorial should display.
      */
     public static void displayTutorial(View rootView, String tutorial, boolean shouldDisplay) {
+        SwipeRefreshLayout redLineSwipeRefreshLayout =
+                (SwipeRefreshLayout) rootView.findViewById(R.id.red_line_swiperefreshlayout);
+        SwipeRefreshLayout greenLineSwipeRefreshLayout =
+                (SwipeRefreshLayout) rootView.findViewById(R.id.green_line_swiperefreshlayout);
+
         switch(tutorial) {
-            case TUTORIAL_SWIPE_REFRESH:
-                TutorialCardView tutorialCardViewSwipeRefresh =
+            case TUTORIAL_SELECT_STOP:
+                TutorialCardView tutorialCardViewSelectStop =
                         (TutorialCardView) rootView.findViewById(
-                                R.id.tutorialcardview_swipe_refresh
+                                R.id.tutorialcardview_select_stop
                         );
 
-                tutorialCardViewSwipeRefresh.setTutorial(
+                tutorialCardViewSelectStop.setTutorial(
                         rootView.getContext().getResources().getText(
-                                R.string.swipe_refresh_tutorial
+                                R.string.select_stop_tutorial
                         )
                 );
 
                 if (shouldDisplay) {
                     if (!Preferences.loadHasRunOnce(rootView.getContext(), tutorial)) {
-                        Log.i(LOG_TAG, "First time launching. Displaying swipe refresh tutorial.");
+                        Log.i(LOG_TAG, "First time launching. Displaying select stop tutorial.");
 
-                        tutorialCardViewSwipeRefresh.setVisibility(View.VISIBLE);
+                        tutorialCardViewSelectStop.setVisibility(View.VISIBLE);
 
                         Preferences.saveHasRunOnce(rootView.getContext(), tutorial, true);
                     }
                 } else {
-                    tutorialCardViewSwipeRefresh.setVisibility(View.GONE);
+                    tutorialCardViewSelectStop.setVisibility(View.GONE);
+
+                    redLineSwipeRefreshLayout.setEnabled(true);
+                    greenLineSwipeRefreshLayout.setEnabled(true);
                 }
 
                 break;

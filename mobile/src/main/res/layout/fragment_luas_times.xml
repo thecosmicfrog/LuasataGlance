@@ -91,7 +91,7 @@
                                     android:layout_height="12dp" />
 
                                 <org.thecosmicfrog.luasataglance.view.TutorialCardView
-                                    android:id="@+id/tutorialcardview_swipe_refresh"
+                                    android:id="@+id/tutorialcardview_select_stop"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:visibility="gone" />

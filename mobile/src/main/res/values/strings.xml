@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">57</string>
-    <string name="version_name">0.57</string>
+    <string name="version_code">58</string>
+    <string name="version_name">0.58</string>
 
     <!--
         Activities
@@ -30,9 +30,8 @@
         your network connection. If there are no issues, the Luas RTPI system may be down.
     </string>
     <string name="information">\u2139</string>
-    <string name="swipe_refresh_tutorial">Times will update <b>every 10 seconds</b>.\nYou can also
-        manually update by swiping down with your finger from the <b>Status</b> box. Try it now to
-        dismiss this message!
+    <string name="select_stop_tutorial">Let\'s get started! Select a stop using the picker above.
+        \nTimes will update <b>every 10 seconds</b>.
     </string>
     <string name="notifications_tutorial">Great! You can also schedule notifications for incoming
         trams. Just tap on a tram below to try it out.
