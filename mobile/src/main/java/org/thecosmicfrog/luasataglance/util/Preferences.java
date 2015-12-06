@@ -23,6 +23,9 @@ package org.thecosmicfrog.luasataglance.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import org.thecosmicfrog.luasataglance.R;
 
 public final class Preferences {
 
@@ -95,6 +98,20 @@ public final class Preferences {
         prefs.putString("widgetSelectedStopName", widgetSelectedStopName);
 
         return prefs.commit();
+    }
+
+    /**
+     * Load the currently-selected stop name from shared preferences.
+     * @param context Context
+     * @return Selected stop name, or null if none found.
+     */
+    public static String loadDefaultStopName(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        return prefs.getString(
+                context.getString(R.string.pref_key_default_stop),
+                context.getString(R.string.none)
+        );
     }
 
     /**

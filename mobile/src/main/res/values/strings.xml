@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">58</string>
-    <string name="version_name">0.58</string>
+    <string name="version_code">59</string>
+    <string name="version_name">0.59</string>
 
     <!--
         Activities
@@ -14,6 +14,7 @@
     <string name="title_activity_favourites_select">Select Favourites</string>
     <string name="title_activity_news_luas_news">Luas News</string>
     <string name="title_activity_news_travel_updates">Travel Updates</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!--
         Main UI
@@ -21,9 +22,9 @@
     <string name="tab_red_line">Red Line</string>
     <string name="tab_green_line">Green Line</string>
     <string name="select_a_stop">Select a stop\u2026</string>
+    <string name="none">None</string>
     <string name="message">Awaiting Luas status&#8230;</string>
     <string name="message_title">Status</string>
-    <string name="message_no_results">No Results</string>
     <string name="message_success">normally</string>
     <string name="message_not_running">No trams expected at this stop</string>
     <string name="message_error"> Error retrieving times from Luas RTPI system.\n\nPlease check
@@ -60,6 +61,7 @@
     <string name="action_news">Luas News</string>
     <string name="action_news_alert">Alert</string>
     <string name="action_reload">Reload</string>
+    <string name="action_settings">Settings</string>
 
     <!--
         About
@@ -99,6 +101,12 @@
     <string name="notify_when">When would you like to be notified about this tram?</string>
     <string name="notify_successful">Notification scheduled.</string>
     <string name="notify_invalid_time">Invalid time: Tram expected before then.</string>
+
+    <!--
+        Settings
+    -->
+    <string name="pref_title_default_stop">Default Stop</string>
+    <string name="pref_key_default_stop">default_stop</string>
 
     <!--
         Widget
@@ -147,6 +155,64 @@
 
     <string-array name="green_line_array_stops">
         <item>Select a stop\u2026</item>
+        <item>St. Stephen\'s Green</item>
+        <item>Harcourt</item>
+        <item>Charlemont</item>
+        <item>Ranelagh</item>
+        <item>Beechwood</item>
+        <item>Cowper</item>
+        <item>Milltown</item>
+        <item>Windy Arbour</item>
+        <item>Dundrum</item>
+        <item>Balally</item>
+        <item>Kilmacud</item>
+        <item>Stillorgan</item>
+        <item>Sandyford</item>
+        <item>Central Park</item>
+        <item>Glencairn</item>
+        <item>The Gallops</item>
+        <item>Leopardstown Valley</item>
+        <item>Ballyogan Wood</item>
+        <item>Carrickmines</item>
+        <item>Laughanstown</item>
+        <item>Cherrywood</item>
+        <item>Brides Glen</item>
+    </string-array>
+
+    <string-array name="array_all_stops">
+        <item>None</item>
+        <item>The Point</item>
+        <item>Spencer Dock</item>
+        <item>Mayor Square - NCI</item>
+        <item>George\'s Dock</item>
+        <item>Connolly</item>
+        <item>Busáras</item>
+        <item>Abbey Street</item>
+        <item>Jervis</item>
+        <item>Four Courts</item>
+        <item>Smithfield</item>
+        <item>Museum</item>
+        <item>Heuston</item>
+        <item>James\'s</item>
+        <item>Fatima</item>
+        <item>Rialto</item>
+        <item>Suir Road</item>
+        <item>Goldenbridge</item>
+        <item>Drimnagh</item>
+        <item>Blackhorse</item>
+        <item>Bluebell</item>
+        <item>Kylemore</item>
+        <item>Red Cow</item>
+        <item>Kingswood</item>
+        <item>Belgard</item>
+        <item>Cookstown</item>
+        <item>Hospital</item>
+        <item>Tallaght</item>
+        <item>Fettercairn</item>
+        <item>Cheeverstown</item>
+        <item>Citywest Campus</item>
+        <item>Fortunestown</item>
+        <item>Saggart</item>
         <item>St. Stephen\'s Green</item>
         <item>Harcourt</item>
         <item>Charlemont</item>

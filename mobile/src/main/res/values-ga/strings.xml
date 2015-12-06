@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">58</string>
-    <string name="version_name">0.58</string>
+    <string name="version_code">59</string>
+    <string name="version_name">0.59</string>
 
     <!--
         Activities
@@ -14,6 +14,7 @@
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_news_luas_news">Nuacht Luas</string>
     <string name="title_activity_news_travel_updates">Stádas Taisteal</string>
+    <string name="title_activity_settings">Roghanna</string>
 
     <!--
         Main UI
@@ -21,6 +22,7 @@
     <string name="tab_red_line">Líne Dhearg</string>
     <string name="tab_green_line">Líne Uaine</string>
     <string name="select_a_stop">Roghnaigh stad\u2026</string>
+    <string name="none">Aon cheann</string>
     <string name="message">Ag fanacht d\'stádas Luas&#8230;</string>
     <string name="message_title">Stádas</string>
     <string name="message_success">Gach seirbhís ag feidhmiú mar is gnáth</string>
@@ -59,6 +61,7 @@
     <string name="action_news">Nuacht Luas</string>
     <string name="action_news_alert">Airdeall</string>
     <string name="action_reload">Athnuaigh</string>
+    <string name="action_settings">Roghanna</string>
 
     <!--
         About
@@ -98,6 +101,12 @@
     <string name="notify_when">Cén uair ar mhaith leat fógra a fháil faoin tram seo?</string>
     <string name="notify_successful">Fógra sceidealaithe.</string>
     <string name="notify_invalid_time">Am mícheart: Tá an tram le sroicheadh roimh sin.</string>
+
+    <!--
+        Settings
+    -->
+    <string name="pref_title_default_stop">Stad Réamhshocraithe</string>
+    <string name="pref_key_default_stop">default_stop</string>
 
     <!--
         Widget
@@ -146,6 +155,64 @@
 
     <string-array name="green_line_array_stops">
         <item>Roghnaigh stad\u2026</item>
+        <item>Faiche Stiabhna</item>
+        <item>Sráid Fhearchair</item>
+        <item>Charlemont</item>
+        <item>Raghnallach</item>
+        <item>Coill na Feá</item>
+        <item>Cowper</item>
+        <item>Baile an Mhuilinn</item>
+        <item>Na Glasáin</item>
+        <item>Dún Droma</item>
+        <item>Baile Amhlaoibh</item>
+        <item>Cill Mochuda</item>
+        <item>Stigh Lorgan</item>
+        <item>Áth an Ghainimh</item>
+        <item>An Pháirc Láir</item>
+        <item>Gleann an Chairn</item>
+        <item>An Eachrais</item>
+        <item>Gleann Bhaile na Lobhar</item>
+        <item>Coill Bhaile Uí Ógáin</item>
+        <item>Carraig Mhaighin</item>
+        <item>Baile an Locháin</item>
+        <item>Coill na Silíní</item>
+        <item>Gleann Bhríde</item>
+    </string-array>
+
+    <string-array name="array_all_stops">
+        <item>Aon cheann</item>
+        <item>Iosta na Rinne</item>
+        <item>Duga Spencer</item>
+        <item>Cearnóg an Mhéara - CNÉ</item>
+        <item>Duga Sheoirse</item>
+        <item>Conghaile</item>
+        <item>Busáras</item>
+        <item>Sráid na Mainistreach</item>
+        <item>Jervis</item>
+        <item>Na Ceithre Cúirteanna</item>
+        <item>Margadh na Feirme</item>
+        <item>Árd-Mhúsaem</item>
+        <item>Heuston</item>
+        <item>Ospidéal San Séamas</item>
+        <item>Fatima</item>
+        <item>Rialto</item>
+        <item>Bóthar na Siúire</item>
+        <item>An Droichead Órga</item>
+        <item>Droimeanach</item>
+        <item>An Capall Dubh</item>
+        <item>An Cloigín Gorm</item>
+        <item>An Chill Mhór</item>
+        <item>An Bhó Dhearg</item>
+        <item>Coill an Rí</item>
+        <item>Belgard</item>
+        <item>Baile an Chócaigh</item>
+        <item>Ospidéal Thamhlachta</item>
+        <item>Tamhlacht</item>
+        <item>Fothar Chardain</item>
+        <item>Baile an tSíbrigh</item>
+        <item>Campas Gnó Iarthar na Cathrach</item>
+        <item>Baile Uí Fhoirtcheirn</item>
+        <item>Teach Sagard</item>
         <item>Faiche Stiabhna</item>
         <item>Sráid Fhearchair</item>
         <item>Charlemont</item>

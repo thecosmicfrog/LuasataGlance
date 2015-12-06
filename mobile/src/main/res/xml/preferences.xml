@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:id="@+id/listpreference_default_stop"
+        android:key="@string/pref_key_default_stop"
+        android:title="@string/pref_title_default_stop"
+        android:defaultValue="@string/none"
+        android:entries="@array/array_all_stops"
+        android:entryValues="@array/array_all_stops" />
+</PreferenceScreen>

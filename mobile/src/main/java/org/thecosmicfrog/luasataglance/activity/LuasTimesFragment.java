@@ -23,8 +23,10 @@ package org.thecosmicfrog.luasataglance.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -148,9 +150,18 @@ public class LuasTimesFragment extends Fragment {
         /*
          * If a tapped notification brought us to this Activity, load the forecast for the stop
          * sent with that Intent.
+         * If the previous case is not matched, and the user has selected a default stop, load the
+         * forecast for that.
          */
-        if (getActivity().getIntent().hasExtra(NOTIFY_STOP_NAME))
+        if (getActivity().getIntent().hasExtra(NOTIFY_STOP_NAME)) {
             setTabAndSpinner(getActivity().getIntent().getStringExtra(NOTIFY_STOP_NAME));
+
+            // Clear the Extra so it doesn't break the default stop setting.
+            getActivity().getIntent().removeExtra(NOTIFY_STOP_NAME);
+        } else if (!Preferences.loadDefaultStopName(getContext()).equals("None")
+                && Preferences.loadDefaultStopName(getContext()) != null) {
+            setTabAndSpinner(Preferences.loadDefaultStopName(getContext()));
+        }
 
         // Display tutorial for selecting a stop, if required.
         StopForecastUtil.displayTutorial(rootView, TUTORIAL_SELECT_STOP, true);
@@ -173,7 +184,6 @@ public class LuasTimesFragment extends Fragment {
         // Stop the auto-reload TimerTask.
         timerTaskReload.cancel();
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -212,6 +222,15 @@ public class LuasTimesFragment extends Fragment {
                             getContext(),
                             NewsActivity.class
                     ).putExtra(NEWS_TYPE, NEWS_TYPE_TRAVEL_UPDATES)
+            );
+        }
+
+        if (id == R.id.action_settings) {
+            startActivity(
+                    new Intent(
+                            getContext(),
+                            SettingsActivity.class
+                    )
             );
         }
 

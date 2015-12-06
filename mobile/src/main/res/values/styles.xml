@@ -3,7 +3,26 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+
+        <!-- Change general color accent to the Luas shade of purple. -->
         <item name="colorAccent">@color/luas_purple</item>
+
+        <!-- Hack to change SettingsActivity toolbar color and back button to white. -->
+        <item name="toolbarStyle">@style/toolbar_settings</item>
+        <item name="colorControlNormal">@android:color/white</item>
     </style>
+
+    <style name="toolbar_settings" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
