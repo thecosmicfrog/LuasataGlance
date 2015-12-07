@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.prefs.PreferenceChangeEvent;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -119,14 +120,7 @@ public class LuasTimesFragment extends Fragment {
         // Keep track of the currently-focused tab.
         currentTab = tabHost.getCurrentTabTag();
 
-        /*
-         * If a Favourite stop brought us to this Activity, load that stop's forecast.
-         */
-        if (getActivity().getIntent().hasExtra(STOP_NAME)) {
-            String stopName = getActivity().getIntent().getStringExtra(STOP_NAME);
-
-            setTabAndSpinner(stopName);
-        } else if (Preferences.loadSelectedStopName(getContext(), NO_LINE) != null) {
+        if (Preferences.loadSelectedStopName(getContext(), NO_LINE) != null) {
             String stopName = Preferences.loadSelectedStopName(getContext(), NO_LINE);
 
             setTabAndSpinner(stopName);
@@ -148,12 +142,20 @@ public class LuasTimesFragment extends Fragment {
         super.onResume();
 
         /*
+         * If a Favourite stop brought us to this Activity, load that stop's forecast.
          * If a tapped notification brought us to this Activity, load the forecast for the stop
          * sent with that Intent.
-         * If the previous case is not matched, and the user has selected a default stop, load the
+         * If the previous cases are not matched, and the user has selected a default stop, load the
          * forecast for that.
          */
-        if (getActivity().getIntent().hasExtra(NOTIFY_STOP_NAME)) {
+        if (getActivity().getIntent().hasExtra(STOP_NAME)) {
+            String stopName = getActivity().getIntent().getStringExtra(STOP_NAME);
+
+            setTabAndSpinner(stopName);
+
+            // Clear the Extra so it doesn't break the default stop setting.
+            getActivity().getIntent().removeExtra(STOP_NAME);
+        } else if (getActivity().getIntent().hasExtra(NOTIFY_STOP_NAME)) {
             setTabAndSpinner(getActivity().getIntent().getStringExtra(NOTIFY_STOP_NAME));
 
             // Clear the Extra so it doesn't break the default stop setting.
