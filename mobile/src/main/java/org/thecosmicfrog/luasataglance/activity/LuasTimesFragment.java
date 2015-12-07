@@ -333,10 +333,24 @@ public class LuasTimesFragment extends Fragment {
                 }
 
                 /*
+                 * If the Spinner has nothing selected (position -1), ensure we don't enter an
+                 * undesirable state by resetting the position to 0.
+                 */
+                if (currentTabSpinnerStops.getSelectedItemPosition() < 0) {
+                    Log.w(
+                            LOG_TAG, "Spinner in " + currentTab + " is at position "
+                                    + currentTabSpinnerStops.getSelectedItemPosition()
+                                    + ". Resetting to 0."
+                    );
+
+                    currentTabSpinnerStops.setSelection(0);
+                }
+
+                /*
                  * If the Spinner's selected item is not "Select a stop...", load a stop forecast
                  * for that line.
                  */
-                if (currentTabSpinnerStops.getSelectedItemPosition() != 0) {
+                if (currentTabSpinnerStops.getSelectedItemPosition() > 0) {
                     StopForecastUtil.clearLineStopForecast(rootView, currentTab);
                     loadStopForecast(Preferences.loadSelectedStopName(getContext(), currentTab));
                 }
