@@ -4,8 +4,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">59</string>
-    <string name="version_name">0.59</string>
+    <string name="version_code">62</string>
+    <string name="version_name">0.62</string>
 
     <!--
         Activities
@@ -27,6 +27,9 @@
     <string name="message_title">Stádas</string>
     <string name="message_success">Gach seirbhís ag feidhmiú mar is gnáth</string>
     <string name="message_not_running">Níl aon tramanna ag súil leis ag an stad</string>
+    <string name="message_no_status">Aon stádas ar ais ó server. Is le córas RTPI Luas an
+        cúis.
+    </string>
     <string name="message_error">Fadhb ag fáil amanna ón gcóras Luas RTPI.\n\nDéan sheiceáil ar
         d’nasc leis an idirlíon. Mura bhfuil aon fadhb, is le córas RTPI Luas an cúis.</string>
     <string name="information">\u2139</string>
