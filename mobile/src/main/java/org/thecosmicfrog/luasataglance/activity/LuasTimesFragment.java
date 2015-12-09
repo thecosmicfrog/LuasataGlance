@@ -823,22 +823,27 @@ public class LuasTimesFragment extends Fragment {
                         redLineStatusCardView.setStatus(status);
                         redLineStatusCardView.setStatusColor(R.color.message_success);
 
-                        /*
-                         * Make the Alert menu item invisible.
-                         */
+                        /* Make the Alert menu item invisible. */
                         MenuItem menuItemNewsAlert = menu.findItem(R.id.action_news_alert);
                         menuItemNewsAlert.setVisible(false);
                     } else {
-                        /*
-                         * Change the color of the message title TextView to red and set the
-                         * error message from the server.
-                         */
-                        redLineStatusCardView.setStatus(status);
+                        if (status.equals("")) {
+                            /*
+                             * If the server returns no status message, the Luas RTPI system is
+                             * probably down.
+                             */
+                            redLineStatusCardView.setStatus(
+                                    getResources().getString(R.string.message_no_status)
+                            );
+                        } else {
+                            /* Set the error message from the server. */
+                            redLineStatusCardView.setStatus(status);
+                        }
+
+                        /* Change the color of the message title TextView to red. */
                         redLineStatusCardView.setStatusColor(R.color.message_error);
 
-                        /*
-                         * Make the Alert menu item visible.
-                         */
+                        /* Make the Alert menu item visible. */
                         MenuItem menuItemNewsAlert = menu.findItem(R.id.action_news_alert);
                         menuItemNewsAlert.setVisible(true);
                     }
@@ -975,22 +980,27 @@ public class LuasTimesFragment extends Fragment {
                         greenLineStatusCardView.setStatus(status);
                         greenLineStatusCardView.setStatusColor(R.color.message_success);
 
-                        /*
-                         * Make the Alert menu item invisible.
-                         */
+                        /* Make the Alert menu item invisible. */
                         MenuItem menuItemNewsAlert = menu.findItem(R.id.action_news_alert);
                         menuItemNewsAlert.setVisible(false);
                     } else {
-                        /*
-                         * Change the color of the message title TextView to red and set the
-                         * error message from the server.
-                         */
-                        greenLineStatusCardView.setStatus(status);
+                        if (status.equals("")) {
+                            /*
+                             * If the server returns no status message, the Luas RTPI system is
+                             * probably down.
+                             */
+                            greenLineStatusCardView.setStatus(
+                                    getResources().getString(R.string.message_no_status)
+                            );
+                        } else {
+                            /* Set the error message from the server. */
+                            greenLineStatusCardView.setStatus(status);
+                        }
+
+                        /* Change the color of the message title TextView to red. */
                         greenLineStatusCardView.setStatusColor(R.color.message_error);
 
-                        /*
-                         * Make the Alert menu item visible.
-                         */
+                        /* Make the Alert menu item visible. */
                         MenuItem menuItemNewsAlert = menu.findItem(R.id.action_news_alert);
                         menuItemNewsAlert.setVisible(true);
                     }
