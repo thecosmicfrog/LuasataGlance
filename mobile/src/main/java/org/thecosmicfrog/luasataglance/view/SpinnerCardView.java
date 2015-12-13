@@ -91,12 +91,12 @@ public class SpinnerCardView extends CardView {
 
         switch (line) {
             case RED_LINE:
-                resArrayStops = R.array.red_line_array_stops;
+                resArrayStops = R.array.array_stops_red_line;
 
                 break;
 
             case GREEN_LINE:
-                resArrayStops = R.array.green_line_array_stops;
+                resArrayStops = R.array.array_stops_green_line;
 
                 break;
 

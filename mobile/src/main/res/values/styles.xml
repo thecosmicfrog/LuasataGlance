@@ -4,6 +4,9 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
 
+        <item name="android:actionBarStyle">@style/LuasAtAGlanceActionBar</item>
+        <item name="actionBarStyle">@style/LuasAtAGlanceActionBar</item>
+
         <!-- Change general color accent to the Luas shade of purple. -->
         <item name="colorAccent">@color/luas_purple</item>
 
@@ -24,5 +27,10 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="LuasAtAGlanceActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/luas_purple</item>
+        <item name="background">@color/luas_purple</item>
+    </style>
 
 </resources>

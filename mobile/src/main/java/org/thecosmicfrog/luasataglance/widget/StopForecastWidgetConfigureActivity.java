@@ -32,8 +32,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -91,9 +89,9 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
          * from those arrays. Finally, build a List of all stops by concatenating the first
          * two Lists.
          */
-        String[] redLineArrayStops = getResources().getStringArray(R.array.red_line_array_stops);
+        String[] redLineArrayStops = getResources().getStringArray(R.array.array_stops_red_line);
         String[] greenLineArrayStops = getResources().getStringArray(
-                R.array.green_line_array_stops
+                R.array.array_stops_green_line
         );
 
         List<String> redLineListStops = Arrays.asList(redLineArrayStops);

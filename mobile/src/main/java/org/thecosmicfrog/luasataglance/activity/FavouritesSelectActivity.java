@@ -30,8 +30,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,7 +37,6 @@ import android.widget.ListView;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Serializer;
-import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -78,9 +75,9 @@ public class FavouritesSelectActivity extends AppCompatActivity {
          * two Lists.
          */
         String[] redLineArrayStops =
-                getResources().getStringArray(R.array.red_line_array_stops);
+                getResources().getStringArray(R.array.array_stops_red_line);
         String[] greenLineArrayStops =
-                getResources().getStringArray(R.array.green_line_array_stops);
+                getResources().getStringArray(R.array.array_stops_green_line);
 
         List<String> redLineListStops = Arrays.asList(redLineArrayStops);
         List<String> greenLineListStops = Arrays.asList(greenLineArrayStops);

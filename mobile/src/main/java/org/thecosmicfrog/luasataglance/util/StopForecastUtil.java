@@ -21,11 +21,8 @@
 
 package org.thecosmicfrog.luasataglance.util;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -57,101 +54,118 @@ public final class StopForecastUtil {
      * Initialise OnClickListeners for a stop forecast.
      * @param rootView Root View.
      */
-    public static void initStopForecastOnClickListeners(final View rootView) {
-        final SpinnerCardView redLineSpinnerCardView =
-                (SpinnerCardView) rootView.findViewById(
-                        R.id.red_line_spinner_card_view
-                );
-        final SpinnerCardView greenLineSpinnerCardView =
-                (SpinnerCardView) rootView.findViewById(
-                        R.id.green_line_spinner_card_view
-                );
+    public static void initStopForecastOnClickListeners(final View rootView, String line) {
+        switch (line) {
+            case RED_LINE:
+                final SpinnerCardView redLineSpinnerCardView =
+                        (SpinnerCardView) rootView.findViewById(
+                                R.id.redline_spinner_card_view
+                        );
+                final StopForecastCardView redLineInboundStopForecastCardView =
+                        (StopForecastCardView) rootView.findViewById(
+                                R.id.redline_inbound_stopforecastcardview
+                        );
+                final StopForecastCardView redLineOutboundStopForecastCardView =
+                        (StopForecastCardView) rootView.findViewById(
+                                R.id.redline_outbound_stopforecastcardview
+                        );
 
-        final StopForecastCardView redLineInboundStopForecastCardView =
-                (StopForecastCardView) rootView.findViewById(
-                        R.id.red_line_inbound_stopforecastcardview
-                );
-        final StopForecastCardView redLineOutboundStopForecastCardView =
-                (StopForecastCardView) rootView.findViewById(
-                        R.id.red_line_outbound_stopforecastcardview
-                );
-        final StopForecastCardView greenLineInboundStopForecastCardView =
-                (StopForecastCardView) rootView.findViewById(
-                        R.id.green_line_inbound_stopforecastcardview
-                );
-        final StopForecastCardView greenLineOutboundStopForecastCardView =
-                (StopForecastCardView) rootView.findViewById(
-                        R.id.green_line_outbound_stopforecastcardview
-                );
+                TableRow[] redLineTableRowInboundStops =
+                        redLineInboundStopForecastCardView.getTableRowStops();
+                TableRow[] redLineTableRowOutboundStops =
+                        redLineOutboundStopForecastCardView.getTableRowStops();
 
-        TableRow[] redLineTableRowInboundStops =
-                redLineInboundStopForecastCardView.getTableRowStops();
-        TableRow[] redLineTableRowOutboundStops =
-                redLineOutboundStopForecastCardView.getTableRowStops();
-        TableRow[] greenLineTableRowInboundStops =
-                greenLineInboundStopForecastCardView.getTableRowStops();
-        TableRow[] greenLineTableRowOutboundStops =
-                greenLineOutboundStopForecastCardView.getTableRowStops();
+                for (int i = 0; i < 4; i++) {
+                    final int index = i;
 
-        for (int i = 0; i < 4; i++) {
-            final int index = i;
+                    redLineTableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showNotifyTimeDialog(
+                                    rootView,
+                                    redLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
+                                    redLineInboundStopForecastCardView.getTextViewStopTimes(),
+                                    index
+                            );
+                        }
+                    });
 
-            redLineTableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showNotifyTimeDialog(
-                            rootView,
-                            redLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                            redLineInboundStopForecastCardView.getTextViewStopTimes(),
-                            index
-                    );
+                    redLineTableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showNotifyTimeDialog(
+                                    rootView,
+                                    redLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
+                                    redLineOutboundStopForecastCardView.getTextViewStopTimes(),
+                                    index
+                            );
+                        }
+                    });
                 }
-            });
 
-            redLineTableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showNotifyTimeDialog(
-                            rootView,
-                            redLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                            redLineOutboundStopForecastCardView.getTextViewStopTimes(),
-                            index
-                    );
-                }
-            });
+                break;
 
-            greenLineTableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showNotifyTimeDialog(
-                            rootView,
-                            greenLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                            greenLineInboundStopForecastCardView.getTextViewStopTimes(),
-                            index
-                    );
-                }
-            });
+            case GREEN_LINE:
+                final SpinnerCardView greenLineSpinnerCardView =
+                        (SpinnerCardView) rootView.findViewById(
+                                R.id.greenline_spinner_card_view
+                        );
+                final StopForecastCardView greenLineInboundStopForecastCardView =
+                        (StopForecastCardView) rootView.findViewById(
+                                R.id.greenline_inbound_stopforecastcardview
+                        );
+                final StopForecastCardView greenLineOutboundStopForecastCardView =
+                        (StopForecastCardView) rootView.findViewById(
+                                R.id.greenline_outbound_stopforecastcardview
+                        );
 
-            greenLineTableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showNotifyTimeDialog(
-                            rootView,
-                            greenLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                            greenLineOutboundStopForecastCardView.getTextViewStopTimes(),
-                            index
-                    );
+                TableRow[] greenLineTableRowInboundStops =
+                        greenLineInboundStopForecastCardView.getTableRowStops();
+                TableRow[] greenLineTableRowOutboundStops =
+                        greenLineOutboundStopForecastCardView.getTableRowStops();
+
+                for (int i = 0; i < 4; i++) {
+                    final int index = i;
+
+                    greenLineTableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showNotifyTimeDialog(
+                                    rootView,
+                                    greenLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
+                                    greenLineInboundStopForecastCardView.getTextViewStopTimes(),
+                                    index
+                            );
+                        }
+                    });
+
+                    greenLineTableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showNotifyTimeDialog(
+                                    rootView,
+                                    greenLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
+                                    greenLineOutboundStopForecastCardView.getTextViewStopTimes(),
+                                    index
+                            );
+                        }
+                    });
                 }
-            });
+
+                break;
+
+            default:
+                // If for some reason the line doesn't make sense.
+                Log.wtf(LOG_TAG, "Invalid line specified.");
         }
     }
 
     /**
      * Show dialog for choosing notification times.
-     * @param rootView Root View.
-     * @param stopName Stop name to notify for.
+     * @param rootView          Root View.
+     * @param stopName          Stop name to notify for.
      * @param textViewStopTimes Array of TextViews for times in a stop forecast.
-     * @param index Index representing which specific tram to notify for.
+     * @param index             Index representing which specific tram to notify for.
      */
     public static void showNotifyTimeDialog(View rootView, String stopName,
                                             TextView[] textViewStopTimes, int index) {
@@ -180,7 +194,7 @@ public final class StopForecastUtil {
          * the top so that the next tutorial is definitely visible. This should only ever run once.
          */
         if (!Preferences.loadHasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS)) {
-            ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.red_line_scrollview);
+            ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.redline_scrollview);
             scrollView.setScrollY(0);
         }
 
@@ -208,17 +222,12 @@ public final class StopForecastUtil {
     /**
      * Determine if this is the first time the app has been launched and, if so, display a brief
      * tutorial on how to use a particular feature of the app.
-     * @param rootView Root View.
-     * @param tutorial Tutorial to display.
+     * @param rootView      Root View.
+     * @param tutorial      Tutorial to display.
      * @param shouldDisplay Whether or not tutorial should display.
      */
     public static void displayTutorial(View rootView, String tutorial, boolean shouldDisplay) {
-        SwipeRefreshLayout redLineSwipeRefreshLayout =
-                (SwipeRefreshLayout) rootView.findViewById(R.id.red_line_swiperefreshlayout);
-        SwipeRefreshLayout greenLineSwipeRefreshLayout =
-                (SwipeRefreshLayout) rootView.findViewById(R.id.green_line_swiperefreshlayout);
-
-        switch(tutorial) {
+        switch (tutorial) {
             case TUTORIAL_SELECT_STOP:
                 TutorialCardView tutorialCardViewSelectStop =
                         (TutorialCardView) rootView.findViewById(
@@ -241,9 +250,6 @@ public final class StopForecastUtil {
                     }
                 } else {
                     tutorialCardViewSelectStop.setVisibility(View.GONE);
-
-                    redLineSwipeRefreshLayout.setEnabled(true);
-                    greenLineSwipeRefreshLayout.setEnabled(true);
                 }
 
                 break;
@@ -307,18 +313,18 @@ public final class StopForecastUtil {
     /**
      * Clear the inbound and outbound stop forecast displayed in the specified tab.
      * @param rootView Root View.
-     * @param line Tab (Red or Green Line) to clear stop forecast for.
+     * @param line     Tab (Red or Green Line) to clear stop forecast for.
      */
     public static void clearLineStopForecast(View rootView, String line) {
         switch (line) {
             case RED_LINE:
                 StopForecastCardView redLineInboundStopForecastCardView =
                         (StopForecastCardView) rootView.findViewById(
-                                R.id.red_line_inbound_stopforecastcardview
+                                R.id.redline_inbound_stopforecastcardview
                         );
                 StopForecastCardView redLineOutboundStopForecastCardView =
                         (StopForecastCardView) rootView.findViewById(
-                                R.id.red_line_outbound_stopforecastcardview
+                                R.id.redline_outbound_stopforecastcardview
                         );
 
                 redLineInboundStopForecastCardView.clearStopForecast();
@@ -329,11 +335,11 @@ public final class StopForecastUtil {
             case GREEN_LINE:
                 StopForecastCardView greenLineInboundStopForecastCardView =
                         (StopForecastCardView) rootView.findViewById(
-                                R.id.green_line_inbound_stopforecastcardview
+                                R.id.greenline_inbound_stopforecastcardview
                         );
                 StopForecastCardView greenLineOutboundStopForecastCardView =
                         (StopForecastCardView) rootView.findViewById(
-                                R.id.green_line_outbound_stopforecastcardview
+                                R.id.greenline_outbound_stopforecastcardview
                         );
 
                 greenLineInboundStopForecastCardView.clearStopForecast();
@@ -378,53 +384,5 @@ public final class StopForecastUtil {
         stopForecast.setMessage(apiTimes.getMessage());
 
         return stopForecast;
-    }
-
-    /**
-     * Make progress bar animate or not.
-     * @param fragment Fragment in which loading bar is present.
-     * @param rootView Root View.
-     * @param line Name of tab in which progress bar should animate.
-     * @param loading Whether or not progress bar should animate.
-     */
-    public static void setIsLoading(Fragment fragment, View rootView, final String line,
-                                    final boolean loading) {
-        final ProgressBar progressBarRedLine =
-                (ProgressBar) rootView.findViewById(R.id.red_line_progressbar);
-        final ProgressBar progressBarGreenLine =
-                (ProgressBar) rootView.findViewById(R.id.green_line_progressbar);
-
-        /*
-         * Only run if Fragment is attached to Activity. Without this check, the app is liable
-         * to crash when the screen is rotated many times in a given period of time.
-         */
-        if (fragment.isAdded()) {
-            fragment.getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    switch (line) {
-                        case RED_LINE:
-                            if (loading)
-                                progressBarRedLine.setVisibility(View.VISIBLE);
-                            else
-                                progressBarRedLine.setVisibility(View.INVISIBLE);
-
-                            break;
-
-                        case GREEN_LINE:
-                            if (loading)
-                                progressBarGreenLine.setVisibility(View.VISIBLE);
-                            else
-                                progressBarGreenLine.setVisibility(View.INVISIBLE);
-
-                            break;
-
-                        default:
-                            // If for some reason the line doesn't make sense.
-                            Log.wtf(LOG_TAG, "Invalid line specified.");
-                    }
-                }
-            });
-        }
     }
 }

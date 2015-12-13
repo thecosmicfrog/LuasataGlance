@@ -22,43 +22,37 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final String RED_LINE = "red_line";
+    private final String GREEN_LINE = "green_line";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new LuasTimesFragment())
-                    .commit();
-        }
+        /* Set the ActionBar elevation to 0. */
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setElevation(0f);
 
-        /*
-         * Set ActionBar colour and lower its elevation.
-         */
-        getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(
-                        ContextCompat.getColor(getApplication(), R.color.luas_purple)
-                )
-        );
-
-        getSupportActionBar().setElevation(0);
-
-        /*
-         * Set status bar colour.
-         */
+        /* Set status bar colour. */
         if (Build.VERSION.SDK_INT >= 21) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -68,6 +62,62 @@ public class MainActivity extends AppCompatActivity {
                             R.color.luas_purple_statusbar)
             );
         }
+
+        /*
+         * Initialise ViewPager and TabLayout.
+         */
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
+
+        tabLayout.addTab(tabLayout.newTab().setTag(RED_LINE).setText(getString(R.string.tab_red_line)));
+        tabLayout.addTab(tabLayout.newTab().setTag(GREEN_LINE).setText(getString(R.string.tab_green_line)));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.luas_purple));
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+
+                setTabIndicatorColor(tabLayout);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        final PagerAdapter pagerAdapter = new PagerAdapter(
+                getSupportFragmentManager(),
+                tabLayout.getTabCount()
+        );
+
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        setTabIndicatorColor(tabLayout);
+
+        /*
+         * Use a Floating Action Button (FAB) to open the Favourites Dialog.
+         */
+        FloatingActionButton fabFavourites =
+                (FloatingActionButton) findViewById(R.id.fab_favourites);
+        fabFavourites.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TutorialCardView tutorialCardViewFavourites =
+                        (TutorialCardView) findViewById(R.id.tutorialcardview_favourites);
+                tutorialCardViewFavourites.setVisibility(View.GONE);
+
+                /* Open Favourites DialogFragment. */
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FavouritesDialog favouritesDialog = new FavouritesDialog();
+                favouritesDialog.show(fragmentManager, "dialog_favourites");
+            }
+        });
     }
 
     @Override
@@ -78,5 +128,21 @@ public class MainActivity extends AppCompatActivity {
          * If the Intent has changed, update the Activity's Intent.
          */
         setIntent(intent);
+    }
+
+    /**
+     * Set the colour of the tab indicator to either red or green.
+     * @param tabLayout TabLayout to manipulate.
+     */
+    private void setTabIndicatorColor(TabLayout tabLayout) {
+        if (tabLayout.getSelectedTabPosition() == 0) {
+            tabLayout.setSelectedTabIndicatorColor(
+                    ContextCompat.getColor(getApplicationContext(), R.color.tab_red_line)
+            );
+        } else {
+            tabLayout.setSelectedTabIndicatorColor(
+                    ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+            );
+        }
     }
 }

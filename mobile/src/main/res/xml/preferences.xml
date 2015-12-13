@@ -7,6 +7,6 @@
         android:key="@string/pref_key_default_stop"
         android:title="@string/pref_title_default_stop"
         android:defaultValue="@string/none"
-        android:entries="@array/array_all_stops"
-        android:entryValues="@array/array_all_stops" />
+        android:entries="@array/array_stops_all"
+        android:entryValues="@array/array_stops_all" />
 </PreferenceScreen>
