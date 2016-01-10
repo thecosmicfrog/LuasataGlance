@@ -185,13 +185,13 @@ public class LineFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        /* Inflate the layout for this fragment. */
         rootView = inflater.inflate(resLayoutFragmentLine, container, false);
 
-        // Initialise correct locale.
+        /* Initialise correct locale. */
         localeDefault = Locale.getDefault().toString();
 
-        // Instantiate a new StopNameIdMap.
+        /* Instantiate a new StopNameIdMap. */
         mapStopNameId = new StopNameIdMap(localeDefault);
 
         if (isAdded())
@@ -217,7 +217,7 @@ public class LineFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        // Stop the auto-reload TimerTask.
+        /* Stop the auto-reload TimerTask. */
         timerTaskReload.cancel();
     }
 
@@ -261,7 +261,7 @@ public class LineFragment extends Fragment {
                 setTabAndSpinner(Preferences.loadDefaultStopName(getContext()));
             }
 
-            // Display tutorial for selecting a stop, if required.
+            /* Display tutorial for selecting a stop, if required. */
             StopForecastUtil.displayTutorial(rootView, TUTORIAL_SELECT_STOP, true);
 
             /*
@@ -296,10 +296,10 @@ public class LineFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        // Set the menu to a class variable for easy manipulation.
+        /* Set the menu to a class variable for easy manipulation. */
         this.menu = menu;
 
-        // Inflate the menu; this adds items to the action bar if it is present.
+        /* Inflate the menu; this adds items to the action bar if it is present. */
         inflater.inflate(resMenuLine, menu);
     }
 
@@ -363,10 +363,10 @@ public class LineFragment extends Fragment {
 
                         shouldAutoReload = true;
 
-                        // Hide the select stop tutorial, if it is visible.
+                        /* Hide the select stop tutorial, if it is visible. */
                         StopForecastUtil.displayTutorial(rootView, TUTORIAL_SELECT_STOP, false);
 
-                        // Show the notifications tutorial.
+                        /* Show the notifications tutorial. */
                         StopForecastUtil.displayTutorial(rootView, TUTORIAL_NOTIFICATIONS, true);
 
                         /*
@@ -402,10 +402,10 @@ public class LineFragment extends Fragment {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        // Start by clearing the currently-displayed stop forecast.
+                        /* Start by clearing the currently-displayed stop forecast. */
                         StopForecastUtil.clearLineStopForecast(rootView, line);
 
-                        // Start the refresh animation.
+                        /* Start the refresh animation. */
                         swipeRefreshLayout.setRefreshing(true);
                         loadStopForecast(
                                 Preferences.loadSelectedStopName(getContext(), line)
@@ -533,7 +533,7 @@ public class LineFragment extends Fragment {
         timerTaskReload = new TimerTask() {
             @Override
             public void run() {
-                // Check Fragment is attached to Activity in order to avoid NullPointerExceptions.
+                /* Check Fragment is attached to Activity to avoid NullPointerExceptions. */
                 if (isAdded()){
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -551,7 +551,7 @@ public class LineFragment extends Fragment {
             }
         };
 
-        // Schedule the auto-reload task to run.
+        /* Schedule the auto-reload task to run. */
         new Timer().schedule(timerTaskReload, delayTimeMillis, RELOAD_TIME_MILLIS);
     }
 
@@ -593,17 +593,17 @@ public class LineFragment extends Fragment {
         Callback<ApiTimes> callback = new Callback<ApiTimes>() {
             @Override
             public void success(ApiTimes apiTimes, Response response) {
-                // Check Fragment is attached to Activity in order to avoid NullPointerExceptions.
+                /* Check Fragment is attached to Activity to avoid NullPointerExceptions. */
                 if (isAdded()) {
-                    // Then create a stop forecast with this data.
+                    /* Then create a stop forecast with this data. */
                     StopForecast stopForecast = StopForecastUtil.createStopForecast(apiTimes);
 
                     StopForecastUtil.clearLineStopForecast(rootView, line);
 
-                    // Update the stop forecast.
+                    /* Update the stop forecast. */
                     updateStopForecast(stopForecast);
 
-                    // Stop the refresh animations.
+                    /* Stop the refresh animations. */
                     setIsLoading(false);
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -659,7 +659,7 @@ public class LineFragment extends Fragment {
         String mins = " " + getResources().getString(R.string.mins);
         String minOrMins;
 
-        // If a valid stop forecast exists...
+        /* If a valid stop forecast exists... */
         if (stopForecast != null) {
             String status;
 

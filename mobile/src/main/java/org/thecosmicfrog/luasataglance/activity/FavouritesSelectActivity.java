@@ -85,12 +85,12 @@ public class FavouritesSelectActivity extends AppCompatActivity {
         List<String> listAllStops = new ArrayList<>(redLineListStops);
         listAllStops.addAll(greenLineListStops);
 
-        // Remove the two "Select a stop..." entries from the List.
+        /* Remove the two "Select a stop..." entries from the List. */
         for (int i = 0; i < 2; i++) {
             listAllStops.remove(getResources().getString(R.string.select_a_stop));
         }
 
-        // ArrayAdapter for favourite stops.
+        /* ArrayAdapter for favourite stops. */
         adapterFavouriteStops = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.checkedtextview_stops,
@@ -182,7 +182,7 @@ public class FavouritesSelectActivity extends AppCompatActivity {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
 
-        // We're finished here. Close the activity.
+        /* We're finished here. Close the activity. */
         finish();
     }
 }

@@ -101,7 +101,7 @@ public class SpinnerCardView extends CardView {
                 break;
 
             default:
-                // If for some reason the line doesn't make sense.
+                /* If for some reason the line doesn't make sense. */
                 Log.wtf(LOG_TAG, "Invalid line specified.");
         }
 

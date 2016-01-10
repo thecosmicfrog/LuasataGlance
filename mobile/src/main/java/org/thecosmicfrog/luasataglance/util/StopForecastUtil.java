@@ -155,7 +155,7 @@ public final class StopForecastUtil {
                 break;
 
             default:
-                // If for some reason the line doesn't make sense.
+                /* If for some reason the line doesn't make sense. */
                 Log.wtf(LOG_TAG, "Invalid line specified.");
         }
     }
@@ -200,10 +200,10 @@ public final class StopForecastUtil {
 
         Preferences.saveHasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS, true);
 
-        // We're done with the notifications tutorial. Hide it.
+        /* We're done with the notifications tutorial. Hide it. */
         displayTutorial(rootView, TUTORIAL_NOTIFICATIONS, false);
 
-        // Then, display the final tutorial.
+        /* Then, display the final tutorial. */
         displayTutorial(rootView, TUTORIAL_FAVOURITES, true);
 
         Preferences.saveNotifyStopName(
@@ -305,7 +305,7 @@ public final class StopForecastUtil {
                 break;
 
             default:
-                // If for some reason the specified tutorial doesn't make sense.
+                /* If for some reason the specified tutorial doesn't make sense. */
                 Log.wtf(LOG_TAG, "Invalid tutorial specified.");
         }
     }
@@ -348,7 +348,7 @@ public final class StopForecastUtil {
                 break;
 
             default:
-                // If for some reason the line doesn't make sense.
+                /* If for some reason the line doesn't make sense. */
                 Log.wtf(LOG_TAG, "Invalid line specified.");
         }
     }
@@ -375,7 +375,7 @@ public final class StopForecastUtil {
                         break;
 
                     default:
-                        // If for some reason the direction doesn't make sense.
+                        /* If for some reason the direction doesn't make sense. */
                         Log.wtf(LOG_TAG, "Invalid direction: " + tram.getDirection());
                 }
             }

@@ -95,7 +95,7 @@ public class SettingsActivity extends PreferenceActivity
      * is changed.)
      */
     private void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
+        /* Set the listener to watch for value changes. */
         preference.setOnPreferenceChangeListener(this);
 
         /*
@@ -127,7 +127,9 @@ public class SettingsActivity extends PreferenceActivity
             if (prefIndex >= 0)
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
         } else {
-            // For other preferences, set the summary to the value's simple string representation.
+            /*
+             * For other preferences, set the summary to the value's simple string representation.
+             */
             preference.setSummary(stringValue);
         }
 

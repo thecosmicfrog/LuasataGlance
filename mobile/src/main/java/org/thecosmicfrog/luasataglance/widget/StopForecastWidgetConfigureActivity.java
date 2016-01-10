@@ -100,12 +100,12 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
         List<String> listAllStops = new ArrayList<>(redLineListStops);
         listAllStops.addAll(greenLineListStops);
 
-        // Remove the two "Select a stop..." entries from the List.
+        /* Remove the two "Select a stop..." entries from the List. */
         for (int i = 0; i < 2; i++) {
             listAllStops.remove(getResources().getString(R.string.select_a_stop));
         }
 
-        // ArrayAdapter for favourite stops.
+        /* ArrayAdapter for favourite stops. */
         adapterSelectedStops = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.checkedtextview_stops,
@@ -151,7 +151,7 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
             }
         });
 
-        // Find the widget id from the intent.
+        /* Find the widget id from the intent. */
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
@@ -159,8 +159,10 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        // If this activity was started with an intent without an app widget ID, finish with an
-        // error.
+        /*
+         * If this activity was started with an intent without an app widget ID, finish with an
+         * error.
+         */
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
         }
@@ -186,16 +188,16 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
 
         final Context context = StopForecastWidgetConfigureActivity.this;
 
-        // It is the responsibility of the configuration activity to update the app widget.
+        /* It is the responsibility of the configuration activity to update the app widget. */
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         StopForecastWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
 
-        // Make sure we pass back the original appWidgetId.
+        /* Make sure we pass back the original appWidgetId. */
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         setResult(RESULT_OK, resultValue);
 
-        // We're finished here. Close the activity.
+        /* We're finished here. Close the activity. */
         finish();
     }
 }

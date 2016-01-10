@@ -73,10 +73,10 @@ public class WearMessageListenerService extends WearableListenerService {
     public void onCreate() {
         super.onCreate();
 
-        // Initialise correct locale.
+        /* Initialise correct locale. */
         String localeDefault = Locale.getDefault().toString();
 
-        // Instantiate a new StopNameIdMap.
+        /* Instantiate a new StopNameIdMap. */
         mapStopNameId = new StopNameIdMap(localeDefault);
 
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
@@ -156,7 +156,7 @@ public class WearMessageListenerService extends WearableListenerService {
         Callback<ApiTimes> callback = new Callback<ApiTimes>() {
             @Override
             public void success(ApiTimes apiTimes, Response response) {
-                // Then create a stop forecast with this data.
+                /* Then create a stop forecast with this data. */
                 final StopForecast stopForecast = createStopForecast(apiTimes);
 
                 new Thread(new Runnable() {
@@ -227,7 +227,7 @@ public class WearMessageListenerService extends WearableListenerService {
                         break;
 
                     default:
-                        // If for some reason the direction doesn't make sense.
+                        /* If for some reason the direction doesn't make sense. */
                         Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
                 }
             }
@@ -321,7 +321,7 @@ public class WearMessageListenerService extends WearableListenerService {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
 
-        // Something has gone wrong. Return an empty ArrayList.
+        /* Something has gone wrong. Return an empty ArrayList. */
         return new ArrayList<>();
     }
 }

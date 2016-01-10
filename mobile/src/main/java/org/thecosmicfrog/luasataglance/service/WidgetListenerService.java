@@ -106,14 +106,14 @@ public class WidgetListenerService extends Service {
         if (isNetworkAvailable(getApplicationContext())) {
             Log.i(LOG_TAG, "Network available. Starting WidgetListenerService.");
 
-            // Initialise correct locale.
+            /* Initialise correct locale. */
             localeDefault = Locale.getDefault().toString();
 
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
 
             int[] allWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 
-            // Ensure sure we actually have an array of widget IDs.
+            /* Ensure sure we actually have an array of widget IDs. */
             if (allWidgetIds != null) {
                 for (int widgetId : allWidgetIds) {
                     RemoteViews views = new RemoteViews(
@@ -159,7 +159,7 @@ public class WidgetListenerService extends Service {
 
         stopSelf();
 
-        // Necessary? Trivial? Further research required.
+        /* Necessary? Trivial? Further research required. */
         return START_NOT_STICKY;
     }
 
@@ -170,7 +170,7 @@ public class WidgetListenerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
+        /* TODO: Return the communication channel to the service. */
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -196,21 +196,21 @@ public class WidgetListenerService extends Service {
     private void loadStopForecast(final Context context,final AppWidgetManager appWidgetManager,
                                   final int widgetId, final RemoteViews views, String stopName) {
         if (stopName != null) {
-            // API constants.
+            /* API constants. */
             final String API_URL_PREFIX = "https://api";
             final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
             final String API_ACTION = "times";
 
-            // Instantiate a new EnglishGaeilgeMap.
+            /* Instantiate a new EnglishGaeilgeMap. */
             mapEnglishGaeilge = new EnglishGaeilgeMap();
 
-            // Instantiate a new StopNameIdMap.
+            /* Instantiate a new StopNameIdMap. */
             StopNameIdMap mapStopNameId = new StopNameIdMap(localeDefault);
 
-            // Set the stop name in the widget.
+            /* Set the stop name in the widget. */
             views.setTextViewText(TEXTVIEW_STOP_NAME, stopName);
 
-            // Keep track of the selected stop.
+            /* Keep track of the selected stop. */
             saveSelectedStopName(context, stopName);
 
             setIsLoading(appWidgetManager, widgetId, views, true);
@@ -242,15 +242,15 @@ public class WidgetListenerService extends Service {
             Callback<ApiTimes> callback = new Callback<ApiTimes>() {
                 @Override
                 public void success(ApiTimes apiTimes, Response response) {
-                    // Then create a stop forecast with this data.
+                    /* Then create a stop forecast with this data. */
                     StopForecast stopForecast = createStopForecast(apiTimes);
 
-                    // Update the stop forecast.
+                    /* Update the stop forecast. */
                     updateStopForecast(context, views, stopForecast);
 
                     appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
 
-                    // Stop the refresh animations.
+                    /* Stop the refresh animations. */
                     setIsLoading(appWidgetManager, widgetId, views, false);
                 }
 
@@ -315,7 +315,7 @@ public class WidgetListenerService extends Service {
                         break;
 
                     default:
-                        // If for some reason the direction doesn't make sense.
+                        /* If for some reason the direction doesn't make sense. */
                         Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
                 }
             }
@@ -475,7 +475,7 @@ public class WidgetListenerService extends Service {
 
         mapEnglishGaeilge = new EnglishGaeilgeMap();
 
-        // If a valid stop forecast exists...
+        /* If a valid stop forecast exists... */
         if (stopForecast != null) {
             if (stopForecast.getMessage() != null) {
                 if (message.contains(getString(R.string.message_success))) {

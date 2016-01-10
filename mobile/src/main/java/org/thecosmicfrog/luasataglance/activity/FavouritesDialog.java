@@ -80,7 +80,7 @@ public class FavouritesDialog extends DialogFragment {
 
         listFavouriteStops = getListFavouriteStops();
 
-        // ArrayAdapter for favourite stops.
+        /* ArrayAdapter for favourite stops. */
         adapterFavouriteStops = new ArrayAdapter<>(
                 getContext(),
                 R.layout.listview_favourites,
@@ -122,7 +122,7 @@ public class FavouritesDialog extends DialogFragment {
                             )
                     );
 
-                    // We're done here. Dismiss the dialog.
+                    /* We're done here. Dismiss the dialog. */
                     getDialog().dismiss();
                 }
             });
@@ -148,7 +148,7 @@ public class FavouritesDialog extends DialogFragment {
             @Override
             public void run() {
                 if (listFavouriteStops != null) {
-                    // ArrayAdapter for favourite stops.
+                    /* ArrayAdapter for favourite stops. */
                     adapterFavouriteStops = new ArrayAdapter<>(
                             getContext(),
                             R.layout.listview_favourites,
@@ -223,7 +223,7 @@ public class FavouritesDialog extends DialogFragment {
             getContext().deleteFile(FILE_FAVOURITES);
         }
 
-        // Something has gone wrong. Return an empty ArrayList.
+        /* Something has gone wrong. Return an empty ArrayList. */
         return new ArrayList<>();
     }
 }

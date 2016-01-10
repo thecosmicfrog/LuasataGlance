@@ -26,7 +26,7 @@ import java.util.HashMap;
 public class StopNameIdMap extends HashMap<String, String> {
     public StopNameIdMap(String localeDefault) {
         if (localeDefault.startsWith("ga")) {
-            // Red Line
+            /* Red Line */
             put("Iosta na Rinne", "TPT");
             put("Duga Spencer", "SDK");
             put("Cearnóg an Mhéara - CNÉ", "MYS");
@@ -60,7 +60,7 @@ public class StopNameIdMap extends HashMap<String, String> {
             put("Baile Uí Fhoirtcheirn", "FOR");
             put("Teach Sagard", "SAG");
 
-            // Green Line
+            /* Green Line */
             put("Faiche Stiabhna", "STS");
             put("Sráid Fhearchair", "HAR");
             put("Charlemont", "CHA");
@@ -84,7 +84,7 @@ public class StopNameIdMap extends HashMap<String, String> {
             put("Coill na Silíní", "CHE");
             put("Gleann Bhríde", "BRI");
         } else {
-            // Red Line
+            /* Red Line */
             put("The Point", "TPT");
             put("Spencer Dock", "SDK");
             put("Mayor Square - NCI", "MYS");
@@ -118,7 +118,7 @@ public class StopNameIdMap extends HashMap<String, String> {
             put("Fortunestown", "FOR");
             put("Saggart", "SAG");
 
-            // Green Line
+            /* Green Line */
             put("St. Stephen's Green", "STS");
             put("Harcourt", "HAR");
             put("Charlemont", "CHA");

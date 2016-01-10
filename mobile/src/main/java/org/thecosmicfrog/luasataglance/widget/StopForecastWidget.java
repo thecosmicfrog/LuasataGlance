@@ -64,7 +64,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them.
+        /* There may be multiple widgets active, so update all of them. */
         for (int appWidgetId : appWidgetIds) {
             Log.i(LOG_TAG, "Widget updating with ID: " + appWidgetId);
 
@@ -213,7 +213,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                 selectedStopName
         );
 
-        // Start the WidgetListenerService.
+        /* Start the WidgetListenerService. */
         context.startService(intentWidgetListenerService);
     }
 
@@ -261,7 +261,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-        // Construct the RemoteViews object.
+        /* Construct the RemoteViews object. */
         RemoteViews views =
                 new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
 
@@ -300,7 +300,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                 R.id.linearlayout_stop_forecast, pendingIntentWidgetClickStopForecast
         );
 
-        // Instruct the widget manager to update the widget.
+        /* Instruct the widget manager to update the widget. */
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 }

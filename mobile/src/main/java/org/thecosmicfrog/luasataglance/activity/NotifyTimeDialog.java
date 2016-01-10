@@ -96,10 +96,10 @@ public class NotifyTimeDialog extends Dialog {
                         mapNotifyTimes.get(spinnerNotifyTime.getSelectedItem().toString())
                 );
 
-                // Send the Intent.
+                /* Send the Intent. */
                 getContext().sendBroadcast(intent);
 
-                // Dismiss the Dialog.
+                /* Dismiss the Dialog. */
                 dismiss();
             }
         });

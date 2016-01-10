@@ -31,7 +31,7 @@ public class EnglishGaeilgeMap extends HashMap<String, String> {
         put("No trams forecast", "Aon tramanna ag súil");
         put("Tap to load times", "Cliceáil amanna a fháil");
 
-        // Red Line
+        /* Red Line */
         put("The Point", "Iosta na Rinne");
         put("Spencer Dock", "Duga Spencer");
         put("Mayor Square - NCI", "Cearnóg an Mhéara - CNÉ");
@@ -65,7 +65,7 @@ public class EnglishGaeilgeMap extends HashMap<String, String> {
         put("Fortunestown", "Baile Uí Fhoirtcheirn");
         put("Saggart", "Teach Sagard");
 
-        // Green Line
+        /* Green Line */
         put("St. Stephen's Green", "Faiche Stiabhna");
         put("Harcourt", "Sráid Fhearchair");
         put("Charlemont", "Charlemont");
