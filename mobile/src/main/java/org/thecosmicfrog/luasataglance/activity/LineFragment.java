@@ -119,8 +119,8 @@ public class LineFragment extends Fragment {
         LineFragment lineFragment = new LineFragment();
         Bundle bundle = new Bundle();
 
-        bundle.putInt(RES_ARRAY_STOPS_RED_LINE, R.array.array_stops_red_line);
-        bundle.putInt(RES_ARRAY_STOPS_GREEN_LINE, R.array.array_stops_green_line);
+        bundle.putInt(RES_ARRAY_STOPS_RED_LINE, R.array.array_stops_redline);
+        bundle.putInt(RES_ARRAY_STOPS_GREEN_LINE, R.array.array_stops_greenline);
 
         switch (line) {
             case RED_LINE:

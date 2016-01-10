@@ -75,9 +75,9 @@ public class FavouritesSelectActivity extends AppCompatActivity {
          * two Lists.
          */
         String[] redLineArrayStops =
-                getResources().getStringArray(R.array.array_stops_red_line);
+                getResources().getStringArray(R.array.array_stops_redline);
         String[] greenLineArrayStops =
-                getResources().getStringArray(R.array.array_stops_green_line);
+                getResources().getStringArray(R.array.array_stops_greenline);
 
         List<String> redLineListStops = Arrays.asList(redLineArrayStops);
         List<String> greenLineListStops = Arrays.asList(greenLineArrayStops);

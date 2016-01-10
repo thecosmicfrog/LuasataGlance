@@ -120,7 +120,7 @@
     <!--
         Stop arrays
     -->
-    <string-array name="red_line_array_stops">
+    <string-array name="array_stops_redline">
         <item>Roghnaigh stad\u2026</item>
         <item>Iosta na Rinne</item>
         <item>Duga Spencer</item>
@@ -156,7 +156,7 @@
         <item>Teach Sagard</item>
     </string-array>
 
-    <string-array name="green_line_array_stops">
+    <string-array name="array_stops_greenline">
         <item>Roghnaigh stad\u2026</item>
         <item>Faiche Stiabhna</item>
         <item>Sráid Fhearchair</item>
@@ -182,7 +182,7 @@
         <item>Gleann Bhríde</item>
     </string-array>
 
-    <string-array name="array_all_stops">
+    <string-array name="array_stops_all">
         <item>Aon cheann</item>
         <item>Iosta na Rinne</item>
         <item>Duga Spencer</item>

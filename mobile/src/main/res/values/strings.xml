@@ -120,7 +120,7 @@
     <!--
         Stop arrays
     -->
-    <string-array name="array_stops_red_line">
+    <string-array name="array_stops_redline">
         <item>Select a stop\u2026</item>
         <item>The Point</item>
         <item>Spencer Dock</item>
@@ -156,7 +156,7 @@
         <item>Saggart</item>
     </string-array>
 
-    <string-array name="array_stops_green_line">
+    <string-array name="array_stops_greenline">
         <item>Select a stop\u2026</item>
         <item>St. Stephen\'s Green</item>
         <item>Harcourt</item>

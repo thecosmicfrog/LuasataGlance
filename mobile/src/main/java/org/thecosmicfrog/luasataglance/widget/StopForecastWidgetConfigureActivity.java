@@ -89,9 +89,9 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
          * from those arrays. Finally, build a List of all stops by concatenating the first
          * two Lists.
          */
-        String[] redLineArrayStops = getResources().getStringArray(R.array.array_stops_red_line);
+        String[] redLineArrayStops = getResources().getStringArray(R.array.array_stops_redline);
         String[] greenLineArrayStops = getResources().getStringArray(
-                R.array.array_stops_green_line
+                R.array.array_stops_greenline
         );
 
         List<String> redLineListStops = Arrays.asList(redLineArrayStops);
