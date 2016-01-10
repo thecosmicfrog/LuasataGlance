@@ -106,6 +106,7 @@ public class LineFragment extends Fragment {
     private StatusCardView statusCardView;
     private StopForecastCardView inboundStopForecastCardView;
     private StopForecastCardView outboundStopForecastCardView;
+    private boolean isInitialised;
     private TimerTask timerTaskReload;
     private boolean shouldAutoReload = false;
     private String line;
@@ -194,7 +195,7 @@ public class LineFragment extends Fragment {
         mapStopNameId = new StopNameIdMap(localeDefault);
 
         if (isAdded())
-            initFragment();
+            isInitialised = initFragment();
 
         /*
          * If an Intent did not bring us to this Activity and there is a stop name saved in shared
@@ -276,6 +277,22 @@ public class LineFragment extends Fragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isInitialised) {
+            /* When this tab is visible to the user, load a stop forecast. */
+            if (isVisibleToUser) {
+                String stopName = spinnerCardView.getSpinnerStops().getSelectedItem().toString();
+
+                Preferences.saveSelectedStopName(getContext(), NO_LINE, stopName);
+
+                loadStopForecast(stopName);
+            }
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
@@ -313,7 +330,7 @@ public class LineFragment extends Fragment {
     /**
      * Initialise Fragment and its views.
      */
-    private void initFragment() {
+    private boolean initFragment() {
         setIsLoading(false);
 
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tablayout);
@@ -416,6 +433,8 @@ public class LineFragment extends Fragment {
 
         /* Set up onClickListeners for stop forecasts in both tabs. */
         StopForecastUtil.initStopForecastOnClickListeners(rootView, line);
+
+        return true;
     }
 
     /**
@@ -425,6 +444,10 @@ public class LineFragment extends Fragment {
     private void setIsLoading(final boolean loading) {
         final ProgressBar progressBar =
                 (ProgressBar) rootView.findViewById(getArguments().getInt(RES_PROGRESSBAR));
+
+        /* If the progress bar has not been properly initialised, get out of here. */
+        if (progressBar == null)
+            return;
 
         /*
          * Only run if Fragment is attached to Activity. Without this check, the app is liable
@@ -537,7 +560,6 @@ public class LineFragment extends Fragment {
      * @param stopName The stop for which to load a stop forecast.
      */
     private void loadStopForecast(String stopName) {
-        final Fragment fragment = this;
         final String API_URL_PREFIX = "https://api";
         final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
         final String API_ACTION = "times";
