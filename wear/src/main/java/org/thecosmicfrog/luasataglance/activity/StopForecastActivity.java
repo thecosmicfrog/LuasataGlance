@@ -72,7 +72,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
         initGoogleApiClient();
 
-        // Add the MessageListener.
+        /* Add the MessageListener. */
         Wearable.MessageApi.addListener(googleApiClient, this);
 
         retrieveDeviceNode();
@@ -116,7 +116,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
-                            // Start the refresh animation.
+                            /* Start the refresh animation. */
                             swipeRefreshLayout.setRefreshing(true);
 
                             requestStopTimesFromHostDevice(getIntent().getStringExtra("stopName"));
@@ -166,7 +166,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
          */
         timerTaskReload.cancel();
 
-        // Remove the MessageListener.
+        /* Remove the MessageListener. */
         Wearable.MessageApi.removeListener(googleApiClient, this);
     }
 
@@ -188,7 +188,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                     StopForecast stopForecast =
                             (StopForecast) Serializer.deserialize(messageEvent.getData());
 
-                    // If a valid stop forecast exists...
+                    /* If a valid stop forecast exists... */
                     if (stopForecast != null) {
                         if (stopForecast.getMessage().contains(
                                 getString(R.string.message_success))) {
@@ -288,7 +288,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                         }
                     }
 
-                    // Stop the refresh animations.
+                    /* Stop the refresh animations. */
                     swipeRefreshLayout.setRefreshing(false);
                     setIsLoading(false);
                 }
@@ -334,7 +334,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
             }
         };
 
-        // Schedule the auto-reload task to run.
+        /* Schedule the auto-reload task to run. */
         new Timer().schedule(timerTaskReload, delayTimeMillis, reloadTimeMillis);
     }
 

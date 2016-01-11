@@ -41,13 +41,13 @@ public class StopForecast implements Serializable {
     }
 
     public void addInboundTram(Tram t) {
-        // Check there are actually inbound trams running.
+        /* Check there are actually inbound trams running. */
         if (t != null)
             inboundTrams.add(t);
     }
 
     public void addOutboundTram(Tram t) {
-        // Check there are actually outbound trams running.
+        /* Check there are actually outbound trams running. */
         if (t != null)
             outboundTrams.add(t);
     }

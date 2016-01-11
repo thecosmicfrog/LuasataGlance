@@ -73,12 +73,12 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
 
         initGoogleApiClient();
 
-        // Add the MessageListener.
+        /* Add the MessageListener. */
         Wearable.MessageApi.addListener(googleApiClient, this);
 
         retrieveDeviceNodeAndSendRequestToHost(REQUEST_FETCH_FAVOURITES);
 
-        // Load the screen shape from shared preferences.
+        /* Load the screen shape from shared preferences. */
         shape = Preferences.loadScreenShape(getApplicationContext());
 
         stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
@@ -96,9 +96,7 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
                          */
                         retrieveDeviceNodeAndSendRequestToHost(REQUEST_OPEN_MOBILE_APP);
 
-                        /*
-                         * Inform the user the mobile app is opening.
-                         */
+                        /* Inform the user the mobile app is opening. */
                         Toast.makeText(
                                 getApplicationContext(),
                                 getResources().getString(
@@ -107,9 +105,7 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
                                 Toast.LENGTH_LONG
                         ).show();
 
-                        /*
-                         * No point in leaving this Activity open. Finish up.
-                         */
+                        /* No point in leaving this Activity open. Finish up. */
                         finish();
                     }
                 });
@@ -121,7 +117,7 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
     protected void onDestroy() {
         super.onDestroy();
 
-        // Remove the MessageListener.
+        /* Remove the MessageListener. */
         Wearable.MessageApi.removeListener(googleApiClient, this);
     }
 
