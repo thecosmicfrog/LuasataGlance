@@ -34,7 +34,6 @@ public class SpinnerCardView extends CardView {
 
     private final String LOG_TAG = SpinnerCardView.class.getSimpleName();
 
-    private String line;
     private ArrayAdapter<CharSequence> adapterStops;
     private Spinner spinnerStops;
 
@@ -86,7 +85,6 @@ public class SpinnerCardView extends CardView {
         final String RED_LINE = "red_line";
         final String GREEN_LINE = "green_line";
 
-        this.line = line;
         int resArrayStops = 0;
 
         switch (line) {

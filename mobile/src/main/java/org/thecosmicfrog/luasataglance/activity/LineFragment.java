@@ -281,6 +281,10 @@ public class LineFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
 
         if (isInitialised) {
+            /* If the Spinner's selected item is "Select a stop...", get out of here. */
+            if (spinnerCardView.getSpinnerStops().getSelectedItemPosition() == 0)
+                return;
+
             /* When this tab is visible to the user, load a stop forecast. */
             if (isVisibleToUser) {
                 String stopName = spinnerCardView.getSpinnerStops().getSelectedItem().toString();
