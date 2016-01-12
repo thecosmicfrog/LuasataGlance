@@ -22,6 +22,9 @@
 package org.thecosmicfrog.luasataglance.view;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -63,6 +66,17 @@ public class SpinnerCardView extends CardView {
         inflate(context, R.layout.cardview_spinner, this);
 
         spinnerStops = (Spinner) findViewById(R.id.card_view_spinner);
+
+        /*
+         * Set the Spinner's colour to Luas purple.
+         */
+        Drawable spinnerDrawable = spinnerStops.getBackground().getConstantState().newDrawable();
+        spinnerDrawable.setColorFilter(
+                ContextCompat.getColor(getContext(), R.color.luas_purple),
+                PorterDuff.Mode.SRC_ATOP
+        );
+
+        spinnerStops.setBackground(spinnerDrawable);
     }
 
     /**
