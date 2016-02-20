@@ -63,4 +63,23 @@
             android:src="@drawable/ic_favourites"
             app:rippleColor="@color/favourites_yellow" />
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="6dp">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_maps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="80dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
+            android:src="@android:drawable/ic_dialog_map"
+            app:rippleColor="@color/favourites_yellow" />
+    </RelativeLayout>
 </RelativeLayout>

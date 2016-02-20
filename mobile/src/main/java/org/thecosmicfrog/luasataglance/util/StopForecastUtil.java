@@ -51,116 +51,6 @@ public final class StopForecastUtil {
     private static final String STOP_FORECAST = "stop_forecast";
 
     /**
-     * Initialise OnClickListeners for a stop forecast.
-     * @param rootView Root View.
-     */
-    public static void initStopForecastOnClickListeners(final View rootView, String line) {
-        switch (line) {
-            case RED_LINE:
-                final SpinnerCardView redLineSpinnerCardView =
-                        (SpinnerCardView) rootView.findViewById(
-                                R.id.redline_spinner_card_view
-                        );
-                final StopForecastCardView redLineInboundStopForecastCardView =
-                        (StopForecastCardView) rootView.findViewById(
-                                R.id.redline_inbound_stopforecastcardview
-                        );
-                final StopForecastCardView redLineOutboundStopForecastCardView =
-                        (StopForecastCardView) rootView.findViewById(
-                                R.id.redline_outbound_stopforecastcardview
-                        );
-
-                TableRow[] redLineTableRowInboundStops =
-                        redLineInboundStopForecastCardView.getTableRowStops();
-                TableRow[] redLineTableRowOutboundStops =
-                        redLineOutboundStopForecastCardView.getTableRowStops();
-
-                for (int i = 0; i < 4; i++) {
-                    final int index = i;
-
-                    redLineTableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showNotifyTimeDialog(
-                                    rootView,
-                                    redLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                                    redLineInboundStopForecastCardView.getTextViewStopTimes(),
-                                    index
-                            );
-                        }
-                    });
-
-                    redLineTableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showNotifyTimeDialog(
-                                    rootView,
-                                    redLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                                    redLineOutboundStopForecastCardView.getTextViewStopTimes(),
-                                    index
-                            );
-                        }
-                    });
-                }
-
-                break;
-
-            case GREEN_LINE:
-                final SpinnerCardView greenLineSpinnerCardView =
-                        (SpinnerCardView) rootView.findViewById(
-                                R.id.greenline_spinner_card_view
-                        );
-                final StopForecastCardView greenLineInboundStopForecastCardView =
-                        (StopForecastCardView) rootView.findViewById(
-                                R.id.greenline_inbound_stopforecastcardview
-                        );
-                final StopForecastCardView greenLineOutboundStopForecastCardView =
-                        (StopForecastCardView) rootView.findViewById(
-                                R.id.greenline_outbound_stopforecastcardview
-                        );
-
-                TableRow[] greenLineTableRowInboundStops =
-                        greenLineInboundStopForecastCardView.getTableRowStops();
-                TableRow[] greenLineTableRowOutboundStops =
-                        greenLineOutboundStopForecastCardView.getTableRowStops();
-
-                for (int i = 0; i < 4; i++) {
-                    final int index = i;
-
-                    greenLineTableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showNotifyTimeDialog(
-                                    rootView,
-                                    greenLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                                    greenLineInboundStopForecastCardView.getTextViewStopTimes(),
-                                    index
-                            );
-                        }
-                    });
-
-                    greenLineTableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showNotifyTimeDialog(
-                                    rootView,
-                                    greenLineSpinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                                    greenLineOutboundStopForecastCardView.getTextViewStopTimes(),
-                                    index
-                            );
-                        }
-                    });
-                }
-
-                break;
-
-            default:
-                /* If for some reason the line doesn't make sense. */
-                Log.wtf(LOG_TAG, "Invalid line specified.");
-        }
-    }
-
-    /**
      * Show dialog for choosing notification times.
      * @param rootView          Root View.
      * @param stopName          Stop name to notify for.
@@ -311,49 +201,6 @@ public final class StopForecastUtil {
     }
 
     /**
-     * Clear the inbound and outbound stop forecast displayed in the specified tab.
-     * @param rootView Root View.
-     * @param line     Tab (Red or Green Line) to clear stop forecast for.
-     */
-    public static void clearLineStopForecast(View rootView, String line) {
-        switch (line) {
-            case RED_LINE:
-                StopForecastCardView redLineInboundStopForecastCardView =
-                        (StopForecastCardView) rootView.findViewById(
-                                R.id.redline_inbound_stopforecastcardview
-                        );
-                StopForecastCardView redLineOutboundStopForecastCardView =
-                        (StopForecastCardView) rootView.findViewById(
-                                R.id.redline_outbound_stopforecastcardview
-                        );
-
-                redLineInboundStopForecastCardView.clearStopForecast();
-                redLineOutboundStopForecastCardView.clearStopForecast();
-
-                break;
-
-            case GREEN_LINE:
-                StopForecastCardView greenLineInboundStopForecastCardView =
-                        (StopForecastCardView) rootView.findViewById(
-                                R.id.greenline_inbound_stopforecastcardview
-                        );
-                StopForecastCardView greenLineOutboundStopForecastCardView =
-                        (StopForecastCardView) rootView.findViewById(
-                                R.id.greenline_outbound_stopforecastcardview
-                        );
-
-                greenLineInboundStopForecastCardView.clearStopForecast();
-                greenLineOutboundStopForecastCardView.clearStopForecast();
-
-                break;
-
-            default:
-                /* If for some reason the line doesn't make sense. */
-                Log.wtf(LOG_TAG, "Invalid line specified.");
-        }
-    }
-
-    /**
      * Create a usable stop forecast with the data returned from the server.
      * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
      * @return Usable stop forecast.
@@ -386,3 +233,4 @@ public final class StopForecastUtil {
         return stopForecast;
     }
 }
+

@@ -118,6 +118,20 @@ public class MainActivity extends AppCompatActivity {
                 favouritesDialog.show(fragmentManager, "dialog_favourites");
             }
         });
+
+        /*
+         * Use a Floating Action Button (FAB) to open the Maps Dialog.
+         */
+        FloatingActionButton fabMaps =
+                (FloatingActionButton) findViewById(R.id.fab_maps);
+        fabMaps.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                /* Open Maps Activity. */
+                startActivity(
+                        new Intent(getApplicationContext(), MapsActivity.class)
+                );
+            }
+        });
     }
 
     @Override

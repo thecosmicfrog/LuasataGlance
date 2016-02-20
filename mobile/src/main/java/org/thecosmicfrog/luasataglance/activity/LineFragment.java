@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
+import android.widget.TableRow;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
@@ -87,6 +88,7 @@ public class LineFragment extends Fragment {
 
     private static int resLayoutFragmentLine;
     private static int resMenuLine;
+    private static int resProgressBar;
     private static int resSpinnerCardView;
     private static int resStatusCardView;
     private static int resSwipeRefreshLayout;
@@ -101,6 +103,7 @@ public class LineFragment extends Fragment {
     private View rootView = null;
     private Menu menu;
     private TabLayout tabLayout;
+    private ProgressBar progressBar;
     private SpinnerCardView spinnerCardView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private StatusCardView statusCardView;
@@ -110,6 +113,7 @@ public class LineFragment extends Fragment {
     private TimerTask timerTaskReload;
     private boolean shouldAutoReload = false;
     private String line;
+    private boolean isVisibleToUser = false;
 
     public LineFragment() {
         /* Required empty public constructor. */
@@ -125,7 +129,7 @@ public class LineFragment extends Fragment {
         switch (line) {
             case RED_LINE:
                 bundle.putString(LINE, RED_LINE);
-                bundle.putInt(RES_LAYOUT_FRAGMENT_LINE, R.layout.fragment_red_line);
+                bundle.putInt(RES_LAYOUT_FRAGMENT_LINE, R.layout.fragment_redline);
                 bundle.putInt(RES_MENU_LINE, R.menu.menu_red_line);
                 bundle.putInt(RES_PROGRESSBAR, R.id.redline_progressbar);
                 bundle.putInt(RES_SPINNER_CARDVIEW, R.id.redline_spinner_card_view);
@@ -145,7 +149,7 @@ public class LineFragment extends Fragment {
 
             case GREEN_LINE:
                 bundle.putString(LINE, GREEN_LINE);
-                bundle.putInt(RES_LAYOUT_FRAGMENT_LINE, R.layout.fragment_green_line);
+                bundle.putInt(RES_LAYOUT_FRAGMENT_LINE, R.layout.fragment_greenline);
                 bundle.putInt(RES_MENU_LINE, R.menu.menu_green_line);
                 bundle.putInt(RES_PROGRESSBAR, R.id.greenline_progressbar);
                 bundle.putInt(RES_SPINNER_CARDVIEW, R.id.greenline_spinner_card_view);
@@ -280,10 +284,15 @@ public class LineFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
+        this.isVisibleToUser = isVisibleToUser;
+
         if (isInitialised) {
             /* If the Spinner's selected item is "Select a stop...", get out of here. */
-            if (spinnerCardView.getSpinnerStops().getSelectedItemPosition() == 0)
+            if (spinnerCardView.getSpinnerStops().getSelectedItemPosition() == 0) {
+                Log.i(LOG_TAG, "Spinner selected item is \"Select a stop...\"");
+
                 return;
+            }
 
             /* When this tab is visible to the user, load a stop forecast. */
             if (isVisibleToUser) {
@@ -292,6 +301,10 @@ public class LineFragment extends Fragment {
                 Preferences.saveSelectedStopName(getContext(), NO_LINE, stopName);
 
                 loadStopForecast(stopName);
+
+                shouldAutoReload = true;
+            } else {
+                shouldAutoReload = false;
             }
         }
     }
@@ -323,6 +336,7 @@ public class LineFragment extends Fragment {
         line = getArguments().getString(LINE);
         resLayoutFragmentLine = getArguments().getInt(RES_LAYOUT_FRAGMENT_LINE);
         resMenuLine = getArguments().getInt(RES_MENU_LINE);
+        resProgressBar = getArguments().getInt(RES_PROGRESSBAR);
         resSpinnerCardView = getArguments().getInt(RES_SPINNER_CARDVIEW);
         resStatusCardView = getArguments().getInt(RES_STATUS_CARDVIEW);
         resSwipeRefreshLayout = getArguments().getInt(RES_SWIPEREFRESHLAYOUT);
@@ -338,6 +352,8 @@ public class LineFragment extends Fragment {
         setIsLoading(false);
 
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tablayout);
+
+        progressBar = (ProgressBar) rootView.findViewById(resProgressBar);
 
         /* Set up Spinner and onItemSelectedListener. */
         spinnerCardView =
@@ -358,7 +374,7 @@ public class LineFragment extends Fragment {
 
                             swipeRefreshLayout.setEnabled(false);
 
-                            StopForecastUtil.clearLineStopForecast(rootView, line);
+                            clearStopForecast();
 
                             return;
                         } else {
@@ -381,13 +397,15 @@ public class LineFragment extends Fragment {
                                 spinnerCardView
                                         .getSpinnerStops().getItemAtPosition(position).toString();
 
-                        Preferences.saveSelectedStopName(
-                                getContext(),
-                                line,
-                                selectedStopName
-                        );
-
                         loadStopForecast(selectedStopName);
+
+                        if (isVisibleToUser) {
+                            Preferences.saveSelectedStopName(
+                                    getContext(),
+                                    line,
+                                    selectedStopName
+                            );
+                        }
                     }
 
                     @Override
@@ -407,7 +425,7 @@ public class LineFragment extends Fragment {
                     @Override
                     public void onRefresh() {
                         /* Start by clearing the currently-displayed stop forecast. */
-                        StopForecastUtil.clearLineStopForecast(rootView, line);
+                        clearStopForecast();
 
                         /* Start the refresh animation. */
                         swipeRefreshLayout.setRefreshing(true);
@@ -436,9 +454,45 @@ public class LineFragment extends Fragment {
         );
 
         /* Set up onClickListeners for stop forecasts in both tabs. */
-        StopForecastUtil.initStopForecastOnClickListeners(rootView, line);
+        initStopForecastOnClickListeners();
 
         return true;
+    }
+
+    /**
+     * Initialise OnClickListeners for a stop forecast.
+     */
+    private void initStopForecastOnClickListeners() {
+        TableRow[] tableRowInboundStops = inboundStopForecastCardView.getTableRowStops();
+        TableRow[] tableRowOutboundStops = outboundStopForecastCardView.getTableRowStops();
+
+        for (int i = 0; i < 4; i++) {
+            final int index = i;
+
+            tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StopForecastUtil.showNotifyTimeDialog(
+                            rootView,
+                            spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
+                            inboundStopForecastCardView.getTextViewStopTimes(),
+                            index
+                    );
+                }
+            });
+
+            tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StopForecastUtil.showNotifyTimeDialog(
+                            rootView,
+                            spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
+                            outboundStopForecastCardView.getTextViewStopTimes(),
+                            index
+                    );
+                }
+            });
+        }
     }
 
     /**
@@ -446,25 +500,26 @@ public class LineFragment extends Fragment {
      * @param loading Whether or not progress bar should animate.
      */
     private void setIsLoading(final boolean loading) {
-        final ProgressBar progressBar =
-                (ProgressBar) rootView.findViewById(getArguments().getInt(RES_PROGRESSBAR));
-
-        /* If the progress bar has not been properly initialised, get out of here. */
-        if (progressBar == null)
-            return;
-
-        /*
-         * Only run if Fragment is attached to Activity. Without this check, the app is liable
-         * to crash when the screen is rotated many times in a given period of time.
-         */
         if (isAdded()) {
+            /* If the progress bar has not been properly initialised, get out of here. */
+            if (progressBar == null) {
+                Log.w(LOG_TAG, line + " progressBar is null.");
+
+                return;
+            }
+
+            /*
+             * Only run if Fragment is attached to Activity. Without this check, the app is liable
+             * to crash when the screen is rotated many times in a given period of time.
+             */
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (loading)
+                    if (loading) {
                         progressBar.setVisibility(View.VISIBLE);
-                    else
+                    } else {
                         progressBar.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
         }
@@ -525,6 +580,11 @@ public class LineFragment extends Fragment {
 
             return false;
         }
+    }
+
+    private void clearStopForecast() {
+        inboundStopForecastCardView.clearStopForecast();
+        outboundStopForecastCardView.clearStopForecast();
     }
 
     /**
@@ -602,7 +662,7 @@ public class LineFragment extends Fragment {
                     /* Then create a stop forecast with this data. */
                     StopForecast stopForecast = StopForecastUtil.createStopForecast(apiTimes);
 
-                    StopForecastUtil.clearLineStopForecast(rootView, line);
+                    clearStopForecast();
 
                     /* Update the stop forecast. */
                     updateStopForecast(stopForecast);
@@ -716,7 +776,7 @@ public class LineFragment extends Fragment {
             }
 
             /*
-             * Pull in all trams from the StopForecast, but only display up to three
+             * Pull in all trams from the StopForecast, but only display up to four
              * inbound and outbound trams.
              */
             if (stopForecast.getInboundTrams() != null) {
