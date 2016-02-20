@@ -24,7 +24,6 @@ package org.thecosmicfrog.luasataglance.util;
 import android.util.Log;
 import android.view.View;
 import android.widget.ScrollView;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,8 +33,6 @@ import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
-import org.thecosmicfrog.luasataglance.view.SpinnerCardView;
-import org.thecosmicfrog.luasataglance.view.StopForecastCardView;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 import java.util.Locale;
@@ -83,7 +80,7 @@ public final class StopForecastUtil {
          * When the user opens the notification dialog as part of the tutorial, scroll back up to
          * the top so that the next tutorial is definitely visible. This should only ever run once.
          */
-        if (!Preferences.loadHasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS)) {
+        if (!Preferences.hasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS)) {
             ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.redline_scrollview);
             scrollView.setScrollY(0);
         }
@@ -131,7 +128,7 @@ public final class StopForecastUtil {
                 );
 
                 if (shouldDisplay) {
-                    if (!Preferences.loadHasRunOnce(rootView.getContext(), tutorial)) {
+                    if (!Preferences.hasRunOnce(rootView.getContext(), tutorial)) {
                         Log.i(LOG_TAG, "First time launching. Displaying select stop tutorial.");
 
                         tutorialCardViewSelectStop.setVisibility(View.VISIBLE);
@@ -157,7 +154,7 @@ public final class StopForecastUtil {
                 );
 
                 if (shouldDisplay) {
-                    if (!Preferences.loadHasRunOnce(rootView.getContext(), tutorial)) {
+                    if (!Preferences.hasRunOnce(rootView.getContext(), tutorial)) {
                         Log.i(LOG_TAG, "First time launching. Displaying notifications tutorial.");
 
                         tutorialCardViewNotifications.setVisibility(View.VISIBLE);
@@ -181,7 +178,7 @@ public final class StopForecastUtil {
                 );
 
                 if (shouldDisplay) {
-                    if (!Preferences.loadHasRunOnce(rootView.getContext(), tutorial)) {
+                    if (!Preferences.hasRunOnce(rootView.getContext(), tutorial)) {
                         Log.i(LOG_TAG, "First time launching. Displaying favourites tutorial.");
 
                         tutorialCardViewFavourites.setVisibility(View.VISIBLE);

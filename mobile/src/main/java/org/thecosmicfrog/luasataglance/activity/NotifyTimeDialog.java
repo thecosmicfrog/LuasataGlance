@@ -88,7 +88,7 @@ public class NotifyTimeDialog extends Dialog {
                 intent.setAction(NotifyTimeDialog.class.getName());
                 intent.putExtra(
                         NOTIFY_STOP_NAME,
-                        Preferences.loadNotifyStopName(getContext())
+                        Preferences.notifyStopName(getContext())
                 );
 
                 intent.putExtra(

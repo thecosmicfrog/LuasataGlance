@@ -51,8 +51,8 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
         final int notifyTimeUserRequestedMins = intent.getIntExtra(NOTIFY_TIME, 5);
         final int NOTIFY_TIME_SAFETY_NET_MILLIS = 30000;
 
-        String notifyStopNameExpected = Preferences.loadNotifyStopName(context);
-        int notifyStopTimeExpected = Preferences.loadNotifyStopTimeExpected(context);
+        String notifyStopNameExpected = Preferences.notifyStopName(context);
+        int notifyStopTimeExpected = Preferences.notifyStopTimeExpected(context);
 
         /*
          * Define when a user should be notified that their tram is on its way. To do this, we

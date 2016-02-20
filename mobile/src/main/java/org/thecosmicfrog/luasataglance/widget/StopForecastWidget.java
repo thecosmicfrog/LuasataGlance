@@ -99,7 +99,7 @@ public class StopForecastWidget extends AppWidgetProvider {
         ComponentName thisWidget = new ComponentName(context, StopForecastWidget.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-        int indexNextStopToLoad = Preferences.loadIndexNextStopToLoad(context);
+        int indexNextStopToLoad = Preferences.indexNextStopToLoad(context);
         List listSelectedStops = loadListSelectedStops(context);
 
         if (listSelectedStops != null) {
@@ -107,7 +107,7 @@ public class StopForecastWidget extends AppWidgetProvider {
              * If the user taps the stop name, open the app at that stop.
              */
             if (intent.getAction().equals(WIDGET_CLICK_STOP_NAME)) {
-                String stopName = Preferences.loadWidgetSelectedStopName(context);
+                String stopName = Preferences.widgetSelectedStopName(context);
 
                 context.startActivity(
                         new Intent(
@@ -181,7 +181,7 @@ public class StopForecastWidget extends AppWidgetProvider {
         List listSelectedStops = loadListSelectedStops(context);
 
         if (listSelectedStops != null) {
-            int indexNextStopToLoad = Preferences.loadIndexNextStopToLoad(context);
+            int indexNextStopToLoad = Preferences.indexNextStopToLoad(context);
 
             String selectedStopName = listSelectedStops.get(indexNextStopToLoad).toString();
             Preferences.saveWidgetSelectedStopName(context, selectedStopName);
@@ -196,7 +196,7 @@ public class StopForecastWidget extends AppWidgetProvider {
      * @param allWidgetIds Array of all widget IDs.
      */
     private static void startWidgetListenerService(@NonNull Context context, int[] allWidgetIds) {
-        String selectedStopName = Preferences.loadWidgetSelectedStopName(context);
+        String selectedStopName = Preferences.widgetSelectedStopName(context);
 
         /*
          * Prepare an Intent to start the WidgetListenerService. Pass in all the widget IDs.

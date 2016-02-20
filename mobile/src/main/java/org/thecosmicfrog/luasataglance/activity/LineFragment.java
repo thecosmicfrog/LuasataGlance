@@ -207,8 +207,8 @@ public class LineFragment extends Fragment {
          * This provides persistence to the app across shutdowns.
          */
         if (!getActivity().getIntent().hasExtra(STOP_NAME)) {
-            if (Preferences.loadSelectedStopName(getContext(), NO_LINE) != null) {
-                String stopName = Preferences.loadSelectedStopName(getContext(), NO_LINE);
+            if (Preferences.selectedStopName(getContext(), NO_LINE) != null) {
+                String stopName = Preferences.selectedStopName(getContext(), NO_LINE);
 
                 setTabAndSpinner(stopName);
             }
@@ -260,9 +260,9 @@ public class LineFragment extends Fragment {
 
                 if (hasSetTabAndSpinner)
                     getActivity().getIntent().removeExtra(NOTIFY_STOP_NAME);
-            } else if (!Preferences.loadDefaultStopName(getContext()).equals("None")
-                    && Preferences.loadDefaultStopName(getContext()) != null) {
-                setTabAndSpinner(Preferences.loadDefaultStopName(getContext()));
+            } else if (!Preferences.defaultStopName(getContext()).equals("None")
+                    && Preferences.defaultStopName(getContext()) != null) {
+                setTabAndSpinner(Preferences.defaultStopName(getContext()));
             }
 
             /* Display tutorial for selecting a stop, if required. */
@@ -430,7 +430,7 @@ public class LineFragment extends Fragment {
                         /* Start the refresh animation. */
                         swipeRefreshLayout.setRefreshing(true);
                         loadStopForecast(
-                                Preferences.loadSelectedStopName(getContext(), line)
+                                Preferences.selectedStopName(getContext(), line)
                         );
                     }
                 }
@@ -576,7 +576,7 @@ public class LineFragment extends Fragment {
             if (tab != null)
                 tab.select();
 
-            spinnerCardView.setSelection(Preferences.loadSelectedStopName(getContext(), line));
+            spinnerCardView.setSelection(Preferences.selectedStopName(getContext(), line));
 
             return false;
         }
@@ -604,7 +604,7 @@ public class LineFragment extends Fragment {
                         public void run() {
                             if (shouldAutoReload)
                                 loadStopForecast(
-                                        Preferences.loadSelectedStopName(
+                                        Preferences.selectedStopName(
                                                 getContext(),
                                                 line
                                         )
