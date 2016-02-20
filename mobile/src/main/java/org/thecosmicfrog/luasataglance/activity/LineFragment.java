@@ -349,11 +349,11 @@ public class LineFragment extends Fragment {
      * Initialise Fragment and its views.
      */
     private boolean initFragment() {
-        setIsLoading(false);
-
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tablayout);
 
         progressBar = (ProgressBar) rootView.findViewById(resProgressBar);
+
+        setIsLoading(false);
 
         /* Set up Spinner and onItemSelectedListener. */
         spinnerCardView =
@@ -501,13 +501,6 @@ public class LineFragment extends Fragment {
      */
     private void setIsLoading(final boolean loading) {
         if (isAdded()) {
-            /* If the progress bar has not been properly initialised, get out of here. */
-            if (progressBar == null) {
-                Log.w(LOG_TAG, line + " progressBar is null.");
-
-                return;
-            }
-
             /*
              * Only run if Fragment is attached to Activity. Without this check, the app is liable
              * to crash when the screen is rotated many times in a given period of time.
