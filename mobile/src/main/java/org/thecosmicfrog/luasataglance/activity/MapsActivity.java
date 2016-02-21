@@ -26,6 +26,7 @@ import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Window;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -47,16 +48,21 @@ import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private final String LOG_TAG = MapsActivity.class.getSimpleName();
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
+    private final String STOP_NAME = "stopName";
 
     private GoogleMap map;
     private double[][] stopCoordsRedLine;
     private double[][] stopCoordsGreenLine;
+    private List<Marker> listMarkers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        listMarkers = new ArrayList<>();
 
         stopCoordsRedLine = new StopCoords(RED_LINE).getStopCoords();
         stopCoordsGreenLine = new StopCoords(GREEN_LINE).getStopCoords();
@@ -112,13 +118,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listStopNamesRedLine.remove(getResources().getString(R.string.select_a_stop));
         listStopNamesGreenLine.remove(getResources().getString(R.string.select_a_stop));
 
+        /* Compile a List of all stops. */
         List<String> listStopNamesAll = new ArrayList<>(listStopNamesRedLine);
         listStopNamesAll.addAll(listStopNamesGreenLine);
 
+        /* Draw map Markers. */
         drawMarkers(listStopNamesRedLine, listStopNamesGreenLine);
 
+        /* Draw Polylines between Markers. */
         drawPolylines(googleMap, listStopNamesRedLine, listStopNamesGreenLine);
 
+        /*
+         * When a user taps on a stop's info window, it should open the appropriate stop forecast.
+         */
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -126,10 +138,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new Intent(
                                 getApplicationContext(),
                                 MainActivity.class
-                        ).putExtra("stopName", marker.getTitle())
+                        ).putExtra(STOP_NAME, marker.getTitle())
                 );
             }
         });
+
+        /*
+         * Move the Camera to the position of the stop that this Activity was opened from.
+         * Also, open the Marker's info window.
+         */
+        if (getIntent().hasExtra(STOP_NAME)) {
+            Marker marker = findStopMarker(getIntent().getStringExtra(STOP_NAME));
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14.0f));
+
+            marker.showInfoWindow();
+        }
     }
 
     /**
@@ -141,24 +165,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                              List<String> listStopNamesGreenLine) {
         for (int i = 0; i < listStopNamesRedLine.size(); i++) {
             LatLng latLng = new LatLng(stopCoordsRedLine[i][0], stopCoordsRedLine[i][1]);
-            map.addMarker(new MarkerOptions()
+
+            MarkerOptions markerOptions =
+                    new MarkerOptions()
                             .position(latLng)
                             .title(listStopNamesRedLine.get(i))
-                            .icon(BitmapDescriptorFactory.defaultMarker(
-                                            BitmapDescriptorFactory.HUE_RED)
-                            )
-            );
+                            .icon(
+                                    BitmapDescriptorFactory.defaultMarker(
+                                            BitmapDescriptorFactory.HUE_RED
+                                    )
+                            );
+
+            Marker marker = map.addMarker(markerOptions);
+
+            listMarkers.add(marker);
         }
 
         for (int i = 0; i < listStopNamesGreenLine.size(); i++) {
             LatLng latLng = new LatLng(stopCoordsGreenLine[i][0], stopCoordsGreenLine[i][1]);
-            map.addMarker(new MarkerOptions()
+
+            MarkerOptions markerOptions =
+                    new MarkerOptions()
                             .position(latLng)
                             .title(listStopNamesGreenLine.get(i))
-                            .icon(BitmapDescriptorFactory.defaultMarker(
-                                            BitmapDescriptorFactory.HUE_GREEN)
-                            )
-            );
+                            .icon(
+                                    BitmapDescriptorFactory.defaultMarker(
+                                            BitmapDescriptorFactory.HUE_GREEN
+                                    )
+                            );
+
+            Marker marker = map.addMarker(markerOptions);
+
+            listMarkers.add(marker);
         }
     }
 
@@ -238,5 +276,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     )
             );
         }
+    }
+
+    /**
+     * Find the Marker corresponding to a specific stop.
+     * @param stopName Name of stop to find corresponding marker for.
+     * @return Marker for specified stop name.
+     */
+    private Marker findStopMarker(String stopName) {
+        for (Marker marker : listMarkers) {
+            if (marker.getTitle().equalsIgnoreCase(stopName)) {
+                return marker;
+            }
+        }
+
+        /* If for some reason no stops are found, return an empty Marker. */
+        Log.wtf(LOG_TAG, "No stop markers found for stop: " + stopName);
+
+        return new Marker(null);
     }
 }

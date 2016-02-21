@@ -35,12 +35,15 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
+    private final String NO_LINE = "no_line";
+    private final String STOP_NAME = "stopName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setTag(RED_LINE).setText(getString(R.string.tab_red_line)));
         tabLayout.addTab(tabLayout.newTab().setTag(GREEN_LINE).setText(getString(R.string.tab_green_line)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.luas_purple));
+        tabLayout.setBackgroundColor(
+                ContextCompat.getColor(getApplicationContext(), R.color.luas_purple)
+        );
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -126,10 +131,29 @@ public class MainActivity extends AppCompatActivity {
                 (FloatingActionButton) findViewById(R.id.fab_maps);
         fabMaps.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                /* Open Maps Activity. */
-                startActivity(
-                        new Intent(getApplicationContext(), MapsActivity.class)
-                );
+                /*
+                 * Open Maps Activity.
+                 * If we have a selected stop saved to shared preferences, open the map on that
+                 * stop. Otherwise, open the map at a default position.
+                 */
+                if (Preferences.selectedStopName(getApplicationContext(), "no_line") != null) {
+                    startActivity(
+                            new Intent(
+                                    getApplicationContext(),
+                                    MapsActivity.class
+                            ).putExtra(
+                                    STOP_NAME,
+                                    Preferences.selectedStopName(getApplicationContext(), NO_LINE)
+                            )
+                    );
+                } else {
+                    startActivity(
+                            new Intent(
+                                    getApplicationContext(),
+                                    MapsActivity.class
+                            )
+                    );
+                }
             }
         });
     }

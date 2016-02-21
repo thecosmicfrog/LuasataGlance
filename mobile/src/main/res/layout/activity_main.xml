@@ -44,7 +44,6 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/tablayout"/>
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -61,7 +60,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_favourites"
-            app:rippleColor="@color/favourites_yellow" />
+            app:rippleColor="@android:color/white" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -80,6 +79,6 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="16dp"
             android:src="@android:drawable/ic_dialog_map"
-            app:rippleColor="@color/favourites_yellow" />
+            app:rippleColor="@android:color/white" />
     </RelativeLayout>
 </RelativeLayout>
