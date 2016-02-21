@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -75,7 +76,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (Build.VERSION.SDK_INT >= 21)
             setTheme(android.R.style.Theme_Material_Dialog);
 
-        /* This is a Dialog. Get rid of the Window title. */
+        /* Workaround for annoying bug that causes Google Maps in a Dialog to be dimmed. */
+        if (Build.VERSION.SDK_INT <= 22)
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
+        /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_maps);

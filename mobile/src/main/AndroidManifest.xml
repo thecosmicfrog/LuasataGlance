@@ -6,14 +6,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -21,36 +19,29 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.FavouritesSelectActivity"
             android:label="@string/title_activity_favourites_select" />
-
         <activity
             android:name=".activity.NewsActivity"
             android:parentActivityName=".activity.MainActivity">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.thecosmicfrog.luasataglance.activity.MainActivity" />
         </activity>
-
         <activity
             android:name=".activity.SettingsActivity"
             android:parentActivityName=".activity.MainActivity">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.thecosmicfrog.luasataglance.activity.SettingsActivity" />
         </activity>
-
         <activity android:name=".widget.StopForecastWidgetConfigureActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -62,13 +53,11 @@
                 <action android:name="org.thecosmicfrog.luasataglance.activity.NotifyTimeDialog" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".receiver.StartServiceAtBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".widget.StopForecastWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -84,7 +73,6 @@
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
-
         <service
             android:name=".service.WidgetListenerService"
             android:enabled="true" />
@@ -96,11 +84,15 @@
         <activity
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@android:style/Theme.Dialog">
-
+            android:theme="@style/Theme.AppCompat.Dialog">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.thecosmicfrog.luasataglance.activity.MainActivity" />
         </activity>
+        <activity
+            android:name=".activity.FavouritesActivity"
+            android:theme="@style/Theme.AppCompat.Dialog">
+        </activity>
     </application>
+
 </manifest>

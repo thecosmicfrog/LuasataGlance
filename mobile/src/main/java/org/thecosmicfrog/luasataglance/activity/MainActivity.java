@@ -26,7 +26,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -117,10 +116,13 @@ public class MainActivity extends AppCompatActivity {
                         (TutorialCardView) findViewById(R.id.tutorialcardview_favourites);
                 tutorialCardViewFavourites.setVisibility(View.GONE);
 
-                /* Open Favourites DialogFragment. */
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FavouritesDialog favouritesDialog = new FavouritesDialog();
-                favouritesDialog.show(fragmentManager, "dialog_favourites");
+                /* Open Favourites Activity. */
+                startActivity(
+                        new Intent(
+                                getApplicationContext(),
+                                FavouritesActivity.class
+                        )
+                );
             }
         });
 
@@ -162,9 +164,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        /*
-         * If the Intent has changed, update the Activity's Intent.
-         */
+        /* If the Intent has changed, update the Activity's Intent. */
         setIntent(intent);
     }
 
