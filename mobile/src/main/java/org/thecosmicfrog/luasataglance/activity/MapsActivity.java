@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException;
 import org.thecosmicfrog.luasataglance.object.StopCoords;
 
 import java.util.ArrayList;
@@ -148,11 +149,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          * Also, open the Marker's info window.
          */
         if (getIntent().hasExtra(STOP_NAME)) {
-            Marker marker = findStopMarker(getIntent().getStringExtra(STOP_NAME));
+            try {
+                Marker marker = findStopMarker(getIntent().getStringExtra(STOP_NAME));
 
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14.0f));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14.0f));
 
-            marker.showInfoWindow();
+                marker.showInfoWindow();
+            } catch (StopMarkerNotFoundException e) {
+                Log.e(LOG_TAG, Log.getStackTraceString(e));
+            }
         }
     }
 
@@ -283,7 +288,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param stopName Name of stop to find corresponding marker for.
      * @return Marker for specified stop name.
      */
-    private Marker findStopMarker(String stopName) {
+    private Marker findStopMarker(String stopName) throws StopMarkerNotFoundException {
         for (Marker marker : listMarkers) {
             if (marker.getTitle().equalsIgnoreCase(stopName)) {
                 return marker;
@@ -293,6 +298,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /* If for some reason no stops are found, return an empty Marker. */
         Log.wtf(LOG_TAG, "No stop markers found for stop: " + stopName);
 
-        return new Marker(null);
+        throw new StopMarkerNotFoundException();
     }
 }
