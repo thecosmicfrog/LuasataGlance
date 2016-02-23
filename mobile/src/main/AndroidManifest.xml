@@ -93,6 +93,10 @@
             android:name=".activity.FavouritesActivity"
             android:theme="@style/Theme.AppCompat.Dialog">
         </activity>
+        <activity
+            android:name=".activity.NotifyTimeActivity"
+            android:theme="@style/Theme.AppCompat.Dialog">
+        </activity>
     </application>
 
 </manifest>

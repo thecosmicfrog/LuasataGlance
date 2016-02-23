@@ -21,6 +21,7 @@
 
 package org.thecosmicfrog.luasataglance.util;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.ScrollView;
@@ -28,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.activity.NotifyTimeDialog;
+import org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
@@ -103,7 +104,12 @@ public final class StopForecastUtil {
                 mapNotifyTimes.get(notifyStopTimeStr)
         );
 
-        new NotifyTimeDialog(rootView.getContext()).show();
+        rootView.getContext().startActivity(
+                new Intent(
+                        rootView.getContext(),
+                        NotifyTimeActivity.class
+                )
+        );
     }
 
     /**

@@ -75,7 +75,6 @@ public class SpinnerCardView extends CardView {
                 ContextCompat.getColor(getContext(), R.color.luas_purple),
                 PorterDuff.Mode.SRC_ATOP
         );
-
         spinnerStops.setBackground(spinnerDrawable);
     }
 

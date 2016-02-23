@@ -21,12 +21,15 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -38,43 +41,50 @@ import org.thecosmicfrog.luasataglance.util.Preferences;
 import java.util.Locale;
 import java.util.Map;
 
-public class NotifyTimeDialog extends Dialog {
+public class NotifyTimeActivity extends FragmentActivity {
 
-    private final String LOG_TAG = NotifyTimeDialog.class.getSimpleName();
+    private final String LOG_TAG = NotifyTimeActivity.class.getSimpleName();
+    private final String DIALOG = "dialog";
     private final String NOTIFY_STOP_NAME = "notifyStopName";
     private final String NOTIFY_TIME = "notifyTime";
 
     private Map<String, Integer> mapNotifyTimes;
 
-    private NotifyTimeDialog() {
-        super(null);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        /*
+         * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
+         * the default theme set in AndroidManifest.xml.
+         */
+        if (Build.VERSION.SDK_INT >= 21)
+            setTheme(android.R.style.Theme_Material_Dialog);
 
-        Log.wtf(LOG_TAG, "There is no default constructor here. Go away.");
-    }
+        /* This is a Dialog. Get rid of the default Window title. */
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-    public NotifyTimeDialog(Context context) {
-        super(context);
+        super.onCreate(savedInstanceState);
 
-        final String DIALOG = "dialog";
+        setContentView(R.layout.activity_notify_time);
 
         String localeDefault = Locale.getDefault().toString();
 
-        setTitle(R.string.notify_title);
-
         mapNotifyTimes = new NotifyTimesMap(localeDefault, DIALOG);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_notifytime);
 
         final Spinner spinnerNotifyTime = (Spinner) findViewById(R.id.spinner_notifytime);
         ArrayAdapter adapterNotifyTime = ArrayAdapter.createFromResource(
-                getContext(), R.array.array_notifytime_mins, R.layout.spinner_stops
+                getApplicationContext(), R.array.array_notifytime_mins, R.layout.spinner_notify_time
         );
         adapterNotifyTime.setDropDownViewResource(R.layout.spinner_stops);
         spinnerNotifyTime.setAdapter(adapterNotifyTime);
+
+        /* Set the Spinner's colour to Luas purple. */
+        Drawable spinnerDrawable =
+                spinnerNotifyTime.getBackground().getConstantState().newDrawable();
+        spinnerDrawable.setColorFilter(
+                ContextCompat.getColor(getApplicationContext(), R.color.luas_purple),
+                PorterDuff.Mode.SRC_ATOP
+        );
+        spinnerNotifyTime.setBackground(spinnerDrawable);
 
         Button buttonNotifyTime = (Button) findViewById(R.id.button_notifytime);
         buttonNotifyTime.setOnClickListener(new View.OnClickListener() {
@@ -85,10 +95,10 @@ public class NotifyTimeDialog extends Dialog {
                  * LuasTimesFragment.
                  */
                 Intent intent = new Intent();
-                intent.setAction(NotifyTimeDialog.class.getName());
+                intent.setAction(NotifyTimeActivity.class.getName());
                 intent.putExtra(
                         NOTIFY_STOP_NAME,
-                        Preferences.notifyStopName(getContext())
+                        Preferences.notifyStopName(getApplicationContext())
                 );
 
                 intent.putExtra(
@@ -97,10 +107,10 @@ public class NotifyTimeDialog extends Dialog {
                 );
 
                 /* Send the Intent. */
-                getContext().sendBroadcast(intent);
+                sendBroadcast(intent);
 
                 /* Dismiss the Dialog. */
-                dismiss();
+                finish();
             }
         });
     }
