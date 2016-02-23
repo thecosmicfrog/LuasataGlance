@@ -59,15 +59,23 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:baselineAligned="true">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5">
 
             <Button
                 android:id="@+id/button_notifytime"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="6dp"
                 android:background="@color/luas_purple"
@@ -77,4 +85,5 @@
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>
     </LinearLayout>
+
 </LinearLayout>

@@ -50,7 +50,7 @@
 
         <receiver android:name=".receiver.NotifyTimesReceiver">
             <intent-filter>
-                <action android:name="org.thecosmicfrog.luasataglance.activity.NotifyTimeDialog" />
+                <action android:name="org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity" />
             </intent-filter>
         </receiver>
         <receiver android:name=".receiver.StartServiceAtBootReceiver">

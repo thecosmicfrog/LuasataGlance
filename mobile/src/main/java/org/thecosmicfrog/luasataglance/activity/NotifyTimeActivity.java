@@ -92,7 +92,7 @@ public class NotifyTimeActivity extends FragmentActivity {
             public void onClick(View v) {
                 /*
                  * Create an Intent to send the user-selected notification time back to
-                 * LuasTimesFragment.
+                 * LineFragment.
                  */
                 Intent intent = new Intent();
                 intent.setAction(NotifyTimeActivity.class.getName());
