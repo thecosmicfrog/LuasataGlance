@@ -406,7 +406,7 @@ public class WidgetListenerService extends Service {
                 clearStopForecast(views);
                 views.setTextViewText(
                         TEXTVIEW_INBOUND_STOP1_NAME,
-                        getResources().getString(R.string.tap_to_load_times)
+                        getString(R.string.tap_to_load_times)
                 );
 
                 appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
@@ -468,7 +468,7 @@ public class WidgetListenerService extends Service {
         String message;
 
         if (localeDefault.startsWith(GAEILGE)) {
-            message = getResources().getString(R.string.message_success);
+            message = getString(R.string.message_success);
         } else {
             message = stopForecast.getMessage();
         }
@@ -515,7 +515,7 @@ public class WidgetListenerService extends Service {
                 if (stopForecast.getInboundTrams().size() == 0) {
                     views.setTextViewText(
                             TEXTVIEW_INBOUND_STOP1_NAME,
-                            context.getResources().getString(R.string.no_trams_forecast)
+                            context.getString(R.string.no_trams_forecast)
                     );
                 } else {
                     String inboundTram;
@@ -567,7 +567,7 @@ public class WidgetListenerService extends Service {
                 if (stopForecast.getOutboundTrams().size() == 0) {
                     views.setTextViewText(
                             TEXTVIEW_OUTBOUND_STOP1_NAME,
-                            context.getResources().getString(R.string.no_trams_forecast)
+                            context.getString(R.string.no_trams_forecast)
                     );
                 } else {
                     String outboundTram;
@@ -629,7 +629,7 @@ public class WidgetListenerService extends Service {
 
             views.setTextViewText(
                     TEXTVIEW_INBOUND_STOP1_NAME,
-                    getResources().getString(R.string.message_error)
+                    getString(R.string.message_error)
             );
         }
     }

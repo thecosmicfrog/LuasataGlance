@@ -80,11 +80,11 @@ public class NewsActivity extends AppCompatActivity {
          */
         if (getIntent().hasExtra(NEWS_TYPE)) {
             if (getIntent().getStringExtra(NEWS_TYPE).equals(NEWS_TYPE_TRAVEL_UPDATES)) {
-                setTitle(getResources().getString(R.string.title_activity_news_travel_updates));
+                setTitle(getString(R.string.title_activity_news_travel_updates));
 
                 webViewNews.loadUrl(URL_TRAVEL_UPDATES);
             } else {
-                setTitle(getResources().getString(R.string.title_activity_news_luas_news));
+                setTitle(getString(R.string.title_activity_news_luas_news));
 
                 webViewNews.loadUrl(URL_NEWS);
             }

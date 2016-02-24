@@ -75,7 +75,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
         if (notifyDelayMillis < 0) {
             Toast.makeText(
                     context,
-                    context.getResources().getString(R.string.notify_invalid_time),
+                    context.getString(R.string.notify_invalid_time),
                     Toast.LENGTH_LONG
             ).show();
 
@@ -87,7 +87,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
          */
         Toast.makeText(
                 context,
-                context.getResources().getString(R.string.notify_successful),
+                context.getString(R.string.notify_successful),
                 Toast.LENGTH_SHORT
         ).show();
 
@@ -121,7 +121,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                  */
                 StringBuilder stringBuilderContentText = new StringBuilder();
                 stringBuilderContentText.append(
-                        context.getResources().getString(R.string.notification_tram_expected)
+                        context.getString(R.string.notification_tram_expected)
                 ).append(
                         Integer.toString(notifyTimeUserRequestedMins)
                 );
@@ -131,11 +131,11 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                  */
                 if (notifyTimeUserRequestedMins > 1)
                     stringBuilderContentText.append(
-                            context.getResources().getString(R.string.notification_minutes)
+                            context.getString(R.string.notification_minutes)
                     );
                 else
                     stringBuilderContentText.append(
-                            context.getResources().getString(R.string.notification_minute)
+                            context.getString(R.string.notification_minute)
                     );
 
                 /*
@@ -167,7 +167,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                                 .setPriority(Notification.PRIORITY_MAX)
                                 .setContentIntent(pendingIntentOpenMainActivity)
                                 .setContentTitle(
-                                        context.getResources().getString(
+                                        context.getString(
                                                 R.string.notification_title
                                         )
                                 )

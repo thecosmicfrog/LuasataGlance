@@ -442,7 +442,7 @@ public class LineFragment extends Fragment {
                     resInboundStopForecastCardView
                 );
         inboundStopForecastCardView.setStopForecastDirection(
-                getResources().getString(R.string.inbound)
+                getString(R.string.inbound)
         );
 
         outboundStopForecastCardView =
@@ -450,7 +450,7 @@ public class LineFragment extends Fragment {
                         resOutboundStopForecastCardView
                 );
         outboundStopForecastCardView.setStopForecastDirection(
-                getResources().getString(R.string.outbound)
+                getString(R.string.outbound)
         );
 
         /* Set up onClickListeners for stop forecasts in both tabs. */
@@ -712,8 +712,8 @@ public class LineFragment extends Fragment {
         final String DUE = "DUE";
 
         EnglishGaeilgeMap mapEnglishGaeilge = new EnglishGaeilgeMap();
-        String min = " " + getResources().getString(R.string.min);
-        String mins = " " + getResources().getString(R.string.mins);
+        String min = " " + getString(R.string.min);
+        String mins = " " + getString(R.string.mins);
         String minOrMins;
 
         /* If a valid stop forecast exists... */
@@ -721,13 +721,13 @@ public class LineFragment extends Fragment {
             String status;
 
             if (localeDefault.startsWith(GAEILGE)) {
-                status = getResources().getString(R.string.message_success);
+                status = getString(R.string.message_success);
             } else {
                 status = stopForecast.getMessage();
             }
 
             if (status.contains(
-                    getResources().getString(R.string.message_success))) {
+                    getString(R.string.message_success))) {
                 /*
                  * No error message on server. Change the message title TextView to
                  * green and set a default success message.
@@ -749,7 +749,7 @@ public class LineFragment extends Fragment {
                      * probably down.
                      */
                     statusCardView.setStatus(
-                            getResources().getString(R.string.message_no_status)
+                            getString(R.string.message_no_status)
                     );
                 } else {
                     /* Set the error message from the server. */
@@ -873,7 +873,7 @@ public class LineFragment extends Fragment {
              * change the color of the message title box red.
              */
             statusCardView.setStatus(
-                    getResources().getString(R.string.message_error)
+                    getString(R.string.message_error)
             );
             statusCardView.setStatusColor(R.color.message_error);
         }

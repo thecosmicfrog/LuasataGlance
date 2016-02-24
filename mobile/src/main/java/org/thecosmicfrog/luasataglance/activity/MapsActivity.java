@@ -121,8 +121,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         List<String> listStopNamesGreenLine = new ArrayList<>(Arrays.asList(stopNamesGreenLine));
 
         /* Remove the two "Select a stop..." entries from the List. */
-        listStopNamesRedLine.remove(getResources().getString(R.string.select_a_stop));
-        listStopNamesGreenLine.remove(getResources().getString(R.string.select_a_stop));
+        listStopNamesRedLine.remove(getString(R.string.select_a_stop));
+        listStopNamesGreenLine.remove(getString(R.string.select_a_stop));
 
         /* Compile a List of all stops. */
         List<String> listStopNamesAll = new ArrayList<>(listStopNamesRedLine);
