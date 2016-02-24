@@ -260,7 +260,7 @@ public class LineFragment extends Fragment {
 
                 if (hasSetTabAndSpinner)
                     getActivity().getIntent().removeExtra(NOTIFY_STOP_NAME);
-            } else if (!Preferences.defaultStopName(getContext()).equals("None")
+            } else if (!Preferences.defaultStopName(getContext()).equals(getString(R.string.none))
                     && Preferences.defaultStopName(getContext()) != null) {
                 setTabAndSpinner(Preferences.defaultStopName(getContext()));
             }
