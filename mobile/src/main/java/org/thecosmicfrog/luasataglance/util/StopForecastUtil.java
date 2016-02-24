@@ -65,7 +65,7 @@ public final class StopForecastUtil {
             return;
 
         if (notifyStopTimeStr.matches(
-                rootView.getString(R.string.due) + "|" + "1 .*|2 .*")) {
+                rootView.getResources().getString(R.string.due) + "|" + "1 .*|2 .*")) {
             Toast.makeText(
                     rootView.getContext(),
                     rootView.getContext().getString(
