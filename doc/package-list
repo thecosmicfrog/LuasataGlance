@@ -1,5 +1,7 @@
+org.thecosmicfrog.luasataglance
 org.thecosmicfrog.luasataglance.activity
 org.thecosmicfrog.luasataglance.api
+org.thecosmicfrog.luasataglance.exception
 org.thecosmicfrog.luasataglance.object
 org.thecosmicfrog.luasataglance.receiver
 org.thecosmicfrog.luasataglance.service
