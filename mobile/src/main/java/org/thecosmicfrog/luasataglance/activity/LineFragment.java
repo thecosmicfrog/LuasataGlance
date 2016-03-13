@@ -466,7 +466,7 @@ public class LineFragment extends Fragment {
         TableRow[] tableRowInboundStops = inboundStopForecastCardView.getTableRowStops();
         TableRow[] tableRowOutboundStops = outboundStopForecastCardView.getTableRowStops();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             final int index = i;
 
             tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {

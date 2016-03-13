@@ -24,6 +24,9 @@ package org.thecosmicfrog.luasataglance.view;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -61,7 +64,7 @@ public class StopForecastCardView extends CardView {
      * @param context Context.
      */
     public void init(Context context) {
-        inflate(context, R.layout.cardview_stop_forecast, this);
+        View view = inflate(context, R.layout.cardview_stop_forecast, this);
 
         textViewDirection = (TextView) findViewById(R.id.textview_direction);
 
@@ -69,29 +72,55 @@ public class StopForecastCardView extends CardView {
                 (TableRow) findViewById(R.id.tablerow_stop1),
                 (TableRow) findViewById(R.id.tablerow_stop2),
                 (TableRow) findViewById(R.id.tablerow_stop3),
-                (TableRow) findViewById(R.id.tablerow_stop4)
+                (TableRow) findViewById(R.id.tablerow_stop4),
+                (TableRow) findViewById(R.id.tablerow_stop5)
         };
 
         textViewStopNames = new TextView[] {
                 (TextView) findViewById(R.id.textview_stop1_name),
                 (TextView) findViewById(R.id.textview_stop2_name),
                 (TextView) findViewById(R.id.textview_stop3_name),
-                (TextView) findViewById(R.id.textview_stop4_name)
+                (TextView) findViewById(R.id.textview_stop4_name),
+                (TextView) findViewById(R.id.textview_stop5_name)
         };
 
         textViewStopTimes = new TextView[] {
                 (TextView) findViewById(R.id.textview_stop1_time),
                 (TextView) findViewById(R.id.textview_stop2_time),
                 (TextView) findViewById(R.id.textview_stop3_time),
-                (TextView) findViewById(R.id.textview_stop4_time)
+                (TextView) findViewById(R.id.textview_stop4_time),
+                (TextView) findViewById(R.id.textview_stop5_time)
         };
+
+        adjustTableRowsByScreenDensity(view);
+    }
+
+    /**
+     * Adjust the number of TableRows based on the user's screen density in DPI.
+     * @param view View.
+     */
+    private void adjustTableRowsByScreenDensity(View view) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int densityDpi = displayMetrics.densityDpi;
+
+        Log.i(LOG_TAG, "Screen density is " + densityDpi + " DPI.");
+
+        if (densityDpi > 320) {
+            TableRow tableRowStop4 = (TableRow) view.findViewById(R.id.tablerow_stop4);
+            tableRowStop4.setVisibility(View.VISIBLE);
+        }
+
+        if (densityDpi > 500) {
+            TableRow tableRowStop5 = (TableRow) view.findViewById(R.id.tablerow_stop5);
+            tableRowStop5.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
      * Clear the stop forecast.
      */
     public void clearStopForecast() {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             textViewStopNames[i].setText("");
             textViewStopTimes[i].setText("");
 

@@ -21,6 +21,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
 
+    android:id="@+id/cardview_stop_forecast"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
 
@@ -114,7 +115,8 @@
             <TableRow
                 android:id="@+id/tablerow_stop4"
                 android:background=
-                    "@android:drawable/list_selector_background">
+                    "@android:drawable/list_selector_background"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/textview_stop4_name"
@@ -123,6 +125,29 @@
 
                 <TextView
                     android:id="@+id/textview_stop4_time"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
+            </TableRow>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.6dp"
+                android:visibility="visible"
+                android:background="@color/stop_forecast_border_grey" />
+
+            <TableRow
+                android:id="@+id/tablerow_stop5"
+                android:background=
+                    "@android:drawable/list_selector_background"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/textview_stop5_name"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textview_stop5_time"
                     android:gravity="center_horizontal"
                     android:textSize="16sp" />
             </TableRow>
