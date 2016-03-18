@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     Copyright 2015-2016 Aaron Hastings
 
     This file is part of Luas at a Glance.
@@ -31,6 +30,7 @@
     -->
     <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
+    <string name="title_activity_license">License</string>
     <string name="title_activity_maps">Luas Map</string>
     <string name="title_activity_news_luas_news">Luas News</string>
     <string name="title_activity_news_travel_updates">Travel Updates</string>
@@ -94,7 +94,7 @@
     <string name="about_description">Android Wear and mobile app providing real-time tram stop
         information for Dublin\'s Luas light rail service.</string>
     <string name="about_title_license">Open Source License</string>
-    <string name="about_license">GNU General Public License (GPLv3)</string>
+    <string name="about_license"><u>GNU General Public License (GPLv3)</u></string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
     <string name="about_irish_translations">Irish translations by Feidhlim Seoighe</string>

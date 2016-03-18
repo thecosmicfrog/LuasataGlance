@@ -18,18 +18,21 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<resources>
-    <color name="favourites_yellow">#fffdd835</color>
-    <color name="listview_divider">#ffe0e0e0</color>
-    <color name="luas_purple">#ff4d3475</color>
-    <color name="luas_purple_statusbar">#ff3f2a5f</color>
-    <color name="message_success">#ff006600</color>
-    <color name="message_not_running">#fff1A82e</color>
-    <color name="message_error">#ffe00000</color>
-    <color name="off_white">#fffafafa</color>
-    <color name="stop_forecast_border_grey">#fff5f5f5</color>
-    <color name="tab_red_line">#ffff4d4d</color>
-    <color name="tab_green_line">#ff33ad5C</color>
-    <color name="text_grey">#ff757575</color>
-    <color name="text_link">#ff80cbc4</color>
-</resources>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:clipToPadding="false"
+    tools:context="org.thecosmicfrog.luasataglance.activity.LicenseActivity">
+
+    <TextView
+        android:id="@+id/textview_license_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</ScrollView>

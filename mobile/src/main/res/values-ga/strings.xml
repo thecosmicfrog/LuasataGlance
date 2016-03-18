@@ -31,6 +31,7 @@
     -->
     <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
+    <string name="title_activity_license">Ceadúnas</string>
     <string name="title_activity_maps">Léarscáil Luas</string>
     <string name="title_activity_news_luas_news">Nuacht Luas</string>
     <string name="title_activity_news_travel_updates">Stádas Taisteal</string>
@@ -94,7 +95,7 @@
     <string name="about_description">Aipp guthán agus Android Wear a léiríonn eolas fíor-ama don
         Luas, córas iarnróid éadrom Bhaile Átha Cliath.</string>
     <string name="about_title_license">Ceadúnas Foinse Oscailte</string>
-    <string name="about_license">GNU General Public License (GPLv3)</string>
+    <string name="about_license"><u>GNU General Public License (GPLv3)</u></string>
     <string name="about_title_source_bugs_features">Cód foinseach, fabht agus iarratais
         speisialta</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>

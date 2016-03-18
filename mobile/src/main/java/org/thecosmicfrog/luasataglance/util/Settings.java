@@ -27,8 +27,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.activity.AboutActivity;
+import org.thecosmicfrog.luasataglance.activity.LicenseActivity;
 import org.thecosmicfrog.luasataglance.activity.NewsActivity;
 import org.thecosmicfrog.luasataglance.activity.SettingsActivity;
 
@@ -73,12 +76,12 @@ public final class Settings {
         }
 
         if (id == R.id.action_about) {
-            View dialogAbout =
-                    fragmentActivity.getLayoutInflater().inflate(R.layout.dialog_about, null);
-
-            new AlertDialog.Builder(context)
-                    .setView(dialogAbout)
-                    .show();
+            context.startActivity(
+                    new Intent(
+                            context,
+                            AboutActivity.class
+                    )
+            );
         }
     }
 }

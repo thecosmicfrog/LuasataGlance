@@ -91,12 +91,17 @@
         </activity>
         <activity
             android:name=".activity.FavouritesActivity"
-            android:theme="@style/Theme.AppCompat.Dialog">
-        </activity>
+            android:theme="@style/Theme.AppCompat.Dialog"></activity>
         <activity
             android:name=".activity.NotifyTimeActivity"
-            android:theme="@style/Theme.AppCompat.Dialog">
-        </activity>
+            android:theme="@style/Theme.AppCompat.Dialog"></activity>
+        <activity
+            android:name=".activity.LicenseActivity"
+            android:label="@string/title_activity_license"
+            android:parentActivityName=".activity.AboutActivity"></activity>
+        <activity
+            android:name=".activity.AboutActivity"
+            android:theme="@style/Theme.AppCompat.Dialog"></activity>
     </application>
 
 </manifest>
