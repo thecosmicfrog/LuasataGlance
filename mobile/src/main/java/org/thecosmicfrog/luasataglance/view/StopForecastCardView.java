@@ -106,11 +106,15 @@ public class StopForecastCardView extends CardView {
         Log.i(LOG_TAG, "Screen density is " + densityDpi + " DPI.");
 
         if (densityDpi > 320) {
+            Log.i(LOG_TAG, "Making 4th TableRow visible.");
+
             TableRow tableRowStop4 = (TableRow) view.findViewById(R.id.tablerow_stop4);
             tableRowStop4.setVisibility(View.VISIBLE);
         }
 
         if (densityDpi > 500) {
+            Log.i(LOG_TAG, "Making 5th TableRow visible.");
+
             TableRow tableRowStop5 = (TableRow) view.findViewById(R.id.tablerow_stop5);
             tableRowStop5.setVisibility(View.VISIBLE);
         }

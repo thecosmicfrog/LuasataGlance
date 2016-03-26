@@ -198,8 +198,9 @@ public class LineFragment extends Fragment {
         /* Instantiate a new StopNameIdMap. */
         mapStopNameId = new StopNameIdMap(localeDefault);
 
-        if (isAdded())
+        if (isAdded()) {
             isInitialised = initFragment();
+        }
 
         /*
          * If an Intent did not bring us to this Activity and there is a stop name saved in shared
@@ -246,8 +247,9 @@ public class LineFragment extends Fragment {
                  */
                 boolean hasSetTabAndSpinner = setTabAndSpinner(stopName);
 
-                if (hasSetTabAndSpinner)
+                if (hasSetTabAndSpinner) {
                     getActivity().getIntent().removeExtra(STOP_NAME);
+                }
             } else if (getActivity().getIntent().hasExtra(NOTIFY_STOP_NAME)) {
                 /*
                  * Track whether or not the tab and spinner has been set. If it has, clear the Extra
@@ -258,8 +260,9 @@ public class LineFragment extends Fragment {
                                 getActivity().getIntent().getStringExtra(NOTIFY_STOP_NAME)
                         );
 
-                if (hasSetTabAndSpinner)
+                if (hasSetTabAndSpinner) {
                     getActivity().getIntent().removeExtra(NOTIFY_STOP_NAME);
+                }
             } else if (!Preferences.defaultStopName(getContext()).equals(getString(R.string.none))
                     && Preferences.defaultStopName(getContext()) != null) {
                 setTabAndSpinner(Preferences.defaultStopName(getContext()));
@@ -273,10 +276,11 @@ public class LineFragment extends Fragment {
              * Induce 10 second delay if app is launching from cold start (timerTaskReload == null)
              * in order to prevent two HTTP requests in rapid succession.
              */
-            if (timerTaskReload == null)
+            if (timerTaskReload == null) {
                 autoReloadStopForecast(10000);
-            else
+            } else {
                 autoReloadStopForecast(0);
+            }
         }
     }
 
@@ -554,6 +558,13 @@ public class LineFragment extends Fragment {
                 Log.wtf(LOG_TAG, "Invalid line specified.");
         }
 
+        /* Safety check. */
+        if (listStopsThisLine == null) {
+            Log.e(LOG_TAG, "List of stops for this line is null.");
+
+            return false;
+        }
+
         /*
          * If the List of stops representing this Fragment contains the requested stop name, set the
          * Spinner to that stop.
@@ -566,8 +577,9 @@ public class LineFragment extends Fragment {
         } else {
             TabLayout.Tab tab = tabLayout.getTabAt(indexOtherLine);
 
-            if (tab != null)
+            if (tab != null) {
                 tab.select();
+            }
 
             spinnerCardView.setSelection(Preferences.selectedStopName(getContext(), line));
 
@@ -575,6 +587,9 @@ public class LineFragment extends Fragment {
         }
     }
 
+    /**
+     * Clear stop forecast.
+     */
     private void clearStopForecast() {
         inboundStopForecastCardView.clearStopForecast();
         outboundStopForecastCardView.clearStopForecast();
@@ -595,13 +610,14 @@ public class LineFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (shouldAutoReload)
+                            if (shouldAutoReload) {
                                 loadStopForecast(
                                         Preferences.selectedStopName(
                                                 getContext(),
                                                 line
                                         )
                                 );
+                            }
                         }
                     });
                 }
@@ -674,8 +690,9 @@ public class LineFragment extends Fragment {
                  * If we get a message or a response from the server, there's likely an issue with
                  * the client request or the server's response itself.
                  */
-                if (retrofitError.getMessage() != null)
+                if (retrofitError.getMessage() != null) {
                     Log.e(LOG_TAG, retrofitError.getMessage());
+                }
 
                 if (retrofitError.getResponse() != null) {
                     Log.e(LOG_TAG, retrofitError.getResponse().getUrl());
@@ -689,8 +706,9 @@ public class LineFragment extends Fragment {
                  * If we don't receive a message or response, we can still get an idea of what's
                  * going on by getting the "kind" of error.
                  */
-                if (retrofitError.getKind() != null)
+                if (retrofitError.getKind() != null) {
                     Log.e(LOG_TAG, retrofitError.getKind().toString());
+                }
             }
         };
 
@@ -739,8 +757,9 @@ public class LineFragment extends Fragment {
                 if (menu != null) {
                     MenuItem menuItemNewsAlert = menu.findItem(resActionNewsAlert);
 
-                    if (menuItemNewsAlert != null)
+                    if (menuItemNewsAlert != null) {
                         menuItemNewsAlert.setVisible(false);
+                    }
                 }
             } else {
                 if (status.equals("")) {
@@ -763,13 +782,14 @@ public class LineFragment extends Fragment {
                 if (menu != null) {
                     MenuItem menuItemNewsAlert = menu.findItem(resActionNewsAlert);
 
-                    if (menuItemNewsAlert != null)
+                    if (menuItemNewsAlert != null) {
                         menuItemNewsAlert.setVisible(true);
+                    }
                 }
             }
 
             /*
-             * Pull in all trams from the StopForecast, but only display up to four
+             * Pull in all trams from the StopForecast, but only display up to five
              * inbound and outbound trams.
              */
             if (stopForecast.getInboundTrams() != null) {
@@ -782,7 +802,7 @@ public class LineFragment extends Fragment {
                         String dueMinutes =
                                 stopForecast.getInboundTrams().get(i).getDueMinutes();
 
-                        if (i < 4) {
+                        if (i < 5) {
                             if (localeDefault.startsWith(GAEILGE)) {
                                 inboundTram = mapEnglishGaeilge.get(
                                         stopForecast.getInboundTrams()
@@ -796,8 +816,9 @@ public class LineFragment extends Fragment {
                             }
 
                             if (dueMinutes.equalsIgnoreCase(DUE)) {
-                                if (localeDefault.startsWith(GAEILGE))
+                                if (localeDefault.startsWith(GAEILGE)) {
                                     dueMinutes = mapEnglishGaeilge.get(dueMinutes);
+                                }
 
                                 minOrMins = "";
                             } else if (Integer.parseInt(dueMinutes) > 1) {
@@ -830,7 +851,7 @@ public class LineFragment extends Fragment {
                         String dueMinutes =
                                 stopForecast.getOutboundTrams().get(i).getDueMinutes();
 
-                        if (i < 4) {
+                        if (i < 5) {
                             if (localeDefault.startsWith(GAEILGE)) {
                                 outboundTram = mapEnglishGaeilge.get(
                                         stopForecast.getOutboundTrams()
@@ -844,8 +865,9 @@ public class LineFragment extends Fragment {
                             }
 
                             if (dueMinutes.equalsIgnoreCase(DUE)) {
-                                if (localeDefault.startsWith(GAEILGE))
+                                if (localeDefault.startsWith(GAEILGE)) {
                                     dueMinutes = mapEnglishGaeilge.get(dueMinutes);
+                                }
 
                                 minOrMins = "";
                             } else if (Integer.parseInt(dueMinutes) > 1) {
