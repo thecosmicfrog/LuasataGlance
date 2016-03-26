@@ -97,6 +97,7 @@
     <string name="about_license"><u>GNU General Public License (GPLv3)</u></string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
+    <string name="about_developed_by">Developed by Aaron Hastings (thecosmicfrog)</string>
     <string name="about_irish_translations">Irish translations by Feidhlim Seoighe</string>
 
     <!--

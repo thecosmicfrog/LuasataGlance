@@ -114,8 +114,16 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/about_irish_translations"
+        android:text="@string/about_developed_by"
         android:textColor="@color/text_grey"
         android:textStyle="bold"
         android:paddingTop="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about_irish_translations"
+        android:textColor="@color/text_grey"
+        android:textStyle="bold"
+        android:paddingTop="8dp" />
 </LinearLayout>
