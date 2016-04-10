@@ -32,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Preferences;
@@ -106,32 +107,12 @@ public class MainActivity extends AppCompatActivity {
         setTabIndicatorColor(tabLayout);
 
         /*
-         * Use a Floating Action Button (FAB) to open the Favourites Dialog.
+         * Bottom navigation bar - Luas Map.
          */
-        FloatingActionButton fabFavourites =
-                (FloatingActionButton) findViewById(R.id.fab_favourites);
-        fabFavourites.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                TutorialCardView tutorialCardViewFavourites =
-                        (TutorialCardView) findViewById(R.id.tutorialcardview_favourites);
-                tutorialCardViewFavourites.setVisibility(View.GONE);
-
-                /* Open Favourites Activity. */
-                startActivity(
-                        new Intent(
-                                getApplicationContext(),
-                                FavouritesActivity.class
-                        )
-                );
-            }
-        });
-
-        /*
-         * Use a Floating Action Button (FAB) to open the Maps Dialog.
-         */
-        FloatingActionButton fabMaps =
-                (FloatingActionButton) findViewById(R.id.fab_maps);
-        fabMaps.setOnClickListener(new View.OnClickListener() {
+        RelativeLayout relativeLayoutBottomNavMap =
+                (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_map);
+        relativeLayoutBottomNavMap.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 /*
                  * Open Maps Activity.
@@ -156,6 +137,28 @@ public class MainActivity extends AppCompatActivity {
                             )
                     );
                 }
+            }
+        });
+
+        /*
+         * Bottom navigation bar - Favourites.
+         */
+        RelativeLayout relativeLayoutBottomNavFavourites =
+                (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_favourites);
+        relativeLayoutBottomNavFavourites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TutorialCardView tutorialCardViewFavourites =
+                        (TutorialCardView) findViewById(R.id.tutorialcardview_favourites);
+                tutorialCardViewFavourites.setVisibility(View.GONE);
+
+                /* Open Favourites Activity. */
+                startActivity(
+                        new Intent(
+                                getApplicationContext(),
+                                FavouritesActivity.class
+                        )
+                );
             }
         });
     }

@@ -82,7 +82,7 @@
     <string name="action_favourites_edit">Edit</string>
     <string name="action_favourites_save">Save</string>
     <string name="action_news">Luas News</string>
-    <string name="action_news_alert">Alert</string>
+    <string name="action_news_alert">Alerts</string>
     <string name="action_reload">Reload</string>
     <string name="action_settings">Settings</string>
 
