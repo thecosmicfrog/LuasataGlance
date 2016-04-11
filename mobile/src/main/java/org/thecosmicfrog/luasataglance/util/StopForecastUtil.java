@@ -21,22 +21,14 @@
 
 package org.thecosmicfrog.luasataglance.util;
 
-import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
-import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.Tram;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
-
-import java.util.Locale;
 
 public final class StopForecastUtil {
 
@@ -47,70 +39,6 @@ public final class StopForecastUtil {
     private static final String TUTORIAL_NOTIFICATIONS = "notifications";
     private static final String TUTORIAL_FAVOURITES = "favourites";
     private static final String STOP_FORECAST = "stop_forecast";
-
-    /**
-     * Show dialog for choosing notification times.
-     * @param rootView          Root View.
-     * @param stopName          Stop name to notify for.
-     * @param textViewStopTimes Array of TextViews for times in a stop forecast.
-     * @param index             Index representing which specific tram to notify for.
-     */
-    public static void showNotifyTimeDialog(View rootView, String stopName,
-                                            TextView[] textViewStopTimes, int index) {
-        String localeDefault = Locale.getDefault().toString();
-        String notifyStopTimeStr = textViewStopTimes[index].getText().toString();
-        NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(localeDefault, STOP_FORECAST);
-
-        if (notifyStopTimeStr.equals(""))
-            return;
-
-        if (notifyStopTimeStr.matches(
-                rootView.getResources().getString(R.string.due) + "|" + "1 .*|2 .*")) {
-            Toast.makeText(
-                    rootView.getContext(),
-                    rootView.getContext().getString(
-                            R.string.cannot_schedule_notification
-                    ),
-                    Toast.LENGTH_LONG
-            ).show();
-
-            return;
-        }
-
-        /*
-         * When the user opens the notification dialog as part of the tutorial, scroll back up to
-         * the top so that the next tutorial is definitely visible. This should only ever run once.
-         */
-        if (!Preferences.hasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS)) {
-            ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.redline_scrollview);
-            scrollView.setScrollY(0);
-        }
-
-        Preferences.saveHasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS, true);
-
-        /* We're done with the notifications tutorial. Hide it. */
-        displayTutorial(rootView, TUTORIAL_NOTIFICATIONS, false);
-
-        /* Then, display the final tutorial. */
-        displayTutorial(rootView, TUTORIAL_FAVOURITES, true);
-
-        Preferences.saveNotifyStopName(
-                rootView.getContext(),
-                stopName
-        );
-
-        Preferences.saveNotifyStopTimeExpected(
-                rootView.getContext(),
-                mapNotifyTimes.get(notifyStopTimeStr)
-        );
-
-        rootView.getContext().startActivity(
-                new Intent(
-                        rootView.getContext(),
-                        NotifyTimeActivity.class
-                )
-        );
-    }
 
     /**
      * Determine if this is the first time the app has been launched and, if so, display a brief

@@ -21,6 +21,7 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -34,12 +35,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
+import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.util.Preferences;
@@ -71,6 +76,7 @@ public class LineFragment extends Fragment {
     private static final String RES_SPINNER_CARDVIEW = "resSpinnerCardView";
     private static final String RES_STATUS_CARDVIEW = "resStatusCardView";
     private static final String RES_SWIPEREFRESHLAYOUT = "resSwipeRefreshLayout";
+    private static final String RES_SCROLLVIEW = "resScrollView";
     private static final String RES_INBOUND_STOPFORECASTCARDVIEW =
             "resInboundStopForecastCardView";
     private static final String RES_OUTBOUND_STOPFORECASTCARDVIEW =
@@ -83,8 +89,10 @@ public class LineFragment extends Fragment {
     private final String NO_LINE = "no_line";
     private final String STOP_NAME = "stopName";
     private final String NOTIFY_STOP_NAME = "notifyStopName";
+    private final String STOP_FORECAST = "stop_forecast";
     private final String TUTORIAL_SELECT_STOP = "select_stop";
     private final String TUTORIAL_NOTIFICATIONS = "notifications";
+    private final String TUTORIAL_FAVOURITES = "favourites";
 
     private static int resLayoutFragmentLine;
     private static int resMenuLine;
@@ -92,6 +100,7 @@ public class LineFragment extends Fragment {
     private static int resSpinnerCardView;
     private static int resStatusCardView;
     private static int resSwipeRefreshLayout;
+    private static int resScrollView;
     private static int resInboundStopForecastCardView;
     private static int resOutboundStopForecastCardView;
     private static int resArrayStopsRedLine;
@@ -106,6 +115,7 @@ public class LineFragment extends Fragment {
     private ProgressBar progressBar;
     private SpinnerCardView spinnerCardView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ScrollView scrollView;
     private StatusCardView statusCardView;
     private StopForecastCardView inboundStopForecastCardView;
     private StopForecastCardView outboundStopForecastCardView;
@@ -135,6 +145,7 @@ public class LineFragment extends Fragment {
                 bundle.putInt(RES_SPINNER_CARDVIEW, R.id.redline_spinner_card_view);
                 bundle.putInt(RES_STATUS_CARDVIEW, R.id.redline_statuscardview);
                 bundle.putInt(RES_SWIPEREFRESHLAYOUT, R.id.redline_swiperefreshlayout);
+                bundle.putInt(RES_SCROLLVIEW, R.id.redline_scrollview);
                 bundle.putInt(
                         RES_INBOUND_STOPFORECASTCARDVIEW,
                         R.id.redline_inbound_stopforecastcardview
@@ -155,6 +166,7 @@ public class LineFragment extends Fragment {
                 bundle.putInt(RES_SPINNER_CARDVIEW, R.id.greenline_spinner_card_view);
                 bundle.putInt(RES_STATUS_CARDVIEW, R.id.greenline_statuscardview);
                 bundle.putInt(RES_SWIPEREFRESHLAYOUT, R.id.greenline_swiperefreshlayout);
+                bundle.putInt(RES_SCROLLVIEW, R.id.greenline_scrollview);
                 bundle.putInt(
                         RES_INBOUND_STOPFORECASTCARDVIEW,
                         R.id.greenline_inbound_stopforecastcardview
@@ -344,6 +356,7 @@ public class LineFragment extends Fragment {
         resSpinnerCardView = getArguments().getInt(RES_SPINNER_CARDVIEW);
         resStatusCardView = getArguments().getInt(RES_STATUS_CARDVIEW);
         resSwipeRefreshLayout = getArguments().getInt(RES_SWIPEREFRESHLAYOUT);
+        resScrollView = getArguments().getInt(RES_SCROLLVIEW);
         resInboundStopForecastCardView = getArguments().getInt(RES_INBOUND_STOPFORECASTCARDVIEW);
         resOutboundStopForecastCardView = getArguments().getInt(RES_OUTBOUND_STOPFORECASTCARDVIEW);
         resActionNewsAlert = getArguments().getInt(RES_ACTION_NEWS_ALERT);
@@ -440,6 +453,8 @@ public class LineFragment extends Fragment {
                 }
         );
 
+        scrollView = (ScrollView) rootView.findViewById(resScrollView);
+
         /* Set up stop forecast CardViews. */
         inboundStopForecastCardView =
                 (StopForecastCardView) rootView.findViewById(
@@ -476,8 +491,7 @@ public class LineFragment extends Fragment {
             tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    StopForecastUtil.showNotifyTimeDialog(
-                            rootView,
+                    showNotifyTimeDialog(
                             spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
                             inboundStopForecastCardView.getTextViewStopTimes(),
                             index
@@ -488,8 +502,7 @@ public class LineFragment extends Fragment {
             tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    StopForecastUtil.showNotifyTimeDialog(
-                            rootView,
+                    showNotifyTimeDialog(
                             spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
                             outboundStopForecastCardView.getTextViewStopTimes(),
                             index
@@ -497,6 +510,65 @@ public class LineFragment extends Fragment {
                 }
             });
         }
+    }
+
+    /**
+     * Show dialog for choosing notification times.
+     * @param stopName          Stop name to notify for.
+     * @param textViewStopTimes Array of TextViews for times in a stop forecast.
+     * @param index             Index representing which specific tram to notify for.
+     */
+    private void showNotifyTimeDialog(String stopName, TextView[] textViewStopTimes, int index) {
+        String localeDefault = Locale.getDefault().toString();
+        String notifyStopTimeStr = textViewStopTimes[index].getText().toString();
+        NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(localeDefault, STOP_FORECAST);
+
+        if (notifyStopTimeStr.equals(""))
+            return;
+
+        if (notifyStopTimeStr.matches(
+                getString(R.string.due) + "|" + "1 .*|2 .*")) {
+            Toast.makeText(
+                    getContext(),
+                    getString(R.string.cannot_schedule_notification),
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+        /*
+         * When the user opens the notification dialog as part of the tutorial, scroll back up to
+         * the top so that the next tutorial is definitely visible. This should only ever run once.
+         */
+        if (!Preferences.hasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS)) {
+            scrollView.setScrollY(0);
+        }
+
+        Preferences.saveHasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS, true);
+
+        /* We're done with the notifications tutorial. Hide it. */
+        StopForecastUtil.displayTutorial(rootView, TUTORIAL_NOTIFICATIONS, false);
+
+        /* Then, display the final tutorial. */
+        StopForecastUtil.displayTutorial(rootView, TUTORIAL_FAVOURITES, true);
+
+        Preferences.saveNotifyStopName(
+                getContext(),
+                stopName
+        );
+
+        Preferences.saveNotifyStopTimeExpected(
+                getContext(),
+                mapNotifyTimes.get(notifyStopTimeStr)
+        );
+
+        getContext().startActivity(
+                new Intent(
+                        getContext(),
+                        NotifyTimeActivity.class
+                )
+        );
     }
 
     /**
