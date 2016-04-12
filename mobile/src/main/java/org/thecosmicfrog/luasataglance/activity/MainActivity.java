@@ -24,7 +24,6 @@ package org.thecosmicfrog.luasataglance.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -32,7 +31,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Preferences;
@@ -44,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
     private final String GREEN_LINE = "green_line";
     private final String NO_LINE = "no_line";
     private final String STOP_NAME = "stopName";
+    private final String NEWS_TYPE = "newsType";
+    private final String NEWS_TYPE_TRAVEL_UPDATES = "travelUpdates";
+
+    private static ImageView imageViewAlerts;
+    private static TextView textViewAlerts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +167,26 @@ public class MainActivity extends AppCompatActivity {
                 );
             }
         });
+
+        /*
+         * Bottom navigation bar - Alerts.
+         */
+        RelativeLayout relativeLayoutBottomNavAlerts =
+                (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_alerts);
+        relativeLayoutBottomNavAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(
+                        new Intent(
+                                getApplicationContext(),
+                                NewsActivity.class
+                        ).putExtra(NEWS_TYPE, NEWS_TYPE_TRAVEL_UPDATES)
+                );
+            }
+        });
+
+        imageViewAlerts = (ImageView) findViewById(R.id.imageview_alerts);
+        textViewAlerts = (TextView) findViewById(R.id.textview_alerts);
     }
 
     @Override
@@ -185,5 +211,13 @@ public class MainActivity extends AppCompatActivity {
                     ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
             );
         }
+    }
+
+    public static ImageView getImageViewAlerts() {
+        return imageViewAlerts;
+    }
+
+    public static TextView getTextViewAlerts() {
+        return textViewAlerts;
     }
 }

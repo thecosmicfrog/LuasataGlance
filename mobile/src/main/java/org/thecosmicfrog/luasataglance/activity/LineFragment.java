@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,7 +84,6 @@ public class LineFragment extends Fragment {
             "resOutboundStopForecastCardView";
     private static final String RES_ARRAY_STOPS_RED_LINE = "resArrayStopsRedLine";
     private static final String RES_ARRAY_STOPS_GREEN_LINE = "resArrayStopsGreenLine";
-    private static final String RES_ACTION_NEWS_ALERT = "resActionNewsAlert";
 
     private final String LOG_TAG = LineFragment.class.getSimpleName();
     private final String NO_LINE = "no_line";
@@ -105,7 +105,6 @@ public class LineFragment extends Fragment {
     private static int resOutboundStopForecastCardView;
     private static int resArrayStopsRedLine;
     private static int resArrayStopsGreenLine;
-    private static int resActionNewsAlert;
     private static StopNameIdMap mapStopNameId;
     private static String localeDefault;
 
@@ -154,7 +153,6 @@ public class LineFragment extends Fragment {
                         RES_OUTBOUND_STOPFORECASTCARDVIEW,
                         R.id.redline_outbound_stopforecastcardview
                 );
-                bundle.putInt(RES_ACTION_NEWS_ALERT, R.id.action_news_alert);
 
                 break;
 
@@ -175,7 +173,6 @@ public class LineFragment extends Fragment {
                         RES_OUTBOUND_STOPFORECASTCARDVIEW,
                         R.id.greenline_outbound_stopforecastcardview
                 );
-                bundle.putInt(RES_ACTION_NEWS_ALERT, R.id.action_news_alert);
 
                 break;
 
@@ -359,7 +356,6 @@ public class LineFragment extends Fragment {
         resScrollView = getArguments().getInt(RES_SCROLLVIEW);
         resInboundStopForecastCardView = getArguments().getInt(RES_INBOUND_STOPFORECASTCARDVIEW);
         resOutboundStopForecastCardView = getArguments().getInt(RES_OUTBOUND_STOPFORECASTCARDVIEW);
-        resActionNewsAlert = getArguments().getInt(RES_ACTION_NEWS_ALERT);
     }
 
     /**
@@ -825,14 +821,13 @@ public class LineFragment extends Fragment {
                 statusCardView.setStatus(status);
                 statusCardView.setStatusColor(R.color.message_success);
 
-                /* Make the Alert menu item invisible. */
-                if (menu != null) {
-                    MenuItem menuItemNewsAlert = menu.findItem(resActionNewsAlert);
+                /* Change the alerts image to the default white image. */
+                MainActivity.getImageViewAlerts().setImageResource(R.drawable.ic_error_alerts);
 
-                    if (menuItemNewsAlert != null) {
-                        menuItemNewsAlert.setVisible(false);
-                    }
-                }
+                /* Change the color of the Alerts TextView to white (default). */
+                MainActivity.getTextViewAlerts().setTextColor(
+                        ContextCompat.getColor(getContext(), android.R.color.white)
+                );
             } else {
                 if (status.equals("")) {
                     /*
@@ -850,14 +845,13 @@ public class LineFragment extends Fragment {
                 /* Change the color of the message title TextView to red. */
                 statusCardView.setStatusColor(R.color.message_error);
 
-                /* Make the Alert menu item visible. */
-                if (menu != null) {
-                    MenuItem menuItemNewsAlert = menu.findItem(resActionNewsAlert);
+                /* Change the Alerts image to the red version. */
+                MainActivity.getImageViewAlerts().setImageResource(R.drawable.ic_error_alerts_red);
 
-                    if (menuItemNewsAlert != null) {
-                        menuItemNewsAlert.setVisible(true);
-                    }
-                }
+                /* Change the color of the Alerts TextView to red. */
+                MainActivity.getTextViewAlerts().setTextColor(
+                        ContextCompat.getColor(getContext(), R.color.message_error)
+                );
             }
 
             /*

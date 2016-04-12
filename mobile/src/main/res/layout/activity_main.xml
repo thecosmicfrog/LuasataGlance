@@ -20,13 +20,12 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context=".MainActivity"
+    tools:context="org.thecosmicfrog.luasataglance.activity.MainActivity"
     tools:ignore="MergeRootFrame">
 
     <android.support.design.widget.TabLayout
@@ -129,6 +128,7 @@
             android:clickable="true">
 
             <ImageView
+                android:id="@+id/imageview_alerts"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_horizontal"
@@ -137,6 +137,7 @@
                 android:src="@drawable/ic_error_alerts" />
 
             <TextView
+                android:id="@+id/textview_alerts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

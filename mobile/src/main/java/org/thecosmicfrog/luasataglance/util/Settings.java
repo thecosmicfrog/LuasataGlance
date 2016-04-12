@@ -40,7 +40,6 @@ public final class Settings {
     public static void getSettings(Context context, FragmentActivity fragmentActivity, MenuItem item) {
         final String NEWS_TYPE = "newsType";
         final String NEWS_TYPE_LUAS_NEWS = "luasNews";
-        final String NEWS_TYPE_TRAVEL_UPDATES = "travelUpdates";
 
         /*
          * Handle action bar item clicks here. The action bar will automatically handle clicks on
@@ -54,15 +53,6 @@ public final class Settings {
                             context,
                             NewsActivity.class
                     ).putExtra(NEWS_TYPE, NEWS_TYPE_LUAS_NEWS)
-            );
-        }
-
-        if (id == R.id.action_news_alert) {
-            context.startActivity(
-                    new Intent(
-                            context,
-                            NewsActivity.class
-                    ).putExtra(NEWS_TYPE, NEWS_TYPE_TRAVEL_UPDATES)
             );
         }
 
