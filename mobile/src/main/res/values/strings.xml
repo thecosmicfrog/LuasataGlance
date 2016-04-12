@@ -60,9 +60,9 @@
     <string name="notifications_tutorial">Great! You can also schedule notifications for incoming
         trams. Just tap on a tram below to try it out.
     </string>
-    <string name="favourites_tutorial">Perfect! Okay, one last thing. See that \u2605 button down in
-        the bottom-right corner? That lets you save your favourite stops for quick access. Try
-        tapping it now.
+    <string name="favourites_tutorial">Perfect! Okay, one last thing. See that <b>Favourites</b>
+        (\u2605) button at the bottom of the screen? That lets you save your favourite stops for
+        quick access. Try tapping it now.
     </string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
