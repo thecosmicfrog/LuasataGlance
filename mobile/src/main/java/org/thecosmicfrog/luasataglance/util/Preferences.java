@@ -36,8 +36,21 @@ public final class Preferences {
      */
 
     /**
+     * Load the current app version from shared preferences.
+     * @param context Context.
+     * @return Current app version, or -1 if not found.
+     */
+    public static String currentAppVersion(Context context) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getString("currentAppVersion", "-1");
+    }
+
+    /**
      * Load the currently-selected stop name from shared preferences.
-     * @param context Context
+     * @param context Context.
      * @return Selected stop name, or null if none found.
      */
     public static String defaultStopName(Context context) {
@@ -51,7 +64,7 @@ public final class Preferences {
 
     /**
      * Whether or not a particular tutorial has been completed by the user.
-     * @param context Context
+     * @param context Context.
      * @return Tutorial completed.
      */
     public static boolean hasRunOnce(Context context, String tutorialName) {
@@ -64,7 +77,7 @@ public final class Preferences {
 
     /**
      * Load index of the next stop to load from shared preferences.
-     * @param context Context
+     * @param context Context.
      * @return Index of the next stop to load, or 0 (first list entry) if none found.
      */
     public static int indexNextStopToLoad(Context context) {
@@ -77,7 +90,7 @@ public final class Preferences {
 
     /**
      * Load name of stop-to-notify-for from shared preferences.
-     * @param context Context
+     * @param context Context.
      * @return Stop-to-notify-for.
      */
     public static String notifyStopName(Context context) {
@@ -90,7 +103,7 @@ public final class Preferences {
 
     /**
      * Load integer value of minutes until next tram from shared preferences.
-     * @param context Context
+     * @param context Context.
      * @return Integer value of minutes until next tram, or 0 if none found.
      */
     public static int notifyStopTimeExpected(Context context) {
@@ -103,7 +116,7 @@ public final class Preferences {
 
     /**
      * Load the currently-selected stop name from shared preferences.
-     * @param context Context
+     * @param context Context.
      * @return Selected stop name, or null if none found.
      */
     public static String selectedStopName(Context context, String line) {
@@ -120,7 +133,7 @@ public final class Preferences {
 
     /**
      * Load the currently-selected stop name from shared preferences.
-     * @param context Context
+     * @param context Context.
      * @return Selected stop name, or null if none found.
      */
     public static String widgetSelectedStopName(Context context) {
@@ -137,6 +150,23 @@ public final class Preferences {
      *  Save to shared preferences.
      * ============================================================================================
      */
+
+    /**
+     * Save the current app version according to strings.xml.
+     * @param context Context.
+     * @param currentAppVersion Current app version according to strings.xml.
+     * @return Successfully saved.
+     */
+    public static boolean saveCurrentAppVersion(Context context, String currentAppVersion) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.putString("currentAppVersion", currentAppVersion);
+
+        return prefs.commit();
+    }
 
     /**
      * Store boolean value of whether a particular tutorial have been completed by the user.

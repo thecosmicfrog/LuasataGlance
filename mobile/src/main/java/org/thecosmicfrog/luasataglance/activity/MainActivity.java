@@ -28,6 +28,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -41,6 +42,7 @@ import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
     private final String RED_LINE = "red_line";
     private final String GREEN_LINE = "green_line";
     private final String NO_LINE = "no_line";
@@ -187,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
 
         imageViewAlerts = (ImageView) findViewById(R.id.imageview_alerts);
         textViewAlerts = (TextView) findViewById(R.id.textview_alerts);
+
+        showWhatsNewDialog();
     }
 
     @Override
@@ -209,6 +213,50 @@ public class MainActivity extends AppCompatActivity {
         } else {
             tabLayout.setSelectedTabIndicatorColor(
                     ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+            );
+        }
+    }
+
+    /**
+     * Show What's New dialog to user if they have recently updated the app.
+     */
+    private void showWhatsNewDialog() {
+        /*
+         * Load two values for the current app version. One comes from strings.xml and the other
+         * comes from shared preferences. The value from strings.xml should be considered the
+         * definitive value.
+         */
+        String currentAppVersionDefinitive = getString(R.string.version_name);
+        String currentAppVersionFromPreferences =
+                Preferences.currentAppVersion(getApplicationContext());
+
+        double currentAppVersionDefinitiveNumeric = Double.parseDouble(currentAppVersionDefinitive);
+        double currentAppVersionFromPreferencesNumeric =
+                Double.parseDouble(currentAppVersionFromPreferences);
+
+        /*
+         * If the definitive current app version is greater than the version stored in shared
+         * preferences, the user has recently updated the app to a newer version.
+         * In this case, display the What's New dialog.
+         */
+        if (currentAppVersionDefinitiveNumeric > currentAppVersionFromPreferencesNumeric) {
+            Log.i(
+                    LOG_TAG,
+                    "User has updated to version " + currentAppVersionDefinitive + " from "
+                            + currentAppVersionFromPreferences + ". Displaying What's New Dialog."
+            );
+
+            startActivity(
+                    new Intent(
+                            getApplicationContext(),
+                            WhatsNewActivity.class
+                    )
+            );
+
+            /* Overwrite the previous current app version with the known new value. */
+            Preferences.saveCurrentAppVersion(
+                    getApplicationContext(),
+                    currentAppVersionDefinitive
             );
         }
     }
