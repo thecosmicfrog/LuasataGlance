@@ -31,7 +31,7 @@
         android:layout_width="fill_parent"
         android:layout_height="22dp"
         android:weightSum="1"
-        android:elevation="6dp"
+        android:elevation="@dimen/cardview_default_elevation"
         android:background="@color/message_success">
 
         <TextView
@@ -84,7 +84,7 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:elevation="6dp">
+            android:elevation="@dimen/cardview_default_elevation">
 
             <TextView
                 android:id="@+id/textview_inbound"
@@ -162,7 +162,7 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:elevation="6dp">
+            android:elevation="@dimen/cardview_default_elevation">
 
             <TextView
                 android:id="@+id/textview_outbound"

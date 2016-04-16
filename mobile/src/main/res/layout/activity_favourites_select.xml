@@ -43,7 +43,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="6dp">
+        android:elevation="@dimen/cardview_default_elevation">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_favourites_save"
