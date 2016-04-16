@@ -74,7 +74,7 @@ public class NotifyTimeActivity extends FragmentActivity {
         ArrayAdapter adapterNotifyTime = ArrayAdapter.createFromResource(
                 getApplicationContext(), R.array.array_notifytime_mins, R.layout.spinner_notify_time
         );
-        adapterNotifyTime.setDropDownViewResource(R.layout.spinner_stops);
+        adapterNotifyTime.setDropDownViewResource(R.layout.spinner_notify_time);
         spinnerNotifyTime.setAdapter(adapterNotifyTime);
 
         /* Set the Spinner's colour to Luas purple. */
