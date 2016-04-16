@@ -22,8 +22,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">72</string>
-    <string name="version_name">0.72</string>
+    <string name="version_code">74</string>
+    <string name="version_name">0.74</string>
 
     <!--
         Activities
@@ -136,15 +136,19 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current">Version 0.72 (14th April 2016)</string>
-    <string name="whatsnew_content_current">\u2022 Replaced <b>Favourites</b> and <b>Map</b> buttons
-        with a dedicated bottom navigation bar, per Material Design guidelines.\n\n\u2022 Fixed bug
-        which could cause crashes when creating tram notifications. Big thanks to everyone who
-        reported this via the <b>Report</b> button!\n\n\u2022 Added this <b>What\'s New</b> dialog!
+    <string name="whatsnew_title_current" translatable="false">Version 0.74 (16th April 2016)
     </string>
-    <string name="whatsnew_title_previous">Version 0.70 (8th April 2016)</string>
-    <string name="whatsnew_content_previous">\u2022 The stop forecast now takes greater advantage of
-        larger/smaller screens by displaying more/less incoming trams at once.</string>
+    <string name="whatsnew_content_current" translatable="false">\u2022 Replaced <b>Favourites</b>
+        and <b>Map</b> buttons with a dedicated bottom navigation bar, per Material Design
+        guidelines.\n\n\u2022 Fixed bug which could cause crashes when creating tram notifications.
+        Big thanks to everyone who reported this via the <b>Report</b> button!\n\n\u2022 Added this
+        <b>What\'s New</b> dialog!
+    </string>
+    <string name="whatsnew_title_previous" translatable="false">Version 0.70 (8th April 2016)
+    </string>
+    <string name="whatsnew_content_previous" translatable="false">\u2022 The stop forecast now takes
+        greater advantage of larger/smaller screens by displaying more/less incoming trams at once.
+    </string>
 
     <!--
         Widget

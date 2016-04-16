@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">72</string>
-    <string name="version_name">0.72</string>
+    <string name="version_code">74</string>
+    <string name="version_name">0.74</string>
 
     <!--
         Activities
@@ -36,6 +36,7 @@
     <string name="title_activity_news_luas_news">Nuacht Luas</string>
     <string name="title_activity_news_travel_updates">Stádas Taisteal</string>
     <string name="title_activity_settings">Roghanna</string>
+    <string name="title_activity_whats_new">Cad atá nua</string>
 
     <!--
         Main UI
