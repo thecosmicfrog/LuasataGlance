@@ -51,7 +51,8 @@
             android:id="@+id/spinner_notifytime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown" />
+            android:spinnerMode="dropdown"
+            android:popupBackground="@android:color/white" />
     </RelativeLayout>
 
     <Space
