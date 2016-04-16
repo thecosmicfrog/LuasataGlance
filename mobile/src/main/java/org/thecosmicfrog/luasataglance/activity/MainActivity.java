@@ -80,112 +80,124 @@ public class MainActivity extends AppCompatActivity {
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
 
-        tabLayout.addTab(tabLayout.newTab().setTag(RED_LINE).setText(getString(R.string.tab_red_line)));
-        tabLayout.addTab(tabLayout.newTab().setTag(GREEN_LINE).setText(getString(R.string.tab_green_line)));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.setBackgroundColor(
-                ContextCompat.getColor(getApplicationContext(), R.color.luas_purple)
-        );
+        if (tabLayout != null && viewPager != null) {
+            tabLayout.addTab(tabLayout.newTab().setTag(RED_LINE).setText(getString(R.string.tab_red_line)));
+            tabLayout.addTab(tabLayout.newTab().setTag(GREEN_LINE).setText(getString(R.string.tab_green_line)));
+            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+            tabLayout.setBackgroundColor(
+                    ContextCompat.getColor(getApplicationContext(), R.color.luas_purple)
+            );
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    viewPager.setCurrentItem(tab.getPosition());
 
-                setTabIndicatorColor(tabLayout);
-            }
+                    setTabIndicatorColor(tabLayout);
+                }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+                }
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+                }
+            });
 
-        final PagerAdapter pagerAdapter = new PagerAdapter(
-                getSupportFragmentManager(),
-                tabLayout.getTabCount()
-        );
+            final PagerAdapter pagerAdapter = new PagerAdapter(
+                    getSupportFragmentManager(),
+                    tabLayout.getTabCount()
+            );
 
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            viewPager.setAdapter(pagerAdapter);
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        setTabIndicatorColor(tabLayout);
+            setTabIndicatorColor(tabLayout);
+        } else {
+            Log.wtf(LOG_TAG, "tabLayout or viewPager is null.");
+        }
 
         /*
          * Bottom navigation bar - Luas Map.
          */
         RelativeLayout relativeLayoutBottomNavMap =
                 (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_map);
-        relativeLayoutBottomNavMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*
-                 * Open Maps Activity.
-                 * If we have a selected stop saved to shared preferences, open the map on that
-                 * stop. Otherwise, open the map at a default position.
-                 */
-                if (Preferences.selectedStopName(getApplicationContext(), "no_line") != null) {
-                    startActivity(
-                            new Intent(
-                                    getApplicationContext(),
-                                    MapsActivity.class
-                            ).putExtra(
-                                    STOP_NAME,
-                                    Preferences.selectedStopName(getApplicationContext(), NO_LINE)
-                            )
-                    );
-                } else {
-                    startActivity(
-                            new Intent(
-                                    getApplicationContext(),
-                                    MapsActivity.class
-                            )
-                    );
+        if (relativeLayoutBottomNavMap != null) {
+            relativeLayoutBottomNavMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    /*
+                     * Open Maps Activity.
+                     * If we have a selected stop saved to shared preferences, open the map on that
+                     * stop. Otherwise, open the map at a default position.
+                     */
+                    if (Preferences.selectedStopName(getApplicationContext(), "no_line") != null) {
+                        startActivity(
+                                new Intent(
+                                        getApplicationContext(),
+                                        MapsActivity.class
+                                ).putExtra(
+                                        STOP_NAME,
+                                        Preferences.selectedStopName(getApplicationContext(), NO_LINE)
+                                )
+                        );
+                    } else {
+                        startActivity(
+                                new Intent(
+                                        getApplicationContext(),
+                                        MapsActivity.class
+                                )
+                        );
+                    }
                 }
-            }
-        });
+            });
+        }
 
         /*
          * Bottom navigation bar - Favourites.
          */
         RelativeLayout relativeLayoutBottomNavFavourites =
                 (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_favourites);
-        relativeLayoutBottomNavFavourites.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TutorialCardView tutorialCardViewFavourites =
-                        (TutorialCardView) findViewById(R.id.tutorialcardview_favourites);
-                tutorialCardViewFavourites.setVisibility(View.GONE);
+        if (relativeLayoutBottomNavFavourites != null) {
+            relativeLayoutBottomNavFavourites.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TutorialCardView tutorialCardViewFavourites =
+                            (TutorialCardView) findViewById(R.id.tutorialcardview_favourites);
+                    if (tutorialCardViewFavourites != null) {
+                        tutorialCardViewFavourites.setVisibility(View.GONE);
+                    }
 
-                /* Open Favourites Activity. */
-                startActivity(
-                        new Intent(
-                                getApplicationContext(),
-                                FavouritesActivity.class
-                        )
-                );
-            }
-        });
+                    /* Open Favourites Activity. */
+                    startActivity(
+                            new Intent(
+                                    getApplicationContext(),
+                                    FavouritesActivity.class
+                            )
+                    );
+                }
+            });
+        }
 
         /*
          * Bottom navigation bar - Alerts.
          */
         RelativeLayout relativeLayoutBottomNavAlerts =
                 (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_alerts);
-        relativeLayoutBottomNavAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(
-                        new Intent(
-                                getApplicationContext(),
-                                NewsActivity.class
-                        ).putExtra(NEWS_TYPE, NEWS_TYPE_TRAVEL_UPDATES)
-                );
-            }
-        });
+        if (relativeLayoutBottomNavAlerts != null) {
+            relativeLayoutBottomNavAlerts.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(
+                            new Intent(
+                                    getApplicationContext(),
+                                    NewsActivity.class
+                            ).putExtra(NEWS_TYPE, NEWS_TYPE_TRAVEL_UPDATES)
+                    );
+                }
+            });
+        }
 
         imageViewAlerts = (ImageView) findViewById(R.id.imageview_alerts);
         textViewAlerts = (TextView) findViewById(R.id.textview_alerts);
@@ -226,24 +238,24 @@ public class MainActivity extends AppCompatActivity {
          * comes from shared preferences. The value from strings.xml should be considered the
          * definitive value.
          */
-        String currentAppVersionDefinitive = getString(R.string.version_name);
-        String currentAppVersionFromPreferences =
+        String appVersionCurrent = getString(R.string.version_name);
+        String appVersionSaved =
                 Preferences.currentAppVersion(getApplicationContext());
 
-        double currentAppVersionDefinitiveNumeric = Double.parseDouble(currentAppVersionDefinitive);
-        double currentAppVersionFromPreferencesNumeric =
-                Double.parseDouble(currentAppVersionFromPreferences);
+        double appVersionCurrentNumeric = Double.parseDouble(appVersionCurrent);
+        double appVersionSavedNumeric =
+                Double.parseDouble(appVersionSaved);
 
         /*
          * If the definitive current app version is greater than the version stored in shared
          * preferences, the user has recently updated the app to a newer version.
          * In this case, display the What's New dialog.
          */
-        if (currentAppVersionDefinitiveNumeric > currentAppVersionFromPreferencesNumeric) {
+        if (appVersionCurrentNumeric > appVersionSavedNumeric) {
             Log.i(
                     LOG_TAG,
-                    "User has updated to version " + currentAppVersionDefinitive + " from "
-                            + currentAppVersionFromPreferences + ". Displaying What's New Dialog."
+                    "User has updated to version " + appVersionCurrent + " from "
+                            + appVersionSaved + ". Displaying What's New Dialog."
             );
 
             startActivity(
@@ -256,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
             /* Overwrite the previous current app version with the known new value. */
             Preferences.saveCurrentAppVersion(
                     getApplicationContext(),
-                    currentAppVersionDefinitive
+                    appVersionCurrent
             );
         }
     }
