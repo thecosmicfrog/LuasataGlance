@@ -538,7 +538,9 @@ public class LineFragment extends Fragment {
          * the top so that the next tutorial is definitely visible. This should only ever run once.
          */
         if (!Preferences.hasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS)) {
-            scrollView.setScrollY(0);
+            if (scrollView != null) {
+                scrollView.setScrollY(0);
+            }
         }
 
         Preferences.saveHasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS, true);
