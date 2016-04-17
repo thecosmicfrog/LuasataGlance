@@ -22,8 +22,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">74</string>
-    <string name="version_name">0.74</string>
+    <string name="version_code">76</string>
+    <string name="version_name">0.76</string>
 
     <!--
         Activities
@@ -136,7 +136,7 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.74 (16th April 2016)
+    <string name="whatsnew_title_current" translatable="false">Version 0.76 (17th April 2016)
     </string>
     <string name="whatsnew_content_current" translatable="false">\u2022 Replaced <b>Favourites</b>
         and <b>Map</b> buttons with a dedicated bottom navigation bar, per Material Design
