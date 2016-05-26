@@ -309,13 +309,17 @@ public class LineFragment extends Fragment {
 
             /* When this tab is visible to the user, load a stop forecast. */
             if (isVisibleToUser) {
-                String stopName = spinnerCardView.getSpinnerStops().getSelectedItem().toString();
+                if (spinnerCardView.getSpinnerStops().getSelectedItem().toString() != null) {
+                    String stopName = spinnerCardView.getSpinnerStops().getSelectedItem().toString();
 
-                Preferences.saveSelectedStopName(getContext(), NO_LINE, stopName);
+                    Preferences.saveSelectedStopName(getContext(), NO_LINE, stopName);
 
-                loadStopForecast(stopName);
+                    loadStopForecast(stopName);
 
-                shouldAutoReload = true;
+                    shouldAutoReload = true;
+                } else {
+                    Log.w(LOG_TAG, "Spinner selected item is null.");
+                }
             } else {
                 shouldAutoReload = false;
             }
