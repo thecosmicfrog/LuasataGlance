@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Preferences;
+import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 public class MainActivity extends AppCompatActivity {

@@ -54,6 +54,7 @@ import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 import org.thecosmicfrog.luasataglance.view.SpinnerCardView;
 import org.thecosmicfrog.luasataglance.view.StatusCardView;
 import org.thecosmicfrog.luasataglance.view.StopForecastCardView;
+import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -239,6 +240,11 @@ public class LineFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        /* Remove Favourites tutorial if it has been completed once already. */
+        if (line.equals(RED_LINE) && Preferences.hasRunOnce(getContext(), TUTORIAL_FAVOURITES)) {
+            StopForecastUtil.displayTutorial(rootView, RED_LINE, TUTORIAL_FAVOURITES, false);
+        }
+
         if (isAdded()) {
             /*
              * If a Favourite stop brought us to this Activity, load that stop's forecast.
@@ -278,7 +284,7 @@ public class LineFragment extends Fragment {
             }
 
             /* Display tutorial for selecting a stop, if required. */
-            StopForecastUtil.displayTutorial(rootView, TUTORIAL_SELECT_STOP, true);
+            StopForecastUtil.displayTutorial(rootView, line, TUTORIAL_SELECT_STOP, true);
 
             /*
              * Reload stop forecast.
@@ -309,7 +315,7 @@ public class LineFragment extends Fragment {
 
             /* When this tab is visible to the user, load a stop forecast. */
             if (isVisibleToUser) {
-                if (spinnerCardView.getSpinnerStops().getSelectedItem().toString() != null) {
+                if (spinnerCardView.getSpinnerStops().getSelectedItem() != null) {
                     String stopName = spinnerCardView.getSpinnerStops().getSelectedItem().toString();
 
                     Preferences.saveSelectedStopName(getContext(), NO_LINE, stopName);
@@ -401,10 +407,10 @@ public class LineFragment extends Fragment {
                         shouldAutoReload = true;
 
                         /* Hide the select stop tutorial, if it is visible. */
-                        StopForecastUtil.displayTutorial(rootView, TUTORIAL_SELECT_STOP, false);
+                        StopForecastUtil.displayTutorial(rootView, line, TUTORIAL_SELECT_STOP, false);
 
                         /* Show the notifications tutorial. */
-                        StopForecastUtil.displayTutorial(rootView, TUTORIAL_NOTIFICATIONS, true);
+                        StopForecastUtil.displayTutorial(rootView, line, TUTORIAL_NOTIFICATIONS, true);
 
                         /*
                          * Get the stop name from the current position of the Spinner, save it to
@@ -550,10 +556,10 @@ public class LineFragment extends Fragment {
         Preferences.saveHasRunOnce(rootView.getContext(), TUTORIAL_NOTIFICATIONS, true);
 
         /* We're done with the notifications tutorial. Hide it. */
-        StopForecastUtil.displayTutorial(rootView, TUTORIAL_NOTIFICATIONS, false);
+        StopForecastUtil.displayTutorial(rootView, line, TUTORIAL_NOTIFICATIONS, false);
 
         /* Then, display the final tutorial. */
-        StopForecastUtil.displayTutorial(rootView, TUTORIAL_FAVOURITES, true);
+        StopForecastUtil.displayTutorial(rootView, line, TUTORIAL_FAVOURITES, true);
 
         Preferences.saveNotifyStopName(
                 getContext(),

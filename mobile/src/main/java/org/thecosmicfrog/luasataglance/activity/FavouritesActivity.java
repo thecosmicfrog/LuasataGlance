@@ -35,6 +35,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -55,6 +56,8 @@ public class FavouritesActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final String TUTORIAL_FAVOURITES = "favourites";
+
         /*
          * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
          * the default theme set in AndroidManifest.xml.
@@ -126,6 +129,8 @@ public class FavouritesActivity extends FragmentActivity {
                 }
             });
         }
+
+        Preferences.saveHasRunOnce(getApplicationContext(), TUTORIAL_FAVOURITES, true);
     }
 
     @Override
