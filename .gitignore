@@ -1,6 +1,7 @@
 *.apk
 .DS_Store
 /build
+google-services.json
 .gradle
 /gradle
 *gradlew*
@@ -12,4 +13,5 @@ manifest-merger-release-report.txt
 mobile/src/debug/res/values/google_maps_api.xml
 mobile/src/main/java/org/thecosmicfrog/luasataglance/util/Auth.java
 mobile/src/release/res/values/google_maps_api.xml
+projectFilesBackup
 
