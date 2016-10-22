@@ -70,6 +70,12 @@ public final class StopForecastUtil {
                             tutorialCardViewSelectStop.setVisibility(View.VISIBLE);
 
                             Preferences.saveHasRunOnce(rootView.getContext(), tutorial, true);
+
+                            Analytics.TutorialBegin(
+                                    rootView.getContext(),
+                                    "tutorial_begin",
+                                    "select_stop_begin"
+                            );
                         }
                     } else {
                         tutorialCardViewSelectStop.setVisibility(View.GONE);
@@ -94,6 +100,12 @@ public final class StopForecastUtil {
                             Log.i(LOG_TAG, "First time launching. Displaying notifications tutorial.");
 
                             tutorialCardViewNotifications.setVisibility(View.VISIBLE);
+
+                            Analytics.TutorialBegin(
+                                    rootView.getContext(),
+                                    "tutorial_begin",
+                                    "notifications_begin"
+                            );
                         }
                     } else {
                         tutorialCardViewNotifications.setVisibility(View.GONE);
@@ -118,6 +130,12 @@ public final class StopForecastUtil {
                             Log.i(LOG_TAG, "First time launching. Displaying favourites tutorial.");
 
                             tutorialCardViewFavourites.setVisibility(View.VISIBLE);
+
+                            Analytics.TutorialBegin(
+                                    rootView.getContext(),
+                                    "tutorial_begin",
+                                    "favourites_begin"
+                            );
                         }
                     } else {
                         tutorialCardViewFavourites.setVisibility(View.GONE);

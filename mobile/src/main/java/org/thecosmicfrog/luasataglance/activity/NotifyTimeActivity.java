@@ -34,8 +34,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
+import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.util.Locale;
@@ -108,6 +112,12 @@ public class NotifyTimeActivity extends FragmentActivity {
 
                 /* Send the Intent. */
                 sendBroadcast(intent);
+
+                Analytics.selectContent(
+                        getApplicationContext(),
+                        "schedule_created",
+                        "schedule_created"
+                );
 
                 /* Dismiss the Dialog. */
                 finish();

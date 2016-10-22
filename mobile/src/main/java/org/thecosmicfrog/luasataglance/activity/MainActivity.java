@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
@@ -151,6 +152,12 @@ public class MainActivity extends AppCompatActivity {
                                 )
                         );
                     }
+
+                    Analytics.selectContent(
+                            getApplicationContext(),
+                            "button_tapped",
+                            "map_tapped"
+                    );
                 }
             });
         }
@@ -177,6 +184,12 @@ public class MainActivity extends AppCompatActivity {
                                     FavouritesActivity.class
                             )
                     );
+
+                    Analytics.selectContent(
+                            getApplicationContext(),
+                            "button_tapped",
+                            "favourites_tapped"
+                    );
                 }
             });
         }
@@ -195,6 +208,12 @@ public class MainActivity extends AppCompatActivity {
                                     getApplicationContext(),
                                     NewsActivity.class
                             ).putExtra(NEWS_TYPE, NEWS_TYPE_TRAVEL_UPDATES)
+                    );
+
+                    Analytics.selectContent(
+                            getApplicationContext(),
+                            "button_tapped",
+                            "alerts_tapped"
                     );
                 }
             });
