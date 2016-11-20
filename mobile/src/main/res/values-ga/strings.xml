@@ -23,12 +23,13 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">79</string>
-    <string name="version_name">0.79</string>
+    <string name="version_code">81</string>
+    <string name="version_name">0.81</string>
 
     <!--
         Activities
     -->
+    <string name="title_activity_fares">Táillí</string>
     <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_license">Ceadúnas</string>
@@ -71,6 +72,8 @@
     <string name="min">nóim</string>
     <string name="mins">nóim</string>
     <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
+    <string name="bottomnav_map_short">Map</string>
+    <string name="bottomnav_favourites_short">Ceanáin</string>
     <string name="tap_to_load_times"><b>Cliceáil amanna a fháil</b></string>
     <string name="cannot_schedule_notification">Tá an tram sroichte go luath: Ní féidir fógra a
         sceideal.
@@ -102,6 +105,19 @@
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
     <string name="about_developed_by">Cruthaithe ag Aaron Hastings (thecosmicfrog)</string>
     <string name="about_irish_translations">Aistriúcháin Gaeilge le Feidhlim Seoighe</string>
+
+    <!--
+        Fares
+    -->
+    <string name="fares_instructions">To calculate fares for your journey, select an
+        <b>Origin</b>, <b>Destination</b> and the number of <b>Adults</b> and <b>Children</b> who
+        will be travelling.</string>
+    <string name="fares_title_line">Líne</string>
+    <string name="fares_title_origin">Tionscnaimh</string>
+    <string name="fares_title_destination">Ceann scríbe</string>
+    <string name="fares_title_adults">Daoine fásta</string>
+    <string name="fares_title_children">Páistí</string>
+    <string name="fares_zero">€0.00</string>
 
     <!--
         Favourites
@@ -143,6 +159,11 @@
     <!--
         Stop arrays
     -->
+    <string-array name="array_lines">
+        <item>Líne Dhearg</item>
+        <item>Líne Uaine</item>
+    </string-array>
+
     <string-array name="array_stops_redline">
         <item>Roghnaigh stad\u2026</item>
         <item>Iosta na Rinne</item>

@@ -95,6 +95,13 @@
             android:name=".activity.FavouritesActivity"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
+            android:name=".activity.FaresActivity"
+            android:label="@string/title_activity_fares">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
+        </activity>
+        <activity
             android:name=".activity.NotifyTimeActivity"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity

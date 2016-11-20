@@ -50,7 +50,6 @@
         android:layout_alignParentBottom="true"
         android:elevation="8dp"
         android:baselineAligned="false"
-        android:weightSum="3"
         android:background="@color/luas_purple">
 
         <RelativeLayout
@@ -58,12 +57,13 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.25"
             android:minWidth="104dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true">
 
             <ImageView
+                android:id="@+id/imageview_bottomnav_map"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_horizontal"
@@ -72,6 +72,7 @@
                 android:src="@android:drawable/ic_dialog_map" />
 
             <TextView
+                android:id="@+id/textview_bottomnav_map"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -90,12 +91,13 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.25"
             android:minWidth="104dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true">
 
             <ImageView
+                android:id="@+id/imageview_bottomnav_favourites"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_horizontal"
@@ -104,6 +106,7 @@
                 android:src="@drawable/ic_favourites" />
 
             <TextView
+                android:id="@+id/textview_bottomnav_favourites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -118,17 +121,51 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/relativelayout_bottomnav_alerts"
+            android:id="@+id/relativelayout_bottomnav_fares"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.25"
             android:minWidth="104dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true">
 
             <ImageView
-                android:id="@+id/imageview_alerts"
+                android:id="@+id/imageview_bottomnav_fares"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="8dp"
+                android:src="@drawable/ic_payment" />
+
+            <TextView
+                android:id="@+id/textview_bottomnav_fares"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingBottom="10dp"
+                android:text="@string/title_activity_fares"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativelayout_bottomnav_alerts"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:minWidth="104dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/imageview_bottomnav_alerts"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_horizontal"
@@ -137,7 +174,7 @@
                 android:src="@drawable/ic_error_alerts" />
 
             <TextView
-                android:id="@+id/textview_alerts"
+                android:id="@+id/textview_bottomnav_alerts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

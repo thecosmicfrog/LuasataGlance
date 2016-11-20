@@ -54,7 +54,6 @@ import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 import org.thecosmicfrog.luasataglance.view.SpinnerCardView;
 import org.thecosmicfrog.luasataglance.view.StatusCardView;
 import org.thecosmicfrog.luasataglance.view.StopForecastCardView;
-import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -834,10 +833,10 @@ public class LineFragment extends Fragment {
                 statusCardView.setStatusColor(R.color.message_success);
 
                 /* Change the alerts image to the default white image. */
-                MainActivity.getImageViewAlerts().setImageResource(R.drawable.ic_error_alerts);
+                MainActivity.getImageViewBottomNavAlerts().setImageResource(R.drawable.ic_error_alerts);
 
                 /* Change the color of the Alerts TextView to white (default). */
-                MainActivity.getTextViewAlerts().setTextColor(
+                MainActivity.getTextViewBottomNavAlerts().setTextColor(
                         ContextCompat.getColor(getContext(), android.R.color.white)
                 );
             } else {
@@ -858,10 +857,10 @@ public class LineFragment extends Fragment {
                 statusCardView.setStatusColor(R.color.message_error);
 
                 /* Change the Alerts image to the red version. */
-                MainActivity.getImageViewAlerts().setImageResource(R.drawable.ic_error_alerts_red);
+                MainActivity.getImageViewBottomNavAlerts().setImageResource(R.drawable.ic_error_alerts_red);
 
                 /* Change the color of the Alerts TextView to red. */
-                MainActivity.getTextViewAlerts().setTextColor(
+                MainActivity.getTextViewBottomNavAlerts().setTextColor(
                         ContextCompat.getColor(getContext(), R.color.message_error)
                 );
             }

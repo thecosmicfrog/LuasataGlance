@@ -21,26 +21,33 @@
 
 package org.thecosmicfrog.luasataglance.api;
 
-import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Query;
+public class ApiFares {
 
-public interface ApiMethods {
+    private String peak;
+    private String offpeak;
+    private String zonesTravelled;
 
-    @GET("/luas-api.php")
-    void getFares(
-            @Query("action") String action,
-            @Query("from") String from,
-            @Query("to") String to,
-            @Query("adults") String adults,
-            @Query("children") String children,
-            Callback<ApiFares> cb
-    );
+    public String getPeak() {
+        return peak;
+    }
 
-    @GET("/luas-api.php")
-    void getStopForecast(
-            @Query("action") String action,
-            @Query("station") String station,
-            Callback<ApiTimes> cb
-    );
+    public String getOffpeak() {
+        return offpeak;
+    }
+
+    public String getZonesTravelled() {
+        return zonesTravelled;
+    }
+
+    public void setPeak(String p) {
+        peak = p;
+    }
+
+    public void setOffpeak(String o) {
+        offpeak = o;
+    }
+
+    public void setZonesTravelled(String z) {
+        zonesTravelled = z;
+    }
 }

@@ -23,12 +23,13 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">79</string>
-    <string name="version_name">0.79</string>
+    <string name="version_code">81</string>
+    <string name="version_name">0.81</string>
 
     <!--
         Activities
     -->
+    <string name="title_activity_fares">Fares</string>
     <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
     <string name="title_activity_license">License</string>
@@ -72,6 +73,8 @@
     <string name="min">min</string>
     <string name="mins">mins</string>
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
+    <string name="bottomnav_map_short">Map</string>
+    <string name="bottomnav_favourites_short">Fave\'s</string>
     <string name="tap_to_load_times"><b>Tap to load times</b></string>
     <string name="cannot_schedule_notification">Tram is due shortly. Cannot schedule notification.
     </string>
@@ -101,6 +104,23 @@
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
     <string name="about_developed_by">Developed by Aaron Hastings (thecosmicfrog)</string>
     <string name="about_irish_translations">Irish translations by Feidhlim Seoighe</string>
+
+    <!--
+        Fares
+    -->
+    <string name="fares_instructions">To calculate fares for your journey, select an
+        <b>Origin</b>, <b>Destination</b> and the number of <b>Adults</b> and <b>Children</b> who
+        will be travelling.</string>
+    <string name="fares_note"><b>Note:</b> Actual fares may differ. See <a href="http://www.luas.ie">
+        www.luas.ie</a> for full fare details and ticket options.</string>
+    <string name="fares_offpeak">Single Off-Peak</string>
+    <string name="fares_peak">Single Peak</string>
+    <string name="fares_title_line">Line</string>
+    <string name="fares_title_origin">Origin</string>
+    <string name="fares_title_destination">Destination</string>
+    <string name="fares_title_adults">Adults</string>
+    <string name="fares_title_children">Children</string>
+    <string name="fares_zero">€0.00</string>
 
     <!--
         Favourites
@@ -137,18 +157,16 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.79 (16th October 2016)
+    <string name="whatsnew_title_current" translatable="false">Version 0.81 (24th November 2016)
     </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 Fixed minor screen rotation
+    <string name="whatsnew_content_current" translatable="false">\u2022 Added fares calculator
+        functionality. Just tap the handy <b>Fares</b> button at the bottom of the app to calculate
+        the ticket price for your journey.
+    </string>
+    <string name="whatsnew_title_previous" translatable="false">Version 0.79 (16th October 2016)
+    </string>
+    <string name="whatsnew_content_previous" translatable="false">\u2022 Fixed minor screen rotation
         bug.\n\n\u2022 Fixed minor tutorial bugs.
-    </string>
-    <string name="whatsnew_title_previous" translatable="false">Version 0.76 (17th April 2016)
-    </string>
-    <string name="whatsnew_content_previous" translatable="false">\u2022 Replaced <b>Favourites</b>
-        and <b>Map</b> buttons with a dedicated bottom navigation bar, per Material Design
-        guidelines.\n\n\u2022 Fixed bug which could cause crashes when creating tram notifications.
-        Big thanks to everyone who reported this via the <b>Report</b> button!\n\n\u2022 Added this
-        <b>What\'s New</b> dialog!
     </string>
 
     <!--
@@ -160,6 +178,25 @@
     <!--
         Stop arrays
     -->
+    <string-array name="array_lines">
+        <item>Red Line</item>
+        <item>Green Line</item>
+    </string-array>
+
+    <string-array name="array_number_pax">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
     <string-array name="array_stops_redline">
         <item>Select a stop\u2026</item>
         <item>The Point</item>

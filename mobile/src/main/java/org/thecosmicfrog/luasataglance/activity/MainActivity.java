@@ -28,6 +28,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -39,7 +40,6 @@ import android.widget.TextView;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Preferences;
-import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,8 +52,12 @@ public class MainActivity extends AppCompatActivity {
     private final String NEWS_TYPE = "newsType";
     private final String NEWS_TYPE_TRAVEL_UPDATES = "travelUpdates";
 
-    private static ImageView imageViewAlerts;
-    private static TextView textViewAlerts;
+    private static ImageView imageViewBottomNavAlerts;
+    private static TextView textViewBottomNavAlerts;
+
+    private TextView textViewBottomNavMap;
+    private TextView textViewBottomNavFavourites;
+    private TextView textViewBottomNavFares;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,6 +199,32 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /*
+         * Bottom navigation bar - Fares.
+         */
+        RelativeLayout relativeLayoutBottomNavFares =
+                (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_fares);
+        if (relativeLayoutBottomNavFares != null) {
+            relativeLayoutBottomNavFares.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    /* Open Fares Activity. */
+                    startActivity(
+                            new Intent(
+                                    getApplicationContext(),
+                                    FaresActivity.class
+                            )
+                    );
+
+                    Analytics.selectContent(
+                            getApplicationContext(),
+                            "button_tapped",
+                            "fares_tapped"
+                    );
+                }
+            });
+        }
+
+        /*
          * Bottom navigation bar - Alerts.
          */
         RelativeLayout relativeLayoutBottomNavAlerts =
@@ -219,10 +249,17 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        imageViewAlerts = (ImageView) findViewById(R.id.imageview_alerts);
-        textViewAlerts = (TextView) findViewById(R.id.textview_alerts);
+        imageViewBottomNavAlerts = (ImageView) findViewById(R.id.imageview_bottomnav_alerts);
+        textViewBottomNavAlerts = (TextView) findViewById(R.id.textview_bottomnav_alerts);
 
         showWhatsNewDialog();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        adjustBottomNavByScreenDensity();
     }
 
     @Override
@@ -231,6 +268,29 @@ public class MainActivity extends AppCompatActivity {
 
         /* If the Intent has changed, update the Activity's Intent. */
         setIntent(intent);
+    }
+
+    private void adjustBottomNavByScreenDensity() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int densityDpi = displayMetrics.densityDpi;
+
+        Log.i(LOG_TAG, "Screen density is " + densityDpi + " DPI.");
+
+        if (densityDpi <= 320) {
+            Log.i(LOG_TAG, "Shortening bottom navigation TextViews.");
+
+            textViewBottomNavMap =
+                    (TextView) findViewById(R.id.textview_bottomnav_map);
+            textViewBottomNavFavourites =
+                    (TextView) findViewById(R.id.textview_bottomnav_favourites);
+            textViewBottomNavFares =
+                    (TextView) findViewById(R.id.textview_bottomnav_fares);
+            textViewBottomNavAlerts =
+                    (TextView) findViewById(R.id.textview_bottomnav_alerts);
+
+            textViewBottomNavMap.setText(getString(R.string.bottomnav_map_short));
+            textViewBottomNavFavourites.setText(getString(R.string.bottomnav_favourites_short));
+        }
     }
 
     /**
@@ -293,11 +353,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static ImageView getImageViewAlerts() {
-        return imageViewAlerts;
+    public static ImageView getImageViewBottomNavAlerts() {
+        return imageViewBottomNavAlerts;
     }
 
-    public static TextView getTextViewAlerts() {
-        return textViewAlerts;
+    public static TextView getTextViewBottomNavAlerts() {
+        return textViewBottomNavAlerts;
     }
 }
