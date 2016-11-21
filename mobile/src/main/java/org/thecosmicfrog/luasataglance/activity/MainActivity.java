@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        adjustBottomNavByScreenDensity();
+        adjustBottomNavByScreen();
     }
 
     @Override
@@ -270,27 +270,39 @@ public class MainActivity extends AppCompatActivity {
         setIntent(intent);
     }
 
-    private void adjustBottomNavByScreenDensity() {
+    private void adjustBottomNavByScreen() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int densityDpi = displayMetrics.densityDpi;
+        final int DENSITY_DPI = displayMetrics.densityDpi;
 
-        Log.i(LOG_TAG, "Screen density is " + densityDpi + " DPI.");
+        Log.i(LOG_TAG, "Screen density is " + DENSITY_DPI + " DPI.");
 
-        if (densityDpi <= 320) {
-            Log.i(LOG_TAG, "Shortening bottom navigation TextViews.");
+        textViewBottomNavMap =
+                (TextView) findViewById(R.id.textview_bottomnav_map);
+        textViewBottomNavFavourites =
+                (TextView) findViewById(R.id.textview_bottomnav_favourites);
+        textViewBottomNavFares =
+                (TextView) findViewById(R.id.textview_bottomnav_fares);
+        textViewBottomNavAlerts =
+                (TextView) findViewById(R.id.textview_bottomnav_alerts);
 
-            textViewBottomNavMap =
-                    (TextView) findViewById(R.id.textview_bottomnav_map);
-            textViewBottomNavFavourites =
-                    (TextView) findViewById(R.id.textview_bottomnav_favourites);
-            textViewBottomNavFares =
-                    (TextView) findViewById(R.id.textview_bottomnav_fares);
-            textViewBottomNavAlerts =
-                    (TextView) findViewById(R.id.textview_bottomnav_alerts);
+        /*
+         * If the screen density is particularly low, or if the number of lines in the bottom
+         * navigation Favourites button (longest string) goes beyond 1, shorten the strings to
+         * something more compact.
+         */
+        textViewBottomNavFavourites.post(new Runnable() {
+            @Override
+            public void run() {
+                if (DENSITY_DPI <= 320 || textViewBottomNavFavourites.getLineCount() >= 2) {
+                    Log.i(LOG_TAG, "Shortening bottom navigation TextViews.");
 
-            textViewBottomNavMap.setText(getString(R.string.bottomnav_map_short));
-            textViewBottomNavFavourites.setText(getString(R.string.bottomnav_favourites_short));
-        }
+                    textViewBottomNavMap.setText(getString(R.string.bottomnav_map_short));
+                    textViewBottomNavFavourites.setText(
+                            getString(R.string.bottomnav_favourites_short)
+                    );
+                }
+            }
+        });
     }
 
     /**

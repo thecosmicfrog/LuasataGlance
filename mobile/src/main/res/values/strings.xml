@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">81</string>
-    <string name="version_name">0.81</string>
+    <string name="version_code">83</string>
+    <string name="version_name">0.83</string>
 
     <!--
         Activities
@@ -74,7 +74,7 @@
     <string name="mins">mins</string>
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
     <string name="bottomnav_map_short">Map</string>
-    <string name="bottomnav_favourites_short">Fave\'s</string>
+    <string name="bottomnav_favourites_short">Fav\'s</string>
     <string name="tap_to_load_times"><b>Tap to load times</b></string>
     <string name="cannot_schedule_notification">Tram is due shortly. Cannot schedule notification.
     </string>
@@ -111,10 +111,11 @@
     <string name="fares_instructions">To calculate fares for your journey, select an
         <b>Origin</b>, <b>Destination</b> and the number of <b>Adults</b> and <b>Children</b> who
         will be travelling.</string>
-    <string name="fares_note"><b>Note:</b> Actual fares may differ. See <a href="http://www.luas.ie">
-        www.luas.ie</a> for full fare details and ticket options.</string>
-    <string name="fares_offpeak">Single Off-Peak</string>
-    <string name="fares_peak">Single Peak</string>
+    <string name="fares_note" translatable="false"><b>Note:</b> Actual fares may differ. See
+        <a href="http://www.luas.ie">www.luas.ie</a> for full fare details and ticket options.
+    </string>
+    <string name="fares_offpeak" translatable="false">Single Off-Peak</string>
+    <string name="fares_peak" translatable="false">Single Peak</string>
     <string name="fares_title_line">Line</string>
     <string name="fares_title_origin">Origin</string>
     <string name="fares_title_destination">Destination</string>
@@ -157,11 +158,12 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.81 (24th November 2016)
+    <string name="whatsnew_title_current" translatable="false">Version 0.83 (21st November 2016)
     </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 Added fares calculator
-        functionality. Just tap the handy <b>Fares</b> button at the bottom of the app to calculate
-        the ticket price for your journey.
+    <string name="whatsnew_content_current" translatable="false">\u2022 Added fares calculator. Just
+        tap the handy <b>Fares</b> button at the bottom of the app to calculate the ticket price for
+        your journey.\n\n\u2022 Fixed widget crash when re-creating with new stops. Thanks to
+        everyone who reported this!
     </string>
     <string name="whatsnew_title_previous" translatable="false">Version 0.79 (16th October 2016)
     </string>

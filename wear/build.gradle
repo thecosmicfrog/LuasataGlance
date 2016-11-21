@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
         minSdkVersion 21
-        targetSdkVersion 24
-        versionCode 79
-        versionName "0.79"
+        targetSdkVersion 25
+        versionCode 83
+        versionName "0.83"
     }
     buildTypes {
         release {
@@ -22,5 +22,5 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.support:wearable:1.4.0'
-    compile 'com.google.android.gms:play-services-wearable:9.6.1'
+    compile 'com.google.android.gms:play-services-wearable:9.8.0'
 }
