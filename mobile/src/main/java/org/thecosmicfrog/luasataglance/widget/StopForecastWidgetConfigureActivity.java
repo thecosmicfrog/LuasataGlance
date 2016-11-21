@@ -38,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
 import java.io.FileOutputStream;
@@ -196,6 +197,9 @@ public class StopForecastWidgetConfigureActivity extends AppCompatActivity {
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         setResult(RESULT_OK, resultValue);
+
+        /* Reset next index to load to avoid out of bounds exceptions. */
+        Preferences.saveIndexNextStopToLoad(context, 0);
 
         /* We're finished here. Close the activity. */
         finish();
