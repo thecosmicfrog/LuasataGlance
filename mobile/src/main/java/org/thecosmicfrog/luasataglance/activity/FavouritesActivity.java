@@ -35,6 +35,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.io.BufferedInputStream;
@@ -49,7 +50,6 @@ import java.util.List;
 public class FavouritesActivity extends FragmentActivity {
 
     private final String LOG_TAG = FavouritesActivity.class.getSimpleName();
-    private final String STOP_NAME = "stopName";
 
     private ArrayAdapter<CharSequence> adapterFavouriteStops;
     private List<CharSequence> listFavouriteStops;
@@ -118,7 +118,7 @@ public class FavouritesActivity extends FragmentActivity {
                                     getApplicationContext(),
                                     MainActivity.class
                             ).putExtra(
-                                    STOP_NAME,
+                                    Constant.STOP_NAME,
                                     stopName
                             ).setFlags(
                                     Intent.FLAG_ACTIVITY_CLEAR_TOP

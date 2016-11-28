@@ -32,6 +32,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Constant;
 
 public class NewsActivity extends AppCompatActivity {
 
@@ -39,8 +40,6 @@ public class NewsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final String NEWS_TYPE = "newsType";
-        final String NEWS_TYPE_TRAVEL_UPDATES = "travelUpdates";
         final String URL_NEWS = "http://m.luas.ie/news/";
         final String URL_TRAVEL_UPDATES = "http://m.luas.ie/travel-updates.html";
 
@@ -78,8 +77,9 @@ public class NewsActivity extends AppCompatActivity {
         /*
          * Load either the "Travel Updates" or "News" section of the Luas mobile website.
          */
-        if (getIntent().hasExtra(NEWS_TYPE)) {
-            if (getIntent().getStringExtra(NEWS_TYPE).equals(NEWS_TYPE_TRAVEL_UPDATES)) {
+        if (getIntent().hasExtra(Constant.NEWS_TYPE)) {
+            if (getIntent().getStringExtra(Constant.NEWS_TYPE)
+                    .equals(Constant.NEWS_TYPE_TRAVEL_UPDATES)) {
                 setTitle(getString(R.string.title_activity_news_travel_updates));
 
                 webViewNews.loadUrl(URL_TRAVEL_UPDATES);

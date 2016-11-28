@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException;
 import org.thecosmicfrog.luasataglance.object.StopCoords;
+import org.thecosmicfrog.luasataglance.util.Constant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,9 +52,6 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private final String LOG_TAG = MapsActivity.class.getSimpleName();
-    private final String RED_LINE = "red_line";
-    private final String GREEN_LINE = "green_line";
-    private final String STOP_NAME = "stopName";
 
     private GoogleMap map;
     private double[][] stopCoordsRedLine;
@@ -66,8 +64,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         listMarkers = new ArrayList<>();
 
-        stopCoordsRedLine = new StopCoords(RED_LINE).getStopCoords();
-        stopCoordsGreenLine = new StopCoords(GREEN_LINE).getStopCoords();
+        stopCoordsRedLine = new StopCoords(Constant.RED_LINE).getStopCoords();
+        stopCoordsGreenLine = new StopCoords(Constant.GREEN_LINE).getStopCoords();
 
         /*
          * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
@@ -144,7 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new Intent(
                                 getApplicationContext(),
                                 MainActivity.class
-                        ).putExtra(STOP_NAME, marker.getTitle())
+                        ).putExtra(Constant.STOP_NAME, marker.getTitle())
                 );
             }
         });
@@ -153,9 +151,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          * Move the Camera to the position of the stop that this Activity was opened from.
          * Also, open the Marker's info window.
          */
-        if (getIntent().hasExtra(STOP_NAME)) {
+        if (getIntent().hasExtra(Constant.STOP_NAME)) {
             try {
-                Marker marker = findStopMarker(getIntent().getStringExtra(STOP_NAME));
+                Marker marker = findStopMarker(getIntent().getStringExtra(Constant.STOP_NAME));
 
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14.0f));
 

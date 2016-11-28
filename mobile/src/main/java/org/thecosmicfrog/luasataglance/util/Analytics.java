@@ -39,7 +39,7 @@ public final class Analytics {
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
     }
 
-    public static void TutorialBegin(Context context, String contentType, String itemId) {
+    public static void tutorialBegin(Context context, String contentType, String itemId) {
         firebaseAnalytics = FirebaseAnalytics.getInstance(context);
 
         Bundle params = new Bundle();

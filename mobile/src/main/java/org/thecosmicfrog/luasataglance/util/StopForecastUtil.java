@@ -33,10 +33,6 @@ import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 public final class StopForecastUtil {
 
     private static final String LOG_TAG = StopForecastUtil.class.getSimpleName();
-    private static final String RED_LINE = "red_line";
-    private static final String TUTORIAL_SELECT_STOP = "select_stop";
-    private static final String TUTORIAL_NOTIFICATIONS = "notifications";
-    private static final String TUTORIAL_FAVOURITES = "favourites";
 
     /**
      * Determine if this is the first time the app has been launched and, if so, display a brief
@@ -49,9 +45,9 @@ public final class StopForecastUtil {
     public static void displayTutorial(View rootView, String line, String tutorial,
                                        boolean shouldDisplay) {
         /* Only display tutorials on the Red Line tab. */
-        if (line.equals(RED_LINE)) {
+        if (line.equals(Constant.RED_LINE)) {
             switch (tutorial) {
-                case TUTORIAL_SELECT_STOP:
+                case Constant.TUTORIAL_SELECT_STOP:
                     TutorialCardView tutorialCardViewSelectStop =
                             (TutorialCardView) rootView.findViewById(
                                     R.id.tutorialcardview_select_stop
@@ -71,7 +67,7 @@ public final class StopForecastUtil {
 
                             Preferences.saveHasRunOnce(rootView.getContext(), tutorial, true);
 
-                            Analytics.TutorialBegin(
+                            Analytics.tutorialBegin(
                                     rootView.getContext(),
                                     "tutorial_begin",
                                     "select_stop_begin"
@@ -83,7 +79,7 @@ public final class StopForecastUtil {
 
                     break;
 
-                case TUTORIAL_NOTIFICATIONS:
+                case Constant.TUTORIAL_NOTIFICATIONS:
                     TutorialCardView tutorialCardViewNotifications =
                             (TutorialCardView) rootView.findViewById(
                                     R.id.tutorialcardview_notifications
@@ -101,7 +97,7 @@ public final class StopForecastUtil {
 
                             tutorialCardViewNotifications.setVisibility(View.VISIBLE);
 
-                            Analytics.TutorialBegin(
+                            Analytics.tutorialBegin(
                                     rootView.getContext(),
                                     "tutorial_begin",
                                     "notifications_begin"
@@ -113,7 +109,7 @@ public final class StopForecastUtil {
 
                     break;
 
-                case TUTORIAL_FAVOURITES:
+                case Constant.TUTORIAL_FAVOURITES:
                     TutorialCardView tutorialCardViewFavourites =
                             (TutorialCardView) rootView.findViewById(
                                     R.id.tutorialcardview_favourites
@@ -131,7 +127,7 @@ public final class StopForecastUtil {
 
                             tutorialCardViewFavourites.setVisibility(View.VISIBLE);
 
-                            Analytics.TutorialBegin(
+                            Analytics.tutorialBegin(
                                     rootView.getContext(),
                                     "tutorial_begin",
                                     "favourites_begin"

@@ -23,11 +23,11 @@ package org.thecosmicfrog.luasataglance.object;
 
 import android.util.Log;
 
+import org.thecosmicfrog.luasataglance.util.Constant;
+
 public class StopCoords {
 
     private final String LOG_TAG = StopCoords.class.getSimpleName();
-    private final String RED_LINE = "red_line";
-    private final String GREEN_LINE = "green_line";
 
     private double[][] stopCoordsRedLine = new double[][] {
             { 53.34835000, -6.22925800 }, /* The Point */
@@ -91,12 +91,12 @@ public class StopCoords {
 
     public StopCoords(String line) {
         switch (line) {
-            case RED_LINE:
+            case Constant.RED_LINE:
                 stopCoords = stopCoordsRedLine;
 
                 break;
 
-            case GREEN_LINE:
+            case Constant.GREEN_LINE:
                 stopCoords = stopCoordsGreenLine;
 
                 break;

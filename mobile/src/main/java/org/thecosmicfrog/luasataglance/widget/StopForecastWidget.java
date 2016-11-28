@@ -35,6 +35,7 @@ import android.widget.RemoteViews;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.activity.MainActivity;
 import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
+import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.io.BufferedInputStream;
@@ -53,8 +54,6 @@ import java.util.List;
 public class StopForecastWidget extends AppWidgetProvider {
 
     private static final String LOG_TAG = StopForecastWidget.class.getSimpleName();
-    private static final String STOP_NAME = "stopName";
-    private static final String SELECTED_STOP_NAME = "selectedStopName";
     private static final String WIDGET_CLICK_STOP_NAME = "WidgetClickStopName";
     private static final String WIDGET_CLICK_LEFT_ARROW = "WidgetClickLeftArrow";
     private static final String WIDGET_CLICK_RIGHT_ARROW = "WidgetClickRightArrow";
@@ -113,7 +112,12 @@ public class StopForecastWidget extends AppWidgetProvider {
                         new Intent(
                                 context,
                                 MainActivity.class
-                        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).putExtra(STOP_NAME, stopName)
+                        ).addFlags(
+                                Intent.FLAG_ACTIVITY_NEW_TASK
+                        ).putExtra(
+                                Constant.STOP_NAME,
+                                stopName
+                        )
                 );
             }
 
@@ -209,7 +213,7 @@ public class StopForecastWidget extends AppWidgetProvider {
                 allWidgetIds
         );
         intentWidgetListenerService.putExtra(
-                SELECTED_STOP_NAME,
+                Constant.SELECTED_STOP_NAME,
                 selectedStopName
         );
 

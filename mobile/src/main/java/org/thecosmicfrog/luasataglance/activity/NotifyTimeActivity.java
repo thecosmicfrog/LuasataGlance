@@ -40,6 +40,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.util.Analytics;
+import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.util.Locale;
@@ -48,14 +49,13 @@ import java.util.Map;
 public class NotifyTimeActivity extends FragmentActivity {
 
     private final String LOG_TAG = NotifyTimeActivity.class.getSimpleName();
-    private final String DIALOG = "dialog";
-    private final String NOTIFY_STOP_NAME = "notifyStopName";
-    private final String NOTIFY_TIME = "notifyTime";
 
     private Map<String, Integer> mapNotifyTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final String DIALOG = "dialog";
+
         /*
          * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
          * the default theme set in AndroidManifest.xml.
@@ -101,12 +101,12 @@ public class NotifyTimeActivity extends FragmentActivity {
                 Intent intent = new Intent();
                 intent.setAction(NotifyTimeActivity.class.getName());
                 intent.putExtra(
-                        NOTIFY_STOP_NAME,
+                        Constant.NOTIFY_STOP_NAME,
                         Preferences.notifyStopName(getApplicationContext())
                 );
 
                 intent.putExtra(
-                        NOTIFY_TIME,
+                        Constant.NOTIFY_TIME,
                         mapNotifyTimes.get(spinnerNotifyTime.getSelectedItem().toString())
                 );
 

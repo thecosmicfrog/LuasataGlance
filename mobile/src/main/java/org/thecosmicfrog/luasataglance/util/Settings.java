@@ -38,9 +38,6 @@ import org.thecosmicfrog.luasataglance.activity.SettingsActivity;
 public final class Settings {
 
     public static void getSettings(Context context, FragmentActivity fragmentActivity, MenuItem item) {
-        final String NEWS_TYPE = "newsType";
-        final String NEWS_TYPE_LUAS_NEWS = "luasNews";
-
         /*
          * Handle action bar item clicks here. The action bar will automatically handle clicks on
          * the Home/Up button, so long as you specify a parent activity in AndroidManifest.xml.
@@ -52,7 +49,7 @@ public final class Settings {
                     new Intent(
                             context,
                             NewsActivity.class
-                    ).putExtra(NEWS_TYPE, NEWS_TYPE_LUAS_NEWS)
+                    ).putExtra(Constant.NEWS_TYPE, Constant.NEWS_TYPE_LUAS_NEWS)
             );
 
             Analytics.selectContent(

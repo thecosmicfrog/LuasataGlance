@@ -39,6 +39,7 @@ import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.util.Constant;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -59,7 +60,6 @@ import retrofit.client.Response;
 public class WidgetListenerService extends Service {
 
     private final String LOG_TAG = WidgetListenerService.class.getSimpleName();
-    private final String SELECTED_STOP_NAME = "selectedStopName";
     private final int TEXTVIEW_STOP_NAME = R.id.textview_stop_name;
     private final int TEXTVIEW_INBOUND_STOP1_NAME = R.id.textview_inbound_stop1_name;
     private final int TEXTVIEW_INBOUND_STOP1_TIME = R.id.textview_inbound_stop1_time;
@@ -135,8 +135,8 @@ public class WidgetListenerService extends Service {
                         String selectedStopName;
                         listSelectedStops = loadListSelectedStops(getApplicationContext());
 
-                        if (intent.hasExtra(SELECTED_STOP_NAME)) {
-                            selectedStopName = intent.getStringExtra(SELECTED_STOP_NAME);
+                        if (intent.hasExtra(Constant.SELECTED_STOP_NAME)) {
+                            selectedStopName = intent.getStringExtra(Constant.SELECTED_STOP_NAME);
                         } else {
                             selectedStopName = listSelectedStops.get(0).toString();
                         }
@@ -149,7 +149,7 @@ public class WidgetListenerService extends Service {
                             appWidgetManager,
                             widgetId,
                             views,
-                            intent.getStringExtra(SELECTED_STOP_NAME)
+                            intent.getStringExtra(Constant.SELECTED_STOP_NAME)
                     );
 
                     appWidgetManager.partiallyUpdateAppWidget(widgetId, views);

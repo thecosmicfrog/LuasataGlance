@@ -25,10 +25,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-public class PagerAdapter extends FragmentStatePagerAdapter {
+import org.thecosmicfrog.luasataglance.util.Constant;
 
-    private final String RED_LINE = "red_line";
-    private final String GREEN_LINE = "green_line";
+public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private int numTabs;
 
@@ -42,10 +41,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return LineFragment.newInstance(RED_LINE);
+                return LineFragment.newInstance(Constant.RED_LINE);
 
             case 1:
-                return LineFragment.newInstance(GREEN_LINE);
+                return LineFragment.newInstance(Constant.GREEN_LINE);
 
             default:
                 return null;

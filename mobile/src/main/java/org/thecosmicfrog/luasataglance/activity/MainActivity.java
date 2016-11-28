@@ -39,18 +39,13 @@ import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Analytics;
+import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
-    private final String RED_LINE = "red_line";
-    private final String GREEN_LINE = "green_line";
-    private final String NO_LINE = "no_line";
-    private final String STOP_NAME = "stopName";
-    private final String NEWS_TYPE = "newsType";
-    private final String NEWS_TYPE_TRAVEL_UPDATES = "travelUpdates";
 
     private static ImageView imageViewBottomNavAlerts;
     private static TextView textViewBottomNavAlerts;
@@ -87,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
 
         if (tabLayout != null && viewPager != null) {
-            tabLayout.addTab(tabLayout.newTab().setTag(RED_LINE).setText(getString(R.string.tab_red_line)));
-            tabLayout.addTab(tabLayout.newTab().setTag(GREEN_LINE).setText(getString(R.string.tab_green_line)));
+            tabLayout.addTab(tabLayout.newTab().setTag(Constant.RED_LINE).setText(getString(R.string.tab_red_line)));
+            tabLayout.addTab(tabLayout.newTab().setTag(Constant.GREEN_LINE).setText(getString(R.string.tab_green_line)));
             tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
             tabLayout.setBackgroundColor(
                     ContextCompat.getColor(getApplicationContext(), R.color.luas_purple)
@@ -144,8 +139,11 @@ public class MainActivity extends AppCompatActivity {
                                         getApplicationContext(),
                                         MapsActivity.class
                                 ).putExtra(
-                                        STOP_NAME,
-                                        Preferences.selectedStopName(getApplicationContext(), NO_LINE)
+                                        Constant.STOP_NAME,
+                                        Preferences.selectedStopName(
+                                                getApplicationContext(),
+                                                Constant.NO_LINE
+                                        )
                                 )
                         );
                     } else {
@@ -237,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                             new Intent(
                                     getApplicationContext(),
                                     NewsActivity.class
-                            ).putExtra(NEWS_TYPE, NEWS_TYPE_TRAVEL_UPDATES)
+                            ).putExtra(Constant.NEWS_TYPE, Constant.NEWS_TYPE_TRAVEL_UPDATES)
                     );
 
                     Analytics.selectContent(
