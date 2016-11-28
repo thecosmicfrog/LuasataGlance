@@ -48,6 +48,7 @@ import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
+import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.util.Settings;
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
@@ -89,6 +90,7 @@ public class LineFragment extends Fragment {
     private final String NO_LINE = "no_line";
     private final String STOP_NAME = "stopName";
     private final String NOTIFY_STOP_NAME = "notifyStopName";
+    private final String INTENT_EXTRA_ACTIVITY_TO_OPEN = "activityToOpen";
     private final String STOP_FORECAST = "stop_forecast";
     private final String TUTORIAL_SELECT_STOP = "select_stop";
     private final String TUTORIAL_NOTIFICATIONS = "notifications";
@@ -277,6 +279,13 @@ public class LineFragment extends Fragment {
                 if (hasSetTabAndSpinner) {
                     getActivity().getIntent().removeExtra(NOTIFY_STOP_NAME);
                 }
+            } else if (getActivity().getIntent().hasExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN)) {
+                activityRouter(
+                        getActivity().getIntent().getStringExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN)
+                );
+
+                /* Clear the Extra to avoid opening the same Activity on every start. */
+                getActivity().getIntent().removeExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN);
             } else if (!Preferences.defaultStopName(getContext()).equals(getString(R.string.none))
                     && Preferences.defaultStopName(getContext()) != null) {
                 setTabAndSpinner(Preferences.defaultStopName(getContext()));
@@ -514,6 +523,71 @@ public class LineFragment extends Fragment {
                     );
                 }
             });
+        }
+    }
+
+    /**
+     * Utility method to open an Activity based on a passed tag value.
+     * @param activityToOpen Value of Activity to open.
+     */
+    private void activityRouter(String activityToOpen) {
+        Log.i(LOG_TAG, "Intent received to open Activity.");
+
+        switch (activityToOpen) {
+            case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FARES:
+                Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_FARES_ACTIVITY);
+                startActivity(
+                        new Intent(getContext(), Constant.CLASS_FARES_ACTIVITY)
+                );
+
+                break;
+
+            case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FAVOURITES:
+                Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_FAVOURITES_ACTIVITY);
+                startActivity(
+                        new Intent(getContext(), Constant.CLASS_FAVOURITES_ACTIVITY)
+                );
+
+                break;
+
+            case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_MAIN:
+                /* We're already in MainActivity. Nothing to do here. */
+                Log.i(LOG_TAG, "Already on MainActivity. Not routing anywhere.");
+                break;
+
+            case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_MAPS:
+                Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_MAPS_ACTIVITY);
+                startActivity(
+                        new Intent(getContext(), Constant.CLASS_MAPS_ACTIVITY)
+                );
+
+                break;
+
+            case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_NEWS:
+                Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_NEWS_ACTIVITY);
+                startActivity(
+                        new Intent(getContext(), Constant.CLASS_NEWS_ACTIVITY)
+                );
+
+                break;
+
+            case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_SETTINGS:
+                Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_SETTINGS_ACTIVITY);
+                startActivity(
+                        new Intent(getContext(), Constant.CLASS_SETTINGS_ACTIVITY)
+                );
+
+                break;
+
+            default:
+                /*
+                 * We should have never gotten to this point, as NotificationUtil should
+                 * pass MainActivity as its default case.
+                 */
+                Log.wtf(
+                        LOG_TAG,
+                        "activityToOpen key does not correspond to any known value."
+                );
         }
     }
 
