@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">83</string>
-    <string name="version_name">0.83</string>
+    <string name="version_code">84</string>
+    <string name="version_name">0.84</string>
 
     <!--
         Activities
@@ -152,23 +152,26 @@
     <!--
         Settings
     -->
+    <string name="pref_title_notifications">Notifications</string>
+    <string name="pref_summary_notifications">Receive push notifications</string>
+    <string name="pref_key_notifications" translatable="false">notifications</string>
     <string name="pref_title_default_stop">Default Stop</string>
-    <string name="pref_key_default_stop">default_stop</string>
+    <string name="pref_key_default_stop" translatable="false">default_stop</string>
 
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.83 (21st November 2016)
+    <string name="whatsnew_title_current" translatable="false">Version 0.84 (2nd December 2016)
     </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 Added fares calculator. Just
-        tap the handy <b>Fares</b> button at the bottom of the app to calculate the ticket price for
-        your journey.\n\n\u2022 Fixed widget crash when re-creating with new stops. Thanks to
-        everyone who reported this!
+    <string name="whatsnew_content_current" translatable="false">\u2022 Added push notification
+        functionality.
     </string>
-    <string name="whatsnew_title_previous" translatable="false">Version 0.79 (16th October 2016)
+    <string name="whatsnew_title_previous" translatable="false">Version 0.83 (21st November 2016)
     </string>
-    <string name="whatsnew_content_previous" translatable="false">\u2022 Fixed minor screen rotation
-        bug.\n\n\u2022 Fixed minor tutorial bugs.
+    <string name="whatsnew_content_previous" translatable="false">\u2022 Added fares calculator.
+        Just tap the handy <b>Fares</b> button at the bottom of the app to calculate the ticket
+        price for your journey.\n\n\u2022 Fixed widget crash when re-creating with new stops. Thanks
+        to everyone who reported this!
     </string>
 
     <!--

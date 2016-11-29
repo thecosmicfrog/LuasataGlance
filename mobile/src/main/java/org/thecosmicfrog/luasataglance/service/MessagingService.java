@@ -21,11 +21,13 @@
 
 package org.thecosmicfrog.luasataglance.service;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.NotificationUtil;
 
 public class MessagingService extends FirebaseMessagingService {
@@ -39,21 +41,28 @@ public class MessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        Log.i(LOG_TAG, "Message from: " + remoteMessage.getFrom());
+        boolean userHasAllowedNotifications =
+                PreferenceManager.getDefaultSharedPreferences(
+                        getApplicationContext()
+                ).getBoolean(Constant.NOTIFICATIONS, true);
 
-        /* Check if message contains a data payload. */
-        if (remoteMessage.getData().size() > 0) {
-            Log.i(LOG_TAG, "Message data payload: " + remoteMessage.getData());
-        }
+        if (userHasAllowedNotifications) {
+            /* Check if message contains a data payload. */
+            if (remoteMessage.getData().size() > 0) {
+                Log.i(LOG_TAG, "Message data payload: " + remoteMessage.getData());
+            }
 
-        /* Check if message contains a notification payload. */
-        if (remoteMessage.getNotification() != null) {
-            Log.i(
-                    LOG_TAG,
-                    "Message notification body: " + remoteMessage.getNotification().getBody()
-            );
+            /* Check if message contains a notification payload. */
+            if (remoteMessage.getNotification() != null) {
+                Log.i(
+                        LOG_TAG,
+                        "Message notification body: " + remoteMessage.getNotification().getBody()
+                );
 
-            NotificationUtil.showNotification(getApplicationContext(), remoteMessage);
+                NotificationUtil.showNotification(getApplicationContext(), remoteMessage);
+            }
+        } else {
+            Log.i(LOG_TAG, "User has disallowed notifications. Not displaying.");
         }
     }
 }

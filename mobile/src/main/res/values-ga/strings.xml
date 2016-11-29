@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">83</string>
-    <string name="version_name">0.83</string>
+    <string name="version_code">84</string>
+    <string name="version_name">0.84</string>
 
     <!--
         Activities
@@ -147,8 +147,9 @@
     <!--
         Settings
     -->
+    <string name="pref_title_notifications">Fógraí</string>
+    <string name="pref_summary_notifications">Beidh tú fógraí a fháil</string>
     <string name="pref_title_default_stop">Stad Réamhshocraithe</string>
-    <string name="pref_key_default_stop">default_stop</string>
 
     <!--
         Widget
