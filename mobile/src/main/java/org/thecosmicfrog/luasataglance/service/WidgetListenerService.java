@@ -109,7 +109,8 @@ public class WidgetListenerService extends Service {
             /* Initialise correct locale. */
             localeDefault = Locale.getDefault().toString();
 
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+            AppWidgetManager appWidgetManager =
+                    AppWidgetManager.getInstance(getApplicationContext());
 
             int[] allWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 

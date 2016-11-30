@@ -41,7 +41,8 @@ public class MessagingInstanceIdService extends FirebaseInstanceIdService {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
         if (refreshedToken != null) {
-            String refreshedTokenObscured = refreshedToken.replaceFirst("(.{10}).+(.{10})", "$1...$2");
+            String refreshedTokenObscured =
+                    refreshedToken.replaceFirst("(.{10}).+(.{10})", "$1...$2");
 
             Log.d(LOG_TAG, "Refreshed token: " + refreshedTokenObscured);
         }

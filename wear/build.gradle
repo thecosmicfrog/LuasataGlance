@@ -8,8 +8,8 @@ android {
         applicationId "org.thecosmicfrog.luasataglance"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 84
-        versionName "0.84"
+        versionCode 86
+        versionName "0.86"
     }
     buildTypes {
         release {
@@ -22,5 +22,5 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.support:wearable:1.4.0'
-    compile 'com.google.android.gms:play-services-wearable:10.0.0'
+    compile 'com.google.android.gms:play-services-wearable:10.0.1'
 }

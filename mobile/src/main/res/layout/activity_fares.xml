@@ -28,7 +28,15 @@
 
     tools:context="org.thecosmicfrog.luasataglance.activity.FaresActivity">
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/progressbar_fares"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminateOnly="true" />
+
     <ScrollView
+        android:id="@+id/scrollview_fares"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -43,8 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fares_instructions"
-                android:textColor="@color/text_grey"
-                android:paddingTop="8dp" />
+                android:textColor="@color/text_grey" />
 
             <TextView
                 android:layout_width="wrap_content"

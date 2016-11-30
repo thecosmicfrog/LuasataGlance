@@ -82,8 +82,16 @@ public class MainActivity extends AppCompatActivity {
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
 
         if (tabLayout != null && viewPager != null) {
-            tabLayout.addTab(tabLayout.newTab().setTag(Constant.RED_LINE).setText(getString(R.string.tab_red_line)));
-            tabLayout.addTab(tabLayout.newTab().setTag(Constant.GREEN_LINE).setText(getString(R.string.tab_green_line)));
+            tabLayout.addTab(
+                    tabLayout.newTab().setTag(Constant.RED_LINE).setText(
+                            getString(R.string.tab_red_line)
+                    )
+            );
+            tabLayout.addTab(
+                    tabLayout.newTab().setTag(Constant.GREEN_LINE).setText(
+                            getString(R.string.tab_green_line)
+                    )
+            );
             tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
             tabLayout.setBackgroundColor(
                     ContextCompat.getColor(getApplicationContext(), R.color.luas_purple)
@@ -112,7 +120,9 @@ public class MainActivity extends AppCompatActivity {
             );
 
             viewPager.setAdapter(pagerAdapter);
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            viewPager.addOnPageChangeListener(
+                    new TabLayout.TabLayoutOnPageChangeListener(tabLayout)
+            );
 
             setTabIndicatorColor(tabLayout);
         } else {

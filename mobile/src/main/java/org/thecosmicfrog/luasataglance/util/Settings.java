@@ -37,7 +37,7 @@ import org.thecosmicfrog.luasataglance.activity.SettingsActivity;
 
 public final class Settings {
 
-    public static void getSettings(Context context, FragmentActivity fragmentActivity, MenuItem item) {
+    public static void getSettings(Context context, MenuItem item) {
         /*
          * Handle action bar item clicks here. The action bar will automatically handle clicks on
          * the Home/Up button, so long as you specify a parent activity in AndroidManifest.xml.

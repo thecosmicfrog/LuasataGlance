@@ -33,8 +33,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiFares;
@@ -56,6 +59,7 @@ public class FaresActivity extends AppCompatActivity {
     private ArrayAdapter<CharSequence> adapterStops;
     private ArrayAdapter<CharSequence> adapterStopsAdults;
     private ArrayAdapter<CharSequence> adapterStopsChildren;
+    private ScrollView scrollViewFares;
     private Spinner spinnerFaresLine;
     private Spinner spinnerFaresOrigin;
     private Spinner spinnerFaresDestination;
@@ -83,11 +87,20 @@ public class FaresActivity extends AppCompatActivity {
             );
         }
 
+        initializeActivity();
+    }
+
+    /**
+     * Initialize Activity.
+     */
+    private void initializeActivity() {
         /* Initialise correct locale. */
         localeDefault = Locale.getDefault().toString();
 
         /* Instantiate a new StopNameIdMap. */
         mapStopNameId = new StopNameIdMap(localeDefault);
+
+        scrollViewFares = (ScrollView) findViewById(R.id.scrollview_fares);
 
         spinnerFaresLine =
                 (Spinner) findViewById(R.id.spinner_fares_line);
@@ -213,6 +226,8 @@ public class FaresActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        setIsLoading(false);
+
         textViewFaresOffPeak =
                 (TextView) findViewById(R.id.textview_fares_offpeak);
         textViewFaresPeak =
@@ -230,6 +245,8 @@ public class FaresActivity extends AppCompatActivity {
                 getString(R.string.select_a_stop))) {
             return;
         }
+
+        setIsLoading(true);
 
         final String API_URL_PREFIX = "https://api";
         final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
@@ -267,10 +284,35 @@ public class FaresActivity extends AppCompatActivity {
 
                 textViewFaresOffPeak.setText("€" + fareOffPeak);
                 textViewFaresPeak.setText("€" + farePeak);
+
+                /*
+                 * Now that we've got the fare values, scroll down to ensure the fares and fare
+                 * disclaimer is displayed to the user.
+                 */
+                if (scrollViewFares != null) {
+                    scrollViewFares.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollViewFares.fullScroll(ScrollView.FOCUS_DOWN);
+                        }
+                    });
+                }
+
+                setIsLoading(false);
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
+                setIsLoading(false);
+
+                clearCalculatedFares();
+
+                Toast.makeText(
+                        getApplicationContext(),
+                        getString(R.string.message_error),
+                        Toast.LENGTH_LONG
+                ).show();
+
                 Log.e(LOG_TAG, "Failure during call to server.");
 
                 /*
@@ -319,19 +361,40 @@ public class FaresActivity extends AppCompatActivity {
     }
 
     /**
+     * Make progress bar animate or not.
+     * @param loading Whether or not progress bar should animate.
+     */
+    private void setIsLoading(final boolean loading) {
+        final ProgressBar progressBarFares = (ProgressBar) findViewById(R.id.progressbar_fares);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (loading) {
+                    progressBarFares.setVisibility(View.VISIBLE);
+                } else {
+                    progressBarFares.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
+
+    /**
      * Cosmetic method to set the Spinner's arrow to purple.
      * @param spinner Spinner
      */
     private void setSpinnerColor(Spinner spinner) {
         /* Set the Spinner's colour to Luas purple. */
-        Drawable spinnerDrawable =
-                spinner.getBackground().getConstantState().newDrawable();
+        if (spinner.getBackground().getConstantState() != null) {
+            Drawable spinnerDrawable =
+                    spinner.getBackground().getConstantState().newDrawable();
 
-        spinnerDrawable.setColorFilter(
-                ContextCompat.getColor(getApplicationContext(), R.color.luas_purple),
-                PorterDuff.Mode.SRC_ATOP
-        );
+            spinnerDrawable.setColorFilter(
+                    ContextCompat.getColor(getApplicationContext(), R.color.luas_purple),
+                    PorterDuff.Mode.SRC_ATOP
+            );
 
-        spinner.setBackground(spinnerDrawable);
+            spinner.setBackground(spinnerDrawable);
+        }
     }
 }

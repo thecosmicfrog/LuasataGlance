@@ -70,12 +70,17 @@ public class SpinnerCardView extends CardView {
         /*
          * Set the Spinner's colour to Luas purple.
          */
-        Drawable spinnerDrawable = spinnerStops.getBackground().getConstantState().newDrawable();
-        spinnerDrawable.setColorFilter(
-                ContextCompat.getColor(getContext(), R.color.luas_purple),
-                PorterDuff.Mode.SRC_ATOP
-        );
-        spinnerStops.setBackground(spinnerDrawable);
+        if (spinnerStops.getBackground().getConstantState() != null) {
+            Drawable spinnerDrawable =
+                    spinnerStops.getBackground().getConstantState().newDrawable();
+
+            spinnerDrawable.setColorFilter(
+                    ContextCompat.getColor(getContext(), R.color.luas_purple),
+                    PorterDuff.Mode.SRC_ATOP
+            );
+
+            spinnerStops.setBackground(spinnerDrawable);
+        }
     }
 
     /**

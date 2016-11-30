@@ -337,7 +337,7 @@ public class LineFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Settings.getSettings(getContext(), getActivity(), item);
+        Settings.getSettings(getContext(), item);
 
         return super.onOptionsItemSelected(item);
     }

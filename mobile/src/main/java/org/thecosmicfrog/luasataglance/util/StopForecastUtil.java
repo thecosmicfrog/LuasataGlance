@@ -61,7 +61,10 @@ public final class StopForecastUtil {
 
                     if (shouldDisplay) {
                         if (!Preferences.hasRunOnce(rootView.getContext(), tutorial)) {
-                            Log.i(LOG_TAG, "First time launching. Displaying select stop tutorial.");
+                            Log.i(
+                                    LOG_TAG,
+                                    "First time launching. Displaying select stop tutorial."
+                            );
 
                             tutorialCardViewSelectStop.setVisibility(View.VISIBLE);
 
@@ -93,7 +96,10 @@ public final class StopForecastUtil {
 
                     if (shouldDisplay) {
                         if (!Preferences.hasRunOnce(rootView.getContext(), tutorial)) {
-                            Log.i(LOG_TAG, "First time launching. Displaying notifications tutorial.");
+                            Log.i(
+                                    LOG_TAG,
+                                    "First time launching. Displaying notifications tutorial."
+                            );
 
                             tutorialCardViewNotifications.setVisibility(View.VISIBLE);
 
