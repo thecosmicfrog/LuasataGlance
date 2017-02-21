@@ -8,8 +8,8 @@ android {
         applicationId "org.thecosmicfrog.luasataglance"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 88
-        versionName "0.88"
+        versionCode 89
+        versionName "0.89"
     }
     buildTypes {
         release {

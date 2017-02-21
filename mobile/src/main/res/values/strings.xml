@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">88</string>
-    <string name="version_name">0.88</string>
+    <string name="version_code">89</string>
+    <string name="version_name">0.89</string>
 
     <!--
         Activities
@@ -161,17 +161,14 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.88 (1st December 2016)
+    <string name="whatsnew_title_current" translatable="false">Version 0.89 (21st February 2017)
     </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 Added push notification
+    <string name="whatsnew_content_current" translatable="false">\u2022 Minor bug fixes.
+    </string>
+    <string name="whatsnew_title_previous" translatable="false">Version 0.88 (1st December 2016)
+    </string>
+    <string name="whatsnew_content_previous" translatable="false">\u2022 Added push notification
         feature.
-    </string>
-    <string name="whatsnew_title_previous" translatable="false">Version 0.83 (21st November 2016)
-    </string>
-    <string name="whatsnew_content_previous" translatable="false">\u2022 Added fares calculator.
-        Just tap the handy <b>Fares</b> button at the bottom of the app to calculate the ticket
-        price for your journey.\n\n\u2022 Fixed widget crash when re-creating with new stops. Thanks
-        to everyone who reported this!
     </string>
 
     <!--
