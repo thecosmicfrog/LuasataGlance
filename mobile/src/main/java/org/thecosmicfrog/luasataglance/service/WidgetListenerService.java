@@ -247,15 +247,28 @@ public class WidgetListenerService extends Service {
                      * If we get a message or a response from the server, there's likely an issue
                      * with the client request or the server's response itself.
                      */
-                    if (retrofitError.getMessage() != null)
+                    if (retrofitError.getMessage() != null) {
                         Log.e(LOG_TAG, retrofitError.getMessage());
+                    }
 
                     if (retrofitError.getResponse() != null) {
-                        Log.e(LOG_TAG, retrofitError.getResponse().getUrl());
+                        if (retrofitError.getResponse().getUrl() != null) {
+                            Log.e(LOG_TAG, retrofitError.getResponse().getUrl());
+                        }
+
                         Log.e(LOG_TAG, Integer.toString(retrofitError.getResponse().getStatus()));
-                        Log.e(LOG_TAG, retrofitError.getResponse().getHeaders().toString());
-                        Log.e(LOG_TAG, retrofitError.getResponse().getBody().toString());
-                        Log.e(LOG_TAG, retrofitError.getResponse().getReason());
+
+                        if (retrofitError.getResponse().getHeaders() != null) {
+                            Log.e(LOG_TAG, retrofitError.getResponse().getHeaders().toString());
+                        }
+
+                        if (retrofitError.getResponse().getBody() != null) {
+                            Log.e(LOG_TAG, retrofitError.getResponse().getBody().toString());
+                        }
+
+                        if (retrofitError.getResponse().getReason() != null) {
+                            Log.e(LOG_TAG, retrofitError.getResponse().getReason());
+                        }
                     }
 
                     /*
