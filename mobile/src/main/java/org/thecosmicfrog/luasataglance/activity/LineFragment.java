@@ -782,32 +782,16 @@ public class LineFragment extends Fragment {
      * @param stopName The stop for which to load a stop forecast.
      */
     private void loadStopForecast(String stopName) {
-        final String API_URL_PREFIX = "https://api";
-        final String API_URL_POSTFIX = ".thecosmicfrog.org/cgi-bin";
+        final String API_URL = "https://api.thecosmicfrog.org/cgi-bin";
         final String API_ACTION = "times";
 
         setIsLoading(true);
 
         /*
-         * Randomly choose an API endpoint to query. This provides load balancing and redundancy
-         * in case of server failures.
-         * All API endpoints are of the form: "apiN.thecosmicfrog.org", where N is determined by
-         * the formula below.
-         * The constant NUM_API_ENDPOINTS governs how many endpoints there currently are.
-         */
-        final int NUM_API_ENDPOINTS = 2;
-
-        String apiEndpointToQuery = Integer.toString(
-                (int) (Math.random() * NUM_API_ENDPOINTS + 1)
-        );
-
-        String apiUrl = API_URL_PREFIX + apiEndpointToQuery + API_URL_POSTFIX;
-
-        /*
          * Prepare Retrofit API call.
          */
         final RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(apiUrl)
+                .setEndpoint(API_URL)
                 .build();
 
         ApiMethods methods = restAdapter.create(ApiMethods.class);
