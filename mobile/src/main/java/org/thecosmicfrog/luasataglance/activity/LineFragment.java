@@ -801,17 +801,20 @@ public class LineFragment extends Fragment {
             public void success(ApiTimes apiTimes, Response response) {
                 /* Check Fragment is attached to Activity to avoid NullPointerExceptions. */
                 if (isAdded()) {
-                    /* Then create a stop forecast with this data. */
-                    StopForecast stopForecast = StopForecastUtil.createStopForecast(apiTimes);
+                    /* If the server returned times. */
+                    if (apiTimes != null) {
+                        /* Then create a stop forecast with this data. */
+                        StopForecast stopForecast = StopForecastUtil.createStopForecast(apiTimes);
 
-                    clearStopForecast();
+                        clearStopForecast();
 
-                    /* Update the stop forecast. */
-                    updateStopForecast(stopForecast);
+                        /* Update the stop forecast. */
+                        updateStopForecast(stopForecast);
 
-                    /* Stop the refresh animations. */
-                    setIsLoading(false);
-                    swipeRefreshLayout.setRefreshing(false);
+                        /* Stop the refresh animations. */
+                        setIsLoading(false);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
                 }
             }
 
