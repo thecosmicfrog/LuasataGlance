@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">89</string>
-    <string name="version_name">0.89</string>
+    <string name="version_code">91</string>
+    <string name="version_name">0.91</string>
 
     <!--
         Activities
@@ -161,14 +161,13 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.89 (21st February 2017)
+    <string name="whatsnew_title_current" translatable="false">Version 0.91 (22nd March 2017)
     </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 Minor bug fixes.
+    <string name="whatsnew_content_current" translatable="false">\u2022 Under-the-hood improvements for reliability.\n\u2022 Fixed recent bug where app could crash on launch. Thanks to everyone who reported this!
     </string>
-    <string name="whatsnew_title_previous" translatable="false">Version 0.88 (1st December 2016)
+    <string name="whatsnew_title_previous" translatable="false">Version 0.89 (21st February 2017)
     </string>
-    <string name="whatsnew_content_previous" translatable="false">\u2022 Added push notification
-        feature.
+    <string name="whatsnew_content_previous" translatable="false">\u2022 Minor bug fixes.
     </string>
 
     <!--
