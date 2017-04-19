@@ -23,8 +23,6 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">91</string>
-    <string name="version_name">0.91</string>
 
     <!--
         Activities

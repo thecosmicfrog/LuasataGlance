@@ -38,6 +38,10 @@
             android:name=".activity.FavouritesActivity"
             android:label="@string/title_activity_favourites" >
         </activity>
+
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="false" />
     </application>
 
 </manifest>

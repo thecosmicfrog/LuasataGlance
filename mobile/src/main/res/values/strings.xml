@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">91</string>
-    <string name="version_name">0.91</string>
+    <string name="version_code" translatable="false">94</string>
+    <string name="version_name" translatable="false">0.94</string>
 
     <!--
         Activities
@@ -161,13 +161,17 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.91 (22nd March 2017)
+    <string name="whatsnew_title_current" translatable="false">Version 0.94 (20th April 2017)
     </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 Under-the-hood improvements for reliability.\n\u2022 Fixed recent bug where app could crash on launch. Thanks to everyone who reported this!
+    <string name="whatsnew_content_current" translatable="false">\u2022 Added support for Android
+        Wear 2.0. You can now download Luas at a Glance from the <b>Play Store</b> on your Android
+        Wear 2.0-compatible smartwatch!
     </string>
-    <string name="whatsnew_title_previous" translatable="false">Version 0.89 (21st February 2017)
+    <string name="whatsnew_title_previous" translatable="false">Version 0.91 (22nd March 2017)
     </string>
-    <string name="whatsnew_content_previous" translatable="false">\u2022 Minor bug fixes.
+    <string name="whatsnew_content_previous" translatable="false">\u2022 Under-the-hood improvements
+        for reliability.\n\u2022 Fixed recent bug where app could crash on launch. Thanks to
+        everyone who reported this!
     </string>
 
     <!--

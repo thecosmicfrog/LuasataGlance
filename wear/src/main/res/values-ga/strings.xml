@@ -23,14 +23,14 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">91</string>
-    <string name="version_name">0.91</string>
 
     <!--
         Activities
     -->
     <string name="title_activity_red_line">Líne Dearg</string>
     <string name="title_activity_green_line">Líne Glas</string>
+    <string name="title_activity_favourites">Ceanáin</string>
+    <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_stop_forecast">Réamhaisnéis Stad</string>
 
     <!--

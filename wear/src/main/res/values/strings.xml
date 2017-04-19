@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code">91</string>
-    <string name="version_name">0.91</string>
+    <string name="version_code" translatable="false">94</string>
+    <string name="version_name" translatable="false">0.94</string>
 
     <!--
         Activities
@@ -38,7 +38,6 @@
     <!--
         Main UI
     -->
-    <string name="message_no_results">No Results</string>
     <string name="message_success">operating normally</string>
     <string name="message_not_running">No trams expected at this stop.</string>
     <string name="message_error">Error retrieving times from Luas RTPI system</string>
