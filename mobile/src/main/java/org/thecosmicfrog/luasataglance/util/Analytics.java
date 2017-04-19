@@ -23,28 +23,82 @@ package org.thecosmicfrog.luasataglance.util;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import org.thecosmicfrog.luasataglance.activity.LineFragment;
+
 public final class Analytics {
+
+    private static final String EVENT_HTTP_ERROR = "http_error";
+    private static final String EVENT_NULL_APITIMES = "null_apitimes";
+    private static final String LOG_TAG = Analytics.class.getSimpleName();
 
     private static FirebaseAnalytics firebaseAnalytics;
 
-    public static void selectContent(Context context, String contentType, String itemId) {
-        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+    public static void httpError(Context context, String contentType, String itemId) {
 
-        Bundle params = new Bundle();
-        params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
-        params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
+        try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error gathering analytics for " + itemId + ".");
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        if (firebaseAnalytics != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+            firebaseAnalytics.logEvent(EVENT_HTTP_ERROR, params);
+        }
+    }
+
+    public static void nullApitimes(Context context, String contentType, String itemId) {
+        try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error gathering analytics for " + itemId + ".");
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        if (firebaseAnalytics != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+            firebaseAnalytics.logEvent(EVENT_NULL_APITIMES, params);
+        }
+    }
+
+    public static void selectContent(Context context, String contentType, String itemId) {
+        try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error gathering analytics for " + itemId + ".");
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        if (firebaseAnalytics != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
+        }
     }
 
     public static void tutorialBegin(Context context, String contentType, String itemId) {
-        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error gathering analytics for " + itemId + ".");
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
 
-        Bundle params = new Bundle();
-        params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
-        params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, params);
+        if (firebaseAnalytics != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, params);
+        }
     }
 }

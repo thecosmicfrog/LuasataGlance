@@ -48,6 +48,7 @@ import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
+import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.util.Settings;
@@ -755,7 +756,7 @@ public class LineFragment extends Fragment {
             @Override
             public void run() {
                 /* Check Fragment is attached to Activity to avoid NullPointerExceptions. */
-                if (isAdded()){
+                if (isAdded()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -814,6 +815,12 @@ public class LineFragment extends Fragment {
                         /* Stop the refresh animations. */
                         setIsLoading(false);
                         swipeRefreshLayout.setRefreshing(false);
+                    } else {
+                        Analytics.nullApitimes(
+                                getContext(),
+                                "null",
+                                "null_apitimes_mobile"
+                        );
                     }
                 }
             }
@@ -827,26 +834,26 @@ public class LineFragment extends Fragment {
                  * the client request or the server's response itself.
                  */
                 if (retrofitError.getMessage() != null) {
-                    Log.e(LOG_TAG, retrofitError.getMessage());
+                    Log.e(LOG_TAG, "Message: " + retrofitError.getMessage());
                 }
 
                 if (retrofitError.getResponse() != null) {
                     if (retrofitError.getResponse().getUrl() != null) {
-                        Log.e(LOG_TAG, retrofitError.getResponse().getUrl());
+                        Log.e(LOG_TAG, "Response: " + retrofitError.getResponse().getUrl());
                     }
 
-                    Log.e(LOG_TAG, Integer.toString(retrofitError.getResponse().getStatus()));
+                    Log.e(LOG_TAG, "Status: " + Integer.toString(retrofitError.getResponse().getStatus()));
 
                     if (retrofitError.getResponse().getHeaders() != null) {
-                        Log.e(LOG_TAG, retrofitError.getResponse().getHeaders().toString());
+                        Log.e(LOG_TAG, "Headers: " + retrofitError.getResponse().getHeaders().toString());
                     }
 
                     if (retrofitError.getResponse().getBody() != null) {
-                        Log.e(LOG_TAG, retrofitError.getResponse().getBody().toString());
+                        Log.e(LOG_TAG, "Body: " + retrofitError.getResponse().getBody().toString());
                     }
 
                     if (retrofitError.getResponse().getReason() != null) {
-                        Log.e(LOG_TAG, retrofitError.getResponse().getReason());
+                        Log.e(LOG_TAG, "Reason: " + retrofitError.getResponse().getReason());
                     }
                 }
 
@@ -855,8 +862,14 @@ public class LineFragment extends Fragment {
                  * going on by getting the "kind" of error.
                  */
                 if (retrofitError.getKind() != null) {
-                    Log.e(LOG_TAG, retrofitError.getKind().toString());
+                    Log.e(LOG_TAG, "Kind: " + retrofitError.getKind().toString());
                 }
+
+                Analytics.httpError(
+                        getContext(),
+                        "http_error",
+                        "http_error_general_mobile"
+                );
             }
         };
 
