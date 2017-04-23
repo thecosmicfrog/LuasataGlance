@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">94</string>
-    <string name="version_name" translatable="false">0.94</string>
+    <string name="version_code" translatable="false">96</string>
+    <string name="version_name" translatable="false">0.96</string>
 
     <!--
         Activities
@@ -161,7 +161,7 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.94 (20th April 2017)
+    <string name="whatsnew_title_current" translatable="false">Version 0.96 (20th April 2017)
     </string>
     <string name="whatsnew_content_current" translatable="false">\u2022 Added support for Android
         Wear 2.0. You can now download Luas at a Glance from the <b>Play Store</b> on your Android
