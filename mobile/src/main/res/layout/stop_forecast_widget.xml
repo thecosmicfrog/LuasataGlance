@@ -28,7 +28,7 @@
     <LinearLayout
         android:id="@+id/linearlayout_stop_name"
         android:orientation="horizontal"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="22dp"
         android:weightSum="1"
         android:elevation="@dimen/cardview_default_elevation"
@@ -41,7 +41,8 @@
             android:gravity="center_vertical|start"
             android:layout_weight="0.075"
             android:layout_marginLeft="3dp"
-            android:text="@string/widget_left_arrow" />
+            android:text="@string/widget_left_arrow"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/textview_stop_name"
@@ -49,17 +50,18 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical|center_horizontal"
             android:layout_weight="0.85"
-            android:textColor="#ffffff"
+            android:textColor="@android:color/white"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_stop_name_right_arrow"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|end"
-            android:layout_weight="0.075"
             android:layout_marginRight="3dp"
-            android:text="@string/widget_right_arrow" />
+            android:layout_weight="0.075"
+            android:gravity="center_vertical|end"
+            android:text="@string/widget_right_arrow"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
     <RelativeLayout
@@ -77,79 +79,91 @@
     <LinearLayout
         android:id="@+id/linearlayout_stop_forecast"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/cardview_default_elevation">
 
             <TextView
                 android:id="@+id/textview_inbound"
-                android:text="@string/inbound"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/luas_purple"
-                android:gravity="center_horizontal"
-                android:textColor="#ffffff"
                 android:elevation="2dp"
+                android:gravity="center_horizontal"
+                android:text="@string/inbound"
+                android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="1"
-                android:background="#ffffff">
+                android:weightSum="1">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textview_inbound_stop1_name"
+                    android:id="@+id/textview_tap_to_load_times"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
                     android:gravity="center_horizontal"
+                    android:text="@string/tap_to_load_times"
+                    android:textColor="#757575"
                     android:textSize="16sp"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/textview_inbound_stop1_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="start"
                     android:layout_weight="0.5"
-                    android:textColor="#757575" />
+                    android:gravity="center_horizontal"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/textview_inbound_stop1_time"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:layout_weight="0.5"
-                    android:textColor="#757575" />
+                    android:gravity="center_horizontal"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="1"
-                android:background="#ffffff">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textview_inbound_stop2_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp"
-                    android:layout_gravity="start"
-                    android:layout_weight="0.5"
-                    android:textColor="#757575" />
+                android:weightSum="1">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textview_inbound_stop2_time"
+                    android:id="@+id/textview_inbound_stop2_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:layout_weight="0.5"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textview_inbound_stop2_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:layout_weight="0.5"
-                    android:textColor="#757575" />
+                    android:gravity="center_horizontal"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -159,75 +173,76 @@
             android:background="#eeeeee" />
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/cardview_default_elevation">
+            android:elevation="@dimen/cardview_default_elevation"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textview_outbound"
-                android:text="@string/outbound"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/luas_purple"
-                android:gravity="center_horizontal"
-                android:textColor="#ffffff"
                 android:elevation="2dp"
+                android:gravity="center_horizontal"
+                android:text="@string/outbound"
+                android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="1"
-                android:background="#ffffff">
+                android:weightSum="1">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/textview_outbound_stop1_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="start"
                     android:layout_weight="0.5"
-                    android:textColor="#757575" />
+                    android:gravity="center_horizontal"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/textview_outbound_stop1_time"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:layout_weight="0.5"
-                    android:textColor="#757575" />
+                    android:gravity="center_horizontal"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="1"
-                android:background="#ffffff">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textview_outbound_stop2_name"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp"
-                    android:layout_gravity="start"
-                    android:layout_weight="0.5"
-                    android:textColor="#757575" />
+                android:weightSum="1">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textview_outbound_stop2_time"
+                    android:id="@+id/textview_outbound_stop2_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:layout_weight="0.5"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textview_outbound_stop2_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:layout_weight="0.5"
-                    android:textColor="#757575" />
+                    android:gravity="center_horizontal"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
 

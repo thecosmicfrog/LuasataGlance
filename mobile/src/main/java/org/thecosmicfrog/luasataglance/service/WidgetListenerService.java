@@ -30,6 +30,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import org.thecosmicfrog.luasataglance.R;
@@ -62,6 +63,7 @@ public class WidgetListenerService extends Service {
 
     private final String LOG_TAG = WidgetListenerService.class.getSimpleName();
     private final int TEXTVIEW_STOP_NAME = R.id.textview_stop_name;
+    private final int TEXTVIEW_TAP_TO_LOAD_TIMES = R.id.textview_tap_to_load_times;
     private final int TEXTVIEW_INBOUND_STOP1_NAME = R.id.textview_inbound_stop1_name;
     private final int TEXTVIEW_INBOUND_STOP1_TIME = R.id.textview_inbound_stop1_time;
     private final int TEXTVIEW_INBOUND_STOP2_NAME = R.id.textview_inbound_stop2_name;
@@ -207,6 +209,11 @@ public class WidgetListenerService extends Service {
 
             /* Instantiate a new StopNameIdMap. */
             StopNameIdMap mapStopNameId = new StopNameIdMap(localeDefault);
+
+            views.setViewVisibility(
+                    TEXTVIEW_TAP_TO_LOAD_TIMES,
+                    View.GONE
+            );
 
             /* Set the stop name in the widget. */
             views.setTextViewText(TEXTVIEW_STOP_NAME, stopName);
@@ -418,9 +425,10 @@ public class WidgetListenerService extends Service {
             @Override
             public void run() {
                 clearStopForecast(views);
-                views.setTextViewText(
-                        TEXTVIEW_INBOUND_STOP1_NAME,
-                        getString(R.string.tap_to_load_times)
+
+                views.setViewVisibility(
+                        TEXTVIEW_TAP_TO_LOAD_TIMES,
+                        View.VISIBLE
                 );
 
                 appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
