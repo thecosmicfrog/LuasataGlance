@@ -24,7 +24,7 @@
     android:minWidth="180dp"
     android:minHeight="110dp"
     android:updatePeriodMillis="0"
-    android:previewImage="@drawable/laag_logo"
+    android:previewImage="@raw/widget_preview"
     android:initialLayout="@layout/stop_forecast_widget"
     android:configure="org.thecosmicfrog.luasataglance.widget.StopForecastWidgetConfigureActivity"
     android:resizeMode="horizontal|vertical"
