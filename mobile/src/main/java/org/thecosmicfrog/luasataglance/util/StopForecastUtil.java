@@ -160,6 +160,12 @@ public final class StopForecastUtil {
     public static StopForecast createStopForecast(ApiTimes apiTimes) {
         StopForecast stopForecast = new StopForecast();
 
+        if (apiTimes.getMessage() != null) {
+            stopForecast.setMessage(apiTimes.getMessage());
+        }
+
+        stopForecast.setOperatingNormally(apiTimes.getOperatingNormally());
+
         if (apiTimes.getTrams() != null) {
             for (Tram tram : apiTimes.getTrams()) {
                 switch (tram.getDirection()) {
@@ -179,8 +185,6 @@ public final class StopForecastUtil {
                 }
             }
         }
-
-        stopForecast.setMessage(apiTimes.getMessage());
 
         return stopForecast;
     }

@@ -28,10 +28,20 @@ import java.util.List;
 public class ApiTimes {
 
     private String message;
+    private boolean forecastsEnabled;
+    private boolean operatingNormally;
     private List<Tram> trams;
 
     public String getMessage() {
         return message;
+    }
+
+    public boolean getForecastsEnabled() {
+        return forecastsEnabled;
+    }
+
+    public boolean getOperatingNormally() {
+        return operatingNormally;
     }
 
     public List<Tram> getTrams() {
@@ -40,6 +50,14 @@ public class ApiTimes {
 
     public void setMessage(String m) {
         message = m;
+    }
+
+    public void setForecastsEnabled(boolean f) {
+        forecastsEnabled = f;
+    }
+
+    public void setOperatingNormally(boolean o) {
+        operatingNormally = o;
     }
 
     public void setTrams(List<Tram> t) {

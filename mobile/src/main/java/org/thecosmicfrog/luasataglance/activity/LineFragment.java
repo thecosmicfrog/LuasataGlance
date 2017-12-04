@@ -785,6 +785,7 @@ public class LineFragment extends Fragment {
     private void loadStopForecast(String stopName) {
         final String API_URL = "https://api.thecosmicfrog.org/cgi-bin";
         final String API_ACTION = "times";
+        final String API_VER = "2";
 
         setIsLoading(true);
 
@@ -876,6 +877,7 @@ public class LineFragment extends Fragment {
         /* Call API and get stop forecast from server. */
         methods.getStopForecast(
                 API_ACTION,
+                API_VER,
                 mapStopNameId.get(stopName),
                 callback
         );
@@ -898,6 +900,7 @@ public class LineFragment extends Fragment {
         /* If a valid stop forecast exists... */
         if (stopForecast != null) {
             String status;
+            boolean operatingNormally = stopForecast.getOperatingNormally();
 
             if (localeDefault.startsWith(GAEILGE)) {
                 status = getString(R.string.message_success);
@@ -905,8 +908,7 @@ public class LineFragment extends Fragment {
                 status = stopForecast.getMessage();
             }
 
-            if (status.contains(
-                    getString(R.string.message_success))) {
+            if (operatingNormally) {
                 /*
                  * No error message on server. Change the message title TextView to
                  * green and set a default success message.

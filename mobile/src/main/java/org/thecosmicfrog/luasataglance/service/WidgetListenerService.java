@@ -203,6 +203,7 @@ public class WidgetListenerService extends Service {
             /* API constants. */
             final String API_URL = "https://api.thecosmicfrog.org/cgi-bin";
             final String API_ACTION = "times";
+            final String API_VER = "2";
 
             /* Instantiate a new EnglishGaeilgeMap. */
             mapEnglishGaeilge = new EnglishGaeilgeMap();
@@ -308,6 +309,7 @@ public class WidgetListenerService extends Service {
              */
             methods.getStopForecast(
                     API_ACTION,
+                    API_VER,
                     mapStopNameId.get(stopName),
                     callback
             );

@@ -40,6 +40,7 @@ public interface ApiMethods {
     @GET("/luas-api.php")
     void getStopForecast(
             @Query("action") String action,
+            @Query("ver") String ver,
             @Query("station") String station,
             Callback<ApiTimes> cb
     );
