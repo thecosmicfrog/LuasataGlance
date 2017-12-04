@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.1'
+    buildToolsVersion '26.0.2'
 
     publishNonDefault true
 
@@ -10,8 +10,8 @@ android {
         applicationId "org.thecosmicfrog.luasataglance"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 9600
-        versionName "0.96"
+        versionCode 9900
+        versionName "0.99"
     }
     buildTypes {
         release {
@@ -19,20 +19,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions "wear"
     productFlavors {
-        wear1 {
-            /* Use the defaultConfig value. */
-        }
         wear2 {
             minSdkVersion 25
-            versionCode 9601
+            versionCode 9901
         }
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    provided 'com.google.android.wearable:wearable:2.0.1'
-    compile 'com.google.android.support:wearable:2.0.1'
-    compile 'com.google.android.gms:play-services-wearable:10.2.1'
+    provided 'com.google.android.wearable:wearable:2.1.0'
+    compile 'com.google.android.support:wearable:2.1.0'
+    compile 'com.google.android.gms:play-services-wearable:11.6.2'
 }
