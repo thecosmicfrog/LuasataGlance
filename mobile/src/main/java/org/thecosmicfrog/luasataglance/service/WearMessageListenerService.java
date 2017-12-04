@@ -126,6 +126,7 @@ public class WearMessageListenerService extends WearableListenerService {
     private void fetchStopForecast(String stopName) {
         final String API_URL = "https://api.thecosmicfrog.org/cgi-bin";
         final String API_ACTION = "times";
+        final String API_VER = "2";
 
         /*
          * Prepare Retrofit API call.
@@ -210,6 +211,7 @@ public class WearMessageListenerService extends WearableListenerService {
          */
         methods.getStopForecast(
                 API_ACTION,
+                API_VER,
                 mapStopNameId.get(stopName),
                 callback
         );
