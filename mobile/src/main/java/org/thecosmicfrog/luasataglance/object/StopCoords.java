@@ -64,6 +64,19 @@ public class StopCoords {
             { 53.28483859, -6.43777514 }, /* Saggart */
     };
     private double[][] stopCoordsGreenLine = new double[][] {
+            { 53.37254168, -6.29840233 }, /* Broombridge */
+            { 53.36385473, -6.28157952 }, /* Cabra */
+            { 53.36009486, -6.27861970 }, /* Phibsborough */
+            { 53.35727273, -6.27731346 }, /* Grangegorman */
+            { 53.35407420, -6.27392315 }, /* Broadstone - DIT */
+            { 53.35124424, -6.26531198 }, /* Dominick */
+            { 53.35301900, -6.26047044 }, /* Parnell */
+            { 53.35165250, -6.26117601 }, /* O'Connell - Upper */
+            { 53.34880980, -6.25992879 }, /* O'Connell - GPO */
+            { 53.34915970, -6.25775202 }, /* Marlborough */
+            { 53.34623832, -6.25914424 }, /* Westmoreland */
+            { 53.34518877, -6.25865324 }, /* Trinity */
+            { 53.34209496, -6.25801637 }, /* Dawson */
             { 53.33911033, -6.26139200 }, /* St. Stephen's Green */
             { 53.33364891, -6.26269019 }, /* Harcourt */
             { 53.33060239, -6.25862396 }, /* Charlemont */
@@ -85,7 +98,7 @@ public class StopCoords {
             { 53.25436204, -6.17160237 }, /* Carrickmines */
             { 53.25063905, -6.15495121 }, /* Laughanstown */
             { 53.24538459, -6.14582634 }, /* Cherrywood */
-            { 53.24186949, -6.14277935 }, /* Brides Glen */
+            { 53.24186949, -6.14277935 }, /* Bride's Glen */
     };
     private double[][] stopCoords = new double[0][0];
 

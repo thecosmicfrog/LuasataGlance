@@ -66,6 +66,19 @@ public class EnglishGaeilgeMap extends HashMap<String, String> {
         put("Saggart", "Teach Sagard");
 
         /* Green Line */
+        put("Broombridge", "Droichead Broome");
+        put("Cabra", "Cabrach");
+        put("Phibsborough", "Baile Phib");
+        put("Grangegorman", "Gráinseach Ghormáin");
+        put("Broadstone - DIT", "An Clochán Leathan - ITBhÁC");
+        put("Dominick", "Doiminic");
+        put("Parnell", "Parnell");
+        put("O'Connell - Upper", "Ó Conaill - Uachtarach");
+        put("O'Connell - GPO", "Ó Conaill - AOP");
+        put("Marlborough", "Maoilbhríde");
+        put("Westmoreland", "Westmoreland");
+        put("Trinity", "An Tríonóid");
+        put("Dawson", "Dásáin");
         put("St. Stephen's Green", "Faiche Stiabhna");
         put("Harcourt", "Sráid Fhearchair");
         put("Charlemont", "Charlemont");
@@ -87,6 +100,6 @@ public class EnglishGaeilgeMap extends HashMap<String, String> {
         put("Carrickmines", "Carraig Mhaighin");
         put("Laughanstown", "Baile an Locháin");
         put("Cherrywood", "Coill na Silíní");
-        put("Brides Glen", "Gleann Bhríde");
+        put("Bride's Glen", "Gleann Bhríde");
     }
 }

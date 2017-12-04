@@ -273,8 +273,201 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             );
         }
 
-        /* Draw Polylines from St. Stephen's Green to Brides Glen. */
-        for (int i = 0; i < listStopNamesGreenLine.size() - 1; i++) {
+        /* Draw Polylines from Broombridge to Parnell. */
+        for (int i = 0; i < 6; i++) {
+            googleMap.addPolyline(
+                    new PolylineOptions().add(
+                            new LatLng(stopCoordsGreenLine[i][0], stopCoordsGreenLine[i][1]),
+                            new LatLng(stopCoordsGreenLine[i + 1][0], stopCoordsGreenLine[i + 1][1])
+                    ).width(12.0f).color(
+                            ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                    )
+            );
+        }
+
+        /* Draw Polylines from Parnell to Marlborough. */
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(stopCoordsGreenLine[6][0], stopCoordsGreenLine[6][1]),
+                        new LatLng(stopCoordsGreenLine[9][0], stopCoordsGreenLine[9][1])
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+
+        /* Draw Polyline from Marlborough to the corner of Hawkins Street and College Street. */
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(stopCoordsGreenLine[9][0], stopCoordsGreenLine[9][1]),
+                        new LatLng(53.34575198, -6.25701415)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+
+        /* Draw Polyline from the corner of Hawkins Street and College Street to Trinity. */
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.34575198, -6.25701415),
+                        new LatLng(stopCoordsGreenLine[11][0], stopCoordsGreenLine[11][1])
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+
+        /*
+         * Draw Polylines around College Green, Grafton Street and Nassau Street, up to Dawson
+         * Street.
+         */
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(stopCoordsGreenLine[11][0], stopCoordsGreenLine[11][1]),
+                        new LatLng(53.34495296, -6.25920819)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.34495296, -6.25920819),
+                        new LatLng(53.34442293, -6.25948714)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.34442293, -6.25948714),
+                        new LatLng(53.34398738, -6.25921892)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.34398738, -6.25921892),
+                        new LatLng(53.34334845, -6.25924306)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.34334845, -6.25924306),
+                        new LatLng(53.34318512, -6.25905799)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.34318512, -6.25905799),
+                        new LatLng(53.34293531, -6.25772225)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.34293531, -6.25772225),
+                        new LatLng(stopCoordsGreenLine[12][0], stopCoordsGreenLine[12][1])
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+
+        /* Draw Polylines from Dawson to the end of Dawson Street. */
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(stopCoordsGreenLine[12][0], stopCoordsGreenLine[12][1]),
+                        new LatLng(53.33950349, -6.25881123)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+
+        /* Draw Polylines from the end of Dawson Street to St. Stephen's Green. */
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.33950349, -6.25881123),
+                        new LatLng(53.33952431, -6.25876563)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.33952431, -6.25876563),
+                        new LatLng(53.33987183, -6.26049566)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.33987183, -6.26049566),
+                        new LatLng(53.33975012, -6.26091944)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.33975012, -6.26091944),
+                        new LatLng(stopCoordsGreenLine[13][0], stopCoordsGreenLine[13][1])
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+
+        /* Draw Polylines from Trinity to Westmoreland. */
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(stopCoordsGreenLine[11][0], stopCoordsGreenLine[11][1]),
+                        new LatLng(53.34532925, -6.25917064)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.34532925, -6.25917064),
+                        new LatLng(stopCoordsGreenLine[10][0], stopCoordsGreenLine[10][1])
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+
+        /* Draw Polylines from Westmoreland to O'Connell Street Stops. */
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(stopCoordsGreenLine[10][0], stopCoordsGreenLine[10][1]),
+                        new LatLng(53.34693688, -6.25911700)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(53.34693688, -6.25911700),
+                        new LatLng(stopCoordsGreenLine[7][0], stopCoordsGreenLine[7][1])
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+
+        /* Draw Polyline from O'Connell - Upper to Parnell Street and close the loop. */
+        googleMap.addPolyline(
+                new PolylineOptions().add(
+                        new LatLng(stopCoordsGreenLine[7][0], stopCoordsGreenLine[7][1]),
+                        new LatLng(53.352594325768045, -6.261551109496622)
+                ).width(12.0f).color(
+                        ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
+                )
+        );
+
+        /* Draw Polylines from St. Stephen's Green to Bride's Glen. */
+        for (int i = 13; i < listStopNamesGreenLine.size() - 1; i++) {
             googleMap.addPolyline(
                     new PolylineOptions().add(
                             new LatLng(stopCoordsGreenLine[i][0], stopCoordsGreenLine[i][1]),

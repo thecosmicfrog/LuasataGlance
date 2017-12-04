@@ -61,6 +61,19 @@ public class StopNameIdMap extends HashMap<String, String> {
             put("Teach Sagard", "SAG");
 
             /* Green Line */
+            put("Droichead Broome", "BRO");
+            put("Cabrach", "CAB");
+            put("Baile Phib", "PHI");
+            put("Gráinseach Ghormáin", "GRA");
+            put("An Clochán Leathan - ITBhÁC", "BRD");
+            put("Doiminic", "DOM");
+            put("Parnell", "PAR");
+            put("Ó Conaill - Uachtarach", "OUP");
+            put("Ó Conaill - AOP", "OGP");
+            put("Maoilbhríde", "MAR");
+            put("Westmoreland", "WES");
+            put("An Tríonóid", "TRY");
+            put("Dásáin", "DAW");
             put("Faiche Stiabhna", "STS");
             put("Sráid Fhearchair", "HAR");
             put("Charlemont", "CHA");
@@ -119,6 +132,19 @@ public class StopNameIdMap extends HashMap<String, String> {
             put("Saggart", "SAG");
 
             /* Green Line */
+            put("Broombridge", "BRO");
+            put("Cabra", "CAB");
+            put("Phibsborough", "PHI");
+            put("Grangegorman", "GRA");
+            put("Broadstone - DIT", "BRD");
+            put("Dominick", "DOM");
+            put("Parnell", "PAR");
+            put("O'Connell - Upper", "OUP");
+            put("O'Connell - GPO", "OGP");
+            put("Marlborough", "MAR");
+            put("Westmoreland", "WES");
+            put("Trinity", "TRY");
+            put("Dawson", "DAW");
             put("St. Stephen's Green", "STS");
             put("Harcourt", "HAR");
             put("Charlemont", "CHA");
@@ -140,7 +166,7 @@ public class StopNameIdMap extends HashMap<String, String> {
             put("Carrickmines", "CCK");
             put("Laughanstown", "LAU");
             put("Cherrywood", "CHE");
-            put("Brides Glen", "BRI");
+            put("Bride's Glen", "BRI");
         }
     }
 }
