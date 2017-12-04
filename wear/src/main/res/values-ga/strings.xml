@@ -91,6 +91,19 @@
     </string-array>
 
     <string-array name="green_line_array_stops">
+        <item>Droichead Broome</item>
+        <item>Cabrach</item>
+        <item>Baile Phib</item>
+        <item>Gráinseach Ghormáin</item>
+        <item>An Clochán Leathan - ITBhÁC</item>
+        <item>Doiminic</item>
+        <item>Parnell</item>
+        <item>Ó Conaill - Uachtarach</item>
+        <item>Ó Conaill - AOP</item>
+        <item>Maoilbhríde</item>
+        <item>Westmoreland</item>
+        <item>An Tríonóid</item>
+        <item>Dásáin</item>
         <item>Faiche Stiabhna</item>
         <item>Sráid Fhearchair</item>
         <item>Charlemont</item>

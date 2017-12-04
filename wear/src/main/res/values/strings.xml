@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">96</string>
-    <string name="version_name" translatable="false">0.96</string>
+    <string name="version_code" translatable="false">99</string>
+    <string name="version_name" translatable="false">0.99</string>
 
     <!--
         Activities
@@ -93,6 +93,19 @@
     </string-array>
 
     <string-array name="green_line_array_stops">
+        <item>Broombridge</item>
+        <item>Cabra</item>
+        <item>Phibsborough</item>
+        <item>Grangegorman</item>
+        <item>Broadstone - DIT</item>
+        <item>Dominick</item>
+        <item>Parnell</item>
+        <item>O\'Connell - Upper</item>
+        <item>O\'Connell - GPO</item>
+        <item>Marlborough</item>
+        <item>Westmoreland</item>
+        <item>Trinity</item>
+        <item>Dawson</item>
         <item>St. Stephen\'s Green</item>
         <item>Harcourt</item>
         <item>Charlemont</item>
@@ -114,6 +127,6 @@
         <item>Carrickmines</item>
         <item>Laughanstown</item>
         <item>Cherrywood</item>
-        <item>Brides Glen</item>
+        <item>Bride\'s Glen</item>
     </string-array>
 </resources>

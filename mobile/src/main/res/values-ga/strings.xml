@@ -215,6 +215,19 @@
 
     <string-array name="array_stops_greenline">
         <item>Roghnaigh stad\u2026</item>
+        <item>Droichead Broome</item>
+        <item>Cabrach</item>
+        <item>Baile Phib</item>
+        <item>Gráinseach Ghormáin</item>
+        <item>An Clochán Leathan - ITBhÁC</item>
+        <item>Doiminic</item>
+        <item>Parnell</item>
+        <item>Ó Conaill - Uachtarach</item>
+        <item>Ó Conaill - AOP</item>
+        <item>Maoilbhríde</item>
+        <item>Westmoreland</item>
+        <item>An Tríonóid</item>
+        <item>Dásáin</item>
         <item>Faiche Stiabhna</item>
         <item>Sráid Fhearchair</item>
         <item>Charlemont</item>
@@ -273,6 +286,19 @@
         <item>Campas Gnó Iarthar na Cathrach</item>
         <item>Baile Uí Fhoirtcheirn</item>
         <item>Teach Sagard</item>
+        <item>Droichead Broome</item>
+        <item>Cabrach</item>
+        <item>Baile Phib</item>
+        <item>Gráinseach Ghormáin</item>
+        <item>An Clochán Leathan - ITBhÁC</item>
+        <item>Doiminic</item>
+        <item>Parnell</item>
+        <item>Ó Conaill - Uachtarach</item>
+        <item>Ó Conaill - AOP</item>
+        <item>Maoilbhríde</item>
+        <item>Westmoreland</item>
+        <item>An Tríonóid</item>
+        <item>Dásáin</item>
         <item>Faiche Stiabhna</item>
         <item>Sráid Fhearchair</item>
         <item>Charlemont</item>
