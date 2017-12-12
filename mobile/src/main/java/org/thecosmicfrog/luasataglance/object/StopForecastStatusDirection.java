@@ -19,45 +19,34 @@
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.thecosmicfrog.luasataglance.api;
+package org.thecosmicfrog.luasataglance.object;
 
-import com.google.gson.annotations.SerializedName;
-
-import org.thecosmicfrog.luasataglance.object.StopForecastStatus;
-import org.thecosmicfrog.luasataglance.object.Tram;
-
-import java.util.List;
-
-public class ApiTimes {
-
+public class StopForecastStatusDirection {
     private String message;
-
-    @SerializedName("status")
-    private StopForecastStatus stopForecastStatus;
-
-    private List<Tram> trams;
+    private boolean forecastsEnabled;
+    private boolean operatingNormally;
 
     public String getMessage() {
         return message;
     }
 
-    public StopForecastStatus getStopForecastStatus() {
-        return stopForecastStatus;
+    public boolean getForecastsEnabled() {
+        return forecastsEnabled;
     }
 
-    public List<Tram> getTrams() {
-        return trams;
+    public boolean getOperatingNormally() {
+        return operatingNormally;
     }
 
     public void setMessage(String m) {
         message = m;
     }
 
-    public void setStopForecastStatus(StopForecastStatus s) {
-        stopForecastStatus = s;
+    public void setForecastsEnabled(boolean f) {
+        forecastsEnabled = f;
     }
 
-    public void setTrams(List<Tram> t) {
-        trams = t;
+    public void setOperatingNormally(boolean o) {
+        operatingNormally = o;
     }
 }

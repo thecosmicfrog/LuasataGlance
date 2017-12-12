@@ -164,7 +164,43 @@ public final class StopForecastUtil {
             stopForecast.setMessage(apiTimes.getMessage());
         }
 
-        stopForecast.setOperatingNormally(apiTimes.getOperatingNormally());
+        if (apiTimes.getStopForecastStatus() != null) {
+            if (apiTimes.getStopForecastStatus().getStopForecastStatusDirectionInbound() != null) {
+                if (apiTimes.getStopForecastStatus().getStopForecastStatusDirectionInbound()
+                        .getMessage() != null) {
+                    stopForecast.getStopForecastStatusDirectionInbound().setMessage(
+                            apiTimes.getStopForecastStatus()
+                                    .getStopForecastStatusDirectionInbound().getMessage()
+                    );
+                    stopForecast.getStopForecastStatusDirectionInbound().setForecastsEnabled(
+                            apiTimes.getStopForecastStatus()
+                                    .getStopForecastStatusDirectionInbound().getForecastsEnabled()
+                    );
+                    stopForecast.getStopForecastStatusDirectionInbound().setOperatingNormally(
+                            apiTimes.getStopForecastStatus()
+                                    .getStopForecastStatusDirectionInbound().getOperatingNormally()
+                    );
+                }
+            }
+
+            if (apiTimes.getStopForecastStatus().getStopForecastStatusDirectionOutbound() != null) {
+                if (apiTimes.getStopForecastStatus().getStopForecastStatusDirectionOutbound()
+                        .getMessage() != null) {
+                    stopForecast.getStopForecastStatusDirectionOutbound().setMessage(
+                            apiTimes.getStopForecastStatus()
+                                    .getStopForecastStatusDirectionOutbound().getMessage()
+                    );
+                    stopForecast.getStopForecastStatusDirectionOutbound().setForecastsEnabled(
+                            apiTimes.getStopForecastStatus()
+                                    .getStopForecastStatusDirectionOutbound().getForecastsEnabled()
+                    );
+                    stopForecast.getStopForecastStatusDirectionOutbound().setOperatingNormally(
+                            apiTimes.getStopForecastStatus()
+                                    .getStopForecastStatusDirectionOutbound().getOperatingNormally()
+                    );
+                }
+            }
+        }
 
         if (apiTimes.getTrams() != null) {
             for (Tram tram : apiTimes.getTrams()) {
@@ -189,4 +225,3 @@ public final class StopForecastUtil {
         return stopForecast;
     }
 }
-

@@ -900,7 +900,12 @@ public class LineFragment extends Fragment {
         /* If a valid stop forecast exists... */
         if (stopForecast != null) {
             String status;
-            boolean operatingNormally = stopForecast.getOperatingNormally();
+            boolean operatingNormally = false;
+
+            if (stopForecast.getStopForecastStatusDirectionInbound().getOperatingNormally()
+                    && stopForecast.getStopForecastStatusDirectionOutbound().getOperatingNormally()) {
+                operatingNormally = true;
+            }
 
             if (localeDefault.startsWith(GAEILGE)) {
                 status = getString(R.string.message_success);

@@ -29,17 +29,17 @@ public class StopForecast implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
-    private final String LOG_TAG = StopForecast.class.getSimpleName();
-
     private String message;
-    private boolean forecastsEnabled;
-    private boolean operatingNormally;
+    private StopForecastStatusDirection stopForecastStatusDirectionInbound;
+    private StopForecastStatusDirection stopForecastStatusDirectionOutbound;
     private List<Tram> inboundTrams;
     private List<Tram> outboundTrams;
 
     public StopForecast() {
         inboundTrams = new ArrayList<>();
         outboundTrams = new ArrayList<>();
+        stopForecastStatusDirectionInbound = new StopForecastStatusDirection();
+        stopForecastStatusDirectionOutbound = new StopForecastStatusDirection();
     }
 
     public void addInboundTram(Tram t) {
@@ -58,12 +58,12 @@ public class StopForecast implements Serializable {
         message = m;
     }
 
-    public void setForecastsEnabled(boolean f) {
-        forecastsEnabled = f;
+    public void setStopForecastStatusDirectionInbound(StopForecastStatusDirection f) {
+        stopForecastStatusDirectionInbound = f;
     }
 
-    public void setOperatingNormally(boolean o) {
-        operatingNormally = o;
+    public void setStopForecastStatusDirectionOutbound(StopForecastStatusDirection f) {
+        stopForecastStatusDirectionOutbound = f;
     }
 
     public void setInboundTrams(List<Tram> i) {
@@ -78,12 +78,12 @@ public class StopForecast implements Serializable {
         return message;
     }
 
-    public boolean getForecastsEnabled() {
-        return forecastsEnabled;
+    public StopForecastStatusDirection getStopForecastStatusDirectionInbound() {
+        return stopForecastStatusDirectionInbound;
     }
 
-    public boolean getOperatingNormally() {
-        return operatingNormally;
+    public StopForecastStatusDirection getStopForecastStatusDirectionOutbound() {
+        return stopForecastStatusDirectionOutbound;
     }
 
     public List<Tram> getInboundTrams() {
