@@ -65,7 +65,7 @@ public class SpinnerCardView extends CardView {
     public void init(Context context) {
         inflate(context, R.layout.cardview_spinner, this);
 
-        spinnerStops = (Spinner) findViewById(R.id.card_view_spinner);
+        spinnerStops = findViewById(R.id.card_view_spinner);
 
         /*
          * Set the Spinner's colour to Luas purple.

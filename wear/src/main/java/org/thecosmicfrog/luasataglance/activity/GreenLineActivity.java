@@ -40,7 +40,7 @@ public class GreenLineActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_green_line);
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        final WatchViewStub stub = findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
@@ -50,7 +50,7 @@ public class GreenLineActivity extends Activity {
                         R.layout.listview_stops
                 );
 
-                ListView listView = (ListView) stub.findViewById(
+                ListView listView = stub.findViewById(
                         R.id.listview_green_line);
                 listView.setAdapter(greenLineAdapterStop);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

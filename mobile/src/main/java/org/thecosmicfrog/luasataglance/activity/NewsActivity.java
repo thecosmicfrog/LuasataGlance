@@ -71,7 +71,7 @@ public class NewsActivity extends AppCompatActivity {
          * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
          * browser is liable to open.
          */
-        WebView webViewNews = (WebView) findViewById(R.id.webview_news);
+        WebView webViewNews = findViewById(R.id.webview_news);
         webViewNews.setWebViewClient(new WebViewClient());
 
         /*

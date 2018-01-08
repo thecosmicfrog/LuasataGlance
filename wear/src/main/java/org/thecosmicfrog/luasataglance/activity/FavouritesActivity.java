@@ -81,13 +81,13 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
         /* Load the screen shape from shared preferences. */
         shape = Preferences.loadScreenShape(getApplicationContext());
 
-        stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        stub = findViewById(R.id.watch_view_stub);
 
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub watchViewStub) {
                 ImageButton imageButtonFavouritesNoneSelected =
-                        (ImageButton) findViewById(R.id.imagebutton_favourites_none_selected);
+                        findViewById(R.id.imagebutton_favourites_none_selected);
                 imageButtonFavouritesNoneSelected.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -146,7 +146,7 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
                  * Hide the loading circle.
                  */
                 ProgressBar progressBarLoadingCircle =
-                        (ProgressBar) findViewById(R.id.progressbar_loading_circle);
+                        findViewById(R.id.progressbar_loading_circle);
                 progressBarLoadingCircle.setVisibility(View.GONE);
 
                 /*
@@ -154,7 +154,7 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
                  */
                 if (listFavouriteStops.size() <= 0) {
                     LinearLayout linearLayoutFavouritesNoneSelected =
-                            (LinearLayout) findViewById(
+                            findViewById(
                                     R.id.linearlayout_favourites_none_selected
                             );
                     linearLayoutFavouritesNoneSelected.setVisibility(View.VISIBLE);
@@ -180,7 +180,7 @@ public class FavouritesActivity extends Activity implements MessageApi.MessageLi
                 /*
                  * Populate ListView with the user's favourite stops, as read from file.
                  */
-                ListView listViewFavouriteStops = (ListView) stub.findViewById(
+                ListView listViewFavouriteStops = stub.findViewById(
                         R.id.listview_favourite_stops
                 );
 

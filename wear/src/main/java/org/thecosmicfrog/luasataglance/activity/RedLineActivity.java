@@ -40,7 +40,7 @@ public class RedLineActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_red_line);
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        final WatchViewStub stub = findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
@@ -50,7 +50,7 @@ public class RedLineActivity extends Activity {
                         R.layout.listview_stops
                 );
 
-                ListView listView = (ListView) stub.findViewById(
+                ListView listView = stub.findViewById(
                         R.id.listview_red_line);
                 listView.setAdapter(redLineAdapterStop);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

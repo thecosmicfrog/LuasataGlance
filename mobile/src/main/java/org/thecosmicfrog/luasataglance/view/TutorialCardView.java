@@ -59,11 +59,11 @@ public class TutorialCardView extends CardView {
     public void init(Context context) {
         inflate(context, R.layout.cardview_tutorial, this);
 
-        textViewTutorial = (TextView) findViewById(R.id.textview_tutorial);
+        textViewTutorial = findViewById(R.id.textview_tutorial);
     }
 
     public void setTutorial(CharSequence tutorial) {
-        textViewTutorial = (TextView) findViewById(R.id.textview_tutorial);
+        textViewTutorial = findViewById(R.id.textview_tutorial);
         textViewTutorial.setText(tutorial);
     }
 }
