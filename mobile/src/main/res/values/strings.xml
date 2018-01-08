@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">100</string>
-    <string name="version_name" translatable="false">0.100</string>
+    <string name="version_code" translatable="false">103</string>
+    <string name="version_name" translatable="false">0.103</string>
 
     <!--
         Activities
@@ -161,19 +161,20 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.100 (8th December 2017)
+    <string name="whatsnew_title_current" translatable="false">Version 0.103 (9th January 2018)
     </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 [NEW] Added support for new
+    <string name="whatsnew_content_current" translatable="false">\u2022 [FIXED] Fixed bug where stop
+        forecast would not display on Android Wear devices. Thanks to everyone who reported this!
+        \nIf you have an Android Wear smartwatch, you can install Luas at a Glance from the Play
+        Store on your watch.
+    </string>
+    <string name="whatsnew_title_previous" translatable="false">Version 0.100 (8th December 2017)
+    </string>
+    <string name="whatsnew_content_previous" translatable="false">\u2022 [NEW] Added support for new
         Luas Green Line (Cross City) stops - from Broombridge to Dawson!\n\u2022 [NEW] Updated to
         latest version of Luas RTPI system. Provides more accurate service alerts and disruptions.
         \n\u2022 [FIXED] Fixed bug where "Gleann Bhríde" would not show on Gaeilge language devices.
         \n\u2022 [FIXED] Fixed bug where Status and Alerts would always show as red.
-    </string>
-    <string name="whatsnew_title_previous" translatable="false">Version 0.91 (22nd March 2017)
-    </string>
-    <string name="whatsnew_content_previous" translatable="false">\u2022 Added support for Android
-        Wear 2.0. You can now download Luas at a Glance from the <b>Play Store</b> on your Android
-        Wear 2.0-compatible smartwatch!
     </string>
 
     <!--
