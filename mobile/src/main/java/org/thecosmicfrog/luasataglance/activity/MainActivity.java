@@ -334,7 +334,8 @@ public class MainActivity extends AppCompatActivity {
          * comes from shared preferences. The value from strings.xml should be considered the
          * definitive value.
          */
-        String appVersionCurrent = getString(R.string.version_name);
+        String appVersionCurrent =
+                getString(R.string.version_name).replace(".", "");
         String appVersionSaved =
                 Preferences.currentAppVersion(getApplicationContext());
 
