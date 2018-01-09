@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        final WatchViewStub stub = findViewById(R.id.watch_view_stub);
+        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
 
         /*
          * Set up an OnApplyWindowInsetsListener so that we know what shape the wearable's screen
@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
             public void onLayoutInflated(WatchViewStub stub) {
                 initGoogleApiClient();
 
-                buttonRedLine = stub.findViewById(R.id.button_red_line);
+                buttonRedLine = (Button) stub.findViewById(R.id.button_red_line);
                 buttonRedLine.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
                     }
                 });
 
-                buttonGreenLine = stub.findViewById(R.id.button_green_line);
+                buttonGreenLine = (Button) stub.findViewById(R.id.button_green_line);
                 buttonGreenLine.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -101,7 +101,7 @@ public class MainActivity extends Activity {
                 });
 
                 imageButtonFavourites =
-                        stub.findViewById(R.id.imagebutton_favourites);
+                        (ImageButton) stub.findViewById(R.id.imagebutton_favourites);
                 imageButtonFavourites.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

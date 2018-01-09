@@ -77,7 +77,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
 
         retrieveDeviceNode();
 
-        final WatchViewStub stub = findViewById(R.id.watch_view_stub);
+        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
@@ -85,34 +85,34 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                  * Create arrays of TextView objects for each entry in the TableLayout.
                  */
                 textViewInboundStopNames = new TextView[]{
-                        findViewById(R.id.textview_inbound_stop1_name),
-                        findViewById(R.id.textview_inbound_stop2_name),
+                        (TextView) findViewById(R.id.textview_inbound_stop1_name),
+                        (TextView) findViewById(R.id.textview_inbound_stop2_name),
                 };
 
                 textViewInboundStopTimes = new TextView[]{
-                        findViewById(R.id.textview_inbound_stop1_time),
-                        findViewById(R.id.textview_inbound_stop2_time),
+                        (TextView) findViewById(R.id.textview_inbound_stop1_time),
+                        (TextView) findViewById(R.id.textview_inbound_stop2_time),
                 };
 
                 textViewOutboundStopNames = new TextView[]{
-                        findViewById(R.id.textview_outbound_stop1_name),
-                        findViewById(R.id.textview_outbound_stop2_name),
+                        (TextView) findViewById(R.id.textview_outbound_stop1_name),
+                        (TextView) findViewById(R.id.textview_outbound_stop2_name),
                 };
 
                 textViewOutboundStopTimes = new TextView[]{
-                        findViewById(R.id.textview_outbound_stop1_time),
-                        findViewById(R.id.textview_outbound_stop2_time),
+                        (TextView) findViewById(R.id.textview_outbound_stop1_time),
+                        (TextView) findViewById(R.id.textview_outbound_stop2_time),
                 };
 
                 clearStopForecast();
 
                 if (getIntent().hasExtra("stopName")) {
                     progressBarLoadingCircle =
-                            findViewById(R.id.progressbar_loading_circle);
+                            (ProgressBar) findViewById(R.id.progressbar_loading_circle);
                     setIsLoading(false);
 
                     swipeRefreshLayout =
-                            findViewById(R.id.swiperefreshlayout);
+                            (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
                     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
@@ -123,7 +123,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                         }
                     });
 
-                    textViewStopName = findViewById(R.id.textview_stop_name);
+                    textViewStopName = (TextView) findViewById(R.id.textview_stop_name);
                     textViewStopName.setText(getIntent().getStringExtra("stopName"));
                 }
             }
@@ -197,7 +197,7 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                              * green and set a default success message.
                              */
                             TextView textViewStopName =
-                                    findViewById(R.id.textview_stop_name);
+                                    (TextView) findViewById(R.id.textview_stop_name);
                                 textViewStopName.setBackgroundResource(R.color.message_success);
                         } else {
                             /*
@@ -205,11 +205,11 @@ public class StopForecastActivity extends Activity implements MessageApi.Message
                              * the inbound stop TextViews for the status message.
                              */
                             TextView textViewStopName =
-                                    findViewById(R.id.textview_stop_name);
+                                    (TextView) findViewById(R.id.textview_stop_name);
                             textViewStopName.setBackgroundResource(R.color.message_error);
 
                             TextView textViewInboundStop1Name =
-                                    findViewById(R.id.textview_inbound_stop1_name);
+                                    (TextView) findViewById(R.id.textview_inbound_stop1_name);
                             textViewInboundStop1Name.setText(stopForecast.getMessage());
                         }
 

@@ -43,7 +43,7 @@ public class LicenseActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_license);
 
-        TextView textViewLicenseContent = findViewById(R.id.textview_license_content);
+        TextView textViewLicenseContent = (TextView) findViewById(R.id.textview_license_content);
 
         InputStream inputStream = getResources().openRawResource(R.raw.license);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));

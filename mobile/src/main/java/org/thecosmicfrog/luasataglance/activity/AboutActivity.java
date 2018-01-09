@@ -52,7 +52,7 @@ public class AboutActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_about);
 
-        TextView textViewSourceCode = findViewById(R.id.textview_sourcecode);
+        TextView textViewSourceCode = (TextView) findViewById(R.id.textview_sourcecode);
         textViewSourceCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,7 +64,7 @@ public class AboutActivity extends FragmentActivity {
             }
         });
 
-        TextView textViewLicense = findViewById(R.id.textview_license);
+        TextView textViewLicense = (TextView) findViewById(R.id.textview_license);
         textViewLicense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

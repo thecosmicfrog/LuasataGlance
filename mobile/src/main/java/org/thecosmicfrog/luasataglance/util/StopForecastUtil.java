@@ -49,7 +49,7 @@ public final class StopForecastUtil {
             switch (tutorial) {
                 case Constant.TUTORIAL_SELECT_STOP:
                     TutorialCardView tutorialCardViewSelectStop =
-                            rootView.findViewById(
+                            (TutorialCardView) rootView.findViewById(
                                     R.id.tutorialcardview_select_stop
                             );
 
@@ -84,7 +84,7 @@ public final class StopForecastUtil {
 
                 case Constant.TUTORIAL_NOTIFICATIONS:
                     TutorialCardView tutorialCardViewNotifications =
-                            rootView.findViewById(
+                            (TutorialCardView) rootView.findViewById(
                                     R.id.tutorialcardview_notifications
                             );
 
@@ -117,7 +117,7 @@ public final class StopForecastUtil {
 
                 case Constant.TUTORIAL_FAVOURITES:
                     TutorialCardView tutorialCardViewFavourites =
-                            rootView.findViewById(
+                            (TutorialCardView) rootView.findViewById(
                                     R.id.tutorialcardview_favourites
                             );
 
