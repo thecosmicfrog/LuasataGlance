@@ -21,7 +21,9 @@
 
 package org.thecosmicfrog.luasataglance.object;
 
-public class StopForecastStatusDirection {
+import java.io.Serializable;
+
+public class StopForecastStatusDirection implements Serializable {
     private String message;
     private boolean forecastsEnabled;
     private boolean operatingNormally;
