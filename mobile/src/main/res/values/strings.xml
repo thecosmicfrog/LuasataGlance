@@ -182,6 +182,7 @@
     -->
     <string name="widget_left_arrow">\u25C0</string>
     <string name="widget_right_arrow">\u25B6</string>
+    <string name="widget_retrieving_stop_forecast">Retrieving stop forecast for widget.</string>
 
     <!--
         Stop arrays

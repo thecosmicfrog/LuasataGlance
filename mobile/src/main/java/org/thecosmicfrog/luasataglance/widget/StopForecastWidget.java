@@ -27,6 +27,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -218,7 +219,11 @@ public class StopForecastWidget extends AppWidgetProvider {
         );
 
         /* Start the WidgetListenerService. */
-        context.startService(intentWidgetListenerService);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intentWidgetListenerService);
+        } else {
+            context.startService(intentWidgetListenerService);
+        }
     }
 
 

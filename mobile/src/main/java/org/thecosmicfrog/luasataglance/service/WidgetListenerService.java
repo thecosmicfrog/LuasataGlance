@@ -21,6 +21,8 @@
 
 package org.thecosmicfrog.luasataglance.service;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -28,7 +30,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -103,7 +107,16 @@ public class WidgetListenerService extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+
+        startForeground(1, buildForegroundNotification().build());
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        startForeground(1, buildForegroundNotification().build());
+
         final int STOP_FORECAST_TIMEOUT_MILLIS = 20000;
 
         if (isNetworkAvailable(getApplicationContext())) {
@@ -656,5 +669,41 @@ public class WidgetListenerService extends Service {
                     getString(R.string.message_error)
             );
         }
+    }
+
+    /**
+     * Build a Notification to use when running WidgetListenerService in the foreground.
+     * @return Notification with details on what is being executed.
+     */
+    private NotificationCompat.Builder buildForegroundNotification() {
+        /*
+         * Create a NotificationManager.
+         */
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        /* Android Oreo and above require a NotificationChannel to be created. */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel =
+                    new NotificationChannel(
+                            "widgetGetStopForecast",
+                            "Widget get stop forecast",
+                            NotificationManager.IMPORTANCE_HIGH
+                    );
+
+            /* Configure notification channel. */
+            notificationChannel.setDescription("Widget get stop forecast");
+
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(getApplicationContext(), "widgetGetStopForecast")
+                        .setOngoing(true)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(getString(R.string.widget_retrieving_stop_forecast))
+                        .setSmallIcon(R.drawable.laag_logo_notification);
+
+        return notificationBuilder;
     }
 }

@@ -26,6 +26,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
@@ -47,8 +48,12 @@ public class StartServiceAtBootReceiver extends BroadcastReceiver {
         Intent intentStartService = new Intent(context, WidgetListenerService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, allWidgetIds);
 
-        context.startService(intentStartService);
-
         Log.i(LOG_TAG, "Device booted. Attempting to start WidgetListenerService.");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intentStartService);
+        } else {
+            context.startService(intentStartService);
+        }
     }
 }
