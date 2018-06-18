@@ -34,11 +34,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.iid.FirebaseInstanceId;
-
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
+import org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver;
 import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
@@ -99,6 +97,8 @@ public class NotifyTimeActivity extends FragmentActivity {
                  * LineFragment.
                  */
                 Intent intent = new Intent();
+                intent.setPackage(getPackageName());
+                intent.setClass(getApplicationContext(), NotifyTimesReceiver.class);
                 intent.setAction(NotifyTimeActivity.class.getName());
                 intent.putExtra(
                         Constant.NOTIFY_STOP_NAME,
