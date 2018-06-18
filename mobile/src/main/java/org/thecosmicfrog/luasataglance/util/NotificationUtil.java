@@ -22,11 +22,13 @@
 package org.thecosmicfrog.luasataglance.util;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -122,10 +124,34 @@ public final class NotificationUtil {
         );
 
         /*
-         * Prepare the notification.
+         * Create a NotificationManager.
          */
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(
+                        Context.NOTIFICATION_SERVICE
+                );
+
+        /* Android Oreo and above require a NotificationChannel to be created. */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel =
+                    new NotificationChannel(
+                            "fcmNotification",
+                            "Firebase Cloud Messaging notification",
+                            NotificationManager.IMPORTANCE_HIGH
+                    );
+
+            /* Configure notification channel. */
+            notificationChannel.setDescription("Firebase Cloud Messaging notification");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(context.getColor(R.color.luas_purple));
+            notificationChannel.setVibrationPattern(new long[] {100, 1000, 1000, 1000, 1000});
+            notificationChannel.enableVibration(true);
+
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(context)
+                new NotificationCompat.Builder(context, "fcmNotification")
                         .setPriority(Notification.PRIORITY_DEFAULT)
                         .setContentIntent(pendingIntentOpenActivity)
                         .setContentTitle(remoteMessage.getNotification().getTitle())
@@ -139,13 +165,7 @@ public final class NotificationUtil {
                         )
                         .setAutoCancel(true);
 
-        /*
-         * Create a NotificationManager and display the notification to the user.
-         */
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(
-                        Context.NOTIFICATION_SERVICE
-                );
+        /* Display notification. */
         notificationManager.notify(1, notificationBuilder.build());
     }
 }

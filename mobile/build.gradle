@@ -8,8 +8,8 @@ android {
         applicationId "org.thecosmicfrog.luasataglance"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 103
-        versionName "0.103"
+        versionCode 109
+        versionName "0.109"
     }
     buildTypes {
         release {
@@ -30,8 +30,8 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.android.support:support-v4:26.1.0'
     compile 'com.google.android.gms:play-services-maps:11.8.0'
-    compile 'com.google.firebase:firebase-core:11.8.0'
-    compile 'com.google.firebase:firebase-messaging:11.8.0'
+    api 'com.google.firebase:firebase-core:11.8.0'
+    api 'com.google.firebase:firebase-messaging:11.8.0'
 }
 
 // Firebase

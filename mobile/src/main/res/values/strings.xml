@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">103</string>
-    <string name="version_name" translatable="false">0.103</string>
+    <string name="version_code" translatable="false">109</string>
+    <string name="version_name" translatable="false">0.109</string>
 
     <!--
         Activities
@@ -161,12 +161,12 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.103 (9th January 2018)
+    <string name="whatsnew_title_current" translatable="false">Version 0.109 (18th June 2018)
     </string>
     <string name="whatsnew_content_current" translatable="false">\u2022 [FIXED] Fixed bug where stop
-        forecast would not display on Android Wear devices. Thanks to everyone who reported this!
-        \nIf you have an Android Wear smartwatch, you can install Luas at a Glance from the Play
-        Store on your watch.
+        forecast would not display on Wear OS (Android Wear) devices. Thanks to everyone who
+        reported this!\nIf you have a Wear OS smartwatch, you can install Luas at a Glance from the
+        Play Store on your watch.
     </string>
     <string name="whatsnew_title_previous" translatable="false">Version 0.100 (8th December 2017)
     </string>

@@ -23,6 +23,7 @@ package org.thecosmicfrog.luasataglance.receiver;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -30,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -143,6 +145,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                  * stop-to-notify-for as a String extra.
                  */
                 Intent intentOpenMainActivity = new Intent(context, MainActivity.class);
+                intentOpenMainActivity.setPackage(context.getPackageName());
                 intentOpenMainActivity.setAction(NotifyTimesReceiver.class.getName());
                 intentOpenMainActivity.setFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -157,13 +160,41 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                 );
 
                 /*
+                 * Create a NotificationManager.
+                 */
+                NotificationManager notificationManager =
+                        (NotificationManager) context.getSystemService(
+                                Context.NOTIFICATION_SERVICE
+                        );
+
+
+                /* Android Oreo and above require a NotificationChannel to be created. */
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannel notificationChannel =
+                            new NotificationChannel(
+                                    "notifyTimes",
+                                    "Notify Times",
+                                    NotificationManager.IMPORTANCE_HIGH
+                            );
+
+                    /* Configure notification channel. */
+                    notificationChannel.setDescription("Notify Times");
+                    notificationChannel.enableLights(true);
+                    notificationChannel.setLightColor(context.getColor(R.color.luas_purple));
+                    notificationChannel.setVibrationPattern(new long[] {100, 1000, 1000, 1000, 1000});
+                    notificationChannel.enableVibration(true);
+
+                    notificationManager.createNotificationChannel(notificationChannel);
+                }
+
+                /*
                  * Create the NotificationBuilder, setting an appropriate title and the message
                  * built in the StringBuilder. The default notification sound should be played
                  * and the device should vibrate twice for 1 second with a 1 second delay
                  * between them. Setting MAX priority due to the time-sensitive nature of trams.
                  */
                 NotificationCompat.Builder notificationBuilder =
-                        new NotificationCompat.Builder(context)
+                        new NotificationCompat.Builder(context, "notifyTimes")
                                 .setPriority(Notification.PRIORITY_MAX)
                                 .setContentIntent(pendingIntentOpenMainActivity)
                                 .setContentTitle(
@@ -181,13 +212,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                                 )
                                 .setAutoCancel(true);
 
-                /*
-                 * Create a NotificationManager and display the notification to the user.
-                 */
-                NotificationManager notificationManager =
-                        (NotificationManager) context.getSystemService(
-                                Context.NOTIFICATION_SERVICE
-                        );
+                /* Display notification. */
                 notificationManager.notify(1, notificationBuilder.build());
             }
         };
@@ -200,7 +225,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
                 REQUEST_CODE_SCHEDULE_NOTIFICATION,
-                new Intent("org.thecosmicfrog.luasataglance"),
+                new Intent(context.getPackageName()),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
