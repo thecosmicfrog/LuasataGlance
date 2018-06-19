@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">109</string>
-    <string name="version_name" translatable="false">0.109</string>
+    <string name="version_code" translatable="false">110</string>
+    <string name="version_name" translatable="false">0.110</string>
 
     <!--
         Activities
@@ -161,12 +161,13 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.109 (18th June 2018)
+    <string name="whatsnew_title_current" translatable="false">Version 0.110 (18th June 2018)
     </string>
     <string name="whatsnew_content_current" translatable="false">\u2022 [FIXED] Fixed bug where stop
         forecast would not display on Wear OS (Android Wear) devices. Thanks to everyone who
         reported this!\nIf you have a Wear OS smartwatch, you can install Luas at a Glance from the
-        Play Store on your watch.
+        Play Store on your watch.\n\u2022 [FIXED] Fixed app crash on device boot. Only affected
+        Android 8.0 (Oreo) and above.
     </string>
     <string name="whatsnew_title_previous" translatable="false">Version 0.100 (8th December 2017)
     </string>
@@ -182,7 +183,8 @@
     -->
     <string name="widget_left_arrow">\u25C0</string>
     <string name="widget_right_arrow">\u25B6</string>
-    <string name="widget_retrieving_stop_forecast">Retrieving stop forecast for widget.</string>
+    <string name="widget_retrieving_stop_forecast" translatable="false">Retrieving stop forecast for
+        widget.</string>
 
     <!--
         Stop arrays
