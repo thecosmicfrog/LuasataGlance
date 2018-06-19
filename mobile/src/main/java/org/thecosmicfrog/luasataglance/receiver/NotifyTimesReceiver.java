@@ -232,9 +232,29 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(
                 Context.ALARM_SERVICE
         );
-        alarmManager.set(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
-        );
+
+        /*
+         * Due to the restrictions enforced by Doze, we need to ensure our notification will fire.
+         * Check to see which API the device is using, and trigger the appropriate set() method.
+         */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            /* Wake up the devices in Doze mode. */
+            alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
+            );
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            /* Wake up the device in Idle mode. */
+            alarmManager.setExact(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
+            );
+        } else {
+            /* Wake up the device. */
+            alarmManager.set(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
+            );
+        }
     }
 }
