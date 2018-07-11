@@ -31,9 +31,9 @@
     <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_license">Ceadúnas</string>
-    <string name="title_activity_maps">Léarscáil</string>
+    <string name="title_activity_maps">Léarscáil Luas</string>
     <string name="title_activity_news_luas_news">Nuacht Luas</string>
-    <string name="title_activity_news_travel_updates">Stádas Taisteal</string>
+    <string name="title_activity_news_travel_updates">Stádas Taistil</string>
     <string name="title_activity_settings">Roghanna</string>
     <string name="title_activity_whats_new">Cad atá nua</string>
 
@@ -43,37 +43,37 @@
     <string name="tab_red_line">Líne Dhearg</string>
     <string name="tab_green_line">Líne Uaine</string>
     <string name="select_a_stop">Roghnaigh stad\u2026</string>
-    <string name="none">Aon cheann</string>
-    <string name="message">Ag fanacht d\'stádas Luas&#8230;</string>
+    <string name="none">Rud ar bith</string>
+    <string name="message">Ag fanacht le stádas Luas\u2026</string>
     <string name="message_title">Stádas</string>
     <string name="message_success">Gach seirbhís ag feidhmiú mar is gnáth</string>
-    <string name="message_not_running">Níl aon tramanna ag súil leis ag an stad</string>
-    <string name="message_no_status">Aon stádas ar ais ó server. Is le córas RTPI Luas an
+    <string name="message_not_running">Tram ar bith geallta ag an stad seo</string>
+    <string name="message_no_status">Stádas ar bith faighte ón bhfreastalaí. Is le córas RTPI Luas an
         cúis.
     </string>
-    <string name="message_error">Fadhb ag fáil eolas ón gcóras Luas RTPI.\n\nDéan sheiceáil ar
-        d’nasc leis an idirlíon. Mura bhfuil aon fadhb, is le córas RTPI Luas an cúis.</string>
+    <string name="message_error">Fadhb ag fáil eolais ón gcóras Luas RTPI.\n\nDéan seiceáil ar
+        do nasc  idirlíne. Muna bhfuil fadhb ann, is le córas RTPI Luas an cúis.</string>
     <string name="information">\u2139</string>
-    <string name="select_stop_tutorial">Tosóidh muid! Roghnaigh stad leis an roghnóir thuas.\n
+    <string name="select_stop_tutorial">Tosóimis! Roghnaigh stad leis an roghnóir thuas.\n
         Déanfar na hamanna a uasdátú <b>gach 10 soicind</b>.
     </string>
-    <string name="notifications_tutorial">Iontach! Tá tú tar théis clárú le fógraí a fháil do
-        thramanaí le teacht. Ní gá ach brú ar an tram thíos chun é a thriail.
+    <string name="notifications_tutorial">Iontach! Tá tú tar éis cláraithe chun fógraí a fháil ar
+        thramanna atá le teacht. Ní gá ach brú ar an tram thíos chun triail a bhaint as.
     </string>
     <string name="favourites_tutorial">Foirfe! Ní gá ach rud amháin eile a dhéanamh. An bhfeiceann
-        tú an cnaipe <b>Ceanáin</b> ar bun an scáileáin? Ligean sé sí dhuit do chuid stadanna is
-        fearr leat a shábháil. Bain triail as anois.
+        tú an cnaipe <b>Ceanáin</b> ag bun an scáileáin? Ligean sé dhuit na stadanna is
+        fearr leat a shábháil. Bain triail anois as.
     </string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
     <string name="due">AM</string>
     <string name="min">nóim</string>
     <string name="mins">nóim</string>
-    <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
-    <string name="bottomnav_map_short">Map</string>
+    <string name="no_trams_forecast"><b>Tram ar bith geallta</b></string>
+    <string name="bottomnav_map_short">Léarscáil</string>
     <string name="bottomnav_favourites_short">Ceanáin</string>
-    <string name="tap_to_load_times"><b>Cliceáil amanna a fháil</b></string>
-    <string name="cannot_schedule_notification">Tá an tram sroichte go luath: Ní féidir fógra a
+    <string name="tap_to_load_times"><b>Cliceáil chun amanna a fháil</b></string>
+    <string name="cannot_schedule_notification">Tá an tram le teacht go luath. Ní féidir fógra a
         sceideal.
     </string>
 
@@ -94,11 +94,11 @@
     -->
     <string name="about_title_version">Leagan</string>
     <string name="about_title_description">Cur Síos</string>
-    <string name="about_description">Aipp guthán agus Android Wear a léiríonn eolas fíor-ama don
+    <string name="about_description">Aip ghutháin agus Android Wear a léiríonn eolas fíor-ama don
         Luas, córas iarnróid éadrom Bhaile Átha Cliath.</string>
     <string name="about_title_license">Ceadúnas Foinse Oscailte</string>
     <string name="about_license"><u>GNU General Public License (GPLv3)</u></string>
-    <string name="about_title_source_bugs_features">Cód foinseach, fabht agus iarratais
+    <string name="about_title_source_bugs_features">Cód foinseach, fabhtanna agus iarratais
         speisialta</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
     <string name="about_developed_by">Cruthaithe ag Aaron Hastings (thecosmicfrog)</string>
@@ -107,11 +107,15 @@
     <!--
         Fares
     -->
-    <string name="fares_instructions">To calculate fares for your journey, select an
-        <b>Origin</b>, <b>Destination</b> and the number of <b>Adults</b> and <b>Children</b> who
-        will be travelling.</string>
+    <string name="fares_instructions">Chun táillí do thurais a ríofa, roghnaigh
+        <b>Tús</b>, <b>Ceann scríbe</b> agus líon na n<b>Daoine fásta</b> agus na b<b>Páistí</b>
+        a bheidh ag taisteal.</string>
+    <string name="fares_note"><b>Note:</b> D\'fhéadadh na fíortháilí bheith diffriúil. 
+        Féach ar <a href="http://www.luas.ie">www.luas.ie</a> le tuilleadh eolais a fháil.</string>
+    <string name="fares_offpeak">Singil seachbhuaic</string>
+    <string name="fares_peak">Singil buaic</string>
     <string name="fares_title_line">Líne</string>
-    <string name="fares_title_origin">Tionscnaimh</string>
+    <string name="fares_title_origin">Tús</string>
     <string name="fares_title_destination">Ceann scríbe</string>
     <string name="fares_title_adults">Daoine fásta</string>
     <string name="fares_title_children">Páistí</string>
@@ -122,14 +126,14 @@
     -->
     <string name="favourites_title">Ceanáin</string>
     <string name="favourites_edit">Eagar</string>
-    <string name="favourites_none_selected">Tosóidh muid!\n\nBrú an cnap Athraígh ar bharr an
-        scáileáin chun cuir le do liosta de stadanna Luas ina úsáidtear go minic.</string>
+    <string name="favourites_none_selected">Tosóimis!\n\nBrú an cnap <b>Athraigh</b> ar bharr an
+        scáileáin chun cuir le do liosta de stadanna Luas a úsáideann tú go minic.</string>
 
     <!--
         Notification
     -->
-    <string name="notification_title">Am le fágáil!</string>
-    <string name="notification_tram_expected">Beidh do thram ag fágáil ag\u0020</string>
+    <string name="notification_title">Am duit dul!</string>
+    <string name="notification_tram_expected">Tiocfaidh do thram i gceann\u0020</string>
     <string name="notification_minute">\u0020nóiméad.</string>
     <string name="notification_minutes">\u0020nóiméad.</string>
 
@@ -138,15 +142,15 @@
     -->
     <string name="notify_set">Sceideal</string>
     <string name="notify_title">Socraigh fógra tram</string>
-    <string name="notify_when">Cén uair ar mhaith leat fógra a fháil faoin tram seo?</string>
+    <string name="notify_when">Cathain ar mhaith leat fógra a fháil faoin tram seo?</string>
     <string name="notify_successful">Fógra sceidealaithe.</string>
-    <string name="notify_invalid_time">Am mícheart: Tá an tram le sroicheadh roimh sin.</string>
+    <string name="notify_invalid_time">Am mícheart. Tá an tram le sroicheadh roimhe sin.</string>
 
     <!--
         Settings
     -->
     <string name="pref_title_notifications">Fógraí</string>
-    <string name="pref_summary_notifications">Beidh tú fógraí a fháil</string>
+    <string name="pref_summary_notifications">Gheobhaidh tú fógraí</string>
     <string name="pref_title_default_stop">Stad Réamhshocraithe</string>
 
     <!--
