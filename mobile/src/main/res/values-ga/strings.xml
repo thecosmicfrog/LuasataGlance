@@ -46,13 +46,13 @@
     <string name="none">Rud ar bith</string>
     <string name="message">Ag fanacht le stádas Luas\u2026</string>
     <string name="message_title">Stádas</string>
-    <string name="message_success">Gach seirbhís ag feidhmiú mar is gnáth</string>
+    <string name="message_success">Gach seirbhís ag feidhmiú mar is gnách</string>
     <string name="message_not_running">Tram ar bith geallta ag an stad seo</string>
     <string name="message_no_status">Stádas ar bith faighte ón bhfreastalaí. Is le córas RTPI Luas an
-        cúis.
+        chúis.
     </string>
     <string name="message_error">Fadhb ag fáil eolais ón gcóras Luas RTPI.\n\nDéan seiceáil ar
-        do nasc  idirlíne. Muna bhfuil fadhb ann, is le córas RTPI Luas an cúis.</string>
+        do nasc idirlíne. Muna bhfuil fadhb ann, is le córas RTPI Luas an chúis.</string>
     <string name="information">\u2139</string>
     <string name="select_stop_tutorial">Tosóimis! Roghnaigh stad leis an roghnóir thuas.\n
         Déanfar na hamanna a uasdátú <b>gach 10 soicind</b>.
