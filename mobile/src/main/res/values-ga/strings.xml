@@ -95,11 +95,12 @@
     <string name="about_title_version">Leagan</string>
     <string name="about_title_description">Cur Síos</string>
     <string name="about_description">Aip ghutháin agus Android Wear a léiríonn eolas fíor-ama don
-        Luas, córas iarnróid éadrom Bhaile Átha Cliath.</string>
+        Luas, córas iarnróid éadroim Bhaile Átha Cliath.</string>
     <string name="about_title_license">Ceadúnas Foinse Oscailte</string>
     <string name="about_license"><u>GNU General Public License (GPLv3)</u></string>
     <string name="about_title_source_bugs_features">Cód foinseach, fabhtanna agus iarratais
-        speisialta</string>
+        speisialta
+    </string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
     <string name="about_developed_by">Cruthaithe ag Aaron Hastings (thecosmicfrog)</string>
     <string name="about_irish_translations">Aistriúcháin Gaeilge le Feidhlim Seoighe</string>
@@ -257,7 +258,7 @@
     </string-array>
 
     <string-array name="array_stops_all">
-        <item>Aon cheann</item>
+        <item>Stad ar bith</item>
         <item>Iosta na Rinne</item>
         <item>Duga Spencer</item>
         <item>Cearnóg an Mhéara - CNÉ</item>
