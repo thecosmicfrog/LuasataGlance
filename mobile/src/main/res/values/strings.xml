@@ -111,11 +111,11 @@
     <string name="fares_instructions">To calculate fares for your journey, select an
         <b>Origin</b>, <b>Destination</b> and the number of <b>Adults</b> and <b>Children</b> who
         will be travelling.</string>
-    <string name="fares_note" translatable="false"><b>Note:</b> Actual fares may differ. See
+    <string name="fares_note"><b>Note:</b> Actual fares may differ. See
         <a href="http://www.luas.ie">www.luas.ie</a> for full fare details and ticket options.
     </string>
-    <string name="fares_offpeak" translatable="false">Single Off-Peak</string>
-    <string name="fares_peak" translatable="false">Single Peak</string>
+    <string name="fares_offpeak">Single Off-Peak</string>
+    <string name="fares_peak">Single Peak</string>
     <string name="fares_title_line">Line</string>
     <string name="fares_title_origin">Origin</string>
     <string name="fares_title_destination">Destination</string>
