@@ -27,8 +27,8 @@
     <!--
         Activities
     -->
-    <string name="title_activity_red_line">Líne Dearg</string>
-    <string name="title_activity_green_line">Líne Glas</string>
+    <string name="title_activity_red_line">Líne Dhearg</string>
+    <string name="title_activity_green_line">Líne Ghlas</string>
     <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_stop_forecast">Réamhaisnéis Stad</string>
@@ -36,21 +36,21 @@
     <!--
         Main UI
     -->
-    <string name="message_success">Gach seirbhís ag feidhmiú mar is gnáth</string>
-    <string name="message_not_running">Níl aon tramanna ag súil leis ag an stad</string>
+    <string name="message_success">Gach seirbhís ag feidhmiú mar is gnách</string>
+    <string name="message_not_running">Tram ar bith geallta ag an stad seo</string>
     <string name="message_error">Fadhb ag fáil amanna ón gcóras Luas RTPI</string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
-    <string name="no_trams_forecast"><b>Aon tramanna ag súil</b></string>
+    <string name="no_trams_forecast"><b>Tram ar bith geallta</b></string>
 
     <!--
         Favourites
     -->
-    <string name="favourites_title">Stadanna fearr leat</string>
-    <string name="favourites_edit">Eagar</string>
+    <string name="favourites_title">Stadanna is fearr leat</string>
+    <string name="favourites_edit">Cuir in eagar</string>
     <string name="favourites_none_selected">Níl aon <b>Rogha</b> déanta agat. Brú thíos chun an
-        aipp a oscailt, agus ansin roghnaigh do stadann is coitianta leat.</string>
-    <string name="favourites_opening_mobile">Ag oscailt an aipp</string>
+        aip a oscailt, agus ansin roghnaigh na stadanna is coitianta leat.</string>
+    <string name="favourites_opening_mobile">Ag oscailt na haipe</string>
 
     <!--
         Stop arrays
