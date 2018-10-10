@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">110</string>
-    <string name="version_name" translatable="false">0.110</string>
+    <string name="version_code" translatable="false">111</string>
+    <string name="version_name" translatable="false">0.111</string>
 
     <!--
         Activities
@@ -161,21 +161,20 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.110 (18th June 2018)
+    <string name="whatsnew_title_current" translatable="false">Version 0.111 (1st October 2018)
     </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 [FIXED] Fixed bug where stop
+    <string name="whatsnew_content_current" translatable="false">\u2022 [IMPROVED] Improved
+        handling of Android battery saving modes when scheduling a tram notification.\n\u2022
+        [FIXED] Fixes and general improvements to Irish translations, courtesy of a user
+        contribution via GitHub.
+    </string>
+    <string name="whatsnew_title_previous" translatable="false">Version 0.110 (18th June 2018)
+    </string>
+    <string name="whatsnew_content_previous" translatable="false">\u2022 [FIXED] Fixed bug where stop
         forecast would not display on Wear OS (Android Wear) devices. Thanks to everyone who
         reported this!\nIf you have a Wear OS smartwatch, you can install Luas at a Glance from the
         Play Store on your watch.\n\u2022 [FIXED] Fixed app crash on device boot. Only affected
         Android 8.0 (Oreo) and above.
-    </string>
-    <string name="whatsnew_title_previous" translatable="false">Version 0.100 (8th December 2017)
-    </string>
-    <string name="whatsnew_content_previous" translatable="false">\u2022 [NEW] Added support for new
-        Luas Green Line (Cross City) stops - from Broombridge to Dawson!\n\u2022 [NEW] Updated to
-        latest version of Luas RTPI system. Provides more accurate service alerts and disruptions.
-        \n\u2022 [FIXED] Fixed bug where "Gleann Bhríde" would not show on Gaeilge language devices.
-        \n\u2022 [FIXED] Fixed bug where Status and Alerts would always show as red.
     </string>
 
     <!--

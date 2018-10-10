@@ -36,7 +36,6 @@ import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
@@ -151,12 +150,6 @@ public class WearMessageListenerService extends WearableListenerService {
                             replyStopForecast(Constant.PATH_STOPFORECAST_FETCH_WEAR, stopForecast);
                         }
                     }).start();
-                } else {
-                    Analytics.nullApitimes(
-                            getApplicationContext(),
-                            "null",
-                            "null_apitimes_wear"
-                    );
                 }
             }
 
@@ -197,12 +190,6 @@ public class WearMessageListenerService extends WearableListenerService {
                  */
                 if (retrofitError.getKind() != null)
                     Log.e(LOG_TAG, retrofitError.getKind().toString());
-
-                Analytics.httpError(
-                        getApplicationContext(),
-                        "http_error",
-                        "http_error_general_wear"
-                );
             }
         };
 

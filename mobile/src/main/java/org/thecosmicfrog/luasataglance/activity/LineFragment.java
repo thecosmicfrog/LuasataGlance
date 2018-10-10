@@ -48,7 +48,6 @@ import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.util.Settings;
@@ -816,12 +815,6 @@ public class LineFragment extends Fragment {
                         /* Stop the refresh animations. */
                         setIsLoading(false);
                         swipeRefreshLayout.setRefreshing(false);
-                    } else {
-                        Analytics.nullApitimes(
-                                getContext(),
-                                "null",
-                                "null_apitimes_mobile"
-                        );
                     }
                 }
             }
@@ -865,12 +858,6 @@ public class LineFragment extends Fragment {
                 if (retrofitError.getKind() != null) {
                     Log.e(LOG_TAG, "Kind: " + retrofitError.getKind().toString());
                 }
-
-                Analytics.httpError(
-                        getContext(),
-                        "http_error",
-                        "http_error_general_mobile"
-                );
             }
         };
 

@@ -30,7 +30,6 @@ import android.view.Window;
 import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 
 public class AboutActivity extends FragmentActivity {
 
@@ -53,16 +52,6 @@ public class AboutActivity extends FragmentActivity {
         setContentView(R.layout.activity_about);
 
         TextView textViewSourceCode = (TextView) findViewById(R.id.textview_sourcecode);
-        textViewSourceCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Analytics.selectContent(
-                        getApplicationContext(),
-                        "link_tapped",
-                        "sourcecode_tapped"
-                );
-            }
-        });
 
         TextView textViewLicense = (TextView) findViewById(R.id.textview_license);
         textViewLicense.setOnClickListener(new View.OnClickListener() {
@@ -73,12 +62,6 @@ public class AboutActivity extends FragmentActivity {
                                 getApplicationContext(),
                                 LicenseActivity.class
                         )
-                );
-
-                Analytics.selectContent(
-                        getApplicationContext(),
-                        "link_tapped",
-                        "license_tapped"
                 );
             }
         });
