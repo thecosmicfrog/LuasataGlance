@@ -10,8 +10,8 @@ android {
         applicationId "org.thecosmicfrog.luasataglance"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 11100
-        versionName "0.111"
+        versionCode 11200
+        versionName "0.112"
     }
     buildTypes {
         release {
@@ -23,7 +23,7 @@ android {
     productFlavors {
         wear2 {
             minSdkVersion 25
-            versionCode 11101
+            versionCode 11201
         }
     }
 }

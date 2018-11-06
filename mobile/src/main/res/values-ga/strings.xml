@@ -66,7 +66,7 @@
     </string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
-    <string name="due">AM</string>
+    <string name="due">ANN</string>
     <string name="min">nóim</string>
     <string name="mins">nóim</string>
     <string name="no_trams_forecast"><b>Tram ar bith geallta</b></string>
@@ -103,7 +103,8 @@
     </string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
     <string name="about_developed_by">Cruthaithe ag Aaron Hastings (thecosmicfrog)</string>
-    <string name="about_irish_translations">Aistriúcháin Gaeilge le Feidhlim Seoighe</string>
+    <string name="about_irish_translations">Aistriúcháin Gaeilge le Feidhlim Seoighe agus Marcas Ó
+        Duinn</string>
 
     <!--
         Fares

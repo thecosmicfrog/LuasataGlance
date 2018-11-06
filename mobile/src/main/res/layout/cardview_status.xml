@@ -21,6 +21,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
 
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
 
@@ -41,14 +42,15 @@
 
         <TextView
             android:id="@+id/textview_status"
-            android:text="@string/message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:gravity="center_horizontal"
-            android:textSize="16sp"
             android:ellipsize="none"
+            android:gravity="center_horizontal"
             android:maxLines="30"
-            android:scrollHorizontally="false" />
+            android:scrollHorizontally="false"
+            android:autoLink="all"
+            android:text="@string/message"
+            android:textSize="16sp" />
     </LinearLayout>
 </merge>

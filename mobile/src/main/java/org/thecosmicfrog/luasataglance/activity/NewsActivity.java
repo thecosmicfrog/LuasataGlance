@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -40,8 +41,8 @@ public class NewsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final String URL_NEWS = "http://m.luas.ie/news/";
-        final String URL_TRAVEL_UPDATES = "http://m.luas.ie/travel-updates.html";
+        final String URL_NEWS = "https://luas.ie/news/";
+        final String URL_TRAVEL_UPDATES = "https://luas.ie/travel-updates/";
 
         setContentView(R.layout.activity_news);
 
@@ -70,8 +71,11 @@ public class NewsActivity extends AppCompatActivity {
         /*
          * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
          * browser is liable to open.
+         * Ensure the information is fresh by using no app or web browser cache.
          */
         WebView webViewNews = (WebView) findViewById(R.id.webview_news);
+        webViewNews.getSettings().setAppCacheEnabled(false);
+        webViewNews.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webViewNews.setWebViewClient(new WebViewClient());
 
         /*
