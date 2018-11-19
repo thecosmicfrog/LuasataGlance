@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">112</string>
-    <string name="version_name" translatable="false">0.112</string>
+    <string name="version_code" translatable="false">115</string>
+    <string name="version_name" translatable="false">0.115</string>
 
     <!--
         Activities
@@ -102,6 +102,9 @@
     <string name="about_license"><u>GNU General Public License (GPLv3)</u></string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
+    <string name="about_title_privacypolicy">Privacy Policy</string>
+    <string name="about_privacypolicy" translatable="false">luasataglance.thecosmicfrog.org/privacy"
+    </string>
     <string name="about_developed_by">Developed by Aaron Hastings (thecosmicfrog)</string>
     <string name="about_irish_translations">Irish translations by Feidhlim Seoighe and Marcas Ó
         Duinn</string>
@@ -163,18 +166,16 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.112 (10th October 2018)
+    <string name="whatsnew_title_current" translatable="false">Version 0.115 (19th November 2018)
     </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 [FIXED] Fixed 404 error
+    <string name="whatsnew_content_current" translatable="false">\u2022 Added link to privacy policy
+        in About dialog.
+    </string>
+    <string name="whatsnew_title_previous" translatable="false">Version 0.112 (10th October 2018)
+    </string>
+    <string name="whatsnew_content_previous" translatable="false">\u2022 [FIXED] Fixed 404 error
         which occurred when tapping the <b>Alerts</b> button for some users. Many thanks to the user
         who reported this issue to my email!
-    </string>
-    <string name="whatsnew_title_previous" translatable="false">Version 0.111 (1st October 2018)
-    </string>
-    <string name="whatsnew_content_previous" translatable="false">\u2022 [IMPROVED] Improved
-        handling of Android battery saving modes when scheduling a tram notification.\n\u2022
-        [FIXED] Fixes and general improvements to Irish translations, courtesy of a user
-        contribution via GitHub.
     </string>
 
     <!--
