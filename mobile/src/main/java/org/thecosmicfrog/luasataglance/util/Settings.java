@@ -51,6 +51,12 @@ public final class Settings {
                             NewsActivity.class
                     ).putExtra(Constant.NEWS_TYPE, Constant.NEWS_TYPE_LUAS_NEWS)
             );
+
+            Analytics.selectContent(
+                    context,
+                    "menuitem_tapped",
+                    "news_tapped"
+            );
         }
 
         if (id == R.id.action_settings) {
@@ -60,6 +66,12 @@ public final class Settings {
                             SettingsActivity.class
                     )
             );
+
+            Analytics.selectContent(
+                    context,
+                    "menuitem_tapped",
+                    "settings_tapped"
+            );
         }
 
         if (id == R.id.action_about) {
@@ -68,6 +80,12 @@ public final class Settings {
                             context,
                             AboutActivity.class
                     )
+            );
+
+            Analytics.selectContent(
+                    context,
+                    "menuitem_tapped",
+                    "about_tapped"
             );
         }
     }

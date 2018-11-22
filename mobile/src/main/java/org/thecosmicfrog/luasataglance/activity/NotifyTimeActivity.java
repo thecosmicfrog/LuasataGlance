@@ -37,6 +37,7 @@ import android.widget.Spinner;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver;
+import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
@@ -111,6 +112,12 @@ public class NotifyTimeActivity extends FragmentActivity {
 
                 /* Send the Intent. */
                 sendBroadcast(intent);
+
+                Analytics.selectContent(
+                        getApplicationContext(),
+                        "schedule_created",
+                        "schedule_created"
+                );
 
                 /* Dismiss the Dialog. */
                 finish();

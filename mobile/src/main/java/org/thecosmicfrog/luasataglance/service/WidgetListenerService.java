@@ -44,6 +44,7 @@ import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 
 import java.io.BufferedInputStream;
@@ -257,6 +258,12 @@ public class WidgetListenerService extends Service {
                         updateStopForecast(context, views, stopForecast);
 
                         appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
+                    } else {
+                        Analytics.nullApitimes(
+                                getApplicationContext(),
+                                "null",
+                                "null_apitimes_widget"
+                        );
                     }
 
                     /* Stop the refresh animations. */
@@ -301,6 +308,12 @@ public class WidgetListenerService extends Service {
                      */
                     if (retrofitError.getKind() != null)
                         Log.e(LOG_TAG, retrofitError.getKind().toString());
+
+                    Analytics.httpError(
+                            getApplicationContext(),
+                            "http_error",
+                            "http_error_general_widget"
+                    );
                 }
             };
 
