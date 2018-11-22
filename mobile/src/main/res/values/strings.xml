@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">115</string>
-    <string name="version_name" translatable="false">0.115</string>
+    <string name="version_code" translatable="false">116</string>
+    <string name="version_name" translatable="false">0.116</string>
 
     <!--
         Activities
@@ -166,7 +166,7 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.115 (19th November 2018)
+    <string name="whatsnew_title_current" translatable="false">Version 0.116 (19th November 2018)
     </string>
     <string name="whatsnew_content_current" translatable="false">\u2022 Added link to privacy policy
         in About dialog.
