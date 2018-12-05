@@ -56,8 +56,8 @@ public class SettingsActivity extends PreferenceActivity
         /*
          * Hack to add toolbar to PreferencesActivity.
          */
-        LinearLayout linearLayoutRootView =
-                (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
+        LinearLayout linearLayoutRootView = (LinearLayout)
+                findViewById(android.R.id.list).getParent().getParent().getParent();
 
         Toolbar toolbar = (Toolbar) LayoutInflater.from(this).inflate(
                 R.layout.settings_toolbar,

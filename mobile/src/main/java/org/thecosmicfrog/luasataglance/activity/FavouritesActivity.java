@@ -72,7 +72,7 @@ public class FavouritesActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_favourites);
 
-        ImageButton buttonEdit = (ImageButton) findViewById(R.id.imagebutton_edit);
+        ImageButton buttonEdit = findViewById(R.id.imagebutton_edit);
         buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +95,7 @@ public class FavouritesActivity extends FragmentActivity {
         /*
          * Populate ListView with the user's favourite stops, as read from file.
          */
-        ListView listViewFavouriteStops = (ListView) findViewById(
+        ListView listViewFavouriteStops = findViewById(
                 R.id.listview_favourite_stops
         );
 
@@ -138,7 +138,7 @@ public class FavouritesActivity extends FragmentActivity {
         super.onResume();
 
         TextView textViewFavouritesNoneSelected
-                = (TextView) findViewById(R.id.textview_favourites_none_selected);
+                = findViewById(R.id.textview_favourites_none_selected);
         textViewFavouritesNoneSelected.setVisibility(View.GONE);
 
         /*
@@ -160,7 +160,7 @@ public class FavouritesActivity extends FragmentActivity {
                     /*
                      * Populate ListView with the user's favourite stops, as read from file.
                      */
-                    ListView listViewFavouriteStops = (ListView) findViewById(
+                    ListView listViewFavouriteStops = findViewById(
                             R.id.listview_favourite_stops
                     );
 
@@ -211,7 +211,7 @@ public class FavouritesActivity extends FragmentActivity {
             Log.i(LOG_TAG, "Favourites not yet set up.");
 
             TextView textViewFavouritesNoneSelected
-                    = (TextView) findViewById(R.id.textview_favourites_none_selected);
+                    = findViewById(R.id.textview_favourites_none_selected);
             textViewFavouritesNoneSelected.setVisibility(View.VISIBLE);
         } catch (IOException e) {
             /*

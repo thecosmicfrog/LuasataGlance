@@ -100,10 +100,10 @@ public class FaresActivity extends AppCompatActivity {
         /* Instantiate a new StopNameIdMap. */
         mapStopNameId = new StopNameIdMap(localeDefault);
 
-        scrollViewFares = (ScrollView) findViewById(R.id.scrollview_fares);
+        scrollViewFares = findViewById(R.id.scrollview_fares);
 
         spinnerFaresLine =
-                (Spinner) findViewById(R.id.spinner_fares_line);
+                findViewById(R.id.spinner_fares_line);
         spinnerFaresLine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position,
@@ -137,7 +137,7 @@ public class FaresActivity extends AppCompatActivity {
         });
 
         spinnerFaresOrigin =
-                (Spinner) findViewById(R.id.spinner_fares_origin);
+                findViewById(R.id.spinner_fares_origin);
         spinnerFaresOrigin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -150,7 +150,7 @@ public class FaresActivity extends AppCompatActivity {
         });
 
         spinnerFaresDestination =
-                (Spinner) findViewById(R.id.spinner_fares_destination);
+                findViewById(R.id.spinner_fares_destination);
         spinnerFaresDestination.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -163,7 +163,7 @@ public class FaresActivity extends AppCompatActivity {
         });
 
         spinnerFaresAdults =
-                (Spinner) findViewById(R.id.spinner_fares_adults);
+                findViewById(R.id.spinner_fares_adults);
         spinnerFaresAdults.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -176,7 +176,7 @@ public class FaresActivity extends AppCompatActivity {
         });
 
         spinnerFaresChildren =
-                (Spinner) findViewById(R.id.spinner_fares_children);
+                findViewById(R.id.spinner_fares_children);
         spinnerFaresChildren.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -229,9 +229,9 @@ public class FaresActivity extends AppCompatActivity {
         setIsLoading(false);
 
         textViewFaresOffPeak =
-                (TextView) findViewById(R.id.textview_fares_offpeak);
+                findViewById(R.id.textview_fares_offpeak);
         textViewFaresPeak =
-                (TextView) findViewById(R.id.textview_fares_peak);
+                findViewById(R.id.textview_fares_peak);
     }
 
     /**
@@ -361,7 +361,7 @@ public class FaresActivity extends AppCompatActivity {
      * @param loading Whether or not progress bar should animate.
      */
     private void setIsLoading(final boolean loading) {
-        final ProgressBar progressBarFares = (ProgressBar) findViewById(R.id.progressbar_fares);
+        final ProgressBar progressBarFares = findViewById(R.id.progressbar_fares);
 
         runOnUiThread(new Runnable() {
             @Override

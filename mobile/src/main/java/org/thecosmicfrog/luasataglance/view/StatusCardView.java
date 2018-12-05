@@ -60,12 +60,12 @@ public class StatusCardView extends CardView {
     public void init(Context context) {
         inflate(context, R.layout.cardview_status, this);
 
-        textViewStatusTitle = (TextView) findViewById(R.id.textview_status_title);
-        textViewStatus = (TextView) findViewById(R.id.textview_status);
+        textViewStatusTitle = findViewById(R.id.textview_status_title);
+        textViewStatus = findViewById(R.id.textview_status);
     }
 
     public void setStatus(String status) {
-        textViewStatus = (TextView) findViewById(R.id.textview_status);
+        textViewStatus = findViewById(R.id.textview_status);
         textViewStatus.setText(status);
     }
 

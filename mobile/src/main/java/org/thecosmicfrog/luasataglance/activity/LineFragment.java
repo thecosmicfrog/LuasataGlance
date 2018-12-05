@@ -367,15 +367,15 @@ public class LineFragment extends Fragment {
      * Initialise Fragment and its views.
      */
     private boolean initFragment() {
-        tabLayout = (TabLayout) getActivity().findViewById(R.id.tablayout);
+        tabLayout = getActivity().findViewById(R.id.tablayout);
 
-        progressBar = (ProgressBar) rootView.findViewById(resProgressBar);
+        progressBar = rootView.findViewById(resProgressBar);
 
         setIsLoading(false);
 
         /* Set up Spinner and onItemSelectedListener. */
         spinnerCardView =
-                (SpinnerCardView) rootView.findViewById(resSpinnerCardView);
+                rootView.findViewById(resSpinnerCardView);
         spinnerCardView.setLine(line);
 
         spinnerCardView.getSpinnerStops().setOnItemSelectedListener(
@@ -443,11 +443,11 @@ public class LineFragment extends Fragment {
 
         /* Set up Status CardView. */
         statusCardView =
-                (StatusCardView) rootView.findViewById(resStatusCardView);
+                rootView.findViewById(resStatusCardView);
 
         /* Set up SwipeRefreshLayout. */
         swipeRefreshLayout =
-                (SwipeRefreshLayout) rootView.findViewById(resSwipeRefreshLayout);
+                rootView.findViewById(resSwipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -464,11 +464,11 @@ public class LineFragment extends Fragment {
                 }
         );
 
-        scrollView = (ScrollView) rootView.findViewById(resScrollView);
+        scrollView = rootView.findViewById(resScrollView);
 
         /* Set up stop forecast CardViews. */
         inboundStopForecastCardView =
-                (StopForecastCardView) rootView.findViewById(
+                rootView.findViewById(
                     resInboundStopForecastCardView
                 );
         inboundStopForecastCardView.setStopForecastDirection(
@@ -476,7 +476,7 @@ public class LineFragment extends Fragment {
         );
 
         outboundStopForecastCardView =
-                (StopForecastCardView) rootView.findViewById(
+                rootView.findViewById(
                         resOutboundStopForecastCardView
                 );
         outboundStopForecastCardView.setStopForecastDirection(

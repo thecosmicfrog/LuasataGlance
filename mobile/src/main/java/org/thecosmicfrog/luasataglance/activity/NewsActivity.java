@@ -73,7 +73,7 @@ public class NewsActivity extends AppCompatActivity {
          * browser is liable to open.
          * Ensure the information is fresh by using no app or web browser cache.
          */
-        WebView webViewNews = (WebView) findViewById(R.id.webview_news);
+        WebView webViewNews = findViewById(R.id.webview_news);
         webViewNews.getSettings().setAppCacheEnabled(false);
         webViewNews.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webViewNews.setWebViewClient(new WebViewClient());

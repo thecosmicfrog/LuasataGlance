@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
         /*
          * Initialise ViewPager and TabLayout.
          */
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        final ViewPager viewPager = findViewById(R.id.viewpager);
+        final TabLayout tabLayout = findViewById(R.id.tablayout);
 
         if (tabLayout != null && viewPager != null) {
             tabLayout.addTab(
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
          * Bottom navigation bar - Luas Map.
          */
         RelativeLayout relativeLayoutBottomNavMap =
-                (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_map);
+                findViewById(R.id.relativelayout_bottomnav_map);
         if (relativeLayoutBottomNavMap != null) {
             relativeLayoutBottomNavMap.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -178,13 +178,13 @@ public class MainActivity extends AppCompatActivity {
          * Bottom navigation bar - Favourites.
          */
         RelativeLayout relativeLayoutBottomNavFavourites =
-                (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_favourites);
+                findViewById(R.id.relativelayout_bottomnav_favourites);
         if (relativeLayoutBottomNavFavourites != null) {
             relativeLayoutBottomNavFavourites.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     TutorialCardView tutorialCardViewFavourites =
-                            (TutorialCardView) findViewById(R.id.tutorialcardview_favourites);
+                            findViewById(R.id.tutorialcardview_favourites);
                     if (tutorialCardViewFavourites != null) {
                         tutorialCardViewFavourites.setVisibility(View.GONE);
                     }
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
          * Bottom navigation bar - Fares.
          */
         RelativeLayout relativeLayoutBottomNavFares =
-                (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_fares);
+                findViewById(R.id.relativelayout_bottomnav_fares);
         if (relativeLayoutBottomNavFares != null) {
             relativeLayoutBottomNavFares.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
          * Bottom navigation bar - Alerts.
          */
         RelativeLayout relativeLayoutBottomNavAlerts =
-                (RelativeLayout) findViewById(R.id.relativelayout_bottomnav_alerts);
+                findViewById(R.id.relativelayout_bottomnav_alerts);
         if (relativeLayoutBottomNavAlerts != null) {
             relativeLayoutBottomNavAlerts.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -257,8 +257,8 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        imageViewBottomNavAlerts = (ImageView) findViewById(R.id.imageview_bottomnav_alerts);
-        textViewBottomNavAlerts = (TextView) findViewById(R.id.textview_bottomnav_alerts);
+        imageViewBottomNavAlerts = findViewById(R.id.imageview_bottomnav_alerts);
+        textViewBottomNavAlerts = findViewById(R.id.textview_bottomnav_alerts);
 
         showWhatsNewDialog();
     }
@@ -285,13 +285,13 @@ public class MainActivity extends AppCompatActivity {
         Log.i(LOG_TAG, "Screen density is " + DENSITY_DPI + " DPI.");
 
         textViewBottomNavMap =
-                (TextView) findViewById(R.id.textview_bottomnav_map);
+                findViewById(R.id.textview_bottomnav_map);
         textViewBottomNavFavourites =
-                (TextView) findViewById(R.id.textview_bottomnav_favourites);
+                findViewById(R.id.textview_bottomnav_favourites);
         textViewBottomNavFares =
-                (TextView) findViewById(R.id.textview_bottomnav_fares);
+                findViewById(R.id.textview_bottomnav_fares);
         textViewBottomNavAlerts =
-                (TextView) findViewById(R.id.textview_bottomnav_alerts);
+                findViewById(R.id.textview_bottomnav_alerts);
 
         /*
          * If the screen density is particularly low, or if the number of lines in the bottom

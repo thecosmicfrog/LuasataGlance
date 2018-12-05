@@ -101,7 +101,7 @@ public class FavouritesSelectActivity extends AppCompatActivity {
         /*
          * Populate ListView with all stops on both lines.
          */
-        final ListView listViewStops = (ListView) findViewById(R.id.listview_stops);
+        final ListView listViewStops = findViewById(R.id.listview_stops);
         listViewStops.setAdapter(adapterFavouriteStops);
         listViewStops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -127,7 +127,7 @@ public class FavouritesSelectActivity extends AppCompatActivity {
          * Use a Floating Action Button (FAB) to save the selected Favourites.
          */
         FloatingActionButton fabFavouritesSave =
-                (FloatingActionButton) findViewById(R.id.fab_favourites_save);
+                findViewById(R.id.fab_favourites_save);
         fabFavouritesSave.setBackgroundTintList(
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.message_success))
         );

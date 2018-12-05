@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        final WatchViewStub stub = findViewById(R.id.watch_view_stub);
 
         /*
          * Set up an OnApplyWindowInsetsListener so that we know what shape the wearable's screen

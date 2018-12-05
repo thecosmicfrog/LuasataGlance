@@ -66,30 +66,30 @@ public class StopForecastCardView extends CardView {
     public void init(Context context) {
         View view = inflate(context, R.layout.cardview_stop_forecast, this);
 
-        textViewDirection = (TextView) findViewById(R.id.textview_direction);
+        textViewDirection = findViewById(R.id.textview_direction);
 
         tableRowStops = new TableRow[] {
-                (TableRow) findViewById(R.id.tablerow_stop1),
-                (TableRow) findViewById(R.id.tablerow_stop2),
-                (TableRow) findViewById(R.id.tablerow_stop3),
-                (TableRow) findViewById(R.id.tablerow_stop4),
-                (TableRow) findViewById(R.id.tablerow_stop5)
+                findViewById(R.id.tablerow_stop1),
+                findViewById(R.id.tablerow_stop2),
+                findViewById(R.id.tablerow_stop3),
+                findViewById(R.id.tablerow_stop4),
+                findViewById(R.id.tablerow_stop5)
         };
 
         textViewStopNames = new TextView[] {
-                (TextView) findViewById(R.id.textview_stop1_name),
-                (TextView) findViewById(R.id.textview_stop2_name),
-                (TextView) findViewById(R.id.textview_stop3_name),
-                (TextView) findViewById(R.id.textview_stop4_name),
-                (TextView) findViewById(R.id.textview_stop5_name)
+                findViewById(R.id.textview_stop1_name),
+                findViewById(R.id.textview_stop2_name),
+                findViewById(R.id.textview_stop3_name),
+                findViewById(R.id.textview_stop4_name),
+                findViewById(R.id.textview_stop5_name)
         };
 
         textViewStopTimes = new TextView[] {
-                (TextView) findViewById(R.id.textview_stop1_time),
-                (TextView) findViewById(R.id.textview_stop2_time),
-                (TextView) findViewById(R.id.textview_stop3_time),
-                (TextView) findViewById(R.id.textview_stop4_time),
-                (TextView) findViewById(R.id.textview_stop5_time)
+                findViewById(R.id.textview_stop1_time),
+                findViewById(R.id.textview_stop2_time),
+                findViewById(R.id.textview_stop3_time),
+                findViewById(R.id.textview_stop4_time),
+                findViewById(R.id.textview_stop5_time)
         };
 
         adjustTableRowsByScreenDensity(view);

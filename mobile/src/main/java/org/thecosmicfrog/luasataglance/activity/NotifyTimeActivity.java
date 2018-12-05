@@ -72,7 +72,7 @@ public class NotifyTimeActivity extends FragmentActivity {
 
         mapNotifyTimes = new NotifyTimesMap(localeDefault, DIALOG);
 
-        final Spinner spinnerNotifyTime = (Spinner) findViewById(R.id.spinner_notifytime);
+        final Spinner spinnerNotifyTime = findViewById(R.id.spinner_notifytime);
         ArrayAdapter adapterNotifyTime = ArrayAdapter.createFromResource(
                 getApplicationContext(), R.array.array_notifytime_mins, R.layout.spinner_notify_time
         );
@@ -88,7 +88,7 @@ public class NotifyTimeActivity extends FragmentActivity {
         );
         spinnerNotifyTime.setBackground(spinnerDrawable);
 
-        Button buttonNotifyTime = (Button) findViewById(R.id.button_notifytime);
+        Button buttonNotifyTime = findViewById(R.id.button_notifytime);
         buttonNotifyTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
