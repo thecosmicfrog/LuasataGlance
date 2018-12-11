@@ -31,14 +31,30 @@ import org.thecosmicfrog.luasataglance.activity.LineFragment;
 
 public final class Analytics {
 
+    private static final String EVENT_API_CREATED_PARSE_ERROR = "api_created_parse_error";
     private static final String EVENT_HTTP_ERROR = "http_error";
     private static final String EVENT_NULL_APITIMES = "null_apitimes";
     private static final String LOG_TAG = Analytics.class.getSimpleName();
 
     private static FirebaseAnalytics firebaseAnalytics;
 
-    public static void httpError(Context context, String contentType, String itemId) {
+    public static void apiCreatedParseError(Context context, String contentType, String itemId) {
+        try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error gathering analytics for " + itemId + ".");
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
 
+        if (firebaseAnalytics != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+            firebaseAnalytics.logEvent(EVENT_API_CREATED_PARSE_ERROR, params);
+        }
+    }
+
+    public static void httpError(Context context, String contentType, String itemId) {
         try {
             firebaseAnalytics = FirebaseAnalytics.getInstance(context);
         } catch (Exception e) {

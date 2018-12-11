@@ -57,7 +57,11 @@ import org.thecosmicfrog.luasataglance.view.SpinnerCardView;
 import org.thecosmicfrog.luasataglance.view.StatusCardView;
 import org.thecosmicfrog.luasataglance.view.StopForecastCardView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -313,7 +317,7 @@ public class LineFragment extends Fragment {
 
                     Preferences.saveSelectedStopName(getContext(), Constant.NO_LINE, stopName);
 
-                    loadStopForecast(stopName);
+                    loadStopForecast(stopName, false);
 
                     shouldAutoReload = true;
                 } else {
@@ -384,55 +388,62 @@ public class LineFragment extends Fragment {
                     public void onItemSelected(AdapterView<?> parent, View view, int position,
                                                long id) {
                         /*
-                         * If the Spinner's selected item is "Select a stop...", we don't need to
-                         * do anything. Just clear the stop forecast and get out of here.
+                         * onItemSelected() is triggered on creation of the tab. Prevent this by
+                         * only triggering when the tab is visible to user. This is to prevent the
+                         * Alerts button changing colour out of sync with the currently-visible tab.
                          */
-                        if (position == 0) {
-                            shouldAutoReload = false;
-
-                            swipeRefreshLayout.setEnabled(false);
-
-                            clearStopForecast();
-
-                            return;
-                        } else {
-                            swipeRefreshLayout.setEnabled(true);
-                        }
-
-                        shouldAutoReload = true;
-
-                        /* Hide the select stop tutorial, if it is visible. */
-                        StopForecastUtil.displayTutorial(
-                                rootView,
-                                line,
-                                Constant.TUTORIAL_SELECT_STOP,
-                                false
-                        );
-
-                        /* Show the notifications tutorial. */
-                        StopForecastUtil.displayTutorial(
-                                rootView,
-                                line,
-                                Constant.TUTORIAL_NOTIFICATIONS,
-                                true
-                        );
-
-                        /*
-                         * Get the stop name from the current position of the Spinner, save it to
-                         * SharedPreferences, then load a stop forecast with it.
-                         */
-                        String selectedStopName =
-                                spinnerCardView
-                                        .getSpinnerStops().getItemAtPosition(position).toString();
-
-                        loadStopForecast(selectedStopName);
-
                         if (isVisibleToUser) {
-                            Preferences.saveSelectedStopName(
-                                    getContext(),
+                            /*
+                             * If the Spinner's selected item is "Select a stop...", we don't need to
+                             * do anything. Just clear the stop forecast and get out of here.
+                             */
+                            if (position == 0) {
+                                shouldAutoReload = false;
+
+                                swipeRefreshLayout.setEnabled(false);
+
+                                clearStopForecast();
+
+                                return;
+                            } else {
+                                swipeRefreshLayout.setEnabled(true);
+                            }
+
+                            shouldAutoReload = true;
+
+                            /* Hide the select stop tutorial, if it is visible. */
+                            StopForecastUtil.displayTutorial(
+                                    rootView,
                                     line,
-                                    selectedStopName
+                                    Constant.TUTORIAL_SELECT_STOP,
+                                    false
                             );
+
+                            /* Show the notifications tutorial. */
+                            StopForecastUtil.displayTutorial(
+                                    rootView,
+                                    line,
+                                    Constant.TUTORIAL_NOTIFICATIONS,
+                                    true
+                            );
+
+                            /*
+                             * Get the stop name from the current position of the Spinner, save it to
+                             * SharedPreferences, then load a stop forecast with it.
+                             */
+                            String selectedStopName =
+                                    spinnerCardView
+                                            .getSpinnerStops().getItemAtPosition(position).toString();
+
+                            loadStopForecast(selectedStopName, false);
+
+                            if (isVisibleToUser) {
+                                Preferences.saveSelectedStopName(
+                                        getContext(),
+                                        line,
+                                        selectedStopName
+                                );
+                            }
                         }
                     }
 
@@ -458,7 +469,8 @@ public class LineFragment extends Fragment {
                         /* Start the refresh animation. */
                         swipeRefreshLayout.setRefreshing(true);
                         loadStopForecast(
-                                Preferences.selectedStopName(getContext(), line)
+                                Preferences.selectedStopName(getContext(), line),
+                                true
                         );
                     }
                 }
@@ -765,7 +777,8 @@ public class LineFragment extends Fragment {
                                         Preferences.selectedStopName(
                                                 getContext(),
                                                 line
-                                        )
+                                        ),
+                                        false
                                 );
                             }
                         }
@@ -781,11 +794,13 @@ public class LineFragment extends Fragment {
     /**
      * Load the stop forecast for a particular stop.
      * @param stopName The stop for which to load a stop forecast.
+     * @param shouldShowSnackbar Whether or not we should show a Snackbar to the user with the API
+     *                           created time.
      */
-    private void loadStopForecast(String stopName) {
+    private void loadStopForecast(String stopName, final boolean shouldShowSnackbar) {
         final String API_URL = "https://api.thecosmicfrog.org/cgi-bin";
         final String API_ACTION = "times";
-        final String API_VER = "2";
+        final String API_VER = "3";
 
         setIsLoading(true);
 
@@ -816,6 +831,17 @@ public class LineFragment extends Fragment {
                         /* Stop the refresh animations. */
                         setIsLoading(false);
                         swipeRefreshLayout.setRefreshing(false);
+
+                        if (shouldShowSnackbar) {
+                            String apiCreatedTime = getApiCreatedTime(apiTimes);
+
+                            if (apiCreatedTime != null) {
+                                StopForecastUtil.showSnackbar(
+                                        getActivity(),
+                                        "Times updated at " + apiCreatedTime
+                                );
+                            }
+                        }
                     } else {
                         Analytics.nullApitimes(
                                 getContext(),
@@ -881,6 +907,41 @@ public class LineFragment extends Fragment {
                 mapStopNameId.get(stopName),
                 callback
         );
+    }
+
+    /**
+     * Get the "created" time from the API response and format it so that only the time (and not
+     * date) is returned.
+     * @param apiTimes ApiTimes object.
+     * @return String representing the 24hr time (HH:mm:ss) of the API's "created" time.
+     */
+    private String getApiCreatedTime(ApiTimes apiTimes) {
+        try {
+            Date currentTime = new SimpleDateFormat(
+                    "yyyy-MM-dd'T'HH:mm:ss",
+                    Locale.getDefault()
+            ).parse(apiTimes.getCreatedTime());
+
+            DateFormat dateFormat =
+                    new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+            return dateFormat.format(currentTime);
+        } catch (NullPointerException e) {
+            Log.e(
+                    LOG_TAG,
+                    "Failed to find content view during Snackbar creation."
+            );
+        } catch (ParseException e) {
+            Log.e(LOG_TAG, "Failed to parse created time from API.");
+
+            Analytics.apiCreatedParseError(
+                    getContext(),
+                    "api_error",
+                    "api_created_parse_error_mobile"
+            );
+        }
+
+        return null;
     }
 
     /**

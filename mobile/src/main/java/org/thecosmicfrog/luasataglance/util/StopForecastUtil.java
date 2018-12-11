@@ -21,6 +21,8 @@
 
 package org.thecosmicfrog.luasataglance.util;
 
+import android.app.Activity;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
@@ -223,5 +225,18 @@ public final class StopForecastUtil {
         }
 
         return stopForecast;
+    }
+
+    /**
+     * Show Snackbar.
+     * @param activity Activity on which to display Snackbar.
+     * @param message Message to display on Snackbar.
+     */
+    public static void showSnackbar(Activity activity, String message) {
+        Snackbar.make(
+                activity.findViewById(android.R.id.content),
+                message,
+                Snackbar.LENGTH_LONG
+        ).show();
     }
 }

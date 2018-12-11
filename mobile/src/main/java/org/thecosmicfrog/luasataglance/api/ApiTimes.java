@@ -30,12 +30,19 @@ import java.util.List;
 
 public class ApiTimes {
 
+    @SerializedName("created")
+    private String createdTime;
+
     private String message;
 
     @SerializedName("status")
     private StopForecastStatus stopForecastStatus;
 
     private List<Tram> trams;
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
 
     public String getMessage() {
         return message;
@@ -47,6 +54,10 @@ public class ApiTimes {
 
     public List<Tram> getTrams() {
         return trams;
+    }
+
+    public void setCreatedTime(String c) {
+        createdTime = c;
     }
 
     public void setMessage(String m) {
