@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     publishNonDefault true
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 12100
         versionName "0.121"
     }
@@ -30,7 +30,7 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    compileOnly 'com.google.android.wearable:wearable:2.3.0'
-    api 'com.google.android.support:wearable:2.3.0'
-    api 'com.google.android.gms:play-services-wearable:15.0.1'
+    compileOnly 'com.google.android.wearable:wearable:2.4.0'
+    api 'com.google.android.support:wearable:2.4.0'
+    api 'com.google.android.gms:play-services-wearable:16.0.1'
 }
