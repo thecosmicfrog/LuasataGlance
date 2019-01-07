@@ -1,12 +1,12 @@
 # Luas at a Glance
 
-Android Wear and mobile app providing real-time tram stop information for Dublin's Luas light rail service. 
+Android and Wear OS app providing real-time tram stop information for Dublin's Luas light rail service.
 
 [Project website](https://luasataglance.thecosmicfrog.org)
 
 ## Copyright and Licence
 
-Copyright 2015-2016 Aaron Hastings
+Copyright 2015-2019 Aaron Hastings
 
 >This program is free software: you can redistribute it and/or modify
 >it under the terms of the GNU General Public License as published by
@@ -27,17 +27,14 @@ Developed by Aaron Hastings (aaron@thecosmicfrog.org)
 * __web:__     aaronhastings.me
 * __github:__  thecosmicfrog
 * __twitter:__ @thecosmicfrog
-* __google+:__ +AaronHastings
 
 
 Icon modified from that kindly provided by Sam Hewitt (snwh) for my uLuas app for Ubuntu. Please check out Sam's excellent work.
 * __web:__     snwh.org
 * __github:__  snwh
 * __twitter:__ @snwh
-* __google+:__ +SamHewitt
 
 
-Irish translations (aistriúcháin Gaeilge) kindly provided by Feidhlim Seoighe.
-* __web:__     gaeilge.usi.ie
+Irish translations (aistriúcháin Gaeilge) kindly provided by Feidhlim Seoighe and Marcas Ó Duinn.
 * __twitter:__ @fseoighe
 
