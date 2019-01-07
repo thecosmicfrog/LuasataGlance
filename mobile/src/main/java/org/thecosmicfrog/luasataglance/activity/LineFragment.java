@@ -394,8 +394,8 @@ public class LineFragment extends Fragment {
                          */
                         if (isVisibleToUser) {
                             /*
-                             * If the Spinner's selected item is "Select a stop...", we don't need to
-                             * do anything. Just clear the stop forecast and get out of here.
+                             * If the Spinner's selected item is "Select a stop...", we don't need
+                             * to do anything. Just clear the stop forecast and get out of here.
                              */
                             if (position == 0) {
                                 shouldAutoReload = false;
@@ -775,7 +775,7 @@ public class LineFragment extends Fragment {
                             if (shouldAutoReload) {
                                 loadStopForecast(
                                         Preferences.selectedStopName(
-                                                getContext(),
+                                                getActivity().getApplicationContext(),
                                                 line
                                         ),
                                         false
@@ -869,10 +869,12 @@ public class LineFragment extends Fragment {
                         Log.e(LOG_TAG, "Response: " + retrofitError.getResponse().getUrl());
                     }
 
-                    Log.e(LOG_TAG, "Status: " + Integer.toString(retrofitError.getResponse().getStatus()));
+                    Log.e(LOG_TAG, "Status: " +
+                            Integer.toString(retrofitError.getResponse().getStatus()));
 
                     if (retrofitError.getResponse().getHeaders() != null) {
-                        Log.e(LOG_TAG, "Headers: " + retrofitError.getResponse().getHeaders().toString());
+                        Log.e(LOG_TAG, "Headers: " +
+                                retrofitError.getResponse().getHeaders().toString());
                     }
 
                     if (retrofitError.getResponse().getBody() != null) {
