@@ -248,6 +248,11 @@ public class StopForecastWidget extends AppWidgetProvider {
             @SuppressWarnings("unchecked")
             List<CharSequence> listSelectedStops = (List<CharSequence>) objectInput.readObject();
 
+            /* Close files and streams. */
+            objectInput.close();
+            buffer.close();
+            fileInput.close();
+
             return listSelectedStops;
         } catch (ClassNotFoundException | FileNotFoundException e) {
             /*
@@ -273,7 +278,6 @@ public class StopForecastWidget extends AppWidgetProvider {
         /* Construct the RemoteViews object. */
         RemoteViews views =
                 new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
-
         /*
          * Set up Intents to register taps on the widget.
          */

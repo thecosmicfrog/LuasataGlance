@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -55,8 +56,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -97,8 +96,6 @@ public class WidgetListenerService extends Service {
             TEXTVIEW_OUTBOUND_STOP2_TIME
     };
 
-    private static TimerTask timerTaskStopForecastTimeout;
-
     private EnglishGaeilgeMap mapEnglishGaeilge;
     private List<CharSequence> listSelectedStops;
     private String localeDefault;
@@ -109,15 +106,13 @@ public class WidgetListenerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        startForeground(1, buildForegroundNotification().build());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(1, buildForegroundNotification().build());
 
-        final int STOP_FORECAST_TIMEOUT_MILLIS = 20000;
+        final int STOP_FORECAST_TIMEOUT_MILLIS = 15000;
 
         if (isNetworkAvailable(getApplicationContext())) {
             Log.i(LOG_TAG, "Network available. Starting WidgetListenerService.");
@@ -136,16 +131,6 @@ public class WidgetListenerService extends Service {
                     RemoteViews views = new RemoteViews(
                             getApplicationContext().getPackageName(),
                             R.layout.stop_forecast_widget
-                    );
-
-                    /*
-                     * Reset the stop forecast timeout.
-                     */
-                    stopForecastTimeout(
-                            appWidgetManager,
-                            widgetId,
-                            views,
-                            STOP_FORECAST_TIMEOUT_MILLIS
                     );
 
                     if (loadListSelectedStops(getApplicationContext()) != null) {
@@ -170,11 +155,21 @@ public class WidgetListenerService extends Service {
                     );
 
                     appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
+
+                    /*
+                     * Reset the stop forecast timeout.
+                     */
+                    stopForecastTimeout(
+                            appWidgetManager,
+                            widgetId,
+                            views,
+                            STOP_FORECAST_TIMEOUT_MILLIS
+                    );
                 }
+            } else {
+                Log.e(LOG_TAG, "No widget IDs received.");
             }
         }
-
-        stopSelf();
 
         /* Necessary? Trivial? Further research required. */
         return START_NOT_STICKY;
@@ -431,12 +426,10 @@ public class WidgetListenerService extends Service {
             final int widgetId,
             final RemoteViews views,
             int timeoutTimeMillis) {
-        final int DELAY_TIME_MILLIS = 0;
-
-        if (timerTaskStopForecastTimeout != null)
-            timerTaskStopForecastTimeout.cancel();
-
-        timerTaskStopForecastTimeout = new TimerTask() {
+        /*
+         * Create a Runnable to execute the clearStopForecast() method after a set delay.
+         */
+        Runnable runnableClearStopForecastAfterTimeout = new Runnable() {
             @Override
             public void run() {
                 clearStopForecast(views);
@@ -447,10 +440,17 @@ public class WidgetListenerService extends Service {
                 );
 
                 appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
+
+                stopSelf();
+                stopForeground(true);
             }
         };
 
-        new Timer().schedule(timerTaskStopForecastTimeout, DELAY_TIME_MILLIS, timeoutTimeMillis);
+        /* Wait for a set delay, then trigger the clearing of the stop forecast via the Runnable. */
+        new Handler().postDelayed(
+                runnableClearStopForecastAfterTimeout,
+                timeoutTimeMillis
+        );
     }
 
     /**
@@ -472,6 +472,11 @@ public class WidgetListenerService extends Service {
 
             //noinspection unchecked
             listSelectedStops = (List<CharSequence>) objectInput.readObject();
+
+            /* Close files and streams. */
+            objectInput.close();
+            buffer.close();
+            fileInput.close();
 
             return listSelectedStops;
         } catch (ClassNotFoundException | FileNotFoundException e) {
@@ -693,6 +698,7 @@ public class WidgetListenerService extends Service {
 
             /* Configure notification channel. */
             notificationChannel.setDescription("Widget get stop forecast");
+            notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
 
             notificationManager.createNotificationChannel(notificationChannel);
         }
