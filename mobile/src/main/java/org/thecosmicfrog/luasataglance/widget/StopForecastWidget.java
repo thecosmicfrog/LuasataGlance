@@ -28,9 +28,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import org.thecosmicfrog.luasataglance.R;
@@ -61,6 +63,40 @@ public class StopForecastWidget extends AppWidgetProvider {
     private static final String WIDGET_CLICK_STOP_FORECAST = "WidgetClickStopForecast";
 
     private static long stopForecastLastClickTime = 0;
+
+    private final int TEXTVIEW_TAP_TO_LOAD_TIMES = R.id.textview_tap_to_load_times;
+    private final int TEXTVIEW_INBOUND_STOP1_NAME = R.id.textview_inbound_stop1_name;
+    private final int TEXTVIEW_INBOUND_STOP1_TIME = R.id.textview_inbound_stop1_time;
+    private final int TEXTVIEW_INBOUND_STOP2_NAME = R.id.textview_inbound_stop2_name;
+    private final int TEXTVIEW_INBOUND_STOP2_TIME = R.id.textview_inbound_stop2_time;
+    private final int TEXTVIEW_OUTBOUND_STOP1_NAME = R.id.textview_outbound_stop1_name;
+    private final int TEXTVIEW_OUTBOUND_STOP1_TIME = R.id.textview_outbound_stop1_time;
+    private final int TEXTVIEW_OUTBOUND_STOP2_NAME = R.id.textview_outbound_stop2_name;
+    private final int TEXTVIEW_OUTBOUND_STOP2_TIME = R.id.textview_outbound_stop2_time;
+    private final int STOP_FORECAST_TIMEOUT_MILLIS = 15000;
+
+    private final int[] TEXTVIEW_INBOUND_STOP_NAMES = {
+            TEXTVIEW_INBOUND_STOP1_NAME,
+            TEXTVIEW_INBOUND_STOP2_NAME
+    };
+
+    private final int[] TEXTVIEW_INBOUND_STOP_TIMES = {
+            TEXTVIEW_INBOUND_STOP1_TIME,
+            TEXTVIEW_INBOUND_STOP2_TIME
+    };
+
+    private final int[] TEXTVIEW_OUTBOUND_STOP_NAMES = {
+            TEXTVIEW_OUTBOUND_STOP1_NAME,
+            TEXTVIEW_OUTBOUND_STOP2_NAME
+    };
+
+    private final int[] TEXTVIEW_OUTBOUND_STOP_TIMES = {
+            TEXTVIEW_OUTBOUND_STOP1_TIME,
+            TEXTVIEW_OUTBOUND_STOP2_TIME
+    };
+
+    private static RemoteViews remoteViews;
+    private static Handler handlerClearStopForecastAfterTimeout;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -97,12 +133,12 @@ public class StopForecastWidget extends AppWidgetProvider {
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName thisWidget = new ComponentName(context, StopForecastWidget.class);
-        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        int[] appWidgetsIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
         int indexNextStopToLoad = Preferences.indexNextStopToLoad(context);
         List listSelectedStops = loadListSelectedStops(context);
 
-        if (listSelectedStops != null) {
+        if (listSelectedStops != null && intent.getAction() != null) {
             /*
              * If the user taps the stop name, open the app at that stop.
              */
@@ -135,9 +171,13 @@ public class StopForecastWidget extends AppWidgetProvider {
                 else
                     indexNextStopToLoad = listSelectedStops.size() - 1;
 
-                Preferences.saveIndexNextStopToLoad(context, indexNextStopToLoad);
-
-                prepareLoadStopForecast(context, allWidgetIds);
+                prepareLoadStopForecast(
+                        context,
+                        appWidgetManager,
+                        appWidgetsIds,
+                        remoteViews,
+                        indexNextStopToLoad
+                );
             }
 
             if (intent.getAction().equals(WIDGET_CLICK_RIGHT_ARROW)) {
@@ -150,9 +190,13 @@ public class StopForecastWidget extends AppWidgetProvider {
                 else
                     indexNextStopToLoad = 0;
 
-                Preferences.saveIndexNextStopToLoad(context, indexNextStopToLoad);
-
-                prepareLoadStopForecast(context, allWidgetIds);
+                prepareLoadStopForecast(
+                        context,
+                        appWidgetManager,
+                        appWidgetsIds,
+                        remoteViews,
+                        indexNextStopToLoad
+                );
             }
 
             /*
@@ -160,7 +204,7 @@ public class StopForecastWidget extends AppWidgetProvider {
              * up a timeout as well.
              */
             if (intent.getAction().equals(WIDGET_CLICK_STOP_FORECAST)) {
-                final int LOAD_LIMIT_MILLIS = 4000;
+                final int LOAD_LIMIT_MILLIS = 2000;
 
                 /*
                  * Induce an artificial limit on number of allowed sequential clicks in order to
@@ -171,7 +215,20 @@ public class StopForecastWidget extends AppWidgetProvider {
 
                 stopForecastLastClickTime = SystemClock.elapsedRealtime();
 
-                prepareLoadStopForecast(context, allWidgetIds);
+                for (int appWidgetId : appWidgetsIds) {
+                    stopForecastTimeout(
+                            appWidgetManager,
+                            appWidgetId,
+                            remoteViews,
+                            STOP_FORECAST_TIMEOUT_MILLIS
+                    );
+                }
+                prepareLoadStopForecast(context,
+                        appWidgetManager,
+                        appWidgetsIds,
+                        remoteViews,
+                        indexNextStopToLoad
+                );
             }
         }
     }
@@ -180,27 +237,45 @@ public class StopForecastWidget extends AppWidgetProvider {
      * If we have a list of selected stops, get the next one we need to load, save it to local
      * storage, then fire up the service.
      * @param context Context.
-     * @param allWidgetIds Array of all widget IDs.
+     * @param appWidgetManager AppWidgetManager.
+     * @param appWidgetsIds Array of all widget IDs.
+     * @param remoteViews RemoteViews object to prepare loading of stop forecast for.
+     * @param indexNextStopToLoad Index of next stop to load.
      */
-    private static void prepareLoadStopForecast(@NonNull Context context, int[] allWidgetIds) {
+    private void prepareLoadStopForecast(@NonNull Context context,
+                                         AppWidgetManager appWidgetManager, int[] appWidgetsIds,
+                                         RemoteViews remoteViews, int indexNextStopToLoad) {
+        clearStopForecast(remoteViews);
+
+        Preferences.saveIndexNextStopToLoad(context, indexNextStopToLoad);
+
+        for (int appWidgetId : appWidgetsIds) {
+            stopForecastTimeout(
+                    appWidgetManager,
+                    appWidgetId,
+                    remoteViews,
+                    STOP_FORECAST_TIMEOUT_MILLIS
+            );
+
+            appWidgetManager.partiallyUpdateAppWidget(appWidgetId, remoteViews);
+        }
+
         List listSelectedStops = loadListSelectedStops(context);
 
         if (listSelectedStops != null) {
-            int indexNextStopToLoad = Preferences.indexNextStopToLoad(context);
-
             String selectedStopName = listSelectedStops.get(indexNextStopToLoad).toString();
             Preferences.saveWidgetSelectedStopName(context, selectedStopName);
 
-            startWidgetListenerService(context, allWidgetIds);
+            startWidgetListenerService(context, appWidgetsIds);
         }
     }
 
     /**
      * Start WidgetListenerService, passing in the selected stop name.
      * @param context Context.
-     * @param allWidgetIds Array of all widget IDs.
+     * @param appWidgetsIds Array of all widget IDs.
      */
-    private static void startWidgetListenerService(@NonNull Context context, int[] allWidgetIds) {
+    private static void startWidgetListenerService(@NonNull Context context, int[] appWidgetsIds) {
         String selectedStopName = Preferences.widgetSelectedStopName(context);
 
         /*
@@ -211,7 +286,7 @@ public class StopForecastWidget extends AppWidgetProvider {
         intentWidgetListenerService.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         intentWidgetListenerService.putExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_IDS,
-                allWidgetIds
+                appWidgetsIds
         );
         intentWidgetListenerService.putExtra(
                 Constant.SELECTED_STOP_NAME,
@@ -225,8 +300,6 @@ public class StopForecastWidget extends AppWidgetProvider {
             context.startService(intentWidgetListenerService);
         }
     }
-
-
 
     /**
      * Load list of user-selected stops from file.
@@ -273,11 +346,17 @@ public class StopForecastWidget extends AppWidgetProvider {
         return null;
     }
 
+    /**
+     * Wrapper around updateAppWidget().
+     * @param context Context.
+     * @param appWidgetManager AppWidgetManager.
+     * @param appWidgetId ID of widget to update.
+     */
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         /* Construct the RemoteViews object. */
-        RemoteViews views =
-                new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
+        remoteViews = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
+
         /*
          * Set up Intents to register taps on the widget.
          */
@@ -300,20 +379,84 @@ public class StopForecastWidget extends AppWidgetProvider {
         PendingIntent pendingIntentWidgetClickStopForecast =
                 PendingIntent.getBroadcast(context, 0, intentWidgetClickStopForecast, 0);
 
-        views.setOnClickPendingIntent(
+        remoteViews.setOnClickPendingIntent(
                 R.id.textview_stop_name, pendingIntentWidgetClickStopName
         );
-        views.setOnClickPendingIntent(
+        remoteViews.setOnClickPendingIntent(
                 R.id.textview_stop_name_left_arrow, pendingIntentWidgetClickLeftArrow
         );
-        views.setOnClickPendingIntent(
+        remoteViews.setOnClickPendingIntent(
                 R.id.textview_stop_name_right_arrow, pendingIntentWidgetClickRightArrow
         );
-        views.setOnClickPendingIntent(
+        remoteViews.setOnClickPendingIntent(
                 R.id.linearlayout_stop_forecast, pendingIntentWidgetClickStopForecast
         );
 
         /* Instruct the widget manager to update the widget. */
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+    }
+
+    /**
+     * Clear the stop forecast currently displayed in the widget.
+     * @param remoteViewToClear RemoteViews object to clear.
+     */
+    private void clearStopForecast(RemoteViews remoteViewToClear) {
+        for (int i = 0; i < 2; i++) {
+            remoteViewToClear.setTextViewText(TEXTVIEW_INBOUND_STOP_NAMES[i], "");
+            remoteViewToClear.setTextViewText(TEXTVIEW_INBOUND_STOP_TIMES[i], "");
+
+            remoteViewToClear.setTextViewText(TEXTVIEW_OUTBOUND_STOP_NAMES[i], "");
+            remoteViewToClear.setTextViewText(TEXTVIEW_OUTBOUND_STOP_TIMES[i], "");
+        }
+    }
+
+    /**
+     * Set up timeout for stop forecast, which clears the stop forecast and displays a holding
+     * message after a set period.
+     * This is a necessary evil due to their currently being no way for a widget to know when it
+     * is "active" or "visible to the user". This implementation is in order to not hammer the
+     * battery and network.
+     * @param appWidgetManager AppWidgetManager.
+     * @param appWidgetId App widget ID.
+     * @param remoteViews RemoteViews.
+     * @param timeoutTimeMillis The period (ms) after which the stop forecast should be considered
+     *                          expired and cleared.
+     */
+    private void stopForecastTimeout(
+            final AppWidgetManager appWidgetManager,
+            final int appWidgetId,
+            final RemoteViews remoteViews,
+            int timeoutTimeMillis) {
+        /*
+         * Create a Runnable to execute the clearStopForecast() method after a set delay.
+         */
+        Runnable runnableClearStopForecastAfterTimeout = new Runnable() {
+            @Override
+            public void run() {
+                clearStopForecast(remoteViews);
+
+                remoteViews.setViewVisibility(
+                        TEXTVIEW_TAP_TO_LOAD_TIMES,
+                        View.VISIBLE
+                );
+
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, remoteViews);
+            }
+        };
+
+        /*
+         * If a Handler already exists, remove its callbacks and messages so we don't have multiple
+         * timeouts firing.
+         */
+        if (handlerClearStopForecastAfterTimeout != null) {
+            handlerClearStopForecastAfterTimeout.removeCallbacksAndMessages(null);
+        }
+
+        /* Wait for a set delay, then trigger the clearing of the stop forecast via the Runnable. */
+        handlerClearStopForecastAfterTimeout = new Handler();
+        handlerClearStopForecastAfterTimeout.postDelayed(
+                runnableClearStopForecastAfterTimeout,
+                timeoutTimeMillis
+        );
     }
 }

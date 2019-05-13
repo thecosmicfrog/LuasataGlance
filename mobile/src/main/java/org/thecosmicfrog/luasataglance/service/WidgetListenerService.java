@@ -31,7 +31,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -112,8 +111,6 @@ public class WidgetListenerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(1, buildForegroundNotification().build());
 
-        final int STOP_FORECAST_TIMEOUT_MILLIS = 15000;
-
         if (isNetworkAvailable(getApplicationContext())) {
             Log.i(LOG_TAG, "Network available. Starting WidgetListenerService.");
 
@@ -155,16 +152,6 @@ public class WidgetListenerService extends Service {
                     );
 
                     appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
-
-                    /*
-                     * Reset the stop forecast timeout.
-                     */
-                    stopForecastTimeout(
-                            appWidgetManager,
-                            widgetId,
-                            views,
-                            STOP_FORECAST_TIMEOUT_MILLIS
-                    );
                 }
             } else {
                 Log.e(LOG_TAG, "No widget IDs received.");
@@ -192,9 +179,13 @@ public class WidgetListenerService extends Service {
      * @return Network available or not.
      */
     private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager cm =
+        ConnectivityManager connectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+        NetworkInfo networkInfo = null;
+        if (connectivityManager != null) {
+            networkInfo = connectivityManager.getActiveNetworkInfo();
+        }
 
         return networkInfo != null && networkInfo.isConnected();
     }
@@ -322,6 +313,9 @@ public class WidgetListenerService extends Service {
                     callback
             );
         }
+
+        stopSelf();
+        stopForeground(true);
     }
 
     /**
@@ -376,23 +370,6 @@ public class WidgetListenerService extends Service {
     }
 
     /**
-     * Clear the stop forecast currently displayed in the widget.
-     * @param remoteViewToClear RemoteViews object to clear.
-     */
-    private void clearStopForecast(RemoteViews remoteViewToClear) {
-        /*
-         * Clear the stop forecast.
-         */
-        for (int i = 0; i < 2; i++) {
-            remoteViewToClear.setTextViewText(TEXTVIEW_INBOUND_STOP_NAMES[i], "");
-            remoteViewToClear.setTextViewText(TEXTVIEW_INBOUND_STOP_TIMES[i], "");
-
-            remoteViewToClear.setTextViewText(TEXTVIEW_OUTBOUND_STOP_NAMES[i], "");
-            remoteViewToClear.setTextViewText(TEXTVIEW_OUTBOUND_STOP_TIMES[i], "");
-        }
-    }
-
-    /**
      * Save the currently-selected stop name to shared preferences.
      * @param context Context.
      * @param selectedStopName Name of the stop to save to shared preferences.
@@ -407,50 +384,6 @@ public class WidgetListenerService extends Service {
         prefs.putString("selectedStopName", selectedStopName);
 
         return prefs.commit();
-    }
-
-    /**
-     * Set up timeout for stop forecast, which clears the stop forecast and displays a holding
-     * message after a set period.
-     * This is a necessary evil due to their currently being no way for a widget to know when it
-     * is "active" or "visible to the user". This implementation is in order to not hammer the
-     * battery and network.
-     * @param appWidgetManager AppWidgetManager.
-     * @param widgetId App widget ID.
-     * @param views RemoteViews.
-     * @param timeoutTimeMillis The period (ms) after which the stop forecast should be considered
-     *                          expired and cleared.
-     */
-    private void stopForecastTimeout(
-            final AppWidgetManager appWidgetManager,
-            final int widgetId,
-            final RemoteViews views,
-            int timeoutTimeMillis) {
-        /*
-         * Create a Runnable to execute the clearStopForecast() method after a set delay.
-         */
-        Runnable runnableClearStopForecastAfterTimeout = new Runnable() {
-            @Override
-            public void run() {
-                clearStopForecast(views);
-
-                views.setViewVisibility(
-                        TEXTVIEW_TAP_TO_LOAD_TIMES,
-                        View.VISIBLE
-                );
-
-                appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
-
-                stopSelf();
-                stopForeground(true);
-            }
-        };
-
-        /* Wait for a set delay, then trigger the clearing of the stop forecast via the Runnable. */
-        new Handler().postDelayed(
-                runnableClearStopForecastAfterTimeout,
-                timeoutTimeMillis
-        );
     }
 
     /**
@@ -700,16 +633,17 @@ public class WidgetListenerService extends Service {
             notificationChannel.setDescription("Widget get stop forecast");
             notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
 
-            notificationManager.createNotificationChannel(notificationChannel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
         }
 
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(getApplicationContext(), "widgetGetStopForecast")
-                        .setOngoing(true)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText(getString(R.string.widget_retrieving_stop_forecast))
-                        .setSmallIcon(R.drawable.laag_logo_notification);
-
-        return notificationBuilder;
+        return new NotificationCompat.Builder(
+                getApplicationContext(),
+                "widgetGetStopForecast")
+                .setOngoing(true)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.widget_retrieving_stop_forecast))
+                .setSmallIcon(R.drawable.laag_logo_notification);
     }
 }
