@@ -41,6 +41,7 @@
             android:gravity="center_vertical|start"
             android:layout_weight="0.075"
             android:layout_marginLeft="3dp"
+            android:layout_marginBottom="3dp"
             android:text="@string/widget_left_arrow"
             android:textColor="@android:color/white" />
 
@@ -57,23 +58,27 @@
             android:id="@+id/textview_stop_name_right_arrow"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="3dp"
-            android:layout_weight="0.075"
             android:gravity="center_vertical|end"
+            android:layout_marginRight="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_weight="0.075"
             android:text="@string/widget_right_arrow"
             android:textColor="@android:color/white" />
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="#eeeeee">
+        android:layout_height="6dp"
+        android:elevation="@dimen/cardview_default_elevation">
 
         <ProgressBar
             style="?android:attr/progressBarStyleHorizontal"
             android:id="@+id/progressbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:progressTint="@android:color/white"
+            android:progressBackgroundTint="@android:color/white" />
     </RelativeLayout>
 
     <LinearLayout
@@ -170,7 +175,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="6dp"
-            android:background="#eeeeee" />
+            android:background="@android:color/white" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -249,6 +254,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="6dp"
-            android:background="#eeeeee" />
+            android:background="@android:color/white" />
     </LinearLayout>
 </LinearLayout>

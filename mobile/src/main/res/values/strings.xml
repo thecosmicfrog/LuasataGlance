@@ -73,6 +73,7 @@
     <string name="min">min</string>
     <string name="mins">mins</string>
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
+    <string name="no_trams_forecast_short"><b>No trams</b></string>
     <string name="bottomnav_map_short">Map</string>
     <string name="bottomnav_favourites_short">Fav\'s</string>
     <string name="tap_to_load_times"><b>Tap to load times</b></string>

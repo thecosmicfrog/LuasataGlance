@@ -490,7 +490,7 @@ public class WidgetListenerService extends Service {
                 if (stopForecast.getInboundTrams().size() == 0) {
                     views.setTextViewText(
                             TEXTVIEW_INBOUND_STOP1_NAME,
-                            context.getString(R.string.no_trams_forecast)
+                            context.getString(R.string.no_trams_forecast_short)
                     );
                 } else {
                     String inboundTram;
@@ -542,7 +542,7 @@ public class WidgetListenerService extends Service {
                 if (stopForecast.getOutboundTrams().size() == 0) {
                     views.setTextViewText(
                             TEXTVIEW_OUTBOUND_STOP1_NAME,
-                            context.getString(R.string.no_trams_forecast)
+                            context.getString(R.string.no_trams_forecast_short)
                     );
                 } else {
                     String outboundTram;
