@@ -100,6 +100,9 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        /* Construct a RemoteViews object. */
+        remoteViews = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
+
         /* There may be multiple widgets active, so update all of them. */
         for (int appWidgetId : appWidgetIds) {
             Log.i(LOG_TAG, "Widget updating with ID: " + appWidgetId);
@@ -134,6 +137,9 @@ public class StopForecastWidget extends AppWidgetProvider {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName thisWidget = new ComponentName(context, StopForecastWidget.class);
         int[] appWidgetsIds = appWidgetManager.getAppWidgetIds(thisWidget);
+
+        /* Construct a RemoteViews object. */
+        remoteViews = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
 
         int indexNextStopToLoad = Preferences.indexNextStopToLoad(context);
         List listSelectedStops = loadListSelectedStops(context);
@@ -354,9 +360,6 @@ public class StopForecastWidget extends AppWidgetProvider {
      */
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-        /* Construct the RemoteViews object. */
-        remoteViews = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
-
         /*
          * Set up Intents to register taps on the widget.
          */
