@@ -198,9 +198,9 @@ public class WearMessageListenerService extends WearableListenerService {
                 if (retrofitError.getKind() != null)
                     Log.e(LOG_TAG, retrofitError.getKind().toString());
 
-                Analytics.httpError(
+                Analytics.httpErrorWear(
                         getApplicationContext(),
-                        "http_error",
+                        "http_error_wear",
                         "http_error_general_wear"
                 );
             }

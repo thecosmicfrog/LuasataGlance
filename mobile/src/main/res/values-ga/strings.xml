@@ -161,8 +161,10 @@
     <!--
         Widget
     -->
-    <string name="widget_left_arrow">\u25C0</string>
-    <string name="widget_right_arrow">\u25B6</string>
+    <string name="widget_arrow_left">\u25C0</string>
+    <string name="widget_arrow_right">\u25B6</string>
+    <string name="widget_message_error">Fadhb idirlín.\n\nDéan seiceáil ar do nasc idirlíne.
+    </string>
 
     <!--
         Stop arrays

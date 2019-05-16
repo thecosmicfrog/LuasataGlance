@@ -38,6 +38,7 @@ import android.widget.RemoteViews;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.activity.MainActivity;
 import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
+import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
@@ -58,8 +59,8 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     private static final String LOG_TAG = StopForecastWidget.class.getSimpleName();
     private static final String WIDGET_CLICK_STOP_NAME = "WidgetClickStopName";
-    private static final String WIDGET_CLICK_LEFT_ARROW = "WidgetClickLeftArrow";
-    private static final String WIDGET_CLICK_RIGHT_ARROW = "WidgetClickRightArrow";
+    private static final String WIDGET_CLICK_ARROW_LEFT = "WidgetClickArrowLeft";
+    private static final String WIDGET_CLICK_ARROW_RIGHT = "WidgetClickArrowRight";
     private static final String WIDGET_CLICK_STOP_FORECAST = "WidgetClickStopForecast";
 
     private static long stopForecastLastClickTime = 0;
@@ -123,11 +124,23 @@ public class StopForecastWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         Log.i(LOG_TAG, "Widget first created.");
+
+        Analytics.enableWidget(
+                context,
+                "enable_widget",
+                "widget"
+        );
     }
 
     @Override
     public void onDisabled(Context context) {
         Log.i(LOG_TAG, "Widget disabled.");
+
+        Analytics.disableWidget(
+                context,
+                "disable_widget",
+                "widget"
+        );
     }
 
     @Override
@@ -162,12 +175,18 @@ public class StopForecastWidget extends AppWidgetProvider {
                                 stopName
                         )
                 );
+
+                Analytics.selectContent(
+                        context,
+                        "button_tapped",
+                        "widget_stop_name_tapped"
+                );
             }
 
             /*
              * If the user taps one of the widget arrows, move to the next/previous stop.
              */
-            if (intent.getAction().equals(WIDGET_CLICK_LEFT_ARROW)) {
+            if (intent.getAction().equals(WIDGET_CLICK_ARROW_LEFT)) {
                 /*
                  * Move on to the previous index in the list. If we're on the first index, reset
                  * back to the last index [listSelectedStops.size() - 1].
@@ -184,9 +203,15 @@ public class StopForecastWidget extends AppWidgetProvider {
                         remoteViews,
                         indexNextStopToLoad
                 );
+
+                Analytics.selectContent(
+                        context,
+                        "button_tapped",
+                        "widget_arrow_left_tapped"
+                );
             }
 
-            if (intent.getAction().equals(WIDGET_CLICK_RIGHT_ARROW)) {
+            if (intent.getAction().equals(WIDGET_CLICK_ARROW_RIGHT)) {
                 /*
                  * Move on to the next index in the list. If we're on the last index, reset back to
                  * the first index (0).
@@ -202,6 +227,12 @@ public class StopForecastWidget extends AppWidgetProvider {
                         appWidgetsIds,
                         remoteViews,
                         indexNextStopToLoad
+                );
+
+                Analytics.selectContent(
+                        context,
+                        "button_tapped",
+                        "widget_arrow_right_tapped"
                 );
             }
 
@@ -234,6 +265,12 @@ public class StopForecastWidget extends AppWidgetProvider {
                         appWidgetsIds,
                         remoteViews,
                         indexNextStopToLoad
+                );
+
+                Analytics.selectContent(
+                        context,
+                        "button_tapped",
+                        "widget_stop_forecast_tapped"
                 );
             }
         }
@@ -364,21 +401,21 @@ public class StopForecastWidget extends AppWidgetProvider {
          * Set up Intents to register taps on the widget.
          */
         Intent intentWidgetClickStopName = new Intent(context, StopForecastWidget.class);
-        Intent intentWidgetClickLeftArrow = new Intent(context, StopForecastWidget.class);
-        Intent intentWidgetClickRightArrow = new Intent(context, StopForecastWidget.class);
+        Intent intentWidgetClickArrowLeft = new Intent(context, StopForecastWidget.class);
+        Intent intentWidgetClickArrowRight = new Intent(context, StopForecastWidget.class);
         Intent intentWidgetClickStopForecast = new Intent(context, StopForecastWidget.class);
 
         intentWidgetClickStopName.setAction(WIDGET_CLICK_STOP_NAME);
-        intentWidgetClickLeftArrow.setAction(WIDGET_CLICK_LEFT_ARROW);
-        intentWidgetClickRightArrow.setAction(WIDGET_CLICK_RIGHT_ARROW);
+        intentWidgetClickArrowLeft.setAction(WIDGET_CLICK_ARROW_LEFT);
+        intentWidgetClickArrowRight.setAction(WIDGET_CLICK_ARROW_RIGHT);
         intentWidgetClickStopForecast.setAction(WIDGET_CLICK_STOP_FORECAST);
 
         PendingIntent pendingIntentWidgetClickStopName =
                 PendingIntent.getBroadcast(context, 0, intentWidgetClickStopName, 0);
-        PendingIntent pendingIntentWidgetClickLeftArrow =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickLeftArrow, 0);
-        PendingIntent pendingIntentWidgetClickRightArrow =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickRightArrow, 0);
+        PendingIntent pendingIntentWidgetClickArrowLeft =
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowLeft, 0);
+        PendingIntent pendingIntentWidgetClickArrowRight =
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowRight, 0);
         PendingIntent pendingIntentWidgetClickStopForecast =
                 PendingIntent.getBroadcast(context, 0, intentWidgetClickStopForecast, 0);
 
@@ -386,10 +423,10 @@ public class StopForecastWidget extends AppWidgetProvider {
                 R.id.textview_stop_name, pendingIntentWidgetClickStopName
         );
         remoteViews.setOnClickPendingIntent(
-                R.id.textview_stop_name_left_arrow, pendingIntentWidgetClickLeftArrow
+                R.id.textview_stop_name_left_arrow, pendingIntentWidgetClickArrowLeft
         );
         remoteViews.setOnClickPendingIntent(
-                R.id.textview_stop_name_right_arrow, pendingIntentWidgetClickRightArrow
+                R.id.textview_stop_name_right_arrow, pendingIntentWidgetClickArrowRight
         );
         remoteViews.setOnClickPendingIntent(
                 R.id.linearlayout_stop_forecast, pendingIntentWidgetClickStopForecast

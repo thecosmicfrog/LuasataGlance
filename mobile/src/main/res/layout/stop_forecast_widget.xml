@@ -42,7 +42,7 @@
             android:layout_weight="0.075"
             android:layout_marginLeft="3dp"
             android:layout_marginBottom="3dp"
-            android:text="@string/widget_left_arrow"
+            android:text="@string/widget_arrow_left"
             android:textColor="@android:color/white" />
 
         <TextView
@@ -62,7 +62,7 @@
             android:layout_marginRight="3dp"
             android:layout_marginBottom="3dp"
             android:layout_weight="0.075"
-            android:text="@string/widget_right_arrow"
+            android:text="@string/widget_arrow_right"
             android:textColor="@android:color/white" />
     </LinearLayout>
 

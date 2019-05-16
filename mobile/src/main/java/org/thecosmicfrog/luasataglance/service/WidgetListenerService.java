@@ -37,6 +37,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
@@ -55,10 +57,12 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.OkClient;
 import retrofit.client.Response;
 
 public class WidgetListenerService extends Service {
@@ -224,9 +228,18 @@ public class WidgetListenerService extends Service {
             setIsLoading(appWidgetManager, widgetId, views, true);
 
             /*
-             * Prepare Retrofit API call.
+             * The widget has a configured timeout, which clears the stop forecast after a period.
+             * As such, the HTTP timeout should be less than the views timeout. Create an
+             * OkHttpClient to facilitate this.
              */
+            final long HTTP_TIMEOUT = 10;
+            OkHttpClient okHttpClient = new OkHttpClient();
+            okHttpClient.setConnectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS);
+            okHttpClient.setReadTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS);
+
+            /* Prepare Retrofit API call. */
             final RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setClient(new OkClient(okHttpClient))
                     .setEndpoint(API_URL)
                     .build();
 
@@ -261,6 +274,16 @@ public class WidgetListenerService extends Service {
                     Log.e(LOG_TAG, "Failure during call to server.");
 
                     /*
+                     * Update the stop forecast with a null StopForecast in order to show the user
+                     * a generic network error.
+                     */
+                    updateStopForecast(context, views, null);
+
+                    appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
+
+                    setIsLoading(appWidgetManager, widgetId, views, false);
+
+                    /*
                      * If we get a message or a response from the server, there's likely an issue
                      * with the client request or the server's response itself.
                      */
@@ -292,12 +315,13 @@ public class WidgetListenerService extends Service {
                      * If we don't receive a message or response, we can still get an idea of what's
                      * going on by getting the "kind" of error.
                      */
-                    if (retrofitError.getKind() != null)
+                    if (retrofitError.getKind() != null) {
                         Log.e(LOG_TAG, retrofitError.getKind().toString());
+                    }
 
-                    Analytics.httpError(
+                    Analytics.httpErrorWidget(
                             getApplicationContext(),
-                            "http_error",
+                            "http_error_widget",
                             "http_error_general_widget"
                     );
                 }
@@ -442,16 +466,16 @@ public class WidgetListenerService extends Service {
 
         String message;
 
-        if (localeDefault.startsWith(GAEILGE)) {
-            message = getString(R.string.message_success);
-        } else {
-            message = stopForecast.getMessage();
-        }
-
-        mapEnglishGaeilge = new EnglishGaeilgeMap();
-
         /* If a valid stop forecast exists... */
         if (stopForecast != null) {
+            if (localeDefault.startsWith(GAEILGE)) {
+                message = getString(R.string.message_success);
+            } else {
+                message = stopForecast.getMessage();
+            }
+
+            mapEnglishGaeilge = new EnglishGaeilgeMap();
+
             if (stopForecast.getMessage() != null) {
                 if (message.contains(getString(R.string.message_success))) {
                     /*
@@ -469,15 +493,6 @@ public class WidgetListenerService extends Service {
                             R.id.linearlayout_stop_name,
                             "setBackgroundResource",
                             R.color.message_error
-                    );
-
-                    /*
-                     * To make best use of the widget's real estate, re-use one of the inbound
-                     * stop TextViews for the status message.
-                     */
-                    views.setTextViewText(
-                            R.id.textview_inbound_stop1_name,
-                            message
                     );
                 }
             }
@@ -597,14 +612,14 @@ public class WidgetListenerService extends Service {
              * change the color of the message title box red.
              */
             views.setInt(
-                    TEXTVIEW_STOP_NAME,
+                    R.id.linearlayout_stop_name,
                     "setBackgroundResource",
                     R.color.message_error
             );
 
             views.setTextViewText(
                     TEXTVIEW_INBOUND_STOP1_NAME,
-                    getString(R.string.message_error)
+                    getString(R.string.widget_message_error)
             );
         }
     }

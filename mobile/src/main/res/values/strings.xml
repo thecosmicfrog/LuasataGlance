@@ -185,8 +185,10 @@
     <!--
         Widget
     -->
-    <string name="widget_left_arrow">\u25C0</string>
-    <string name="widget_right_arrow">\u25B6</string>
+    <string name="widget_arrow_left">\u25C0</string>
+    <string name="widget_arrow_right">\u25B6</string>
+    <string name="widget_message_error"> Network error.\n\nPlease check your network connection.
+    </string>
     <string name="widget_retrieving_stop_forecast" translatable="false">Retrieving stop forecast for
         widget.</string>
 
