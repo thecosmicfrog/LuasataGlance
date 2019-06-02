@@ -23,8 +23,8 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">133</string>
-    <string name="version_name" translatable="false">0.133</string>
+    <string name="version_code" translatable="false">135</string>
+    <string name="version_name" translatable="false">0.135</string>
 
     <!--
         Activities

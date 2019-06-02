@@ -24,6 +24,7 @@ package org.thecosmicfrog.luasataglance.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -333,6 +334,15 @@ public class MainActivity extends AppCompatActivity {
      * Show What's New dialog to user if they have recently updated the app.
      */
     private void showWhatsNewDialog() {
+        /* Don't show the What's New dialog if we're running in Firebase Test Lab. */
+        String settingFirebaseTestLab =
+                Settings.System.getString(getContentResolver(), "firebase.test.lab");
+        if (settingFirebaseTestLab != null && settingFirebaseTestLab.equals("true")) {
+            Log.i(LOG_TAG, "Running in Firebase Test Lab.");
+
+            return;
+        }
+
         /*
          * Load two values for the current app version. One comes from strings.xml and the other
          * comes from shared preferences. The value from strings.xml should be considered the

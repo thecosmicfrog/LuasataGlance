@@ -159,6 +159,7 @@ public class WidgetListenerService extends Service {
                 }
             } else {
                 Log.e(LOG_TAG, "No widget IDs received.");
+                stopService(intent);
             }
         }
 
