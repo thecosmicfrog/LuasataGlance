@@ -79,6 +79,11 @@
                 <action android:name="org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".receiver.OnAppUpdateReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
+        </receiver>
         <receiver android:name=".widget.StopForecastWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
