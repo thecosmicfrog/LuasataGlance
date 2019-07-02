@@ -23,7 +23,7 @@ package org.thecosmicfrog.luasataglance.activity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.view.Window;
 
 import org.thecosmicfrog.luasataglance.R;

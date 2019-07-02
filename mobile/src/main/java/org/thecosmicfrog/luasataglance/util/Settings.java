@@ -23,15 +23,12 @@ package org.thecosmicfrog.luasataglance.util;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AlertDialog;
+
+import androidx.appcompat.app.AlertDialog;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.activity.AboutActivity;
-import org.thecosmicfrog.luasataglance.activity.LicenseActivity;
 import org.thecosmicfrog.luasataglance.activity.NewsActivity;
 import org.thecosmicfrog.luasataglance.activity.SettingsActivity;
 

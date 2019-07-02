@@ -23,7 +23,7 @@ package org.thecosmicfrog.luasataglance.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;

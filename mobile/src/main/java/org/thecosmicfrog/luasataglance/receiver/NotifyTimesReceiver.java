@@ -33,7 +33,7 @@ import android.content.IntentFilter;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;

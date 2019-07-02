@@ -22,7 +22,7 @@
 package org.thecosmicfrog.luasataglance.util;
 
 import android.app.Activity;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.util.Log;
 import android.view.View;
 

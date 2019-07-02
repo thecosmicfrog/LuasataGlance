@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="20dp" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/redline_swiperefreshlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -124,5 +124,5 @@
                     android:layout_height="10dp" />
             </LinearLayout>
         </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

@@ -24,7 +24,7 @@ package org.thecosmicfrog.luasataglance.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
