@@ -976,7 +976,8 @@ public class LineFragment extends Fragment {
                 status = stopForecast.getMessage();
             }
 
-            if (operatingNormally) {
+            /* A lot of Luas status messages relate to lifts being out of service. Ignore these. */
+            if (operatingNormally || status.toLowerCase().contains("lift")) {
                 /*
                  * No error message on server. Change the message title TextView to
                  * green and set a default success message.

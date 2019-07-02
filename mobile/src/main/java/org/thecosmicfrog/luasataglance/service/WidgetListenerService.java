@@ -45,9 +45,9 @@ import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
-import org.thecosmicfrog.luasataglance.object.Tram;
 import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
+import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -207,7 +207,7 @@ public class WidgetListenerService extends Service {
             /* API constants. */
             final String API_URL = "https://api.thecosmicfrog.org/cgi-bin";
             final String API_ACTION = "times";
-            final String API_VER = "2";
+            final String API_VER = "3";
 
             /* Instantiate a new EnglishGaeilgeMap. */
             mapEnglishGaeilge = new EnglishGaeilgeMap();
@@ -252,7 +252,7 @@ public class WidgetListenerService extends Service {
                     /* If the server returned times. */
                     if (apiTimes != null) {
                         /* Then create a stop forecast with this data. */
-                        StopForecast stopForecast = createStopForecast(apiTimes);
+                        StopForecast stopForecast = StopForecastUtil.createStopForecast(apiTimes);
 
                         /* Update the stop forecast. */
                         updateStopForecast(context, views, stopForecast);
@@ -344,39 +344,6 @@ public class WidgetListenerService extends Service {
     }
 
     /**
-     * Create a usable stop forecast with the data returned from the server.
-     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
-     * @return Usable stop forecast.
-     */
-    private StopForecast createStopForecast(ApiTimes apiTimes) {
-        StopForecast stopForecast = new StopForecast();
-
-        if (apiTimes.getTrams() != null) {
-            for (Tram tram : apiTimes.getTrams()) {
-                switch (tram.getDirection()) {
-                    case "Inbound":
-                        stopForecast.addInboundTram(tram);
-
-                        break;
-
-                    case "Outbound":
-                        stopForecast.addOutboundTram(tram);
-
-                        break;
-
-                    default:
-                        /* If for some reason the direction doesn't make sense. */
-                        Log.e(LOG_TAG, "Invalid direction: " + tram.getDirection());
-                }
-            }
-        }
-
-        stopForecast.setMessage(apiTimes.getMessage());
-
-        return stopForecast;
-    }
-
-    /**
      * Make progress bar appear or disappear.
      * @param loading Whether or not progress bar should animate.
      */
@@ -465,38 +432,42 @@ public class WidgetListenerService extends Service {
     private void updateStopForecast(Context context, RemoteViews views, StopForecast stopForecast) {
         final String GAEILGE = "ga";
 
-        String message;
-
         /* If a valid stop forecast exists... */
         if (stopForecast != null) {
+            String status;
+            boolean operatingNormally = false;
+
+            if (stopForecast.getStopForecastStatusDirectionInbound().getOperatingNormally()
+                    && stopForecast.getStopForecastStatusDirectionOutbound().getOperatingNormally()) {
+                operatingNormally = true;
+            }
+
             if (localeDefault.startsWith(GAEILGE)) {
-                message = getString(R.string.message_success);
+                status = getString(R.string.message_success);
             } else {
-                message = stopForecast.getMessage();
+                status = stopForecast.getMessage();
             }
 
-            mapEnglishGaeilge = new EnglishGaeilgeMap();
+            /* A lot of Luas status messages relate to lifts being out of service. Ignore these. */
+            if (operatingNormally || status.toLowerCase().contains("lift")) {
+                /*
+                 * No error message on server. Change the stop name TextView to green.
+                 */
+                views.setInt(
+                        R.id.linearlayout_stop_name,
+                        "setBackgroundResource",
+                        R.color.message_success
+                );
+            } else {
+                Log.w(LOG_TAG, "Server has returned a service disruption or error.");
 
-            if (stopForecast.getMessage() != null) {
-                if (message.contains(getString(R.string.message_success))) {
-                    /*
-                     * No error message on server. Change the stop name TextView to green.
-                     */
-                    views.setInt(
-                            R.id.linearlayout_stop_name,
-                            "setBackgroundResource",
-                            R.color.message_success
-                    );
-                } else {
-                    Log.w(LOG_TAG, "Server has returned a service disruption or error.");
-
-                    views.setInt(
-                            R.id.linearlayout_stop_name,
-                            "setBackgroundResource",
-                            R.color.message_error
-                    );
-                }
+                views.setInt(
+                        R.id.linearlayout_stop_name,
+                        "setBackgroundResource",
+                        R.color.message_error
+                );
             }
+
 
             /*
              * Pull in all trams from the StopForecast, but only display up to two inbound
