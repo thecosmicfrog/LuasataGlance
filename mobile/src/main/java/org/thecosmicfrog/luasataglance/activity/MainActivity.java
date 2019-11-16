@@ -48,13 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private static ImageView imageViewBottomNavAlerts;
-    private static TextView textViewBottomNavAlerts;
-
-    private TextView textViewBottomNavMap;
-    private TextView textViewBottomNavFavourites;
-    private TextView textViewBottomNavFares;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -258,9 +251,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        imageViewBottomNavAlerts = findViewById(R.id.imageview_bottomnav_alerts);
-        textViewBottomNavAlerts = findViewById(R.id.textview_bottomnav_alerts);
-
         showWhatsNewDialog();
     }
 
@@ -285,14 +275,10 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(LOG_TAG, "Screen density is " + DENSITY_DPI + " DPI.");
 
-        textViewBottomNavMap =
+        final TextView textViewBottomNavMap =
                 findViewById(R.id.textview_bottomnav_map);
-        textViewBottomNavFavourites =
+        final TextView textViewBottomNavFavourites =
                 findViewById(R.id.textview_bottomnav_favourites);
-        textViewBottomNavFares =
-                findViewById(R.id.textview_bottomnav_fares);
-        textViewBottomNavAlerts =
-                findViewById(R.id.textview_bottomnav_alerts);
 
         /*
          * If the screen density is particularly low, or if the number of lines in the bottom
@@ -382,13 +368,5 @@ public class MainActivity extends AppCompatActivity {
                     appVersionCurrent
             );
         }
-    }
-
-    public static ImageView getImageViewBottomNavAlerts() {
-        return imageViewBottomNavAlerts;
-    }
-
-    public static TextView getTextViewBottomNavAlerts() {
-        return textViewBottomNavAlerts;
     }
 }

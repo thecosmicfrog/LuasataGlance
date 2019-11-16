@@ -32,5 +32,5 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly 'com.google.android.wearable:wearable:2.4.0'
     api 'com.google.android.support:wearable:2.4.0'
-    api 'com.google.android.gms:play-services-wearable:16.0.1'
+    api 'com.google.android.gms:play-services-wearable:17.0.0'
 }

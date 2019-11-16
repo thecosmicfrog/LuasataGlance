@@ -26,6 +26,8 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import org.thecosmicfrog.luasataglance.util.AppUtil;
+
 public class MessagingInstanceIdService extends FirebaseInstanceIdService {
 
     private final String LOG_TAG = MessagingInstanceIdService.class.getSimpleName();
@@ -39,12 +41,18 @@ public class MessagingInstanceIdService extends FirebaseInstanceIdService {
 
         /* Get updated InstanceID token. */
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        String refreshedTokenToLog;
 
         if (refreshedToken != null) {
-            String refreshedTokenObscured =
-                    refreshedToken.replaceFirst("(.{10}).+(.{10})", "$1...$2");
+            /* If we're in an emulator, just log the token as-is for easy debugging. */
+            if (AppUtil.isEmulator()) {
+                refreshedTokenToLog = refreshedToken;
+            } else {
+                refreshedTokenToLog =
+                        refreshedToken.replaceFirst("(.{10}).+(.{10})", "$1...$2");
+            }
 
-            Log.d(LOG_TAG, "Refreshed token: " + refreshedTokenObscured);
+            Log.d(LOG_TAG, "Refreshed token: " + refreshedTokenToLog);
         }
     }
 }

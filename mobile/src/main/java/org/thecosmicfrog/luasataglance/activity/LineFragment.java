@@ -21,6 +21,7 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
@@ -35,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TableRow;
@@ -90,6 +92,7 @@ public class LineFragment extends Fragment {
     private static StopNameIdMap mapStopNameId;
     private static String localeDefault;
 
+    private Context context;
     private View rootView = null;
     private Menu menu;
     private TabLayout tabLayout;
@@ -100,6 +103,8 @@ public class LineFragment extends Fragment {
     private StatusCardView statusCardView;
     private StopForecastCardView inboundStopForecastCardView;
     private StopForecastCardView outboundStopForecastCardView;
+    private ImageView imageViewBottomNavAlerts;
+    private TextView textViewBottomNavAlerts;
     private boolean isInitialised;
     private TimerTask timerTaskReload;
     private boolean shouldAutoReload = false;
@@ -169,6 +174,13 @@ public class LineFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context c) {
+        super.onAttach(c);
+
+        context = c;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -199,12 +211,17 @@ public class LineFragment extends Fragment {
          * This provides persistence to the app across shutdowns.
          */
         if (!getActivity().getIntent().hasExtra(Constant.STOP_NAME)) {
-            if (Preferences.selectedStopName(getContext(), Constant.NO_LINE) != null) {
-                String stopName = Preferences.selectedStopName(getContext(), Constant.NO_LINE);
+            if (Preferences.selectedStopName(context, Constant.NO_LINE) != null) {
+                String stopName = Preferences.selectedStopName(context, Constant.NO_LINE);
 
                 setTabAndSpinner(stopName);
             }
         }
+
+        imageViewBottomNavAlerts =
+                getActivity().findViewById(R.id.imageview_bottomnav_alerts);
+        textViewBottomNavAlerts =
+                getActivity().findViewById(R.id.textview_bottomnav_alerts);
 
         return rootView;
     }
@@ -225,7 +242,7 @@ public class LineFragment extends Fragment {
 
         /* Remove Favourites tutorial if it has been completed once already. */
         if (line.equals(Constant.RED_LINE)
-                && Preferences.hasRunOnce(getContext(), Constant.TUTORIAL_FAVOURITES)) {
+                && Preferences.hasRunOnce(context, Constant.TUTORIAL_FAVOURITES)) {
             StopForecastUtil.displayTutorial(
                     rootView,
                     Constant.RED_LINE,
@@ -274,9 +291,9 @@ public class LineFragment extends Fragment {
 
                 /* Clear the Extra to avoid opening the same Activity on every start. */
                 getActivity().getIntent().removeExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN);
-            } else if (!Preferences.defaultStopName(getContext()).equals(getString(R.string.none))
-                    && Preferences.defaultStopName(getContext()) != null) {
-                setTabAndSpinner(Preferences.defaultStopName(getContext()));
+            } else if (!Preferences.defaultStopName(context).equals(getString(R.string.none))
+                    && Preferences.defaultStopName(context) != null) {
+                setTabAndSpinner(Preferences.defaultStopName(context));
             }
 
             /* Display tutorial for selecting a stop, if required. */
@@ -315,7 +332,7 @@ public class LineFragment extends Fragment {
                     String stopName =
                             spinnerCardView.getSpinnerStops().getSelectedItem().toString();
 
-                    Preferences.saveSelectedStopName(getContext(), Constant.NO_LINE, stopName);
+                    Preferences.saveSelectedStopName(context, Constant.NO_LINE, stopName);
 
                     loadStopForecast(stopName, false);
 
@@ -342,7 +359,7 @@ public class LineFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Settings.getSettings(getContext(), item);
+        Settings.getSettings(context, item);
 
         return super.onOptionsItemSelected(item);
     }
@@ -439,7 +456,7 @@ public class LineFragment extends Fragment {
 
                             if (isVisibleToUser) {
                                 Preferences.saveSelectedStopName(
-                                        getContext(),
+                                        context,
                                         line,
                                         selectedStopName
                                 );
@@ -469,7 +486,7 @@ public class LineFragment extends Fragment {
                         /* Start the refresh animation. */
                         swipeRefreshLayout.setRefreshing(true);
                         loadStopForecast(
-                                Preferences.selectedStopName(getContext(), line),
+                                Preferences.selectedStopName(context, line),
                                 true
                         );
                     }
@@ -546,7 +563,7 @@ public class LineFragment extends Fragment {
             case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FARES:
                 Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_FARES_ACTIVITY);
                 startActivity(
-                        new Intent(getContext(), Constant.CLASS_FARES_ACTIVITY)
+                        new Intent(context, Constant.CLASS_FARES_ACTIVITY)
                 );
 
                 break;
@@ -554,7 +571,7 @@ public class LineFragment extends Fragment {
             case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FAVOURITES:
                 Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_FAVOURITES_ACTIVITY);
                 startActivity(
-                        new Intent(getContext(), Constant.CLASS_FAVOURITES_ACTIVITY)
+                        new Intent(context, Constant.CLASS_FAVOURITES_ACTIVITY)
                 );
 
                 break;
@@ -567,7 +584,7 @@ public class LineFragment extends Fragment {
             case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_MAPS:
                 Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_MAPS_ACTIVITY);
                 startActivity(
-                        new Intent(getContext(), Constant.CLASS_MAPS_ACTIVITY)
+                        new Intent(context, Constant.CLASS_MAPS_ACTIVITY)
                 );
 
                 break;
@@ -575,7 +592,7 @@ public class LineFragment extends Fragment {
             case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_NEWS:
                 Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_NEWS_ACTIVITY);
                 startActivity(
-                        new Intent(getContext(), Constant.CLASS_NEWS_ACTIVITY)
+                        new Intent(context, Constant.CLASS_NEWS_ACTIVITY)
                 );
 
                 break;
@@ -583,7 +600,7 @@ public class LineFragment extends Fragment {
             case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_SETTINGS:
                 Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_SETTINGS_ACTIVITY);
                 startActivity(
-                        new Intent(getContext(), Constant.CLASS_SETTINGS_ACTIVITY)
+                        new Intent(context, Constant.CLASS_SETTINGS_ACTIVITY)
                 );
 
                 break;
@@ -617,7 +634,7 @@ public class LineFragment extends Fragment {
         if (notifyStopTimeStr.matches(
                 getString(R.string.due) + "|" + "1 .*|2 .*")) {
             Toast.makeText(
-                    getContext(),
+                    context,
                     getString(R.string.cannot_schedule_notification),
                     Toast.LENGTH_LONG
             ).show();
@@ -644,18 +661,18 @@ public class LineFragment extends Fragment {
         StopForecastUtil.displayTutorial(rootView, line, Constant.TUTORIAL_FAVOURITES, true);
 
         Preferences.saveNotifyStopName(
-                getContext(),
+                context,
                 stopName
         );
 
         Preferences.saveNotifyStopTimeExpected(
-                getContext(),
+                context,
                 mapNotifyTimes.get(notifyStopTimeStr)
         );
 
-        getContext().startActivity(
+        context.startActivity(
                 new Intent(
-                        getContext(),
+                        context,
                         NotifyTimeActivity.class
                 )
         );
@@ -743,7 +760,7 @@ public class LineFragment extends Fragment {
                 tab.select();
             }
 
-            spinnerCardView.setSelection(Preferences.selectedStopName(getContext(), line));
+            spinnerCardView.setSelection(Preferences.selectedStopName(context, line));
 
             return false;
         }
@@ -844,7 +861,7 @@ public class LineFragment extends Fragment {
                         }
                     } else {
                         Analytics.nullApitimes(
-                                getContext(),
+                                context,
                                 "null",
                                 "null_apitimes_mobile"
                         );
@@ -895,7 +912,7 @@ public class LineFragment extends Fragment {
                 }
 
                 Analytics.httpError(
-                        getContext(),
+                        context,
                         "http_error",
                         "http_error_general_mobile"
                 );
@@ -937,7 +954,7 @@ public class LineFragment extends Fragment {
             Log.e(LOG_TAG, "Failed to parse created time from API.");
 
             Analytics.apiCreatedParseError(
-                    getContext(),
+                    context,
                     "api_error",
                     "api_created_parse_error_mobile"
             );
@@ -986,13 +1003,13 @@ public class LineFragment extends Fragment {
                 statusCardView.setStatusColor(R.color.message_success);
 
                 /* Change the alerts image to the default white image. */
-                MainActivity.getImageViewBottomNavAlerts().setImageResource(
+                imageViewBottomNavAlerts.setImageResource(
                         R.drawable.ic_error_alerts
                 );
 
                 /* Change the color of the Alerts TextView to white (default). */
-                MainActivity.getTextViewBottomNavAlerts().setTextColor(
-                        ContextCompat.getColor(getContext(), android.R.color.white)
+                textViewBottomNavAlerts.setTextColor(
+                        ContextCompat.getColor(context, android.R.color.white)
                 );
             } else {
                 if (status.equals("")) {
@@ -1012,13 +1029,13 @@ public class LineFragment extends Fragment {
                 statusCardView.setStatusColor(R.color.message_error);
 
                 /* Change the Alerts image to the red version. */
-                MainActivity.getImageViewBottomNavAlerts().setImageResource(
+                imageViewBottomNavAlerts.setImageResource(
                         R.drawable.ic_error_alerts_red
                 );
 
                 /* Change the color of the Alerts TextView to red. */
-                MainActivity.getTextViewBottomNavAlerts().setTextColor(
-                        ContextCompat.getColor(getContext(), R.color.message_error)
+                textViewBottomNavAlerts.setTextColor(
+                        ContextCompat.getColor(context, R.color.message_error)
                 );
             }
 
