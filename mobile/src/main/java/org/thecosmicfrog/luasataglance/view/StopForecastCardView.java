@@ -23,14 +23,15 @@ package org.thecosmicfrog.luasataglance.view;
 
 import android.content.Context;
 import androidx.cardview.widget.CardView;
+
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.util.Preferences;
 
 public class StopForecastCardView extends CardView {
 
@@ -73,7 +74,8 @@ public class StopForecastCardView extends CardView {
                 findViewById(R.id.tablerow_stop2),
                 findViewById(R.id.tablerow_stop3),
                 findViewById(R.id.tablerow_stop4),
-                findViewById(R.id.tablerow_stop5)
+                findViewById(R.id.tablerow_stop5),
+                findViewById(R.id.tablerow_stop6)
         };
 
         textViewStopNames = new TextView[] {
@@ -81,7 +83,8 @@ public class StopForecastCardView extends CardView {
                 findViewById(R.id.textview_stop2_name),
                 findViewById(R.id.textview_stop3_name),
                 findViewById(R.id.textview_stop4_name),
-                findViewById(R.id.textview_stop5_name)
+                findViewById(R.id.textview_stop5_name),
+                findViewById(R.id.textview_stop6_name)
         };
 
         textViewStopTimes = new TextView[] {
@@ -89,7 +92,8 @@ public class StopForecastCardView extends CardView {
                 findViewById(R.id.textview_stop2_time),
                 findViewById(R.id.textview_stop3_time),
                 findViewById(R.id.textview_stop4_time),
-                findViewById(R.id.textview_stop5_time)
+                findViewById(R.id.textview_stop5_time),
+                findViewById(R.id.textview_stop6_time)
         };
 
         adjustTableRowsByScreenDensity(view);
@@ -100,23 +104,29 @@ public class StopForecastCardView extends CardView {
      * @param view View.
      */
     private void adjustTableRowsByScreenDensity(View view) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int densityDpi = displayMetrics.densityDpi;
+        float screenHeightDp = Preferences.screenHeight(getContext());
 
-        Log.i(LOG_TAG, "Screen density is " + densityDpi + " DPI.");
+        Log.i(LOG_TAG, "Screen height is " + screenHeightDp + " DP.");
 
-        if (densityDpi > 320) {
+        if (screenHeightDp > 580.0f) {
             Log.i(LOG_TAG, "Making 4th TableRow visible.");
 
-            TableRow tableRowStop4 = (TableRow) view.findViewById(R.id.tablerow_stop4);
+            TableRow tableRowStop4 = view.findViewById(R.id.tablerow_stop4);
             tableRowStop4.setVisibility(View.VISIBLE);
         }
 
-        if (densityDpi > 500) {
+        if (screenHeightDp > 640.0f) {
             Log.i(LOG_TAG, "Making 5th TableRow visible.");
 
-            TableRow tableRowStop5 = (TableRow) view.findViewById(R.id.tablerow_stop5);
+            TableRow tableRowStop5 = view.findViewById(R.id.tablerow_stop5);
             tableRowStop5.setVisibility(View.VISIBLE);
+        }
+
+        if (screenHeightDp > 700.0f) {
+            Log.i(LOG_TAG, "Making 6th TableRow visible.");
+
+            TableRow tableRowStop6 = view.findViewById(R.id.tablerow_stop6);
+            tableRowStop6.setVisibility(View.VISIBLE);
         }
     }
 
@@ -124,7 +134,7 @@ public class StopForecastCardView extends CardView {
      * Clear the stop forecast.
      */
     public void clearStopForecast() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             textViewStopNames[i].setText("");
             textViewStopTimes[i].setText("");
 

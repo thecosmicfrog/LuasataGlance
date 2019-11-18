@@ -115,6 +115,19 @@ public final class Preferences {
     }
 
     /**
+     * Load the device screen height in DP from shared preferences.
+     * @param context Context.
+     * @return Device screen height in DP, or -1.0 if none found.
+     */
+    public static float screenHeight(Context context) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getFloat("screenHeight", -1.0f);
+    }
+
+    /**
      * Load the currently-selected stop name from shared preferences.
      * @param context Context.
      * @return Selected stop name, or null if none found.
@@ -233,6 +246,24 @@ public final class Preferences {
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
         prefs.putInt("notifyStopTimeExpected", notifyStopTimeExpected);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Save the device screen height in DP to shared preferences.
+     * @param context Context.
+     * @param screenHeight Device screen height in DP.
+     * @return Successfully saved.
+     */
+    public static boolean saveScreenHeight(Context context,
+                                           float screenHeight) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.putFloat("screenHeight", screenHeight);
 
         return prefs.commit();
     }

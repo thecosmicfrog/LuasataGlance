@@ -31,6 +31,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -58,15 +59,23 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setElevation(0f);
 
-        /* Set status bar colour. */
+        /* Set status and navigation bar colour. */
         if (Build.VERSION.SDK_INT >= 21) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(
-                    ContextCompat.getColor(getApplicationContext(),
-                            R.color.luas_purple_statusbar)
+                    ContextCompat.getColor(
+                            getApplicationContext(),
+                            R.color.luas_purple_statusbar
+                    )
             );
+
+            window.setNavigationBarColor(
+                    ContextCompat.getColor(
+                            getApplicationContext(),
+                            R.color.luas_purple_statusbar
+                    ));
         }
 
         /*
@@ -259,6 +268,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         adjustBottomNavByScreen();
+
+        getScreenHeight();
     }
 
     @Override
@@ -368,5 +379,16 @@ public class MainActivity extends AppCompatActivity {
                     appVersionCurrent
             );
         }
+    }
+
+    private void getScreenHeight() {
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        display.getMetrics(displayMetrics);
+
+        float density  = getResources().getDisplayMetrics().density;
+        float dpHeight = displayMetrics.heightPixels / density;
+
+        Preferences.saveScreenHeight(getApplicationContext(), dpHeight);
     }
 }

@@ -525,7 +525,7 @@ public class LineFragment extends Fragment {
         TableRow[] tableRowInboundStops = inboundStopForecastCardView.getTableRowStops();
         TableRow[] tableRowOutboundStops = outboundStopForecastCardView.getTableRowStops();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             final int index = i;
 
             tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
@@ -1053,7 +1053,7 @@ public class LineFragment extends Fragment {
                         String dueMinutes =
                                 stopForecast.getInboundTrams().get(i).getDueMinutes();
 
-                        if (i < 5) {
+                        if (i < 6) {
                             if (localeDefault.startsWith(GAEILGE)) {
                                 inboundTram = mapEnglishGaeilge.get(
                                         stopForecast.getInboundTrams()
@@ -1102,7 +1102,7 @@ public class LineFragment extends Fragment {
                         String dueMinutes =
                                 stopForecast.getOutboundTrams().get(i).getDueMinutes();
 
-                        if (i < 5) {
+                        if (i < 6) {
                             if (localeDefault.startsWith(GAEILGE)) {
                                 outboundTram = mapEnglishGaeilge.get(
                                         stopForecast.getOutboundTrams()
