@@ -39,6 +39,11 @@
         <item name="titleTextColor">@android:color/white</item>
     </style>
 
+    <style name="LuasAtAGlanceTabLayout" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
