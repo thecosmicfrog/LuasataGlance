@@ -18,7 +18,13 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Overrides. -->
+    <style name="TextAppearance.Design.Snackbar.Message" parent="android:TextAppearance" tools:override="true">
+        <item name="android:textColor">@color/text_grey</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">

@@ -18,7 +18,10 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Overrides. -->
+    <color name="design_snackbar_background_color" tools:override="true">@android:color/white</color>
+
     <color name="favourites_yellow">#fffdd835</color>
     <color name="listview_divider">#ffe0e0e0</color>
     <color name="luas_purple">#ff4d3475</color>
