@@ -51,6 +51,6 @@
             android:scrollHorizontally="false"
             android:autoLink="all"
             android:text="@string/message"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 </merge>

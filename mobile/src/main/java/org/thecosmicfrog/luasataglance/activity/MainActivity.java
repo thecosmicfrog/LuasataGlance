@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        getScreenHeight();
+
         /* Set the ActionBar elevation to 0. */
         if (getSupportActionBar() != null)
             getSupportActionBar().setElevation(0f);
@@ -268,8 +270,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         adjustBottomNavByScreen();
-
-        getScreenHeight();
     }
 
     @Override

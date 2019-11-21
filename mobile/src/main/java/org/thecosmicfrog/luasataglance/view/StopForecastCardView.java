@@ -35,7 +35,7 @@ import org.thecosmicfrog.luasataglance.util.Preferences;
 
 public class StopForecastCardView extends CardView {
 
-    private final String LOG_TAG = SpinnerCardView.class.getSimpleName();
+    private final String LOG_TAG = StopForecastCardView.class.getSimpleName();
 
     private TextView textViewDirection;
     private TableRow[] tableRowStops;
@@ -59,6 +59,8 @@ public class StopForecastCardView extends CardView {
 
         init(context);
     }
+
+
 
     /**
      * Initialise custom View.

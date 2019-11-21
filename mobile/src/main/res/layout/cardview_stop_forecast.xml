@@ -54,12 +54,12 @@
                 <TextView
                     android:id="@+id/textview_stop1_name"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/textview_stop1_time"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <View
@@ -76,12 +76,12 @@
                 <TextView
                     android:id="@+id/textview_stop2_name"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/textview_stop2_time"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <View
@@ -98,12 +98,12 @@
                 <TextView
                     android:id="@+id/textview_stop3_name"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/textview_stop3_time"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <View
@@ -121,12 +121,12 @@
                 <TextView
                     android:id="@+id/textview_stop4_name"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/textview_stop4_time"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <View
@@ -144,12 +144,12 @@
                 <TextView
                     android:id="@+id/textview_stop5_name"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/textview_stop5_time"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <View
@@ -167,12 +167,12 @@
                 <TextView
                     android:id="@+id/textview_stop6_name"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/textview_stop6_time"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
             </TableRow>
         </TableLayout>
     </LinearLayout>
