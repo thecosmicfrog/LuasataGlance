@@ -27,6 +27,8 @@ buildscript {
 }
 
 allprojects {
+    ext.versionCode = 145
+
     repositories {
         google()
         jcenter()

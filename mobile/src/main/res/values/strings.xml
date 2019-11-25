@@ -23,8 +23,6 @@
         App
     -->
     <string name="app_name">Luas at a Glance</string>
-    <string name="version_code" translatable="false">143</string>
-    <string name="version_name" translatable="false">0.143</string>
 
     <!--
         Activities
@@ -167,18 +165,12 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version 0.143 (13th June 2019)
+    <string name="whatsnew_title_current" translatable="false">Version %s (%s)
     </string>
     <string name="whatsnew_content_current" translatable="false">\u2022 <b>Status</b> bar and
         <b>Alerts</b> button no longer turn red when a lift is out of order. The associated message
         will still be displayed.\n\u2022 Made widget status bar colour more reliable during Luas
         service outages.
-    </string>
-    <string name="whatsnew_title_previous" translatable="false">Version 0.136 (4th June 2019)
-    </string>
-    <string name="whatsnew_content_previous" translatable="false">\u2022 [FIXED] Fixed issue where
-        a widget notification occasionally got stuck for some users. Thanks to everyone who reported
-        this!
     </string>
 
     <!--

@@ -10,11 +10,18 @@ android {
         applicationId "org.thecosmicfrog.luasataglance"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 14300
-        versionName "0.143"
+        versionCode generateVersionCode("default")
+        versionName generateVersionName()
     }
     buildTypes {
+        debug{
+            resValue "string", "version_code", generateVersionCode().toString()
+            resValue "string", "version_name", generateVersionName()
+        }
         release {
+            resValue "string", "version_code", generateVersionCode().toString()
+            resValue "string", "version_name", generateVersionName()
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -23,7 +30,7 @@ android {
     productFlavors {
         wear2 {
             minSdkVersion 25
-            versionCode 14301
+            versionCode generateVersionCode("wear2")
         }
     }
 }
@@ -33,4 +40,16 @@ dependencies {
     compileOnly 'com.google.android.wearable:wearable:2.4.0'
     api 'com.google.android.support:wearable:2.4.0'
     api 'com.google.android.gms:play-services-wearable:17.0.0'
+}
+
+private Integer generateVersionCode(String flavor) {
+    if (flavor == "wear2") {
+        Integer.parseInt(String.format("%s01", Integer.toString(ext.versionCode)))
+    } else {
+        ext.versionCode
+    }
+}
+
+private String generateVersionName() {
+    String.format("0.%s", Integer.toString(generateVersionCode()))
 }

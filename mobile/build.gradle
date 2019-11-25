@@ -1,19 +1,30 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 143
-        versionName "0.143"
+        targetSdkVersion 29
+        versionCode generateVersionCode()
+        versionName generateVersionName()
     }
     buildTypes {
+        debug{
+            resValue "string", "version_code", generateVersionCode().toString()
+            resValue "string", "version_name", generateVersionName()
+            resValue "string", "release_date", generateReleaseDate()
+        }
         release {
+            resValue "string", "version_code", generateVersionCode().toString()
+            resValue "string", "version_name", generateVersionName()
+            resValue "string", "release_date", generateReleaseDate()
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -39,3 +50,19 @@ dependencies {
 
 // Firebase
 apply plugin: 'com.google.gms.google-services'
+
+private Integer generateVersionCode() {
+    ext.versionCode
+}
+
+private String generateVersionName() {
+    String.format("0.%s", Integer.toString(generateVersionCode()))
+}
+
+private static String generateReleaseDate() {
+    Date currentDate = new Date()
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+    String currentDateFormatted = dateFormat.format(currentDate)
+
+    currentDateFormatted
+}

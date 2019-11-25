@@ -23,8 +23,10 @@ package org.thecosmicfrog.luasataglance.activity;
 
 import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentActivity;
 import android.view.Window;
+import android.widget.TextView;
+
+import androidx.fragment.app.FragmentActivity;
 
 import org.thecosmicfrog.luasataglance.R;
 
@@ -45,5 +47,18 @@ public class WhatsNewActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_whats_new);
+
+        formatAndSetWhatsNewTitles();
+    }
+
+    private void formatAndSetWhatsNewTitles() {
+        TextView textViewWhatsNewTitleCurrent = findViewById(R.id.textview_whatsnew_title_current);
+        textViewWhatsNewTitleCurrent.setText(
+                String.format(
+                        getString(R.string.whatsnew_title_current),
+                        getString(R.string.version_name),
+                        getString(R.string.release_date)
+                )
+        );
     }
 }
