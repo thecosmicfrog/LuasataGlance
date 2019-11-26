@@ -37,6 +37,12 @@ public final class Analytics {
     private static final String EVENT_HTTP_ERROR = "http_error";
     private static final String EVENT_HTTP_ERROR_WEAR = "http_error_wear";
     private static final String EVENT_HTTP_ERROR_WIDGET = "http_error_widget";
+    private static final String EVENT_PERMISSION_LOCATION_DENIED = "permission_location_denied";
+    private static final String EVENT_PERMISSION_LOCATION_GRANTED = "permission_location_granted";
+    private static final String EVENT_PERMISSION_RATIONALE_LOCATION_DENIED =
+            "permission_rationale_location_denied";
+    private static final String EVENT_PERMISSION_RATIONALE_LOCATION_ACCEPTED =
+            "permission_rationale_location_accepted";
     private static final String EVENT_NULL_APITIMES = "null_apitimes";
     private static final String LOG_TAG = Analytics.class.getSimpleName();
 
@@ -151,6 +157,74 @@ public final class Analytics {
             params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
             params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
             firebaseAnalytics.logEvent(EVENT_NULL_APITIMES, params);
+        }
+    }
+
+    public static void permissionLocationDenied(
+            Context context, String contentType, String itemId) {
+        try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error gathering analytics for " + itemId + ".");
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        if (firebaseAnalytics != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+            firebaseAnalytics.logEvent(EVENT_PERMISSION_LOCATION_DENIED, params);
+        }
+    }
+
+    public static void permissionLocationGranted(
+            Context context, String contentType, String itemId) {
+        try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error gathering analytics for " + itemId + ".");
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        if (firebaseAnalytics != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+            firebaseAnalytics.logEvent(EVENT_PERMISSION_LOCATION_GRANTED, params);
+        }
+    }
+
+    public static void permissionRationaleLocationDenied(
+            Context context, String contentType, String itemId) {
+        try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error gathering analytics for " + itemId + ".");
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        if (firebaseAnalytics != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+            firebaseAnalytics.logEvent(EVENT_PERMISSION_RATIONALE_LOCATION_DENIED, params);
+        }
+    }
+
+    public static void permissionRationaleLocationAccepted(
+            Context context, String contentType, String itemId) {
+        try {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error gathering analytics for " + itemId + ".");
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        if (firebaseAnalytics != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+            params.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+            firebaseAnalytics.logEvent(EVENT_PERMISSION_RATIONALE_LOCATION_ACCEPTED, params);
         }
     }
 

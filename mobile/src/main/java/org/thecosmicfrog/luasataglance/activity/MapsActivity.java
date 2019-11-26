@@ -47,6 +47,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException;
 import org.thecosmicfrog.luasataglance.object.StopCoords;
+import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
@@ -208,23 +209,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-        // TODO: Analytics
         Log.i(LOG_TAG, "Location permission granted.");
+        Analytics.permissionLocationGranted(
+                getApplicationContext(),
+                "permission_location_granted",
+                "permission_location_granted"
+        );
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-        Log.i(LOG_TAG, "Location permission granted.");
+        Log.i(LOG_TAG, "Location permission denied.");
+        Analytics.permissionLocationDenied(
+                getApplicationContext(),
+                "permission_location_denied",
+                "permission_location_denied"
+        );
     }
 
     @Override
     public void onRationaleAccepted(int requestCode) {
         Log.i(LOG_TAG, "Location rationale accepted.");
+        Analytics.permissionRationaleLocationAccepted(
+                getApplicationContext(),
+                "permission_rationale_location_accepted",
+                "permission_rationale_location_accepted"
+        );
     }
 
     @Override
     public void onRationaleDenied(int requestCode) {
         Log.i(LOG_TAG, "Location rationale denied.");
+        Analytics.permissionRationaleLocationDenied(
+                getApplicationContext(),
+                "permission_rationale_location_denied",
+                "permission_rationale_location_denied"
+        );
 
         Preferences.savePermissionLocationShouldNotAskAgain(getApplicationContext(), true);
     }
