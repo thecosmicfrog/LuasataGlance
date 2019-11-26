@@ -26,11 +26,21 @@ buildscript {
     }
 }
 
+plugins {
+    id "org.sonarqube" version "2.7"
+}
+
 allprojects {
-    ext.versionCode = 145
+    ext.versionCode = 147
 
     repositories {
         google()
         jcenter()
+    }
+}
+
+sonarqube {
+    properties {
+        property 'sonar.exclusions', "**/src/**/res/values/google_maps_api.xml, **/google-services.json"
     }
 }

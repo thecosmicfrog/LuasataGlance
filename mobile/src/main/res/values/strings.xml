@@ -154,6 +154,14 @@
     <string name="notify_invalid_time">Invalid time: Tram expected before then.</string>
 
     <!--
+        Permissions
+    -->
+    <string name="rationale_ask_accept" translatable="false">Grant permission</string>
+    <string name="rationale_ask_decline" translatable="false">No thanks</string>
+    <string name="rationale_location" translatable="false">Luas at a Glance can optionally show your
+        location on the map, making it easier for you to find your nearest Luas stop.</string>
+
+    <!--
         Settings
     -->
     <string name="pref_title_notifications">Notifications</string>

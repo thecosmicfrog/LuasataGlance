@@ -46,7 +46,7 @@ private Integer generateVersionCode(String flavor) {
     if (flavor == "wear2") {
         Integer.parseInt(String.format("%s01", Integer.toString(ext.versionCode)))
     } else {
-        ext.versionCode
+        project.versionCode
     }
 }
 

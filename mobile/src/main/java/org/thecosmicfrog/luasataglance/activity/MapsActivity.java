@@ -21,8 +21,12 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
@@ -44,14 +48,23 @@ import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException;
 import org.thecosmicfrog.luasataglance.object.StopCoords;
 import org.thecosmicfrog.luasataglance.util.Constant;
+import org.thecosmicfrog.luasataglance.util.Preferences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+import pub.devrel.easypermissions.PermissionRequest;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+        EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
+
+    private static final int REQUEST_CODE_LOCATION = 101;
 
     private final String LOG_TAG = MapsActivity.class.getSimpleName();
+    private final String[] PERMISSIONS_LOCATION = {Manifest.permission.ACCESS_FINE_LOCATION};
 
     private GoogleMap map;
     private double[][] stopCoordsRedLine;
@@ -81,6 +94,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        if (!Preferences.permissionLocationShouldNotAskAgain(getApplicationContext())) {
+            EasyPermissions.requestPermissions(
+                    new PermissionRequest.Builder(
+                            this,
+                            REQUEST_CODE_LOCATION,
+                            PERMISSIONS_LOCATION)
+                            .setRationale(R.string.rationale_location)
+                            .setPositiveButtonText(R.string.rationale_ask_accept)
+                            .setNegativeButtonText(R.string.rationale_ask_decline)
+                            .setTheme(android.R.style.Theme_Material_Light_Dialog_Alert)
+                            .build()
+            );
+        }
+
         setContentView(R.layout.activity_maps);
 
         /* Obtain the SupportMapFragment and get notified when the map is ready to be used. */
@@ -88,7 +115,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -102,6 +128,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+
+        setMyLocationEnabled();
 
         /* Set the default Camera position and zoom. */
         map.moveCamera(
@@ -162,6 +190,78 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.e(LOG_TAG, Log.getStackTraceString(e));
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (hasAllPermissionsGranted(grantResults)) {
+            Preferences.savePermissionLocationGranted(getApplicationContext(), true);
+
+            recreate();
+        }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        // TODO: Analytics
+        Log.i(LOG_TAG, "Location permission granted.");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        Log.i(LOG_TAG, "Location permission granted.");
+    }
+
+    @Override
+    public void onRationaleAccepted(int requestCode) {
+        Log.i(LOG_TAG, "Location rationale accepted.");
+    }
+
+    @Override
+    public void onRationaleDenied(int requestCode) {
+        Log.i(LOG_TAG, "Location rationale denied.");
+
+        Preferences.savePermissionLocationShouldNotAskAgain(getApplicationContext(), true);
+    }
+
+    /**
+     * Enable "my location" feature in Google Maps dialog.
+     */
+    @AfterPermissionGranted(REQUEST_CODE_LOCATION)
+    private void setMyLocationEnabled() {
+        if (EasyPermissions.hasPermissions(this, PERMISSIONS_LOCATION)) {
+            try {
+                if (map != null && Preferences.permissionLocationGranted(getApplicationContext())) {
+                    Log.i(LOG_TAG, "Enabling user's location.");
+
+                    map.setMyLocationEnabled(true);
+                }
+            } catch (SecurityException e) {
+                Log.w(LOG_TAG, "Location permission not granted.");
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Unknown error occurred while setting user's location.");
+            }
+        }
+    }
+
+    /**
+     * Check if all permissionsed have been granted.
+     * @param grantResults Grant results.
+     * @return All permissioned granted or not.
+     */
+    private boolean hasAllPermissionsGranted(@NonNull int[] grantResults) {
+        for (int grantResult : grantResults) {
+            if (grantResult == PackageManager.PERMISSION_DENIED) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
