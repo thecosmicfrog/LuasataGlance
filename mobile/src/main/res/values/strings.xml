@@ -173,12 +173,14 @@
     <!--
         What's New
     -->
-    <string name="whatsnew_title_current" translatable="false">Version %s (%s)
-    </string>
-    <string name="whatsnew_content_current" translatable="false">\u2022 <b>Status</b> bar and
-        <b>Alerts</b> button no longer turn red when a lift is out of order. The associated message
-        will still be displayed.\n\u2022 Made widget status bar colour more reliable during Luas
-        service outages.
+    <string name="whatsnew_title_current" translatable="false">Version %s (%s)</string>
+    <string name="whatsnew_content_current" translatable="false">
+        \u2022 The <b>Luas Map</b> now shows your current location, making it easier for you to find
+        your nearest Luas stop.\n\n
+        \u2022 Improvements for larger screen sizes - now even more trams will be displayed on
+        taller screens! Tweaked text size to aid readability.\n\n
+        \u2022 Other misc. interface tweaks.\n\n
+        \u2022 Updates to privacy policy regarding crash reporting service.
     </string>
 
     <!--

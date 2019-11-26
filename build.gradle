@@ -31,7 +31,7 @@ plugins {
 }
 
 allprojects {
-    ext.versionCode = 148
+    ext.versionCode = 149
 
     repositories {
         google()
