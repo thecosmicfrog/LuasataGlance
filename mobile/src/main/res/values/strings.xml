@@ -116,6 +116,7 @@
     <string name="content_desc_bottomnav_fares">Fares button</string>
     <string name="content_desc_bottomnav_favourites">Favourites button</string>
     <string name="content_desc_bottomnav_map">Luas Map button</string>
+    <string name="content_desc_map_close">Close Luas Map</string>
 
     <!--
         Fares

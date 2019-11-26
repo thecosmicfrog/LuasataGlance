@@ -116,6 +116,7 @@
     <string name="content_desc_bottomnav_fares">Cnaipe Táillí</string>
     <string name="content_desc_bottomnav_favourites">Cnaipe Ceanáin</string>
     <string name="content_desc_bottomnav_map">Cnaipe Léarscáil</string>
+    <string name="content_desc_map_close">Cnaipe dún léarscáil</string>
 
     <!--
         Fares
