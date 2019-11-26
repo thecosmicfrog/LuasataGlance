@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="22dp"
         android:weightSum="1"
-        android:elevation="@dimen/cardview_default_elevation"
+        android:elevation="@dimen/cardview_laag_elevation"
         android:background="@color/message_success">
 
         <TextView
@@ -69,7 +69,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:elevation="@dimen/cardview_default_elevation">
+        android:elevation="@dimen/cardview_laag_elevation">
 
         <ProgressBar
             style="?android:attr/progressBarStyleHorizontal"
@@ -91,7 +91,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/cardview_default_elevation">
+            android:elevation="@dimen/cardview_laag_elevation">
 
             <TextView
                 android:id="@+id/textview_inbound"
@@ -180,7 +180,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/cardview_default_elevation"
+            android:elevation="@dimen/cardview_laag_elevation"
             android:orientation="vertical">
 
             <TextView

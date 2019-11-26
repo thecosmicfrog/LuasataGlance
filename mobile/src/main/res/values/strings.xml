@@ -109,6 +109,15 @@
         Duinn</string>
 
     <!--
+        Content descriptions
+    -->
+    <string name="content_desc_action_bar_up_description">Navigate up</string>
+    <string name="content_desc_bottomnav_alerts">Alerts button</string>
+    <string name="content_desc_bottomnav_fares">Fares button</string>
+    <string name="content_desc_bottomnav_favourites">Favourites button</string>
+    <string name="content_desc_bottomnav_map">Luas Map button</string>
+
+    <!--
         Fares
     -->
     <string name="fares_instructions">To calculate fares for your journey, select an

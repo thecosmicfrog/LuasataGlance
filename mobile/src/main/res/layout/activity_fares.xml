@@ -65,7 +65,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="@dimen/cardview_default_elevation"
+                android:elevation="@dimen/cardview_laag_elevation"
                 android:background="@android:color/white">
 
                 <Spinner
@@ -86,7 +86,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="@dimen/cardview_default_elevation"
+                android:elevation="@dimen/cardview_laag_elevation"
                 android:background="@android:color/white">
 
                 <Spinner
@@ -107,7 +107,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="@dimen/cardview_default_elevation"
+                android:elevation="@dimen/cardview_laag_elevation"
                 android:background="@android:color/white">
 
                 <Spinner
@@ -119,14 +119,14 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp">
 
                     <TextView
@@ -142,7 +142,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:elevation="@dimen/cardview_default_elevation"
+                        android:elevation="@dimen/cardview_laag_elevation"
                         android:background="@android:color/white">
 
                         <Spinner
@@ -157,7 +157,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp">
 
                     <TextView
@@ -173,7 +172,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:elevation="@dimen/cardview_default_elevation"
+                        android:elevation="@dimen/cardview_laag_elevation"
                         android:background="@android:color/white">
 
                         <Spinner
@@ -188,7 +187,8 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="128dp"
-                android:paddingTop="16dp">
+                android:paddingTop="16dp"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -196,9 +196,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
-                    android:elevation="@dimen/cardview_default_elevation"
+                    android:elevation="@dimen/cardview_laag_elevation"
                     android:background="@android:color/white">
 
                     <RelativeLayout
@@ -235,9 +234,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:elevation="@dimen/cardview_default_elevation"
+                    android:elevation="@dimen/cardview_laag_elevation"
                     android:background="@android:color/white">
 
                     <RelativeLayout

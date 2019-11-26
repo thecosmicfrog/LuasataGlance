@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:elevation="@dimen/cardview_default_elevation"
+        android:elevation="@dimen/cardview_laag_elevation"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:tabTextAppearance="@style/LuasAtAGlanceTabLayout" />
@@ -62,7 +62,8 @@
             android:layout_weight="0.25"
             android:minWidth="104dp"
             android:background="?android:attr/selectableItemBackground"
-            android:clickable="true">
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:id="@+id/imageview_bottomnav_map"
@@ -71,7 +72,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_centerHorizontal="true"
                 android:paddingTop="8dp"
-                android:src="@android:drawable/ic_dialog_map" />
+                android:src="@android:drawable/ic_dialog_map"
+                android:contentDescription="@string/content_desc_bottomnav_map" />
 
             <TextView
                 android:id="@+id/textview_bottomnav_map"
@@ -96,7 +98,8 @@
             android:layout_weight="0.25"
             android:minWidth="104dp"
             android:background="?android:attr/selectableItemBackground"
-            android:clickable="true">
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:id="@+id/imageview_bottomnav_favourites"
@@ -105,7 +108,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_centerHorizontal="true"
                 android:paddingTop="8dp"
-                android:src="@drawable/ic_favourites" />
+                android:src="@drawable/ic_favourites"
+                android:contentDescription="@string/content_desc_bottomnav_favourites" />
 
             <TextView
                 android:id="@+id/textview_bottomnav_favourites"
@@ -130,7 +134,8 @@
             android:layout_weight="0.25"
             android:minWidth="104dp"
             android:background="?android:attr/selectableItemBackground"
-            android:clickable="true">
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:id="@+id/imageview_bottomnav_fares"
@@ -139,7 +144,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_centerHorizontal="true"
                 android:paddingTop="8dp"
-                android:src="@drawable/ic_payment" />
+                android:src="@drawable/ic_payment"
+                android:contentDescription="@string/content_desc_bottomnav_fares" />
 
             <TextView
                 android:id="@+id/textview_bottomnav_fares"
@@ -164,7 +170,8 @@
             android:layout_weight="0.25"
             android:minWidth="104dp"
             android:background="?android:attr/selectableItemBackground"
-            android:clickable="true">
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:id="@+id/imageview_bottomnav_alerts"
@@ -173,7 +180,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_centerHorizontal="true"
                 android:paddingTop="8dp"
-                android:src="@drawable/ic_error_alerts" />
+                android:src="@drawable/ic_error_alerts"
+                android:contentDescription="@string/content_desc_bottomnav_alerts" />
 
             <TextView
                 android:id="@+id/textview_bottomnav_alerts"

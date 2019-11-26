@@ -41,12 +41,14 @@
             android:layout_height="wrap_content"
             android:text="@string/app_name"
             android:textColor="@android:color/black"
+            android:layout_toStartOf="@id/imageview_about_laag_logo"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true" />
 
         <ImageView
+            android:id="@+id/imageview_about_laag_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_launcher"

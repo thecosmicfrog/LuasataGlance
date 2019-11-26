@@ -109,6 +109,15 @@
         Duinn</string>
 
     <!--
+        Content descriptions
+    -->
+    <string name="content_desc_action_bar_up_description">Nascleanúint suas</string>
+    <string name="content_desc_bottomnav_alerts">Cnaipe Airdeall</string>
+    <string name="content_desc_bottomnav_fares">Cnaipe Táillí</string>
+    <string name="content_desc_bottomnav_favourites">Cnaipe Ceanáin</string>
+    <string name="content_desc_bottomnav_map">Cnaipe Léarscáil</string>
+
+    <!--
         Fares
     -->
     <string name="fares_instructions">Chun táillí do thurais a ríofa, roghnaigh

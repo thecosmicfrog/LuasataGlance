@@ -18,74 +18,72 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
 
+    android:orientation="vertical"
     android:layout_width="280dp"
     android:layout_height="360dp"
     android:background="@android:color/white">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
+
+        <TextView
+            style="@style/Base.DialogWindowTitle.AppCompat"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin">
+            android:text="@string/title_activity_whats_new"
+            android:textColor="@android:color/black"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/imageview_whats_new_laag_logo"
+            android:layout_centerVertical="true" />
+
+        <ImageView
+            android:id="@+id/imageview_whats_new_laag_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_launcher"
+            android:contentDescription="@string/app_name" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <TextView
-                style="@style/Base.DialogWindowTitle.AppCompat"
+                android:id="@+id/textview_whatsnew_title_current"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_activity_whats_new"
-                android:textColor="@android:color/black"
-                android:layout_centerVertical="true" />
+                android:text="@string/whatsnew_title_current"
+                android:textStyle="bold"
+                android:textColor="@color/text_grey"
+                android:paddingTop="12dp" />
 
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_launcher"
-                android:contentDescription="@string/app_name" />
-        </RelativeLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:clipToPadding="false">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/textview_whatsnew_title_current"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/whatsnew_title_current"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_grey"
-                    android:paddingTop="12dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/whatsnew_content_current"
-                    android:textColor="@color/text_grey"
-                    android:paddingTop="8dp" />
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
-</RelativeLayout>
+                android:text="@string/whatsnew_content_current"
+                android:textColor="@color/text_grey"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
