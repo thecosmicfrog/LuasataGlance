@@ -27,7 +27,7 @@ public class EnglishGaeilgeMap extends HashMap<String, String> {
 
     public EnglishGaeilgeMap() {
         put("operating normally", "ag feidhmiú mar is gnáth");
-        put("DUE", "AM");
+        put("DUE", "ANN");
         put("No trams forecast", "Aon tramanna ag súil");
         put("Tap to load times", "Cliceáil amanna a fháil");
 

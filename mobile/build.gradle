@@ -2,6 +2,7 @@ import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     compileSdkVersion 29
@@ -35,7 +36,7 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'androidx.appcompat:appcompat:1.0.0'
+    api 'androidx.appcompat:appcompat:1.1.0'
     api 'androidx.cardview:cardview:1.0.0'
     api 'com.google.android.material:material:1.0.0'
     api 'com.google.android.gms:play-services-wearable:16.0.1'
@@ -45,6 +46,7 @@ dependencies {
     api 'com.google.android.gms:play-services-maps:16.0.0'
     api 'com.google.firebase:firebase-core:16.0.6'
     api 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.google.firebase:firebase-perf:16.2.5'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
 }
