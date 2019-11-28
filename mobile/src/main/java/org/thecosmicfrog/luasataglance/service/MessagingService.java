@@ -21,12 +21,15 @@
 
 package org.thecosmicfrog.luasataglance.service;
 
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.thecosmicfrog.luasataglance.util.AppUtil;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.NotificationUtil;
 
@@ -38,7 +41,24 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onNewToken(@NonNull String s) {
+        super.onNewToken(s);
+
+        String newTokenToLog;
+
+        /* If we're in an emulator, just log the token as-is for easy debugging. */
+        if (AppUtil.isEmulator()) {
+            newTokenToLog = s;
+        } else {
+            newTokenToLog =
+                    s.replaceFirst("(.{10}).+(.{10})", "$1...$2");
+        }
+
+        Log.d(LOG_TAG, "New token: " + newTokenToLog);
+    }
+
+    @Override
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
         boolean userHasAllowedNotifications =
