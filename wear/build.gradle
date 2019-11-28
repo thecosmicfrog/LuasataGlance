@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
@@ -40,6 +42,11 @@ dependencies {
     compileOnly 'com.google.android.wearable:wearable:2.4.0'
     api 'com.google.android.support:wearable:2.4.0'
     api 'com.google.android.gms:play-services-wearable:17.0.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
 
 private Integer generateVersionCode(String flavor) {

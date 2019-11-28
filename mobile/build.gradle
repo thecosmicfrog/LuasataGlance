@@ -1,6 +1,8 @@
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.firebase.firebase-perf'
 
@@ -50,10 +52,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf:19.0.2'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 // Firebase
 apply plugin: 'com.google.gms.google-services'
+repositories {
+    mavenCentral()
+}
 
 private Integer generateVersionCode() {
     project.versionCode
