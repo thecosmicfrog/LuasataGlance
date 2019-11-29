@@ -74,8 +74,8 @@ class NotifyTimeActivity : FragmentActivity() {
         spinnerNotifyTime.adapter = adapterNotifyTime
 
         /* Set the Spinner's colour to Luas purple. */
-        val spinnerDrawable = spinnerNotifyTime.background.constantState!!.newDrawable()
-        spinnerDrawable.setColorFilter(
+        val spinnerDrawable = spinnerNotifyTime.background.constantState?.newDrawable()
+        spinnerDrawable?.setColorFilter(
                 ContextCompat.getColor(applicationContext, R.color.luas_purple),
                 PorterDuff.Mode.SRC_ATOP
         )
