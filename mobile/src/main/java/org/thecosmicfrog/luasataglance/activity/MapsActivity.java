@@ -48,7 +48,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException;
-import org.thecosmicfrog.luasataglance.object.StopCoords;
+import org.thecosmicfrog.luasataglance.model.StopCoords;
 import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
@@ -349,7 +349,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Draw lines between stops.
      * This is done very manually for now.
-     * @param googleMap GoogleMap object on which to draw Polylines.
+     * @param googleMap GoogleMap model on which to draw Polylines.
      * @param listStopNamesRedLine List of Red Line stop names.
      * @param listStopNamesGreenLine List of Green Line stop names.
      */

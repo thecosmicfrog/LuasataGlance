@@ -19,7 +19,7 @@
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.thecosmicfrog.luasataglance.object;
+package org.thecosmicfrog.luasataglance.model;
 
 import android.util.Log;
 

@@ -19,36 +19,33 @@
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.thecosmicfrog.luasataglance.object;
+package org.thecosmicfrog.luasataglance.model;
 
 import java.io.Serializable;
 
-public class StopForecastStatusDirection implements Serializable {
-    private String message;
-    private boolean forecastsEnabled;
-    private boolean operatingNormally;
+public class Tram implements Serializable {
 
-    public String getMessage() {
-        return message;
+    private static final long serialVersionUID = 0L;
+
+    private String destination;
+    private String direction;
+    private String dueMinutes;
+
+    public Tram(String de, String di, String du) {
+        destination = de;
+        direction = di;
+        dueMinutes = du;
     }
 
-    public boolean getForecastsEnabled() {
-        return forecastsEnabled;
+    public String getDestination() {
+        return destination;
     }
 
-    public boolean getOperatingNormally() {
-        return operatingNormally;
+    public String getDirection() {
+        return direction;
     }
 
-    public void setMessage(String m) {
-        message = m;
-    }
-
-    public void setForecastsEnabled(boolean f) {
-        forecastsEnabled = f;
-    }
-
-    public void setOperatingNormally(boolean o) {
-        operatingNormally = o;
+    public String getDueMinutes() {
+        return dueMinutes;
     }
 }

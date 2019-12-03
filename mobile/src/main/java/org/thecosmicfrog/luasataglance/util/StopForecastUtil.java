@@ -28,8 +28,8 @@ import android.view.View;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
-import org.thecosmicfrog.luasataglance.object.StopForecast;
-import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.model.StopForecast;
+import org.thecosmicfrog.luasataglance.model.Tram;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 public final class StopForecastUtil {
@@ -156,7 +156,7 @@ public final class StopForecastUtil {
 
     /**
      * Create a usable stop forecast with the data returned from the server.
-     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
+     * @param apiTimes ApiTimes model created by Retrofit, containing raw stop forecast data.
      * @return Usable stop forecast.
      */
     public static StopForecast createStopForecast(ApiTimes apiTimes) {

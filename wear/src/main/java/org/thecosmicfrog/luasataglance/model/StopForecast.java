@@ -19,7 +19,7 @@
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.thecosmicfrog.luasataglance.object;
+package org.thecosmicfrog.luasataglance.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,17 +29,15 @@ public class StopForecast implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
+    private final String LOG_TAG = StopForecast.class.getSimpleName();
+
     private String message;
-    private StopForecastStatusDirection stopForecastStatusDirectionInbound;
-    private StopForecastStatusDirection stopForecastStatusDirectionOutbound;
     private List<Tram> inboundTrams;
     private List<Tram> outboundTrams;
 
-    public StopForecast() {
-        inboundTrams = new ArrayList<>();
-        outboundTrams = new ArrayList<>();
-        stopForecastStatusDirectionInbound = new StopForecastStatusDirection();
-        stopForecastStatusDirectionOutbound = new StopForecastStatusDirection();
+    private StopForecast() {
+        inboundTrams = new ArrayList<Tram>();
+        outboundTrams = new ArrayList<Tram>();
     }
 
     public void addInboundTram(Tram t) {
@@ -58,14 +56,6 @@ public class StopForecast implements Serializable {
         message = m;
     }
 
-    public void setStopForecastStatusDirectionInbound(StopForecastStatusDirection f) {
-        stopForecastStatusDirectionInbound = f;
-    }
-
-    public void setStopForecastStatusDirectionOutbound(StopForecastStatusDirection f) {
-        stopForecastStatusDirectionOutbound = f;
-    }
-
     public void setInboundTrams(List<Tram> i) {
         inboundTrams = i;
     }
@@ -76,14 +66,6 @@ public class StopForecast implements Serializable {
 
     public String getMessage() {
         return message;
-    }
-
-    public StopForecastStatusDirection getStopForecastStatusDirectionInbound() {
-        return stopForecastStatusDirectionInbound;
-    }
-
-    public StopForecastStatusDirection getStopForecastStatusDirectionOutbound() {
-        return stopForecastStatusDirectionOutbound;
     }
 
     public List<Tram> getInboundTrams() {

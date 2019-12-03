@@ -38,7 +38,7 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.object.StopForecast;
+import org.thecosmicfrog.luasataglance.model.StopForecast;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
 import java.util.List;

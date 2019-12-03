@@ -31,7 +31,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.`object`.StopNameIdMap
+import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import org.thecosmicfrog.luasataglance.api.ApiFares
 import org.thecosmicfrog.luasataglance.api.ApiMethods
 import retrofit.Callback

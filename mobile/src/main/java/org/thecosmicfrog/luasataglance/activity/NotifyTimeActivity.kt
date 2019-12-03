@@ -31,7 +31,7 @@ import android.widget.Spinner
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.`object`.NotifyTimesMap
+import org.thecosmicfrog.luasataglance.model.NotifyTimesMap
 import org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver
 import org.thecosmicfrog.luasataglance.util.Analytics
 import org.thecosmicfrog.luasataglance.util.Constant

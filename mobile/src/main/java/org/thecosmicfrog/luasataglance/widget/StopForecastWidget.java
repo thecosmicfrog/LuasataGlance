@@ -101,7 +101,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        /* Construct a RemoteViews object. */
+        /* Construct a RemoteViews model. */
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
 
         /* There may be multiple widgets active, so update all of them. */
@@ -151,7 +151,7 @@ public class StopForecastWidget extends AppWidgetProvider {
         ComponentName thisWidget = new ComponentName(context, StopForecastWidget.class);
         int[] appWidgetsIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-        /* Construct a RemoteViews object. */
+        /* Construct a RemoteViews model. */
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.stop_forecast_widget);
 
         int indexNextStopToLoad = Preferences.indexNextStopToLoad(context);
@@ -282,7 +282,7 @@ public class StopForecastWidget extends AppWidgetProvider {
      * @param context Context.
      * @param appWidgetManager AppWidgetManager.
      * @param appWidgetsIds Array of all widget IDs.
-     * @param remoteViews RemoteViews object to prepare loading of stop forecast for.
+     * @param remoteViews RemoteViews model to prepare loading of stop forecast for.
      * @param indexNextStopToLoad Index of next stop to load.
      */
     private void prepareLoadStopForecast(@NonNull Context context,
@@ -354,7 +354,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
         try {
             /*
-             * Open the "widget_selected_stops" file and read in the List object of selected stops
+             * Open the "widget_selected_stops" file and read in the List model of selected stops
              * contained within.
              */
             InputStream fileInput = context.openFileInput(FILE_WIDGET_SELECTED_STOPS);
@@ -438,7 +438,7 @@ public class StopForecastWidget extends AppWidgetProvider {
 
     /**
      * Clear the stop forecast currently displayed in the widget.
-     * @param remoteViewToClear RemoteViews object to clear.
+     * @param remoteViewToClear RemoteViews model to clear.
      */
     private void clearStopForecast(RemoteViews remoteViewToClear) {
         for (int i = 0; i < 2; i++) {

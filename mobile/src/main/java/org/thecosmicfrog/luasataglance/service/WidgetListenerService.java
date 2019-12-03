@@ -42,9 +42,9 @@ import com.squareup.okhttp.OkHttpClient;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
-import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
-import org.thecosmicfrog.luasataglance.object.StopForecast;
-import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
+import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap;
+import org.thecosmicfrog.luasataglance.model.StopForecast;
+import org.thecosmicfrog.luasataglance.model.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
@@ -388,7 +388,7 @@ public class WidgetListenerService extends Service {
 
         try {
             /*
-             * Open the "widget_selected_stops" file and read in the List object of selected stops
+             * Open the "widget_selected_stops" file and read in the List model of selected stops
              * contained within.
              */
             InputStream fileInput = context.openFileInput(FILE_WIDGET_SELECTED_STOPS);

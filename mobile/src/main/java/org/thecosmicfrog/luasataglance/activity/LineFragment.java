@@ -46,10 +46,10 @@ import android.widget.Toast;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
-import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
-import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
-import org.thecosmicfrog.luasataglance.object.StopForecast;
-import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
+import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap;
+import org.thecosmicfrog.luasataglance.model.NotifyTimesMap;
+import org.thecosmicfrog.luasataglance.model.StopForecast;
+import org.thecosmicfrog.luasataglance.model.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
@@ -936,7 +936,7 @@ public class LineFragment extends Fragment {
     /**
      * Get the "created" time from the API response and format it so that only the time (and not
      * date) is returned.
-     * @param apiTimes ApiTimes object.
+     * @param apiTimes ApiTimes model.
      * @return String representing the 24hr time (HH:mm:ss) of the API's "created" time.
      */
     private String getApiCreatedTime(ApiTimes apiTimes) {
@@ -970,7 +970,7 @@ public class LineFragment extends Fragment {
 
     /**
      * Draw stop forecast to screen.
-     * @param stopForecast StopForecast object containing data for requested stop.
+     * @param stopForecast StopForecast model containing data for requested stop.
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private void updateStopForecast(StopForecast stopForecast) {

@@ -23,8 +23,8 @@ package org.thecosmicfrog.luasataglance.api;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.thecosmicfrog.luasataglance.object.StopForecastStatus;
-import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.model.StopForecastStatus;
+import org.thecosmicfrog.luasataglance.model.Tram;
 
 import java.util.List;
 

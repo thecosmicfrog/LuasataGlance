@@ -143,7 +143,7 @@ public class FavouritesSelectActivity extends AppCompatActivity {
          */
         try {
             /*
-             * Open the "favourites" file and read in the List object of favourite stops
+             * Open the "favourites" file and read in the List model of favourite stops
              * contained within.
              */
             InputStream fileInput = openFileInput(FILE_FAVOURITES);

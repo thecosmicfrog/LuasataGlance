@@ -33,9 +33,9 @@ import com.google.android.gms.wearable.WearableListenerService;
 import org.thecosmicfrog.luasataglance.activity.MainActivity;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
-import org.thecosmicfrog.luasataglance.object.StopForecast;
-import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
-import org.thecosmicfrog.luasataglance.object.Tram;
+import org.thecosmicfrog.luasataglance.model.StopForecast;
+import org.thecosmicfrog.luasataglance.model.StopNameIdMap;
+import org.thecosmicfrog.luasataglance.model.Tram;
 import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Serializer;
@@ -219,7 +219,7 @@ public class WearMessageListenerService extends WearableListenerService {
 
     /**
      * Create a usable stop forecast with the data returned from the server.
-     * @param apiTimes ApiTimes object created by Retrofit, containing raw stop forecast data.
+     * @param apiTimes ApiTimes model created by Retrofit, containing raw stop forecast data.
      * @return Usable stop forecast.
      */
     private StopForecast createStopForecast(ApiTimes apiTimes) {

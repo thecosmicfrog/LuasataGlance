@@ -44,7 +44,7 @@ public final class NotificationUtil {
     /**
      * Show notification.
      * @param context Context.
-     * @param remoteMessage RemoteMessage object.
+     * @param remoteMessage RemoteMessage model.
      */
     public static void showNotification(Context context, RemoteMessage remoteMessage) {
         final int REQUEST_CODE_OPEN_FARES_ACTIVITY = 1;
