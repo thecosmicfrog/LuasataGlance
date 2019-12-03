@@ -163,6 +163,11 @@ public class LineFragment extends Fragment {
 
                 break;
 
+            case Constant.NO_LINE:
+                Log.e(LineFragment.class.getSimpleName(), "No line specified.");
+
+                break;
+
             default:
                 /* If for some reason the line doesn't make sense. */
                 Log.wtf(LineFragment.class.getSimpleName(), "Invalid line specified.");

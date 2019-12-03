@@ -16,14 +16,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Luas at a Glance.  If not, see <http:></http:>//www.gnu.org/licenses/>.
  */
+package org.thecosmicfrog.luasataglance.exception
 
-package org.thecosmicfrog.luasataglance.exception;
+class StopMarkerNotFoundException : Exception()
 
-public class StopMarkerNotFoundException extends Exception {
-
-    public StopMarkerNotFoundException() {
-        super();
-    }
-}
