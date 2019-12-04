@@ -57,7 +57,6 @@ class FaresActivity : AppCompatActivity() {
     private var textViewFaresOffPeak: TextView? = null
     private var textViewFaresPeak: TextView? = null
     private var mapStopNameId: StopNameIdMap? = null
-    private var localeDefault: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +80,7 @@ class FaresActivity : AppCompatActivity() {
      */
     private fun initializeActivity() {
         /* Initialise correct locale. */
-        localeDefault = Locale.getDefault().toString()
+        val localeDefault = Locale.getDefault().toString()
 
         /* Instantiate a new StopNameIdMap. */
         mapStopNameId = StopNameIdMap(localeDefault)
