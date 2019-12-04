@@ -39,6 +39,7 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.perf.FirebasePerformance;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Analytics;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        configureFirebasePerformanceCollection();
 
         setContentView(R.layout.activity_main);
 
@@ -329,14 +332,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Check whether or not we are running in Firebase Test Lab.
+     * @return Whether or not we are running in Firebase Test Lab.
+     */
+    private boolean isRunningInFirebaseTestLab() {
+        String settingFirebaseTestLab =
+                Settings.System.getString(getContentResolver(), "firebase.test.lab");
+
+        Log.i(LOG_TAG, "Running in Firebase Test Lab.");
+
+        return settingFirebaseTestLab != null && settingFirebaseTestLab.equals("true");
+    }
+
+    /**
      * Show What's New dialog to user if they have recently updated the app.
      */
     private void showWhatsNewDialog() {
         /* Don't show the What's New dialog if we're running in Firebase Test Lab. */
-        String settingFirebaseTestLab =
-                Settings.System.getString(getContentResolver(), "firebase.test.lab");
-        if (settingFirebaseTestLab != null && settingFirebaseTestLab.equals("true")) {
-            Log.i(LOG_TAG, "Running in Firebase Test Lab.");
+        if (isRunningInFirebaseTestLab()) {
+            Log.i(
+                    LOG_TAG,
+                    "Running in Firebase Test Lab. Not showing What's New dialog."
+            );
 
             return;
         }
@@ -392,4 +409,20 @@ public class MainActivity extends AppCompatActivity {
 
         Preferences.saveScreenHeight(getApplicationContext(), dpHeight);
     }
+
+    /**
+     * Enable or disable Firebase Performance collection.
+     */
+    private void configureFirebasePerformanceCollection() {
+        /* Disable Firebase Performance collection if we're running in Firebase Test Lab. */
+        if (isRunningInFirebaseTestLab()) {
+            Log.i(
+                    LOG_TAG,
+                    "Running in Firebase Test Lab. Disabling Firebase Performance collection."
+            );
+
+            FirebasePerformance.getInstance().setPerformanceCollectionEnabled(false);
+        }
+    }
 }
+

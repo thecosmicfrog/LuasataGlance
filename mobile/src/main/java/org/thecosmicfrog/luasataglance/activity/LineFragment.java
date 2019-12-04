@@ -27,6 +27,7 @@ import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -92,6 +93,7 @@ public class LineFragment extends Fragment {
     private static StopNameIdMap mapStopNameId;
     private static String localeDefault;
 
+    private FragmentActivity activity;
     private Context context;
     private View rootView = null;
     private Menu menu;
@@ -206,28 +208,6 @@ public class LineFragment extends Fragment {
         /* Instantiate a new StopNameIdMap. */
         mapStopNameId = new StopNameIdMap(localeDefault);
 
-        if (isAdded()) {
-            isInitialised = initFragment();
-        }
-
-        /*
-         * If an Intent did not bring us to this Activity and there is a stop name saved in shared
-         * preferences, load that stop.
-         * This provides persistence to the app across shutdowns.
-         */
-        if (!getActivity().getIntent().hasExtra(Constant.STOP_NAME)) {
-            if (Preferences.selectedStopName(context, Constant.NO_LINE) != null) {
-                String stopName = Preferences.selectedStopName(context, Constant.NO_LINE);
-
-                setTabAndSpinner(stopName);
-            }
-        }
-
-        imageViewBottomNavAlerts =
-                getActivity().findViewById(R.id.imageview_bottomnav_alerts);
-        textViewBottomNavAlerts =
-                getActivity().findViewById(R.id.textview_bottomnav_alerts);
-
         return rootView;
     }
 
@@ -245,6 +225,8 @@ public class LineFragment extends Fragment {
 
         super.onResume();
 
+        activity = getActivity();
+
         /* Remove Favourites tutorial if it has been completed once already. */
         if (line.equals(Constant.RED_LINE)
                 && Preferences.hasRunOnce(context, Constant.TUTORIAL_FAVOURITES)) {
@@ -257,6 +239,26 @@ public class LineFragment extends Fragment {
         }
 
         if (isAdded()) {
+            isInitialised = initFragment();
+
+            /*
+             * If an Intent did not bring us to this Activity and there is a stop name saved in
+             * shared preferences, load that stop.
+             * This provides persistence to the app across shutdowns.
+             */
+            if (!activity.getIntent().hasExtra(Constant.STOP_NAME)) {
+                if (Preferences.selectedStopName(context, Constant.NO_LINE) != null) {
+                    String stopName = Preferences.selectedStopName(context, Constant.NO_LINE);
+
+                    setTabAndSpinner(stopName);
+                }
+            }
+
+            imageViewBottomNavAlerts =
+                    activity.findViewById(R.id.imageview_bottomnav_alerts);
+            textViewBottomNavAlerts =
+                    activity.findViewById(R.id.textview_bottomnav_alerts);
+
             /*
              * If a Favourite stop brought us to this Activity, load that stop's forecast.
              * If a tapped notification brought us to this Activity, load the forecast for the stop
@@ -264,8 +266,8 @@ public class LineFragment extends Fragment {
              * If the previous cases are not matched, and the user has selected a default stop, load
              * the forecast for that.
              */
-            if (getActivity().getIntent().hasExtra(Constant.STOP_NAME)) {
-                String stopName = getActivity().getIntent().getStringExtra(Constant.STOP_NAME);
+            if (activity.getIntent().hasExtra(Constant.STOP_NAME)) {
+                String stopName = activity.getIntent().getStringExtra(Constant.STOP_NAME);
 
                 /*
                  * Track whether or not the tab and spinner has been set. If it has, clear the Extra
@@ -274,28 +276,28 @@ public class LineFragment extends Fragment {
                 boolean hasSetTabAndSpinner = setTabAndSpinner(stopName);
 
                 if (hasSetTabAndSpinner) {
-                    getActivity().getIntent().removeExtra(Constant.STOP_NAME);
+                    activity.getIntent().removeExtra(Constant.STOP_NAME);
                 }
-            } else if (getActivity().getIntent().hasExtra(Constant.NOTIFY_STOP_NAME)) {
+            } else if (activity.getIntent().hasExtra(Constant.NOTIFY_STOP_NAME)) {
                 /*
                  * Track whether or not the tab and spinner has been set. If it has, clear the Extra
                  * so it doesn't break the Default Stop setting.
                  */
                 boolean hasSetTabAndSpinner =
                         setTabAndSpinner(
-                                getActivity().getIntent().getStringExtra(Constant.NOTIFY_STOP_NAME)
+                                activity.getIntent().getStringExtra(Constant.NOTIFY_STOP_NAME)
                         );
 
                 if (hasSetTabAndSpinner) {
-                    getActivity().getIntent().removeExtra(Constant.NOTIFY_STOP_NAME);
+                    activity.getIntent().removeExtra(Constant.NOTIFY_STOP_NAME);
                 }
-            } else if (getActivity().getIntent().hasExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN)) {
+            } else if (activity.getIntent().hasExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN)) {
                 activityRouter(
-                        getActivity().getIntent().getStringExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN)
+                        activity.getIntent().getStringExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN)
                 );
 
                 /* Clear the Extra to avoid opening the same Activity on every start. */
-                getActivity().getIntent().removeExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN);
+                activity.getIntent().removeExtra(INTENT_EXTRA_ACTIVITY_TO_OPEN);
             } else if (!Preferences.defaultStopName(context).equals(getString(R.string.none))
                     && Preferences.defaultStopName(context) != null) {
                 setTabAndSpinner(Preferences.defaultStopName(context));
@@ -393,7 +395,7 @@ public class LineFragment extends Fragment {
      * Initialise Fragment and its views.
      */
     private boolean initFragment() {
-        tabLayout = getActivity().findViewById(R.id.tablayout);
+        tabLayout = activity.findViewById(R.id.tablayout);
 
         progressBar = rootView.findViewById(resProgressBar);
 
@@ -693,7 +695,7 @@ public class LineFragment extends Fragment {
              * Only run if Fragment is attached to Activity. Without this check, the app is liable
              * to crash when the screen is rotated many times in a given period of time.
              */
-            getActivity().runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     if (loading) {
@@ -791,13 +793,13 @@ public class LineFragment extends Fragment {
             public void run() {
                 /* Check Fragment is attached to Activity to avoid NullPointerExceptions. */
                 if (isAdded()) {
-                    getActivity().runOnUiThread(new Runnable() {
+                    activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (shouldAutoReload) {
                                 loadStopForecast(
                                         Preferences.selectedStopName(
-                                                getActivity().getApplicationContext(),
+                                                activity.getApplicationContext(),
                                                 line
                                         ),
                                         false
@@ -859,7 +861,7 @@ public class LineFragment extends Fragment {
 
                             if (apiCreatedTime != null) {
                                 StopForecastUtil.showSnackbar(
-                                        getActivity(),
+                                        activity,
                                         "Times updated at " + apiCreatedTime
                                 );
                             }
