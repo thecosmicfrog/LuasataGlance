@@ -18,36 +18,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.thecosmicfrog.luasataglance.api
 
-package org.thecosmicfrog.luasataglance.api;
+class ApiFares {
 
-public class ApiFares {
-
-    private String peak;
-    private String offpeak;
-    private String zonesTravelled;
-
-    public String getPeak() {
-        return peak;
-    }
-
-    public String getOffpeak() {
-        return offpeak;
-    }
-
-    public String getZonesTravelled() {
-        return zonesTravelled;
-    }
-
-    public void setPeak(String p) {
-        peak = p;
-    }
-
-    public void setOffpeak(String o) {
-        offpeak = o;
-    }
-
-    public void setZonesTravelled(String z) {
-        zonesTravelled = z;
-    }
+    var peak: String? = null
+    var offpeak: String? = null
+    var zonesTravelled: String? = null
 }
+

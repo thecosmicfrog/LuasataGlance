@@ -18,30 +18,30 @@
  * You should have received a copy of the GNU General Public License
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.thecosmicfrog.luasataglance.api
 
-package org.thecosmicfrog.luasataglance.api;
+import retrofit.Callback
+import retrofit.http.GET
+import retrofit.http.Query
 
-import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Query;
-
-public interface ApiMethods {
-
-    @GET("/luas-api.php")
-    void getFares(
-            @Query("action") String action,
-            @Query("from") String from,
-            @Query("to") String to,
-            @Query("adults") String adults,
-            @Query("children") String children,
-            Callback<ApiFares> cb
-    );
+interface ApiMethods {
 
     @GET("/luas-api.php")
-    void getStopForecast(
-            @Query("action") String action,
-            @Query("ver") String ver,
-            @Query("station") String station,
-            Callback<ApiTimes> cb
-    );
+    fun getFares(
+        @Query("action") action: String?,
+        @Query("from") from: String?,
+        @Query("to") to: String?,
+        @Query("adults") adults: String?,
+        @Query("children") children: String?,
+        cb: Callback<ApiFares>
+    )
+
+    @GET("/luas-api.php")
+    fun getStopForecast(
+        @Query("action") action: String?,
+        @Query("ver") ver: String?,
+        @Query("station") station: String?,
+        cb: Callback<ApiTimes?>?
+    )
 }
+
