@@ -943,15 +943,19 @@ public class LineFragment extends Fragment {
      */
     private String getApiCreatedTime(ApiTimes apiTimes) {
         try {
-            Date currentTime = new SimpleDateFormat(
-                    "yyyy-MM-dd'T'HH:mm:ss",
-                    Locale.getDefault()
-            ).parse(apiTimes.getCreatedTime());
+            if (apiTimes.getCreatedTime() != null) {
+                Date currentTime = new SimpleDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss",
+                        Locale.getDefault()
+                ).parse(apiTimes.getCreatedTime());
 
-            DateFormat dateFormat =
-                    new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                DateFormat dateFormat =
+                        new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
-            return dateFormat.format(currentTime);
+                if (currentTime != null) {
+                    return dateFormat.format(currentTime);
+                }
+            }
         } catch (NullPointerException e) {
             Log.e(
                     LOG_TAG,
@@ -989,9 +993,16 @@ public class LineFragment extends Fragment {
             String status;
             boolean operatingNormally = false;
 
-            if (stopForecast.getStopForecastStatusDirectionInbound().getOperatingNormally()
-                    && stopForecast.getStopForecastStatusDirectionOutbound().getOperatingNormally()) {
-                operatingNormally = true;
+            if (stopForecast.getStopForecastStatusDirectionInbound()
+                    .getOperatingNormally() != null
+                    && stopForecast.getStopForecastStatusDirectionOutbound()
+                    .getOperatingNormally() != null) {
+                if (stopForecast.getStopForecastStatusDirectionInbound()
+                        .getOperatingNormally()
+                        && stopForecast.getStopForecastStatusDirectionOutbound()
+                        .getOperatingNormally()) {
+                    operatingNormally = true;
+                }
             }
 
             if (localeDefault.startsWith(GAEILGE)) {
@@ -1000,79 +1011,81 @@ public class LineFragment extends Fragment {
                 status = stopForecast.getMessage();
             }
 
-            /* A lot of Luas status messages relate to lifts being out of service. Ignore these. */
-            if (operatingNormally || status.toLowerCase().contains("lift")) {
-                /*
-                 * No error message on server. Change the message title TextView to
-                 * green and set a default success message.
-                 */
-                statusCardView.setStatus(status);
-                statusCardView.setStatusColor(R.color.message_success);
-
-                /* Change the alerts image to the default white image. */
-                imageViewBottomNavAlerts.setImageResource(
-                        R.drawable.ic_error_alerts
-                );
-
-                /* Change the color of the Alerts TextView to white (default). */
-                textViewBottomNavAlerts.setTextColor(
-                        ContextCompat.getColor(context, android.R.color.white)
-                );
-            } else {
-                if (status.equals("")) {
+            if (status != null) {
+                /* A lot of Luas status messages relate to lifts being out of service. Ignore these. */
+                if (operatingNormally || status.toLowerCase().contains("lift")) {
                     /*
-                     * If the server returns no status message, the Luas RTPI system is
-                     * probably down.
+                     * No error message on server. Change the message title TextView to
+                     * green and set a default success message.
                      */
-                    statusCardView.setStatus(
-                            getString(R.string.message_no_status)
+                    statusCardView.setStatus(status);
+                    statusCardView.setStatusColor(R.color.message_success);
+
+                    /* Change the alerts image to the default white image. */
+                    imageViewBottomNavAlerts.setImageResource(
+                            R.drawable.ic_error_alerts
+                    );
+
+                    /* Change the color of the Alerts TextView to white (default). */
+                    textViewBottomNavAlerts.setTextColor(
+                            ContextCompat.getColor(context, android.R.color.white)
                     );
                 } else {
-                    /* Set the error message from the server. */
-                    statusCardView.setStatus(status);
+                    if (status.equals("")) {
+                        /*
+                         * If the server returns no status message, the Luas RTPI system is
+                         * probably down.
+                         */
+                        statusCardView.setStatus(
+                                getString(R.string.message_no_status)
+                        );
+                    } else {
+                        /* Set the error message from the server. */
+                        statusCardView.setStatus(status);
+                    }
+
+                    /* Change the color of the message title TextView to red. */
+                    statusCardView.setStatusColor(R.color.message_error);
+
+                    /* Change the Alerts image to the red version. */
+                    imageViewBottomNavAlerts.setImageResource(
+                            R.drawable.ic_error_alerts_red
+                    );
+
+                    /* Change the color of the Alerts TextView to red. */
+                    textViewBottomNavAlerts.setTextColor(
+                            ContextCompat.getColor(context, R.color.message_error)
+                    );
                 }
-
-                /* Change the color of the message title TextView to red. */
-                statusCardView.setStatusColor(R.color.message_error);
-
-                /* Change the Alerts image to the red version. */
-                imageViewBottomNavAlerts.setImageResource(
-                        R.drawable.ic_error_alerts_red
-                );
-
-                /* Change the color of the Alerts TextView to red. */
-                textViewBottomNavAlerts.setTextColor(
-                        ContextCompat.getColor(context, R.color.message_error)
-                );
             }
 
             /*
              * Pull in all trams from the StopForecast, but only display up to five
              * inbound and outbound trams.
              */
-            if (stopForecast.getInboundTrams() != null) {
-                if (stopForecast.getInboundTrams().size() == 0) {
-                    inboundStopForecastCardView.setNoTramsForecast();
-                } else {
-                    String inboundTram;
+            if (stopForecast.getInboundTrams().size() == 0) {
+                inboundStopForecastCardView.setNoTramsForecast();
+            } else {
+                String inboundTram;
 
-                    for (int i = 0; i < stopForecast.getInboundTrams().size(); i++) {
-                        String dueMinutes =
-                                stopForecast.getInboundTrams().get(i).getDueMinutes();
+                for (int i = 0; i < stopForecast.getInboundTrams().size(); i++) {
+                    String dueMinutes =
+                            stopForecast.getInboundTrams().get(i).getDueMinutes();
 
-                        if (i < 6) {
-                            if (localeDefault.startsWith(GAEILGE)) {
-                                inboundTram = mapEnglishGaeilge.get(
-                                        stopForecast.getInboundTrams()
-                                                .get(i)
-                                                .getDestination()
-                                );
-                            } else {
-                                inboundTram = stopForecast.getInboundTrams()
-                                        .get(i)
-                                        .getDestination();
-                            }
+                    if (i < 6) {
+                        if (localeDefault.startsWith(GAEILGE)) {
+                            inboundTram = mapEnglishGaeilge.get(
+                                    stopForecast.getInboundTrams()
+                                            .get(i)
+                                            .getDestination()
+                            );
+                        } else {
+                            inboundTram = stopForecast.getInboundTrams()
+                                    .get(i)
+                                    .getDestination();
+                        }
 
+                        if (dueMinutes != null) {
                             if (dueMinutes.equalsIgnoreCase(DUE)) {
                                 if (localeDefault.startsWith(GAEILGE)) {
                                     dueMinutes = mapEnglishGaeilge.get(dueMinutes);
@@ -1099,29 +1112,29 @@ public class LineFragment extends Fragment {
                 }
             }
 
-            if (stopForecast.getOutboundTrams() != null) {
-                if (stopForecast.getOutboundTrams().size() == 0) {
-                    outboundStopForecastCardView.setNoTramsForecast();
-                } else {
-                    String outboundTram;
+            if (stopForecast.getOutboundTrams().size() == 0) {
+                outboundStopForecastCardView.setNoTramsForecast();
+            } else {
+                String outboundTram;
 
-                    for (int i = 0; i < stopForecast.getOutboundTrams().size(); i++) {
-                        String dueMinutes =
-                                stopForecast.getOutboundTrams().get(i).getDueMinutes();
+                for (int i = 0; i < stopForecast.getOutboundTrams().size(); i++) {
+                    String dueMinutes =
+                            stopForecast.getOutboundTrams().get(i).getDueMinutes();
 
-                        if (i < 6) {
-                            if (localeDefault.startsWith(GAEILGE)) {
-                                outboundTram = mapEnglishGaeilge.get(
-                                        stopForecast.getOutboundTrams()
-                                                .get(i)
-                                                .getDestination()
-                                );
-                            } else {
-                                outboundTram =
-                                        stopForecast.getOutboundTrams()
-                                                .get(i).getDestination();
-                            }
+                    if (i < 6) {
+                        if (localeDefault.startsWith(GAEILGE)) {
+                            outboundTram = mapEnglishGaeilge.get(
+                                    stopForecast.getOutboundTrams()
+                                            .get(i)
+                                            .getDestination()
+                            );
+                        } else {
+                            outboundTram =
+                                    stopForecast.getOutboundTrams()
+                                            .get(i).getDestination();
+                        }
 
+                        if (dueMinutes != null) {
                             if (dueMinutes.equalsIgnoreCase(DUE)) {
                                 if (localeDefault.startsWith(GAEILGE)) {
                                     dueMinutes = mapEnglishGaeilge.get(dueMinutes);

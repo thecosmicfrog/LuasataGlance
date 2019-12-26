@@ -22,10 +22,9 @@ package org.thecosmicfrog.luasataglance.model
 
 import java.io.Serializable
 
-class StopForecastStatusDirection : Serializable {
-    var message: String? = null
-    var forecastsEnabled = false
-    var operatingNormally = false
-
-}
+data class StopForecastStatusDirection(
+    var message: String? = null,
+    var forecastsEnabled: Boolean? = false,
+    var operatingNormally: Boolean? = false
+) : Serializable
 

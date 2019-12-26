@@ -16,16 +16,19 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Luas at a Glance.  If not, see <http:></http:>//www.gnu.org/licenses/>.
  */
 package org.thecosmicfrog.luasataglance.model
 
-import java.io.Serializable
+import com.google.gson.annotations.SerializedName
 
-data class Tram(
-    val destination: String?,
-    val direction: String?,
-    val dueMinutes: String?,
-    val serialVersionUID: Long = 0L
-) : Serializable
+data class StopForecastStatus(
+    @SerializedName("inbound")
+    val stopForecastStatusDirectionInbound: StopForecastStatusDirection =
+        StopForecastStatusDirection(),
+
+    @SerializedName("outbound")
+    val stopForecastStatusDirectionOutbound: StopForecastStatusDirection =
+        StopForecastStatusDirection()
+)
 

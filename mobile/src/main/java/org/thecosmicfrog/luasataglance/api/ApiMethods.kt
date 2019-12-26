@@ -41,7 +41,7 @@ interface ApiMethods {
         @Query("action") action: String?,
         @Query("ver") ver: String?,
         @Query("station") station: String?,
-        cb: Callback<ApiTimes?>?
+        cb: Callback<ApiTimes>
     )
 }
 

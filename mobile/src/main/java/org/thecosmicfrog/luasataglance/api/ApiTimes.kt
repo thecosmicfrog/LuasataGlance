@@ -24,16 +24,15 @@ import com.google.gson.annotations.SerializedName
 import org.thecosmicfrog.luasataglance.model.StopForecastStatus
 import org.thecosmicfrog.luasataglance.model.Tram
 
-class ApiTimes {
-
+data class ApiTimes(
     @SerializedName("created")
-    var createdTime: String? = null
+    val createdTime: String?,
 
-    var message: String? = null
+    val message: String?,
 
     @SerializedName("status")
-    var stopForecastStatus: StopForecastStatus? = null
+    val stopForecastStatus: StopForecastStatus?,
 
-    var trams: List<Tram>? = null
-}
+    val trams: List<Tram?>?
+)
 
