@@ -28,6 +28,8 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +42,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,8 @@ import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.model.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.model.StopForecast;
+import org.thecosmicfrog.luasataglance.model.StopForecastAdapter;
+import org.thecosmicfrog.luasataglance.model.StopForecastInfo;
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
@@ -58,11 +61,11 @@ import org.thecosmicfrog.luasataglance.util.Settings;
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 import org.thecosmicfrog.luasataglance.view.SpinnerCardView;
 import org.thecosmicfrog.luasataglance.view.StatusCardView;
-import org.thecosmicfrog.luasataglance.view.StopForecastCardView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -103,8 +106,8 @@ public class LineFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ScrollView scrollView;
     private StatusCardView statusCardView;
-    private StopForecastCardView inboundStopForecastCardView;
-    private StopForecastCardView outboundStopForecastCardView;
+//    private StopForecastCardView inboundStopForecastCardView;
+//    private StopForecastCardView outboundStopForecastCardView;
     private ImageView imageViewBottomNavAlerts;
     private TextView textViewBottomNavAlerts;
     private boolean isInitialised;
@@ -135,13 +138,17 @@ public class LineFragment extends Fragment {
                 bundle.putInt(Constant.RES_SWIPEREFRESHLAYOUT, R.id.redline_swiperefreshlayout);
                 bundle.putInt(Constant.RES_SCROLLVIEW, R.id.redline_scrollview);
                 bundle.putInt(
-                        Constant.RES_INBOUND_STOPFORECASTCARDVIEW,
-                        R.id.redline_inbound_stopforecastcardview
+                        Constant.RES_STOPFORECASTCONSTRAINTLAYOUT,
+                        R.id.redline_stopforecastconstraintlayout
                 );
-                bundle.putInt(
-                        Constant.RES_OUTBOUND_STOPFORECASTCARDVIEW,
-                        R.id.redline_outbound_stopforecastcardview
-                );
+//                bundle.putInt(
+//                        Constant.RES_INBOUND_STOPFORECASTCARDVIEW,
+//                        R.id.redline_inbound_stopforecastcardview
+//                );
+//                bundle.putInt(
+//                        Constant.RES_OUTBOUND_STOPFORECASTCARDVIEW,
+//                        R.id.redline_outbound_stopforecastcardview
+//                );
 
                 break;
 
@@ -155,13 +162,17 @@ public class LineFragment extends Fragment {
                 bundle.putInt(Constant.RES_SWIPEREFRESHLAYOUT, R.id.greenline_swiperefreshlayout);
                 bundle.putInt(Constant.RES_SCROLLVIEW, R.id.greenline_scrollview);
                 bundle.putInt(
-                        Constant.RES_INBOUND_STOPFORECASTCARDVIEW,
-                        R.id.greenline_inbound_stopforecastcardview
+                        Constant.RES_STOPFORECASTCONSTRAINTLAYOUT,
+                        R.id.greenline_stopforecastconstraintlayout
                 );
-                bundle.putInt(
-                        Constant.RES_OUTBOUND_STOPFORECASTCARDVIEW,
-                        R.id.greenline_outbound_stopforecastcardview
-                );
+//                bundle.putInt(
+//                        Constant.RES_INBOUND_STOPFORECASTCARDVIEW,
+//                        R.id.greenline_inbound_stopforecastcardview
+//                );
+//                bundle.putInt(
+//                        Constant.RES_OUTBOUND_STOPFORECASTCARDVIEW,
+//                        R.id.greenline_outbound_stopforecastcardview
+//                );
 
                 break;
 
@@ -502,22 +513,62 @@ public class LineFragment extends Fragment {
 
         scrollView = rootView.findViewById(resScrollView);
 
-        /* Set up stop forecast CardViews. */
-        inboundStopForecastCardView =
-                rootView.findViewById(
-                    resInboundStopForecastCardView
-                );
-        inboundStopForecastCardView.setStopForecastDirection(
-                getString(R.string.inbound)
-        );
+//        //////////////////////// NEW VIEW //////////////////////////
+//
+//        List<CharSequence> list = new ArrayList<>();
+//        list.add("1");
+//        list.add("2");
+//        list.add("3");
+//        ListView listView = rootView.findViewById(R.id.listview_stop_forecast);
+//        ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter<>(
+//                context,
+//                R.layout.listview_favourites,
+//                list
+//        );
+//
+//        arrayAdapter.clear();
+//        arrayAdapter.addAll(list);
+//        arrayAdapter.notifyDataSetChanged();
+//        listView.setAdapter(arrayAdapter);
+//
+//        ////////////////////////////////////////////////////////////
 
-        outboundStopForecastCardView =
-                rootView.findViewById(
-                        resOutboundStopForecastCardView
-                );
-        outboundStopForecastCardView.setStopForecastDirection(
-                getString(R.string.outbound)
-        );
+        ////////////////////// RecyclerView /////////////////////////
+
+        List<StopForecastInfo> listStopForecastInfo = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            StopForecastInfo sfi = new StopForecastInfo("The Point " + i, Integer.toString(i));
+            listStopForecastInfo.add(sfi);
+        }
+
+        RecyclerView recyclerViewStopForecasts =
+                rootView.findViewById(R.id.recyclerview_stop_forecasts);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerViewStopForecasts.setLayoutManager(linearLayoutManager);
+
+        StopForecastAdapter stopForecastAdapter = new StopForecastAdapter(listStopForecastInfo);
+        recyclerViewStopForecasts.setAdapter(stopForecastAdapter);
+
+        /////////////////////////////////////////////////////////////
+
+
+        /* Set up stop forecast CardViews. */
+//        inboundStopForecastCardView =
+//                rootView.findViewById(
+//                    resInboundStopForecastCardView
+//                );
+//        inboundStopForecastCardView.setStopForecastDirection(
+//                getString(R.string.inbound)
+//        );
+
+//        outboundStopForecastCardView =
+//                rootView.findViewById(
+//                        resOutboundStopForecastCardView
+//                );
+//        outboundStopForecastCardView.setStopForecastDirection(
+//                getString(R.string.outbound)
+//        );
 
         /* Set up onClickListeners for stop forecasts in both tabs. */
         initStopForecastOnClickListeners();
@@ -529,33 +580,33 @@ public class LineFragment extends Fragment {
      * Initialise OnClickListeners for a stop forecast.
      */
     private void initStopForecastOnClickListeners() {
-        TableRow[] tableRowInboundStops = inboundStopForecastCardView.getTableRowStops();
-        TableRow[] tableRowOutboundStops = outboundStopForecastCardView.getTableRowStops();
+//        TableRow[] tableRowInboundStops = inboundStopForecastCardView.getTableRowStops();
+//        TableRow[] tableRowOutboundStops = outboundStopForecastCardView.getTableRowStops();
 
         for (int i = 0; i < 6; i++) {
             final int index = i;
 
-            tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showNotifyTimeDialog(
-                            spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                            inboundStopForecastCardView.getTextViewStopTimes(),
-                            index
-                    );
-                }
-            });
-
-            tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showNotifyTimeDialog(
-                            spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-                            outboundStopForecastCardView.getTextViewStopTimes(),
-                            index
-                    );
-                }
-            });
+//            tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    showNotifyTimeDialog(
+//                            spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
+//                            inboundStopForecastCardView.getTextViewStopTimes(),
+//                            index
+//                    );
+//                }
+//            });
+//
+//            tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    showNotifyTimeDialog(
+//                            spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
+//                            outboundStopForecastCardView.getTextViewStopTimes(),
+//                            index
+//                    );
+//                }
+//            });
         }
     }
 
@@ -777,8 +828,8 @@ public class LineFragment extends Fragment {
      * Clear stop forecast.
      */
     private void clearStopForecast() {
-        inboundStopForecastCardView.clearStopForecast();
-        outboundStopForecastCardView.clearStopForecast();
+//        inboundStopForecastCardView.clearStopForecast();
+//        outboundStopForecastCardView.clearStopForecast();
     }
 
     /**
@@ -1064,7 +1115,7 @@ public class LineFragment extends Fragment {
              * inbound and outbound trams.
              */
             if (stopForecast.getInboundTrams().size() == 0) {
-                inboundStopForecastCardView.setNoTramsForecast();
+//                inboundStopForecastCardView.setNoTramsForecast();
             } else {
                 String inboundTram;
 
@@ -1098,22 +1149,22 @@ public class LineFragment extends Fragment {
                                 minOrMins = min;
                             }
 
-                            inboundStopForecastCardView.setStopNames(
-                                    i,
-                                    inboundTram
-                            );
+//                            inboundStopForecastCardView.setStopNames(
+//                                    i,
+//                                    inboundTram
+//                            );
 
-                            inboundStopForecastCardView.setStopTimes(
-                                    i,
-                                    dueMinutes + minOrMins
-                            );
+//                            inboundStopForecastCardView.setStopTimes(
+//                                    i,
+//                                    dueMinutes + minOrMins
+//                            );
                         }
                     }
                 }
             }
 
             if (stopForecast.getOutboundTrams().size() == 0) {
-                outboundStopForecastCardView.setNoTramsForecast();
+//                outboundStopForecastCardView.setNoTramsForecast();
             } else {
                 String outboundTram;
 
@@ -1147,15 +1198,15 @@ public class LineFragment extends Fragment {
                                 minOrMins = min;
                             }
 
-                            outboundStopForecastCardView.setStopNames(
-                                    i,
-                                    outboundTram
-                            );
-
-                            outboundStopForecastCardView.setStopTimes(
-                                    i,
-                                    dueMinutes + minOrMins
-                            );
+//                            outboundStopForecastCardView.setStopNames(
+//                                    i,
+//                                    outboundTram
+//                            );
+//
+//                            outboundStopForecastCardView.setStopTimes(
+//                                    i,
+//                                    dueMinutes + minOrMins
+//                            );
                         }
                     }
                 }

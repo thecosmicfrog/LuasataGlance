@@ -1,0 +1,56 @@
+/**
+ * @author Aaron Hastings
+ *
+ * Copyright 2015-2019 Aaron Hastings
+ *
+ * This file is part of Luas at a Glance.
+ *
+ * Luas at a Glance is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Luas at a Glance is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Luas at a Glance.  If not, see <http:></http:>//www.gnu.org/licenses/>.
+ */
+package org.thecosmicfrog.luasataglance.view
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import org.thecosmicfrog.luasataglance.R
+
+class StopForecastConstraintLayout : ConstraintLayout {
+    private val logTag = StopForecastConstraintLayout::class.java.simpleName
+
+    constructor(context: Context?) : super(context!!) {
+        init(context)
+    }
+
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {
+        init(context)
+    }
+
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context!!,
+        attrs,
+        defStyleAttr
+    ) {
+        init(context)
+    }
+
+    /**
+     * Initialise custom View.
+     * @param context Context.
+     */
+    private fun init(context: Context?) {
+        View.inflate(context, R.layout.constraintlayout_stop_forecast, this)
+    }
+}
+

@@ -18,20 +18,15 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
 
-    <!-- Default CardView elevation, as @dimen/cardview_default_elevation is marked as private. -->
-    <dimen name="cardview_laag_elevation">2dp</dimen>
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent">
 
-    <dimen name="cardview_laag_corner_radius">4dp</dimen>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_stop_forecasts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</merge>
 
-    <!--
-Refer to App Widget Documentation for margin information
-http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
-    -->
-    <dimen name="widget_margin">8dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-</resources>

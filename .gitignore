@@ -3,6 +3,7 @@
 *gradlew*
 .DS_Store
 .gradle
+*.hprof
 /.idea
 /build
 /gradle

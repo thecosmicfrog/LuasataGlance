@@ -95,6 +95,7 @@ public final class Constant {
     public static final String RES_STATUS_CARDVIEW = "resStatusCardView";
     public static final String RES_SWIPEREFRESHLAYOUT = "resSwipeRefreshLayout";
     public static final String RES_SCROLLVIEW = "resScrollView";
+    public static final String RES_STOPFORECASTCONSTRAINTLAYOUT = "resStopForecastRecyclerView";
     public static final String RES_INBOUND_STOPFORECASTCARDVIEW =
             "resInboundStopForecastCardView";
     public static final String RES_OUTBOUND_STOPFORECASTCARDVIEW =
