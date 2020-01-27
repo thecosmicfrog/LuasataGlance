@@ -37,6 +37,8 @@ public final class Constant {
     public static final String RED_LINE = "red_line";
     public static final String GREEN_LINE = "green_line";
     public static final String NO_LINE = "no_line";
+    public static final String INBOUND = "Inbound";
+    public static final String OUTBOUND = "Outbound";
     public static final String STOP_NAME = "stopName";
     public static final String SELECTED_STOP_NAME = "selectedStopName";
     public static final String NOTIFY_STOP_NAME = "notifyStopName";

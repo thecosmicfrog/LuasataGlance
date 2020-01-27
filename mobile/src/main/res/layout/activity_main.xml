@@ -29,21 +29,58 @@
     tools:context="org.thecosmicfrog.luasataglance.activity.MainActivity"
     tools:ignore="MergeRootFrame">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tablayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintlayout_tab_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:elevation="@dimen/cardview_laag_elevation"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:tabTextAppearance="@style/LuasAtAGlanceTabLayout" />
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tablayout"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="?attr/colorPrimary"
+            android:elevation="@dimen/cardview_laag_elevation"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:tabTextAppearance="@style/LuasAtAGlanceTabLayout"
+            app:tabIndicatorHeight="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/activity_main_guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/luas_purple"
+            android:elevation="@dimen/cardview_laag_elevation"
+            app:layout_constraintStart_toEndOf="@id/activity_main_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageButton
+                android:id="@+id/imagebutton_overflow_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/luas_purple"
+                android:src="@drawable/ic_more_vert" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/activity_main_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/tablayout"/>
+        android:layout_below="@id/constraintlayout_tab_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -199,3 +236,4 @@
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>
+

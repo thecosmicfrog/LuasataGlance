@@ -18,12 +18,14 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardview_stop_forecast"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    app:cardCornerRadius="@dimen/cardview_laag_corner_radius">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:paddingTop="6dp"
@@ -44,7 +46,6 @@
                 android:id="@+id/textview_stop_forecast_destination"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="The Point"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +84,6 @@
                     android:id="@+id/textview_stop_forecast_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +94,6 @@
                     android:id="@+id/textview_stop_forecast_time_min_mins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="mins"
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -103,5 +102,5 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
 

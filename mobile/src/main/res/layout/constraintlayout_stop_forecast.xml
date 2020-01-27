@@ -18,15 +18,118 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<merge
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_stop_forecasts"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintlayout_inbound"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</merge>
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/cardview_laag_elevation"
+        android:background="@drawable/stop_forecast_background_inbound"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/space_stop_forecast">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_stop_forecasts_inbound"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:elevation="2.1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline_stop_forecasts_inbound_overlap"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textview_stop_forecast_inbound"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="IN"
+            android:textColor="@android:color/white"
+            android:paddingBottom="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_stop_forecasts_inbound"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_stop_forecasts_inbound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.8" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_stop_forecasts_inbound_overlap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.82" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Space
+        android:id="@+id/space_stop_forecast"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/constraintlayout_inbound"
+        app:layout_constraintBottom_toTopOf="@+id/constraintlayout_outbound"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintlayout_outbound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/cardview_laag_elevation"
+        android:background="@drawable/stop_forecast_background_outbound"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/space_stop_forecast">
+
+        <TextView
+            android:id="@+id/textview_stop_forecast_outbound"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="OUT"
+            android:textColor="@android:color/white"
+            android:paddingBottom="5dp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_stop_forecasts_outbound"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_stop_forecasts_outbound"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:elevation="2.1dp"
+            app:layout_constraintStart_toEndOf="@id/guideline_stop_forecasts_outbound_overlap"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_stop_forecasts_outbound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.2" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_stop_forecasts_outbound_overlap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.18" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

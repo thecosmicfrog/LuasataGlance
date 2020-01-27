@@ -32,6 +32,8 @@ import org.thecosmicfrog.luasataglance.activity.AboutActivity;
 import org.thecosmicfrog.luasataglance.activity.NewsActivity;
 import org.thecosmicfrog.luasataglance.activity.SettingsActivity;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public final class Settings {
 
     public static void getSettings(Context context, MenuItem item) {
@@ -46,7 +48,12 @@ public final class Settings {
                     new Intent(
                             context,
                             NewsActivity.class
-                    ).putExtra(Constant.NEWS_TYPE, Constant.NEWS_TYPE_LUAS_NEWS)
+                    ).setFlags(
+                            FLAG_ACTIVITY_NEW_TASK
+                    ).putExtra(
+                            Constant.NEWS_TYPE,
+                            Constant.NEWS_TYPE_LUAS_NEWS
+                    )
             );
 
             Analytics.selectContent(
@@ -61,6 +68,8 @@ public final class Settings {
                     new Intent(
                             context,
                             SettingsActivity.class
+                    ).setFlags(
+                            FLAG_ACTIVITY_NEW_TASK
                     )
             );
 
@@ -76,6 +85,8 @@ public final class Settings {
                     new Intent(
                             context,
                             AboutActivity.class
+                    ).setFlags(
+                            FLAG_ACTIVITY_NEW_TASK
                     )
             );
 

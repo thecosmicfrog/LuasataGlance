@@ -26,7 +26,7 @@
     <!-- Default CardView elevation, as @dimen/cardview_default_elevation is marked as private. -->
     <dimen name="cardview_laag_elevation">2dp</dimen>
 
-    <dimen name="cardview_laag_corner_radius">4dp</dimen>
+    <dimen name="cardview_laag_corner_radius">12dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information

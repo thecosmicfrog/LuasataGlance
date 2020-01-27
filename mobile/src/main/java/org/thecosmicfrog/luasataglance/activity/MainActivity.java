@@ -28,9 +28,14 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -61,9 +66,10 @@ public class MainActivity extends AppCompatActivity {
 
         getScreenHeight();
 
-        /* Set the ActionBar elevation to 0. */
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setElevation(0f);
+        /* Hide the ActionBar for aesthetic reasons. */
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         /* Set status and navigation bar colour. */
         if (Build.VERSION.SDK_INT >= 21) {
@@ -83,6 +89,30 @@ public class MainActivity extends AppCompatActivity {
                             R.color.luas_purple_statusbar
                     ));
         }
+
+        ImageButton imageButton = findViewById(R.id.imagebutton_overflow_menu);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenuOverflowMenu = new PopupMenu(getApplicationContext(), v);
+
+                popupMenuOverflowMenu.inflate(R.menu.menu_red_line);
+                popupMenuOverflowMenu.show();
+
+                popupMenuOverflowMenu.setOnMenuItemClickListener(
+                        new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                org.thecosmicfrog.luasataglance.util.Settings.getSettings(
+                                    getApplicationContext(),
+                                    item
+                                );
+
+                                return true;
+                            }
+                        });
+            }
+        });
 
         /*
          * Initialise ViewPager and TabLayout.
@@ -152,7 +182,8 @@ public class MainActivity extends AppCompatActivity {
                      * If we have a selected stop saved to shared preferences, open the map on that
                      * stop. Otherwise, open the map at a default position.
                      */
-                    if (Preferences.selectedStopName(getApplicationContext(), "no_line") != null) {
+                    if (Preferences.selectedStopName(
+                            getApplicationContext(), "no_line") != null) {
                         startActivity(
                                 new Intent(
                                         getApplicationContext(),
