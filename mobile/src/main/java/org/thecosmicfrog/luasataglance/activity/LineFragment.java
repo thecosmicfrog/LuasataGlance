@@ -24,13 +24,13 @@ package org.thecosmicfrog.luasataglance.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,14 +83,11 @@ public class LineFragment extends Fragment {
     private final String LOG_TAG = LineFragment.class.getSimpleName();
 
     private static int resLayoutFragmentLine;
-    private static int resMenuLine;
     private static int resProgressBar;
     private static int resSpinnerCardView;
     private static int resStatusCardView;
     private static int resSwipeRefreshLayout;
     private static int resScrollView;
-    private static int resInboundStopForecastCardView;
-    private static int resOutboundStopForecastCardView;
     private static int resArrayStopsRedLine;
     private static int resArrayStopsGreenLine;
     private static StopNameIdMap mapStopNameId;
@@ -106,8 +103,6 @@ public class LineFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private NestedScrollView scrollView;
     private StatusCardView statusCardView;
-    private ImageView imageViewBottomNavAlerts;
-    private TextView textViewBottomNavAlerts;
     private boolean isInitialised;
     private TimerTask timerTaskReload;
     private boolean shouldAutoReload = false;
@@ -248,11 +243,6 @@ public class LineFragment extends Fragment {
                 }
             }
 
-            imageViewBottomNavAlerts =
-                    activity.findViewById(R.id.imageview_bottomnav_alerts);
-            textViewBottomNavAlerts =
-                    activity.findViewById(R.id.textview_bottomnav_alerts);
-
             /*
              * If a Favourite stop brought us to this Activity, load that stop's forecast.
              * If a tapped notification brought us to this Activity, load the forecast for the stop
@@ -343,18 +333,24 @@ public class LineFragment extends Fragment {
 
             /* When this tab is visible to the user, load a stop forecast. */
             if (isVisibleToUser) {
-                if (spinnerCardView.getSpinnerStops().getSelectedItem() != null) {
-                    String stopName =
-                            spinnerCardView.getSpinnerStops().getSelectedItem().toString();
+                /* Back off a bit before loading to prevent UI stutters. */
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (spinnerCardView.getSpinnerStops().getSelectedItem() != null) {
+                            String stopName =
+                                    spinnerCardView.getSpinnerStops().getSelectedItem().toString();
 
-                    Preferences.saveSelectedStopName(context, Constant.NO_LINE, stopName);
+                            Preferences.saveSelectedStopName(context, Constant.NO_LINE, stopName);
 
-                    loadStopForecast(stopName, false);
+                            loadStopForecast(stopName, false);
 
-                    shouldAutoReload = true;
-                } else {
-                    Log.w(LOG_TAG, "Spinner selected item is null.");
-                }
+                            shouldAutoReload = true;
+                        } else {
+                            Log.w(LOG_TAG, "Spinner selected item is null.");
+                        }
+                    }
+                }, 200);
             } else {
                 shouldAutoReload = false;
             }
@@ -369,23 +365,19 @@ public class LineFragment extends Fragment {
         resArrayStopsGreenLine = getArguments().getInt(Constant.RES_ARRAY_STOPS_GREEN_LINE);
         line = getArguments().getString(Constant.LINE);
         resLayoutFragmentLine = getArguments().getInt(Constant.RES_LAYOUT_FRAGMENT_LINE);
-        resMenuLine = getArguments().getInt(Constant.RES_MENU_LINE);
+//        resTabLayout = getArguments().getInt(Constant.RES_TAB_LAYOUT);
         resProgressBar = getArguments().getInt(Constant.RES_PROGRESSBAR);
         resSpinnerCardView = getArguments().getInt(Constant.RES_SPINNER_CARDVIEW);
         resStatusCardView = getArguments().getInt(Constant.RES_STATUS_CARDVIEW);
         resSwipeRefreshLayout = getArguments().getInt(Constant.RES_SWIPEREFRESHLAYOUT);
         resScrollView = getArguments().getInt(Constant.RES_SCROLLVIEW);
-        resInboundStopForecastCardView =
-                getArguments().getInt(Constant.RES_INBOUND_STOPFORECASTCARDVIEW);
-        resOutboundStopForecastCardView =
-                getArguments().getInt(Constant.RES_OUTBOUND_STOPFORECASTCARDVIEW);
     }
 
     /**
      * Initialise Fragment and its views.
      */
     private boolean initFragment() {
-        tabLayout = activity.findViewById(R.id.tablayout);
+        tabLayout = activity.findViewById(R.id.trams_tablayout);
 
         progressBar = rootView.findViewById(resProgressBar);
 
@@ -495,6 +487,22 @@ public class LineFragment extends Fragment {
     }
 
     /**
+     * Set the colour of the tab indicator to either red or green.
+     * @param tabLayout TabLayout to manipulate.
+     */
+    private void setTabIndicatorColor(TabLayout tabLayout) {
+        if (tabLayout.getSelectedTabPosition() == 0) {
+            tabLayout.setSelectedTabIndicatorColor(
+                    ContextCompat.getColor(context, R.color.tab_red_line)
+            );
+        } else {
+            tabLayout.setSelectedTabIndicatorColor(
+                    ContextCompat.getColor(context, R.color.tab_green_line)
+            );
+        }
+    }
+
+    /**
      * Initialise OnClickListeners for a stop forecast.
      */
     private void initStopForecastOnClickListeners() {
@@ -544,25 +552,17 @@ public class LineFragment extends Fragment {
 
                 break;
 
-            case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FAVOURITES:
-                Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_FAVOURITES_ACTIVITY);
-                startActivity(
-                        new Intent(context, Constant.CLASS_FAVOURITES_ACTIVITY)
-                );
-
-                break;
+//            case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FAVOURITES:
+//                Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_FAVOURITES_ACTIVITY);
+//                startActivity(
+//                        new Intent(context, Constant.CLASS_FAVOURITES_ACTIVITY)
+//                );
+//
+//                break;
 
             case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_MAIN:
                 /* We're already in MainActivity. Nothing to do here. */
                 Log.i(LOG_TAG, "Already on MainActivity. Not routing anywhere.");
-                break;
-
-            case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_MAPS:
-                Log.i(LOG_TAG, "Routing to Activity: " + Constant.CLASS_MAPS_ACTIVITY);
-                startActivity(
-                        new Intent(context, Constant.CLASS_MAPS_ACTIVITY)
-                );
-
                 break;
 
             case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_NEWS:
@@ -980,15 +980,15 @@ public class LineFragment extends Fragment {
                     statusCardView.setStatus(status);
                     statusCardView.setStatusColor(R.color.message_success);
 
-                    /* Change the alerts image to the default white image. */
-                    imageViewBottomNavAlerts.setImageResource(
-                            R.drawable.ic_error_alerts
-                    );
-
-                    /* Change the color of the Alerts TextView to white (default). */
-                    textViewBottomNavAlerts.setTextColor(
-                            ContextCompat.getColor(context, android.R.color.white)
-                    );
+//                    /* Change the alerts image to the default white image. */
+//                    imageViewBottomNavAlerts.setImageResource(
+//                            R.drawable.ic_error_alerts
+//                    );
+//
+//                    /* Change the color of the Alerts TextView to white (default). */
+//                    textViewBottomNavAlerts.setTextColor(
+//                            ContextCompat.getColor(context, android.R.color.white)
+//                    );
                 } else {
                     if (status.equals("")) {
                         /*
@@ -1007,14 +1007,14 @@ public class LineFragment extends Fragment {
                     statusCardView.setStatusColor(R.color.message_error);
 
                     /* Change the Alerts image to the red version. */
-                    imageViewBottomNavAlerts.setImageResource(
-                            R.drawable.ic_error_alerts_red
-                    );
-
-                    /* Change the color of the Alerts TextView to red. */
-                    textViewBottomNavAlerts.setTextColor(
-                            ContextCompat.getColor(context, R.color.message_error)
-                    );
+//                    imageViewBottomNavAlerts.setImageResource(
+//                            R.drawable.ic_error_alerts_red
+//                    );
+//
+//                    /* Change the color of the Alerts TextView to red. */
+//                    textViewBottomNavAlerts.setTextColor(
+//                            ContextCompat.getColor(context, R.color.message_error)
+//                    );
                 }
             }
 
@@ -1111,3 +1111,4 @@ public class LineFragment extends Fragment {
         }
     }
 }
+

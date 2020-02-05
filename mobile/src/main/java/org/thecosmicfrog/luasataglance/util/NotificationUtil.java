@@ -68,11 +68,11 @@ public final class NotificationUtil {
 
                     break;
 
-                case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FAVOURITES:
-                    activityToOpen = Constant.CLASS_FAVOURITES_ACTIVITY;
-                    requestCode = REQUEST_CODE_OPEN_FAVOURITES_ACTIVITY;
-
-                    break;
+//                case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FAVOURITES:
+//                    activityToOpen = Constant.CLASS_FAVOURITES_ACTIVITY;
+//                    requestCode = REQUEST_CODE_OPEN_FAVOURITES_ACTIVITY;
+//
+//                    break;
 
                 case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_MAIN:
                     activityToOpen = Constant.CLASS_MAIN_ACTIVITY;
@@ -80,11 +80,11 @@ public final class NotificationUtil {
 
                     break;
 
-                case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_MAPS:
-                    activityToOpen = Constant.CLASS_MAPS_ACTIVITY;
-                    requestCode = REQUEST_CODE_OPEN_MAPS_ACTIVITY;
-
-                    break;
+//                case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_MAPS:
+//                    activityToOpen = Constant.CLASS_MAPS_ACTIVITY;
+//                    requestCode = REQUEST_CODE_OPEN_MAPS_ACTIVITY;
+//
+//                    break;
 
                 case Constant.REMOTEMESSAGE_VALUE_ACTIVITY_NEWS:
                     activityToOpen = Constant.CLASS_NEWS_ACTIVITY;

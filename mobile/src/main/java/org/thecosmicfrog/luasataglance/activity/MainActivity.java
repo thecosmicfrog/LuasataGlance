@@ -28,33 +28,48 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.perf.FirebasePerformance;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
-import org.thecosmicfrog.luasataglance.view.TutorialCardView;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.menuitem_bottomnav_trams:
+                    return switchFragment(TramsFragment.Companion.newInstance());
+
+                case R.id.menuitem_bottomnav_favourites:
+                    return switchFragment(FavouritesFragment.Companion.newInstance());
+
+                case R.id.menuitem_bottomnav_map:
+                    return switchFragment(MapsFragment.Companion.newInstance());
+
+                case R.id.menuitem_bottomnav_alerts:
+                    return switchFragment(AlertsFragment.Companion.newInstance());
+            }
+
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavigationview);
+        bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
+
         getScreenHeight();
 
         /* Hide the ActionBar for aesthetic reasons. */
@@ -72,239 +90,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /* Set status and navigation bar colour. */
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(
-                    ContextCompat.getColor(
-                            getApplicationContext(),
-                            R.color.luas_purple_statusbar
-                    )
-            );
-
-            window.setNavigationBarColor(
-                    ContextCompat.getColor(
-                            getApplicationContext(),
-                            R.color.luas_purple_statusbar
-                    ));
-        }
-
-        ImageButton imageButton = findViewById(R.id.imagebutton_overflow_menu);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenuOverflowMenu = new PopupMenu(getApplicationContext(), v);
-
-                popupMenuOverflowMenu.inflate(R.menu.menu_red_line);
-                popupMenuOverflowMenu.show();
-
-                popupMenuOverflowMenu.setOnMenuItemClickListener(
-                        new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                org.thecosmicfrog.luasataglance.util.Settings.getSettings(
-                                    getApplicationContext(),
-                                    item
-                                );
-
-                                return true;
-                            }
-                        });
-            }
-        });
-
-        /*
-         * Initialise ViewPager and TabLayout.
-         */
-        final ViewPager viewPager = findViewById(R.id.viewpager);
-        final TabLayout tabLayout = findViewById(R.id.tablayout);
-
-        if (tabLayout != null && viewPager != null) {
-            tabLayout.addTab(
-                    tabLayout.newTab().setTag(Constant.RED_LINE).setText(
-                            getString(R.string.tab_red_line)
-                    )
-            );
-            tabLayout.addTab(
-                    tabLayout.newTab().setTag(Constant.GREEN_LINE).setText(
-                            getString(R.string.tab_green_line)
-                    )
-            );
-            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-            tabLayout.setBackgroundColor(
-                    ContextCompat.getColor(getApplicationContext(), R.color.luas_purple)
-            );
-
-            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    viewPager.setCurrentItem(tab.getPosition());
-
-                    setTabIndicatorColor(tabLayout);
-                }
-
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-                }
-
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-                }
-            });
-
-            final PagerAdapter pagerAdapter = new PagerAdapter(
-                    getSupportFragmentManager(),
-                    tabLayout.getTabCount()
-            );
-
-            viewPager.setAdapter(pagerAdapter);
-            viewPager.addOnPageChangeListener(
-                    new TabLayout.TabLayoutOnPageChangeListener(tabLayout)
-            );
-
-            setTabIndicatorColor(tabLayout);
-        } else {
-            Log.wtf(LOG_TAG, "tabLayout or viewPager is null.");
-        }
-
-        /*
-         * Bottom navigation bar - Luas Map.
-         */
-        RelativeLayout relativeLayoutBottomNavMap =
-                findViewById(R.id.relativelayout_bottomnav_map);
-        if (relativeLayoutBottomNavMap != null) {
-            relativeLayoutBottomNavMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /*
-                     * Open Maps Activity.
-                     * If we have a selected stop saved to shared preferences, open the map on that
-                     * stop. Otherwise, open the map at a default position.
-                     */
-                    if (Preferences.selectedStopName(
-                            getApplicationContext(), "no_line") != null) {
-                        startActivity(
-                                new Intent(
-                                        getApplicationContext(),
-                                        MapsActivity.class
-                                ).putExtra(
-                                        Constant.STOP_NAME,
-                                        Preferences.selectedStopName(
-                                                getApplicationContext(),
-                                                Constant.NO_LINE
-                                        )
-                                )
-                        );
-                    } else {
-                        startActivity(
-                                new Intent(
-                                        getApplicationContext(),
-                                        MapsActivity.class
-                                )
-                        );
-                    }
-
-                    Analytics.selectContent(
-                            getApplicationContext(),
-                            "button_tapped",
-                            "map_tapped"
-                    );
-                }
-            });
-        }
-
-        /*
-         * Bottom navigation bar - Favourites.
-         */
-        RelativeLayout relativeLayoutBottomNavFavourites =
-                findViewById(R.id.relativelayout_bottomnav_favourites);
-        if (relativeLayoutBottomNavFavourites != null) {
-            relativeLayoutBottomNavFavourites.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TutorialCardView tutorialCardViewFavourites =
-                            findViewById(R.id.tutorialcardview_favourites);
-                    if (tutorialCardViewFavourites != null) {
-                        tutorialCardViewFavourites.setVisibility(View.GONE);
-                    }
-
-                    /* Open Favourites Activity. */
-                    startActivity(
-                            new Intent(
-                                    getApplicationContext(),
-                                    FavouritesActivity.class
-                            )
-                    );
-
-                    Analytics.selectContent(
-                            getApplicationContext(),
-                            "button_tapped",
-                            "favourites_tapped"
-                    );
-                }
-            });
-        }
-
-        /*
-         * Bottom navigation bar - Fares.
-         */
-        RelativeLayout relativeLayoutBottomNavFares =
-                findViewById(R.id.relativelayout_bottomnav_fares);
-        if (relativeLayoutBottomNavFares != null) {
-            relativeLayoutBottomNavFares.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /* Open Fares Activity. */
-                    startActivity(
-                            new Intent(
-                                    getApplicationContext(),
-                                    FaresActivity.class
-                            )
-                    );
-
-                    Analytics.selectContent(
-                            getApplicationContext(),
-                            "button_tapped",
-                            "fares_tapped"
-                    );
-                }
-            });
-        }
-
-        /*
-         * Bottom navigation bar - Alerts.
-         */
-        RelativeLayout relativeLayoutBottomNavAlerts =
-                findViewById(R.id.relativelayout_bottomnav_alerts);
-        if (relativeLayoutBottomNavAlerts != null) {
-            relativeLayoutBottomNavAlerts.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(
-                            new Intent(
-                                    getApplicationContext(),
-                                    NewsActivity.class
-                            ).putExtra(Constant.NEWS_TYPE, Constant.NEWS_TYPE_TRAVEL_UPDATES)
-                    );
-
-                    Analytics.selectContent(
-                            getApplicationContext(),
-                            "button_tapped",
-                            "alerts_tapped"
-                    );
-                }
-            });
-        }
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(
+                ContextCompat.getColor(
+                        getApplicationContext(),
+                        R.color.luas_purple_statusbar
+                )
+        );
+        window.setNavigationBarColor(
+                ContextCompat.getColor(
+                        getApplicationContext(),
+                        R.color.luas_purple_statusbar
+                ));
 
         showWhatsNewDialog();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        adjustBottomNavByScreen();
     }
 
     @Override
@@ -315,51 +116,18 @@ public class MainActivity extends AppCompatActivity {
         setIntent(intent);
     }
 
-    private void adjustBottomNavByScreen() {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        final int DENSITY_DPI = displayMetrics.densityDpi;
+    private boolean switchFragment(Fragment fragmentToSwitchTo) {
+        FragmentTransaction fragmentTransaction =
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
-        Log.i(LOG_TAG, "Screen density is " + DENSITY_DPI + " DPI.");
+        fragmentTransaction.replace(
+                R.id.framelayout_fragment_replacer,
+                fragmentToSwitchTo
+        ).commitNow();
 
-        final TextView textViewBottomNavMap =
-                findViewById(R.id.textview_bottomnav_map);
-        final TextView textViewBottomNavFavourites =
-                findViewById(R.id.textview_bottomnav_favourites);
-
-        /*
-         * If the screen density is particularly low, or if the number of lines in the bottom
-         * navigation Favourites button (longest string) goes beyond 1, shorten the strings to
-         * something more compact.
-         */
-        textViewBottomNavFavourites.post(new Runnable() {
-            @Override
-            public void run() {
-                if (DENSITY_DPI <= 320 || textViewBottomNavFavourites.getLineCount() >= 2) {
-                    Log.i(LOG_TAG, "Shortening bottom navigation TextViews.");
-
-                    textViewBottomNavMap.setText(getString(R.string.bottomnav_map_short));
-                    textViewBottomNavFavourites.setText(
-                            getString(R.string.bottomnav_favourites_short)
-                    );
-                }
-            }
-        });
-    }
-
-    /**
-     * Set the colour of the tab indicator to either red or green.
-     * @param tabLayout TabLayout to manipulate.
-     */
-    private void setTabIndicatorColor(TabLayout tabLayout) {
-        if (tabLayout.getSelectedTabPosition() == 0) {
-            tabLayout.setSelectedTabIndicatorColor(
-                    ContextCompat.getColor(getApplicationContext(), R.color.tab_red_line)
-            );
-        } else {
-            tabLayout.setSelectedTabIndicatorColor(
-                    ContextCompat.getColor(getApplicationContext(), R.color.tab_green_line)
-            );
-        }
+        return true;
     }
 
     /**

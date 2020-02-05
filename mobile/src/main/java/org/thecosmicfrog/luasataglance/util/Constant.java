@@ -22,9 +22,7 @@
 package org.thecosmicfrog.luasataglance.util;
 
 import org.thecosmicfrog.luasataglance.activity.FaresActivity;
-import org.thecosmicfrog.luasataglance.activity.FavouritesActivity;
 import org.thecosmicfrog.luasataglance.activity.MainActivity;
-import org.thecosmicfrog.luasataglance.activity.MapsActivity;
 import org.thecosmicfrog.luasataglance.activity.NewsActivity;
 import org.thecosmicfrog.luasataglance.activity.SettingsActivity;
 
@@ -58,9 +56,9 @@ public final class Constant {
      * Classes.
      */
     public static final Class CLASS_FARES_ACTIVITY = FaresActivity.class;
-    public static final Class CLASS_FAVOURITES_ACTIVITY = FavouritesActivity.class;
+//    public static final Class CLASS_FAVOURITES_ACTIVITY = FavouritesActivity.class;
     public static final Class CLASS_MAIN_ACTIVITY = MainActivity.class;
-    public static final Class CLASS_MAPS_ACTIVITY = MapsActivity.class;
+//    public static final Class CLASS_MAPS_ACTIVITY = MapsActivity.class;
     public static final Class CLASS_NEWS_ACTIVITY = NewsActivity.class;
     public static final Class CLASS_SETTINGS_ACTIVITY = SettingsActivity.class;
 
@@ -91,6 +89,8 @@ public final class Constant {
      * Resources.
      */
     public static final String RES_LAYOUT_FRAGMENT_LINE = "resLayoutFragmentLine";
+    public static final String RES_VIEW_PAGER = "resViewPager";
+    public static final String RES_TAB_LAYOUT = "resTabLayout";
     public static final String RES_MENU_LINE = "resMenuLine";
     public static final String RES_PROGRESSBAR = "resProgressBar";
     public static final String RES_SPINNER_CARDVIEW = "resSpinnerCardView";

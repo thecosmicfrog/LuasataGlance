@@ -39,6 +39,5 @@ class PagerAdapter(fm: FragmentManager?,
     override fun getCount(): Int {
         return numTabs
     }
-
 }
 

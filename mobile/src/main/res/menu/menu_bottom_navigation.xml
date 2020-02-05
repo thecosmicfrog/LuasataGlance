@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2015-2019 Aaron Hastings
+
+    This file is part of Luas at a Glance.
+
+    Luas at a Glance is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Luas at a Glance is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/menuitem_bottomnav_trams"
+        android:title="Trams"
+        android:icon="@drawable/ic_tram"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menuitem_bottomnav_favourites"
+        android:title="@string/action_favourites"
+        android:icon="@drawable/ic_favourites"
+        android:orderInCategory="2"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menuitem_bottomnav_map"
+        android:title="@string/title_activity_maps"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:orderInCategory="3"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menuitem_bottomnav_alerts"
+        android:title="@string/action_news_alert"
+        android:icon="@drawable/ic_error_alerts"
+        android:orderInCategory="4"
+        app:showAsAction="never" />
+</menu>
