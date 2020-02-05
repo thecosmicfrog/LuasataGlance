@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2019 Aaron Hastings
+ * Copyright 2015-2020 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
