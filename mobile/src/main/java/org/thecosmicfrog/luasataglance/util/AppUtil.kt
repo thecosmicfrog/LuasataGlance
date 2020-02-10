@@ -21,14 +21,33 @@
 package org.thecosmicfrog.luasataglance.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
 import android.provider.Settings
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Display
+import android.view.WindowManager
 import com.google.firebase.perf.FirebasePerformance
 
 object AppUtil {
 
     private val logTag = AppUtil::class.java.simpleName
+
+    @JvmStatic
+    fun getScreenHeight(windowManager: WindowManager, resources: Resources, context: Context) {
+        val display: Display = windowManager.defaultDisplay
+        val displayMetrics = DisplayMetrics()
+        display.getMetrics(displayMetrics)
+
+        val density: Float = resources.displayMetrics.density
+        val dpHeight = displayMetrics.heightPixels / density
+
+        Preferences.saveScreenHeight(
+            context,
+            dpHeight
+        )
+    }
 
     /**
      * Enable or disable Firebase Performance collection.
