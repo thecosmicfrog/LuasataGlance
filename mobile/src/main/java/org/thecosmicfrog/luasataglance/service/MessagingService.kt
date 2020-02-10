@@ -36,7 +36,7 @@ class MessagingService : FirebaseMessagingService() {
         super.onNewToken(s)
 
         /* If we're in an emulator, just log the token as-is for easy debugging. */
-        val newTokenToLog: String = if (AppUtil.isEmulator()) {
+        val newTokenToLog: String = if (AppUtil.isEmulator) {
             s
         } else {
             s.replaceFirst("(.{10}).+(.{10})".toRegex(), "$1...$2")
