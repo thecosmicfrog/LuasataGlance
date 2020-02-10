@@ -26,17 +26,19 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import org.thecosmicfrog.luasataglance.activity.LineFragment
 import org.thecosmicfrog.luasataglance.util.Constant
 
-class PagerAdapter(fm: FragmentManager?,
-                   private val numTabs: Int) : FragmentStatePagerAdapter(fm!!) {
+class TabsPagerAdapter(fm: FragmentManager?,
+                       private val numTabs: Int) : FragmentStatePagerAdapter(fm!!) {
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> LineFragment.newInstance(
                 Constant.RED_LINE
             )
+
             1 -> LineFragment.newInstance(
                 Constant.GREEN_LINE
             )
+
             else -> LineFragment.newInstance(
                 Constant.NO_LINE
             )
