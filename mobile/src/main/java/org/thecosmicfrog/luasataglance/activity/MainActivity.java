@@ -23,7 +23,6 @@ package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -36,10 +35,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.perf.FirebasePerformance;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.adapter.ReplacerPagerAdapter;
+import org.thecosmicfrog.luasataglance.util.AppUtil;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.view.NonSwipeableViewPager;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        configureFirebasePerformanceCollection();
+        AppUtil.configureFirebasePerformanceCollection(getApplicationContext());
 
         setContentView(R.layout.activity_main);
 
@@ -65,6 +64,14 @@ public class MainActivity extends AppCompatActivity {
         configureAppAesthetics();
 
         showWhatsNewDialog();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        /* If the Intent has changed, update the Activity's Intent. */
+        setIntent(intent);
     }
 
     private void configureAppAesthetics() {
@@ -145,70 +152,51 @@ public class MainActivity extends AppCompatActivity {
         nonSwipeableViewPagerReplacer.setAdapter(replacerPagerAdapter);
         nonSwipeableViewPagerReplacer.addOnPageChangeListener(
                 new NonSwipeableViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                                       int positionOffsetPixels) {
-            }
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset,
+                                               int positionOffsetPixels) {
+                    }
 
-            @Override
-            public void onPageSelected(int position) {
-                /* When the page changes, highlight the relevant BottomNavigationView item. */
-                switch (position) {
-                    case Constant.BOTTOMNAV_MENU_ITEM_INDEX_TRAMS:
-                        bottomNavigationView.getMenu().findItem(
-                                R.id.menuitem_bottomnav_trams
-                        ).setChecked(true);
+                    @Override
+                    public void onPageSelected(int position) {
+                        /*
+                         * When the page changes, highlight the relevant BottomNavigationView item.
+                         */
+                        switch (position) {
+                            case Constant.BOTTOMNAV_MENU_ITEM_INDEX_TRAMS:
+                                bottomNavigationView.getMenu().findItem(
+                                        R.id.menuitem_bottomnav_trams
+                                ).setChecked(true);
 
-                        break;
+                                break;
 
-                    case Constant.BOTTOMNAV_MENU_ITEM_INDEX_FAVOURITES:
-                        bottomNavigationView.getMenu().findItem(
-                                R.id.menuitem_bottomnav_favourites
-                        ).setChecked(true);
+                            case Constant.BOTTOMNAV_MENU_ITEM_INDEX_FAVOURITES:
+                                bottomNavigationView.getMenu().findItem(
+                                        R.id.menuitem_bottomnav_favourites
+                                ).setChecked(true);
 
-                        break;
+                                break;
 
-                    case Constant.BOTTOMNAV_MENU_ITEM_INDEX_MAP:
-                        bottomNavigationView.getMenu().findItem(
-                                R.id.menuitem_bottomnav_map
-                        ).setChecked(true);
+                            case Constant.BOTTOMNAV_MENU_ITEM_INDEX_MAP:
+                                bottomNavigationView.getMenu().findItem(
+                                        R.id.menuitem_bottomnav_map
+                                ).setChecked(true);
 
-                        break;
+                                break;
 
-                    case Constant.BOTTOMNAV_MENU_ITEM_INDEX_ALERTS:
-                        bottomNavigationView.getMenu().findItem(
-                                R.id.menuitem_bottomnav_alerts
-                        ).setChecked(true);
+                            case Constant.BOTTOMNAV_MENU_ITEM_INDEX_ALERTS:
+                                bottomNavigationView.getMenu().findItem(
+                                        R.id.menuitem_bottomnav_alerts
+                                ).setChecked(true);
 
-                        break;
-                }
-            }
+                                break;
+                        }
+                    }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        /* If the Intent has changed, update the Activity's Intent. */
-        setIntent(intent);
-    }
-
-    /**
-     * Check whether or not we are running in Firebase Test Lab.
-     * @return Whether or not we are running in Firebase Test Lab.
-     */
-    private boolean isRunningInFirebaseTestLab() {
-        String settingFirebaseTestLab =
-                Settings.System.getString(getContentResolver(), "firebase.test.lab");
-
-        Log.i(LOG_TAG, "Running in Firebase Test Lab.");
-
-        return settingFirebaseTestLab != null && settingFirebaseTestLab.equals("true");
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+                    }
+                });
     }
 
     /**
@@ -216,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showWhatsNewDialog() {
         /* Don't show the What's New dialog if we're running in Firebase Test Lab. */
-        if (isRunningInFirebaseTestLab()) {
+        if (AppUtil.isRunningInFirebaseTestLab(getApplicationContext())) {
             Log.i(
                     LOG_TAG,
                     "Running in Firebase Test Lab. Not showing What's New dialog."
@@ -275,21 +263,6 @@ public class MainActivity extends AppCompatActivity {
         float dpHeight = displayMetrics.heightPixels / density;
 
         Preferences.saveScreenHeight(getApplicationContext(), dpHeight);
-    }
-
-    /**
-     * Enable or disable Firebase Performance collection.
-     */
-    private void configureFirebasePerformanceCollection() {
-        /* Disable Firebase Performance collection if we're running in Firebase Test Lab. */
-        if (isRunningInFirebaseTestLab()) {
-            Log.i(
-                    LOG_TAG,
-                    "Running in Firebase Test Lab. Disabling Firebase Performance collection."
-            );
-
-            FirebasePerformance.getInstance().setPerformanceCollectionEnabled(false);
-        }
     }
 }
 

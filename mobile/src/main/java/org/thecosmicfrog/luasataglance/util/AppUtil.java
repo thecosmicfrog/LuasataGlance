@@ -21,9 +21,31 @@
 
 package org.thecosmicfrog.luasataglance.util;
 
+import android.content.Context;
 import android.os.Build;
+import android.provider.Settings;
+import android.util.Log;
+
+import com.google.firebase.perf.FirebasePerformance;
 
 public final class AppUtil {
+
+    private static final String LOG_TAG = AppUtil.class.getSimpleName();
+
+    /**
+     * Enable or disable Firebase Performance collection.
+     */
+    public static void configureFirebasePerformanceCollection(Context context) {
+        /* Disable Firebase Performance collection if we're running in Firebase Test Lab. */
+        if (isRunningInFirebaseTestLab(context)) {
+            Log.i(
+                    LOG_TAG,
+                    "Running in Firebase Test Lab. Disabling Firebase Performance collection."
+            );
+
+            FirebasePerformance.getInstance().setPerformanceCollectionEnabled(false);
+        }
+    }
 
     public static boolean isEmulator() {
         return Build.FINGERPRINT.startsWith("generic")
@@ -34,5 +56,18 @@ public final class AppUtil {
                 || Build.MANUFACTURER.contains("Genymotion")
                 || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
                 || "google_sdk".equals(Build.PRODUCT);
+    }
+
+    /**
+     * Check whether or not we are running in Firebase Test Lab.
+     * @return Whether or not we are running in Firebase Test Lab.
+     */
+    public static boolean isRunningInFirebaseTestLab(Context context) {
+        String settingFirebaseTestLab =
+                Settings.System.getString(context.getContentResolver(), "firebase.test.lab");
+
+        Log.i(LOG_TAG, "Running in Firebase Test Lab.");
+
+        return settingFirebaseTestLab != null && settingFirebaseTestLab.equals("true");
     }
 }
