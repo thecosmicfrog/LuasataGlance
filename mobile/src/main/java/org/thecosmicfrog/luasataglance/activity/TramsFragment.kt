@@ -34,6 +34,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.adapter.PagerAdapter
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Settings
 
@@ -131,10 +132,11 @@ class TramsFragment : Fragment() {
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
             })
 
-            val pagerAdapter = PagerAdapter(
-                childFragmentManager,
-                tabLayout?.tabCount as Int
-            )
+            val pagerAdapter =
+                PagerAdapter(
+                    childFragmentManager,
+                    tabLayout?.tabCount as Int
+                )
 
             viewPager?.adapter = pagerAdapter
             viewPager?.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))

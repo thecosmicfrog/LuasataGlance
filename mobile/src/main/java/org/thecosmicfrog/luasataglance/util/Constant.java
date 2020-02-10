@@ -53,6 +53,14 @@ public final class Constant {
     public static final String PATH_STOPFORECAST_FETCH_WEAR = "/stopforecast_fetch_wear";
 
     /*
+     * Bottom Navigation View.
+     */
+    public static final int BOTTOMNAV_MENU_ITEM_INDEX_TRAMS = 0;
+    public static final int BOTTOMNAV_MENU_ITEM_INDEX_FAVOURITES = 1;
+    public static final int BOTTOMNAV_MENU_ITEM_INDEX_MAP = 2;
+    public static final int BOTTOMNAV_MENU_ITEM_INDEX_ALERTS = 3;
+
+    /*
      * Classes.
      */
     public static final Class CLASS_FARES_ACTIVITY = FaresActivity.class;
@@ -89,9 +97,6 @@ public final class Constant {
      * Resources.
      */
     public static final String RES_LAYOUT_FRAGMENT_LINE = "resLayoutFragmentLine";
-    public static final String RES_VIEW_PAGER = "resViewPager";
-    public static final String RES_TAB_LAYOUT = "resTabLayout";
-    public static final String RES_MENU_LINE = "resMenuLine";
     public static final String RES_PROGRESSBAR = "resProgressBar";
     public static final String RES_SPINNER_CARDVIEW = "resSpinnerCardView";
     public static final String RES_STATUS_CARDVIEW = "resStatusCardView";
@@ -110,3 +115,4 @@ public final class Constant {
     public static final String TUTORIAL_NOTIFICATIONS = "notifications";
     public static final String TUTORIAL_FAVOURITES = "favourites";
 }
+

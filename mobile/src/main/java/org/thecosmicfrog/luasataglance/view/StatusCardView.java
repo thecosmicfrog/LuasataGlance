@@ -26,9 +26,11 @@ import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
+
 import org.thecosmicfrog.luasataglance.R;
 
-public class StatusCardView extends CardView {
+public class StatusCardView extends MaterialCardView {
 
     private final String LOG_TAG = SpinnerCardView.class.getSimpleName();
 

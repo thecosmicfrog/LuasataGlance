@@ -26,9 +26,11 @@ import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
+
 import org.thecosmicfrog.luasataglance.R;
 
-public class TutorialCardView extends CardView {
+public class TutorialCardView extends MaterialCardView {
 
     private final String LOG_TAG = TutorialCardView.class.getSimpleName();
 

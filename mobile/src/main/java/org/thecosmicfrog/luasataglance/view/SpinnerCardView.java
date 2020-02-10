@@ -31,9 +31,11 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.google.android.material.card.MaterialCardView;
+
 import org.thecosmicfrog.luasataglance.R;
 
-public class SpinnerCardView extends CardView {
+public class SpinnerCardView extends MaterialCardView {
 
     private final String LOG_TAG = SpinnerCardView.class.getSimpleName();
 

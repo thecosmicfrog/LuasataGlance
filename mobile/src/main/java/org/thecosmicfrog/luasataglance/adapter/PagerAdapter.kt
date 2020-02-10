@@ -18,11 +18,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.thecosmicfrog.luasataglance.activity
+package org.thecosmicfrog.luasataglance.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import org.thecosmicfrog.luasataglance.activity.LineFragment
 import org.thecosmicfrog.luasataglance.util.Constant
 
 class PagerAdapter(fm: FragmentManager?,
@@ -30,9 +31,15 @@ class PagerAdapter(fm: FragmentManager?,
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> LineFragment.newInstance(Constant.RED_LINE)
-            1 -> LineFragment.newInstance(Constant.GREEN_LINE)
-            else -> LineFragment.newInstance(Constant.NO_LINE)
+            0 -> LineFragment.newInstance(
+                Constant.RED_LINE
+            )
+            1 -> LineFragment.newInstance(
+                Constant.GREEN_LINE
+            )
+            else -> LineFragment.newInstance(
+                Constant.NO_LINE
+            )
         }
     }
 

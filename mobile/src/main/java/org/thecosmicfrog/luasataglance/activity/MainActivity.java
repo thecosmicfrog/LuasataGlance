@@ -22,7 +22,6 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
@@ -35,41 +34,21 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.perf.FirebasePerformance;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.adapter.ReplacerPagerAdapter;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
+import org.thecosmicfrog.luasataglance.view.NonSwipeableViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.menuitem_bottomnav_trams:
-                    return switchFragment(TramsFragment.Companion.newInstance());
-
-                case R.id.menuitem_bottomnav_favourites:
-                    return switchFragment(FavouritesFragment.Companion.newInstance());
-
-                case R.id.menuitem_bottomnav_map:
-                    return switchFragment(MapsFragment.Companion.newInstance());
-
-                case R.id.menuitem_bottomnav_alerts:
-                    return switchFragment(AlertsFragment.Companion.newInstance());
-            }
-
-            return false;
-        }
-    };
+    private NonSwipeableViewPager nonSwipeableViewPagerReplacer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +58,16 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavigationview);
-        bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
+        setUpAppNavigation();
 
         getScreenHeight();
 
+        configureAppAesthetics();
+
+        showWhatsNewDialog();
+    }
+
+    private void configureAppAesthetics() {
         /* Hide the ActionBar for aesthetic reasons. */
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -104,8 +88,106 @@ public class MainActivity extends AppCompatActivity {
                         getApplicationContext(),
                         R.color.luas_purple_statusbar
                 ));
+    }
 
-        showWhatsNewDialog();
+    private void setUpAppNavigation() {
+        BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.menuitem_bottomnav_trams:
+                                nonSwipeableViewPagerReplacer.setCurrentItem(
+                                        Constant.BOTTOMNAV_MENU_ITEM_INDEX_TRAMS
+                                );
+
+                                break;
+
+                            case R.id.menuitem_bottomnav_favourites:
+                                nonSwipeableViewPagerReplacer.setCurrentItem(
+                                        Constant.BOTTOMNAV_MENU_ITEM_INDEX_FAVOURITES
+                                );
+
+                                break;
+
+                            case R.id.menuitem_bottomnav_map:
+                                nonSwipeableViewPagerReplacer.setCurrentItem(
+                                        Constant.BOTTOMNAV_MENU_ITEM_INDEX_MAP
+                                );
+
+                                break;
+
+                            case R.id.menuitem_bottomnav_alerts:
+                                nonSwipeableViewPagerReplacer.setCurrentItem(
+                                        Constant.BOTTOMNAV_MENU_ITEM_INDEX_ALERTS
+                                );
+
+                                break;
+                        }
+
+                        return false;
+                    }
+                };
+
+        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavigationview);
+        bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
+
+        int bottomNavigationViewItemCount = bottomNavigationView.getMenu().size();
+
+        ReplacerPagerAdapter replacerPagerAdapter = new ReplacerPagerAdapter(
+                getSupportFragmentManager(),
+                bottomNavigationViewItemCount
+        );
+
+        nonSwipeableViewPagerReplacer = findViewById(R.id.nonswipeableviewpager_replacer);
+        nonSwipeableViewPagerReplacer.setSwipingEnabled(false);
+        nonSwipeableViewPagerReplacer.setOffscreenPageLimit(bottomNavigationViewItemCount - 1);
+        nonSwipeableViewPagerReplacer.setAdapter(replacerPagerAdapter);
+        nonSwipeableViewPagerReplacer.addOnPageChangeListener(
+                new NonSwipeableViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                /* When the page changes, highlight the relevant BottomNavigationView item. */
+                switch (position) {
+                    case Constant.BOTTOMNAV_MENU_ITEM_INDEX_TRAMS:
+                        bottomNavigationView.getMenu().findItem(
+                                R.id.menuitem_bottomnav_trams
+                        ).setChecked(true);
+
+                        break;
+
+                    case Constant.BOTTOMNAV_MENU_ITEM_INDEX_FAVOURITES:
+                        bottomNavigationView.getMenu().findItem(
+                                R.id.menuitem_bottomnav_favourites
+                        ).setChecked(true);
+
+                        break;
+
+                    case Constant.BOTTOMNAV_MENU_ITEM_INDEX_MAP:
+                        bottomNavigationView.getMenu().findItem(
+                                R.id.menuitem_bottomnav_map
+                        ).setChecked(true);
+
+                        break;
+
+                    case Constant.BOTTOMNAV_MENU_ITEM_INDEX_ALERTS:
+                        bottomNavigationView.getMenu().findItem(
+                                R.id.menuitem_bottomnav_alerts
+                        ).setChecked(true);
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     @Override
@@ -114,20 +196,6 @@ public class MainActivity extends AppCompatActivity {
 
         /* If the Intent has changed, update the Activity's Intent. */
         setIntent(intent);
-    }
-
-    private boolean switchFragment(Fragment fragmentToSwitchTo) {
-        FragmentTransaction fragmentTransaction =
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-        fragmentTransaction.replace(
-                R.id.framelayout_fragment_replacer,
-                fragmentToSwitchTo
-        ).commitNow();
-
-        return true;
     }
 
     /**
