@@ -1,10 +1,14 @@
 package org.thecosmicfrog.luasataglance.model
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.util.Constant
+import org.thecosmicfrog.luasataglance.util.Preferences
+import org.thecosmicfrog.luasataglance.util.StopForecastUtil
 
 class StopForecastAdapter(private val listStopForecastInfo: List<StopForecastInfo>):
     RecyclerView.Adapter<StopForecastViewHolder>() {
@@ -27,8 +31,18 @@ class StopForecastAdapter(private val listStopForecastInfo: List<StopForecastInf
         holder.textViewMinOrMins?.text = minOrMins
 
         /* If the tram is due, don't show the "min/mins" TextView to better centre the DUE text. */
-        if (holder.textViewMinOrMins?.text == "") {
-            holder.textViewMinOrMins.visibility = View.GONE
+        if (holder.textViewMinOrMins?.text.isNullOrBlank()) {
+            holder.textViewMinOrMins?.visibility = View.GONE
+        }
+
+        /* Set OnClickListener for each item in the RecyclerView. */
+        holder.itemView.setOnClickListener {
+            StopForecastUtil.showNotifyTimeDialog(
+                it.rootView,
+                Preferences.selectedStopName(it.context, Constant.NO_LINE),
+                holder.textViewDueMinutes?.text as String,
+                it.resources
+            )
         }
     }
 

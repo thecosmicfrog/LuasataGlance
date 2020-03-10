@@ -21,15 +21,25 @@
 package org.thecosmicfrog.luasataglance.util
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
+import android.provider.Settings.Global.getString
 import android.util.Log
 import android.view.View
+import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import com.google.android.material.snackbar.Snackbar
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity
 import org.thecosmicfrog.luasataglance.api.ApiTimes
+import org.thecosmicfrog.luasataglance.model.NotifyTimesMap
 import org.thecosmicfrog.luasataglance.model.StopForecast
 import org.thecosmicfrog.luasataglance.view.TutorialCardView
+import java.util.*
 
 object StopForecastUtil {
 
@@ -185,15 +195,72 @@ object StopForecastUtil {
     }
 
     /**
+     * Show dialog for choosing notification times.
+     * @param stopName          Stop name to notify for.
+     * @param textViewStopTimes Array of TextViews for times in a stop forecast.
+     * @param index             Index representing which specific tram to notify for.
+     */
+    @JvmStatic
+    fun showNotifyTimeDialog(rootView: View, stopName: String, dueMinutes: String, resources: Resources) {
+        val regexCannotScheduleNotification = Regex(resources.getString(R.string.due) + "|" + "1 .*|2 .*")
+
+        if (dueMinutes.isEmpty()) {
+            return
+        }
+
+        if (dueMinutes matches regexCannotScheduleNotification) {
+            Toast.makeText(
+                rootView.context,
+                resources.getString(R.string.cannot_schedule_notification),
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
+
+//        /*
+//         * When the user opens the notification dialog as part of the tutorial, scroll back up to
+//         * the top so that the next tutorial is definitely visible. This should only ever run once.
+//         */
+//        if (!Preferences.hasRunOnce(rootView.context, Constant.TUTORIAL_NOTIFICATIONS)) {
+////            scrollView?.setScrollY(0) // TODO: Get this working.
+//            val scrollView = rootView.findViewById<NestedScrollView>(R.id.redline_scrollview)
+//            scrollView?.scrollY = 0
+//        }
+
+        Preferences.saveHasRunOnce(rootView.context, Constant.TUTORIAL_NOTIFICATIONS, true)
+
+        /* We're done with the notification tutorial. Hide it. */
+        displayTutorial(rootView, Constant.RED_LINE, Constant.TUTORIAL_NOTIFICATIONS, false)
+
+        /* Then, display the final tutorial. */
+        displayTutorial(rootView, Constant.RED_LINE, Constant.TUTORIAL_FAVOURITES, true)
+
+        Preferences.saveNotifyStopName(rootView.context, stopName)
+
+        Preferences.saveNotifyStopTimeExpected(
+            rootView.context,
+            dueMinutes.toInt()
+        )
+
+        rootView.context.startActivity(
+            Intent(
+                rootView.context,
+                NotifyTimeActivity::class.java
+            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+    }
+
+    /**
      * Show Snackbar.
      * @param activity Activity on which to display Snackbar.
      * @param message Message to display on Snackbar.
      */
     @JvmStatic
-    fun showSnackbar(activity: Activity, message: String?) {
+    fun showSnackbar(activity: Activity, message: String) {
         Snackbar.make(
             activity.findViewById(android.R.id.content),
-            message!!,
+            message,
             Snackbar.LENGTH_LONG
         ).setTextColor(Color.WHITE).show()
     }

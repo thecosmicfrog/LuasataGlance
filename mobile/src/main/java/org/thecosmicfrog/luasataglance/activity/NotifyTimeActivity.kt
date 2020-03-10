@@ -45,15 +45,7 @@ class NotifyTimeActivity : FragmentActivity() {
     private var mapNotifyTimes: Map<String, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val dialog = "dialog"
-
-        /*
-         * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
-         * the default theme set in AndroidManifest.xml.
-         */
-        if (Build.VERSION.SDK_INT >= 21) {
-            setTheme(android.R.style.Theme_Material_Dialog)
-        }
+        setTheme(android.R.style.Theme_Material_Dialog)
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -64,7 +56,7 @@ class NotifyTimeActivity : FragmentActivity() {
 
         val localeDefault = Locale.getDefault().toString()
 
-        mapNotifyTimes = NotifyTimesMap(localeDefault, dialog)
+        mapNotifyTimes = NotifyTimesMap(localeDefault)
 
         val spinnerNotifyTime = findViewById<Spinner>(R.id.spinner_notifytime)
         val adapterNotifyTime: ArrayAdapter<*> = ArrayAdapter.createFromResource(
@@ -89,13 +81,13 @@ class NotifyTimeActivity : FragmentActivity() {
              */
             val intent = Intent()
             intent.setPackage(packageName)
+            intent.action = NotifyTimeActivity::class.java.name
             intent.setClass(applicationContext, NotifyTimesReceiver::class.java)
             intent.action = NotifyTimeActivity::class.java.name
             intent.putExtra(
                     Constant.NOTIFY_STOP_NAME,
                     Preferences.notifyStopName(applicationContext)
             )
-
             intent.putExtra(
                     Constant.NOTIFY_TIME,
                     mapNotifyTimes!![spinnerNotifyTime.selectedItem.toString()]
@@ -115,3 +107,4 @@ class NotifyTimeActivity : FragmentActivity() {
         }
     }
 }
+

@@ -30,6 +30,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.adapter.ReplacerPagerAdapter
+import org.thecosmicfrog.luasataglance.databinding.ActivityMainBinding
 import org.thecosmicfrog.luasataglance.util.AppUtil.configureFirebasePerformanceCollection
 import org.thecosmicfrog.luasataglance.util.AppUtil.getScreenHeight
 import org.thecosmicfrog.luasataglance.util.AppUtil.isRunningInFirebaseTestLab
@@ -41,14 +42,17 @@ class MainActivity : AppCompatActivity() {
 
     private val logTag = MainActivity::class.java.simpleName
 
-    private var nonSwipeableViewPagerReplacer: NonSwipeableViewPager? = null
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var nonSwipeableViewPagerReplacer: NonSwipeableViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         configureFirebasePerformanceCollection(applicationContext)
 
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         setUpAppNavigation()
 
@@ -88,27 +92,26 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.menuitem_bottomnav_trams ->
-                        nonSwipeableViewPagerReplacer?.currentItem =
+                        nonSwipeableViewPagerReplacer.currentItem =
                             Constant.BOTTOMNAV_MENU_ITEM_INDEX_TRAMS
 
                     R.id.menuitem_bottomnav_favourites ->
-                        nonSwipeableViewPagerReplacer?.currentItem =
+                        nonSwipeableViewPagerReplacer.currentItem =
                             Constant.BOTTOMNAV_MENU_ITEM_INDEX_FAVOURITES
 
                     R.id.menuitem_bottomnav_map ->
-                        nonSwipeableViewPagerReplacer?.currentItem =
+                        nonSwipeableViewPagerReplacer.currentItem =
                             Constant.BOTTOMNAV_MENU_ITEM_INDEX_MAP
 
                     R.id.menuitem_bottomnav_alerts ->
-                        nonSwipeableViewPagerReplacer?.currentItem =
+                        nonSwipeableViewPagerReplacer.currentItem =
                             Constant.BOTTOMNAV_MENU_ITEM_INDEX_ALERTS
                 }
 
                 false
             }
 
-        val bottomNavigationView =
-            findViewById<BottomNavigationView>(R.id.bottomnavigationview)
+        val bottomNavigationView = binding.bottomnavigationview
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         val bottomNavigationViewItemCount = bottomNavigationView.menu.size()
 
@@ -117,11 +120,11 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationViewItemCount
         )
 
-        nonSwipeableViewPagerReplacer = findViewById(R.id.nonswipeableviewpager_replacer)
-        nonSwipeableViewPagerReplacer?.swipingEnabled = false
-        nonSwipeableViewPagerReplacer?.offscreenPageLimit = bottomNavigationViewItemCount - 1
-        nonSwipeableViewPagerReplacer?.adapter = replacerPagerAdapter
-        nonSwipeableViewPagerReplacer?.addOnPageChangeListener(
+        nonSwipeableViewPagerReplacer = binding.nonswipeableviewpagerReplacer
+        nonSwipeableViewPagerReplacer.swipingEnabled = false
+        nonSwipeableViewPagerReplacer.offscreenPageLimit = bottomNavigationViewItemCount - 1
+        nonSwipeableViewPagerReplacer.adapter = replacerPagerAdapter
+        nonSwipeableViewPagerReplacer.addOnPageChangeListener(
             object : ViewPager.OnPageChangeListener {
                 override fun onPageScrolled(
                     position: Int, positionOffset: Float,

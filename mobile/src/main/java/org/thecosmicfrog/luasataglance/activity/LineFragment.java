@@ -24,18 +24,13 @@ package org.thecosmicfrog.luasataglance.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -49,7 +44,6 @@ import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap;
-import org.thecosmicfrog.luasataglance.model.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.model.StopForecast;
 import org.thecosmicfrog.luasataglance.model.StopForecastAdapter;
 import org.thecosmicfrog.luasataglance.model.StopForecastInfo;
@@ -96,7 +90,6 @@ public class LineFragment extends Fragment {
     private FragmentActivity activity;
     private Context context;
     private View rootView = null;
-    private Menu menu;
     private TabLayout tabLayout;
     private ProgressBar progressBar;
     private SpinnerCardView spinnerCardView;
@@ -333,24 +326,18 @@ public class LineFragment extends Fragment {
 
             /* When this tab is visible to the user, load a stop forecast. */
             if (isVisibleToUser) {
-                /* Back off a bit before loading to prevent UI stutters. */
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (spinnerCardView.getSpinnerStops().getSelectedItem() != null) {
-                            String stopName =
-                                    spinnerCardView.getSpinnerStops().getSelectedItem().toString();
+                if (spinnerCardView.getSpinnerStops().getSelectedItem() != null) {
+                    String stopName =
+                            spinnerCardView.getSpinnerStops().getSelectedItem().toString();
 
-                            Preferences.saveSelectedStopName(context, Constant.NO_LINE, stopName);
+                    Preferences.saveSelectedStopName(context, Constant.NO_LINE, stopName);
 
-                            loadStopForecast(stopName, false);
+                    loadStopForecast(stopName, false);
 
-                            shouldAutoReload = true;
-                        } else {
-                            Log.w(LOG_TAG, "Spinner selected item is null.");
-                        }
-                    }
-                }, 200);
+                    shouldAutoReload = true;
+                } else {
+                    Log.w(LOG_TAG, "Spinner selected item is null.");
+                }
             } else {
                 shouldAutoReload = false;
             }
@@ -365,7 +352,6 @@ public class LineFragment extends Fragment {
         resArrayStopsGreenLine = getArguments().getInt(Constant.RES_ARRAY_STOPS_GREEN_LINE);
         line = getArguments().getString(Constant.LINE);
         resLayoutFragmentLine = getArguments().getInt(Constant.RES_LAYOUT_FRAGMENT_LINE);
-//        resTabLayout = getArguments().getInt(Constant.RES_TAB_LAYOUT);
         resProgressBar = getArguments().getInt(Constant.RES_PROGRESSBAR);
         resSpinnerCardView = getArguments().getInt(Constant.RES_SPINNER_CARDVIEW);
         resStatusCardView = getArguments().getInt(Constant.RES_STATUS_CARDVIEW);
@@ -480,60 +466,7 @@ public class LineFragment extends Fragment {
         scrollView = rootView.findViewById(resScrollView);
         scrollView.setNestedScrollingEnabled(false);
 
-        /* Set up onClickListeners for stop forecasts in both tabs. */
-        initStopForecastOnClickListeners();
-
         return true;
-    }
-
-    /**
-     * Set the colour of the tab indicator to either red or green.
-     * @param tabLayout TabLayout to manipulate.
-     */
-    private void setTabIndicatorColor(TabLayout tabLayout) {
-        if (tabLayout.getSelectedTabPosition() == 0) {
-            tabLayout.setSelectedTabIndicatorColor(
-                    ContextCompat.getColor(context, R.color.tab_red_line)
-            );
-        } else {
-            tabLayout.setSelectedTabIndicatorColor(
-                    ContextCompat.getColor(context, R.color.tab_green_line)
-            );
-        }
-    }
-
-    /**
-     * Initialise OnClickListeners for a stop forecast.
-     */
-    private void initStopForecastOnClickListeners() {
-//        TableRow[] tableRowInboundStops = inboundStopForecastCardView.getTableRowStops();
-//        TableRow[] tableRowOutboundStops = outboundStopForecastCardView.getTableRowStops();
-
-        for (int i = 0; i < 6; i++) {
-            final int index = i;
-
-//            tableRowInboundStops[i].setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    showNotifyTimeDialog(
-//                            spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-//                            inboundStopForecastCardView.getTextViewStopTimes(),
-//                            index
-//                    );
-//                }
-//            });
-//
-//            tableRowOutboundStops[i].setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    showNotifyTimeDialog(
-//                            spinnerCardView.getSpinnerStops().getSelectedItem().toString(),
-//                            outboundStopForecastCardView.getTextViewStopTimes(),
-//                            index
-//                    );
-//                }
-//            });
-        }
     }
 
     /**
@@ -591,67 +524,6 @@ public class LineFragment extends Fragment {
                         "activityToOpen key does not correspond to any known value."
                 );
         }
-    }
-
-    /**
-     * Show dialog for choosing notification times.
-     * @param stopName          Stop name to notify for.
-     * @param textViewStopTimes Array of TextViews for times in a stop forecast.
-     * @param index             Index representing which specific tram to notify for.
-     */
-    private void showNotifyTimeDialog(String stopName, TextView[] textViewStopTimes, int index) {
-        String localeDefault = Locale.getDefault().toString();
-        String notifyStopTimeStr = textViewStopTimes[index].getText().toString();
-        NotifyTimesMap mapNotifyTimes = new NotifyTimesMap(localeDefault, Constant.STOP_FORECAST);
-
-        if (notifyStopTimeStr.equals(""))
-            return;
-
-        if (notifyStopTimeStr.matches(
-                getString(R.string.due) + "|" + "1 .*|2 .*")) {
-            Toast.makeText(
-                    context,
-                    getString(R.string.cannot_schedule_notification),
-                    Toast.LENGTH_LONG
-            ).show();
-
-            return;
-        }
-
-        /*
-         * When the user opens the notification dialog as part of the tutorial, scroll back up to
-         * the top so that the next tutorial is definitely visible. This should only ever run once.
-         */
-        if (!Preferences.hasRunOnce(rootView.getContext(), Constant.TUTORIAL_NOTIFICATIONS)) {
-            if (scrollView != null) {
-                scrollView.setScrollY(0);
-            }
-        }
-
-        Preferences.saveHasRunOnce(rootView.getContext(), Constant.TUTORIAL_NOTIFICATIONS, true);
-
-        /* We're done with the notifications tutorial. Hide it. */
-        StopForecastUtil.displayTutorial(rootView, line, Constant.TUTORIAL_NOTIFICATIONS, false);
-
-        /* Then, display the final tutorial. */
-        StopForecastUtil.displayTutorial(rootView, line, Constant.TUTORIAL_FAVOURITES, true);
-
-        Preferences.saveNotifyStopName(
-                context,
-                stopName
-        );
-
-        Preferences.saveNotifyStopTimeExpected(
-                context,
-                mapNotifyTimes.get(notifyStopTimeStr)
-        );
-
-        context.startActivity(
-                new Intent(
-                        context,
-                        NotifyTimeActivity.class
-                )
-        );
     }
 
     /**
@@ -792,9 +664,7 @@ public class LineFragment extends Fragment {
         /*
          * Prepare Retrofit API call.
          */
-        final RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(API_URL)
-                .build();
+        final RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API_URL).build();
 
         ApiMethods methods = restAdapter.create(ApiMethods.class);
 
@@ -979,16 +849,6 @@ public class LineFragment extends Fragment {
                      */
                     statusCardView.setStatus(status);
                     statusCardView.setStatusColor(R.color.message_success);
-
-//                    /* Change the alerts image to the default white image. */
-//                    imageViewBottomNavAlerts.setImageResource(
-//                            R.drawable.ic_error_alerts
-//                    );
-//
-//                    /* Change the color of the Alerts TextView to white (default). */
-//                    textViewBottomNavAlerts.setTextColor(
-//                            ContextCompat.getColor(context, android.R.color.white)
-//                    );
                 } else {
                     if (status.equals("")) {
                         /*
@@ -1005,27 +865,9 @@ public class LineFragment extends Fragment {
 
                     /* Change the color of the message title TextView to red. */
                     statusCardView.setStatusColor(R.color.message_error);
-
-                    /* Change the Alerts image to the red version. */
-//                    imageViewBottomNavAlerts.setImageResource(
-//                            R.drawable.ic_error_alerts_red
-//                    );
-//
-//                    /* Change the color of the Alerts TextView to red. */
-//                    textViewBottomNavAlerts.setTextColor(
-//                            ContextCompat.getColor(context, R.color.message_error)
-//                    );
                 }
             }
 
-            /*
-             * Pull in all trams from the StopForecast.
-             */
-//            if (stopForecast.getInboundTrams().size() == 0) {
-////                inboundStopForecastCardView.setNoTramsForecast();
-//                //TODO: Add a nice way to do this.
-//
-//            } else {
             String destination;
 
             List<StopForecastInfo> listStopForecastInfoInbound = new ArrayList<>();
@@ -1037,6 +879,26 @@ public class LineFragment extends Fragment {
             List<Tram> listAllTrams = new ArrayList<>();
             listAllTrams.addAll(stopForecast.getInboundTrams());
             listAllTrams.addAll(stopForecast.getOutboundTrams());
+
+            if (stopForecast.getInboundTrams().size() <= 0) {
+                listStopForecastInfoInbound.add(
+                        new StopForecastInfo(
+                                getString(R.string.no_trams_forecast),
+                                "",
+                                ""
+                        )
+                );
+            }
+
+            if (stopForecast.getOutboundTrams().size() <= 0) {
+                listStopForecastInfoOutbound.add(
+                        new StopForecastInfo(
+                                getString(R.string.no_trams_forecast),
+                                "",
+                                ""
+                        )
+                );
+            }
 
             for (Tram tram : listAllTrams) {
                 String dueMinutes = tram.getDueMinutes();
