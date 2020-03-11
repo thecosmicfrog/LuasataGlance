@@ -22,9 +22,9 @@ package org.thecosmicfrog.luasataglance.model
 
 import java.util.*
 
-class StopNameIdMap(localeDefault: String) : HashMap<String?, String?>() {
+class StopNameIdMap(localeDefault: String?) : HashMap<String?, String?>() {
     init {
-        if (localeDefault.startsWith("ga")) {
+        if (localeDefault?.startsWith("ga") == true) {
             /* Red Line */
             put("Iosta na Rinne", "TPT")
             put("Duga Spencer", "SDK")
