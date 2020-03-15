@@ -24,7 +24,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/off_white"
+    android:background="@android:color/background_light"
 
     tools:context="org.thecosmicfrog.luasataglance.activity.FaresActivity">
 
@@ -51,13 +51,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fares_instructions"
-                android:textColor="@color/text_grey" />
+                android:textColor="@color/text_dark" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fares_title_line"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/text_dark"
                 android:textStyle="bold"
                 android:paddingTop="8dp"
                 android:paddingBottom="2dp" />
@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fares_title_origin"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/text_dark"
                 android:textStyle="bold"
                 android:paddingTop="8dp"
                 android:paddingBottom="2dp" />
@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fares_title_destination"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/text_dark"
                 android:textStyle="bold"
                 android:paddingTop="8dp"
                 android:paddingBottom="2dp" />
@@ -133,7 +133,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/fares_title_adults"
-                        android:textColor="@color/text_grey"
+                        android:textColor="@color/text_dark"
                         android:textStyle="bold"
                         android:paddingTop="8dp"
                         android:paddingBottom="2dp" />
@@ -163,7 +163,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/fares_title_children"
-                        android:textColor="@color/text_grey"
+                        android:textColor="@color/text_dark"
                         android:textStyle="bold"
                         android:paddingTop="8dp"
                         android:paddingBottom="2dp" />

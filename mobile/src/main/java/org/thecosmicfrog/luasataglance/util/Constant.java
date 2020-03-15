@@ -61,6 +61,12 @@ public final class Constant {
     public static final int BOTTOMNAV_MENU_ITEM_INDEX_ALERTS = 3;
 
     /*
+     * Broadcast actions.
+     */
+    public static final String INTENT_ACTION_LOAD_STOP = "load_stop";
+//    public static final String ACTION_OPEN_STOP_FROM_MAP = "open_stop_from_map";
+
+    /*
      * Classes.
      */
     public static final Class CLASS_FARES_ACTIVITY = FaresActivity.class;
@@ -74,6 +80,12 @@ public final class Constant {
      * Firebase messaging.
      */
     public static final String NOTIFICATIONS = "notifications";
+
+    /*
+     * Intent extras.
+     */
+    public static final String INTENT_EXTRA_STOP_NAME = "extra_stop_name";
+    public static final String EXTRA_STOP_NAME_FROM_MAP = "stop_name_from_map";
 
     /*
      * News.
@@ -110,7 +122,9 @@ public final class Constant {
     public static final String RES_ARRAY_STOPS_RED_LINE = "resArrayStopsRedLine";
     public static final String RES_ARRAY_STOPS_GREEN_LINE = "resArrayStopsGreenLine";
 
-    /* Tutorials. */
+    /*
+     * Tutorials.
+     */
     public static final String TUTORIAL_SELECT_STOP = "select_stop";
     public static final String TUTORIAL_NOTIFICATIONS = "notifications";
     public static final String TUTORIAL_FAVOURITES = "favourites";

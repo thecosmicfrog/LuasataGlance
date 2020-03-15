@@ -21,33 +21,32 @@
 
 package org.thecosmicfrog.luasataglance.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.util.Constant
+import org.thecosmicfrog.luasataglance.model.FavouriteAdapter
+import org.thecosmicfrog.luasataglance.model.FavouriteInfo
 import org.thecosmicfrog.luasataglance.util.Preferences
 import java.io.BufferedInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.ObjectInputStream
-import java.lang.Exception
 
 class FavouritesFragment : Fragment() {
 
     private val logTag = FavouritesFragment::class.java.simpleName
     private var rootView: View? = null
 
-    private var adapterFavouriteStops: ArrayAdapter<CharSequence>? = null
     private var listFavouriteStops: List<CharSequence>? = null
-    private var listViewFavouriteStops: ListView? = null
 
     companion object {
         fun newInstance(): Fragment {
@@ -88,56 +87,30 @@ class FavouritesFragment : Fragment() {
                 )
             }
 
-            listViewFavouriteStops = rootView?.findViewById(R.id.listview_favourite_stops)
-
             val textViewFavouritesNoneSelected = rootView?.findViewById<TextView>(
                 R.id.textview_favourites_none_selected
             )
             textViewFavouritesNoneSelected?.visibility = View.GONE
 
-            listViewFavouriteStops?.setOnItemClickListener { _, _, position, _ ->
-                val stopName = adapterFavouriteStops?.getItem(position) as String
-
-                /*
-                 * When a favourite stop is clicked, open the MainActivity, passing the stop
-                 * name as an extra parameter.
-                 * Since we don't want to litter the back stack with multiple instances of
-                 * MainActivity, we also clear the top task. Also disable the new Activity
-                 * animation to make the transition seamless.
-                 */
-                startActivity(
-                    Intent(
-                        context,
-                        MainActivity::class.java
-                    ).putExtra(
-                        Constant.STOP_NAME,
-                        stopName
-                    ).setFlags(
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    ).setFlags(
-                        Intent.FLAG_ACTIVITY_NO_ANIMATION
-                    )
-                )
-            }
-
             Preferences.saveHasRunOnce(context, tutorialFavourites, true)
 
             listFavouriteStops = openListFavouritesStops()
 
-            /* ArrayAdapter for favourite stops. */
-            adapterFavouriteStops = ArrayAdapter(
-                context as Context,
-                R.layout.listview_favourites,
-                listFavouriteStops as List<CharSequence>
-            )
+            val listFavouriteInfo: MutableList<FavouriteInfo> = ArrayList()
 
-            /*
-             * Update ArrayAdapter with newly-selected favourite stops, then set it to the ListView.
-             */
-            listViewFavouriteStops?.adapter = adapterFavouriteStops
-            adapterFavouriteStops?.clear()
-            adapterFavouriteStops?.addAll(openListFavouritesStops())
-            adapterFavouriteStops?.notifyDataSetChanged()
+            for (favouriteStop in listFavouriteStops as MutableList<CharSequence>) {
+                listFavouriteInfo.add(FavouriteInfo(favouriteStop))
+            }
+
+            val favouriteAdapter = FavouriteAdapter(listFavouriteInfo)
+            favouriteAdapter.notifyDataSetChanged()
+
+            val linearLayoutManagerFavourites = LinearLayoutManager(context)
+            linearLayoutManagerFavourites.orientation = LinearLayoutManager.VERTICAL
+
+            val recyclerViewFavourites = rootView?.findViewById<RecyclerView>(R.id.recyclerview_favourite_stops)
+            recyclerViewFavourites?.layoutManager = linearLayoutManagerFavourites
+            recyclerViewFavourites?.adapter = favouriteAdapter
         }
     }
 

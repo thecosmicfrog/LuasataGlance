@@ -20,12 +20,15 @@
  */
 package org.thecosmicfrog.luasataglance.activity
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.thecosmicfrog.luasataglance.R
@@ -33,14 +36,17 @@ import org.thecosmicfrog.luasataglance.adapter.ReplacerPagerAdapter
 import org.thecosmicfrog.luasataglance.databinding.ActivityMainBinding
 import org.thecosmicfrog.luasataglance.util.AppUtil.configureFirebasePerformanceCollection
 import org.thecosmicfrog.luasataglance.util.AppUtil.getScreenHeight
-import org.thecosmicfrog.luasataglance.util.AppUtil.isRunningInFirebaseTestLab
 import org.thecosmicfrog.luasataglance.util.Constant
-import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.view.NonSwipeableViewPager
 
 class MainActivity : AppCompatActivity() {
 
     private val logTag = MainActivity::class.java.simpleName
+    private val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            nonSwipeableViewPagerReplacer.currentItem = Constant.BOTTOMNAV_MENU_ITEM_INDEX_TRAMS
+        }
+    }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var nonSwipeableViewPagerReplacer: NonSwipeableViewPager
@@ -59,8 +65,17 @@ class MainActivity : AppCompatActivity() {
         getScreenHeight(windowManager, resources, applicationContext)
 
         configureAppAesthetics()
+    }
 
-        showWhatsNewDialog()
+    override fun onResume() {
+        super.onResume()
+
+        applicationContext?.let {
+            LocalBroadcastManager.getInstance(applicationContext as Context).registerReceiver(
+                broadcastReceiver,
+                IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
+            )
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -158,58 +173,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {}
-            })
-    }
-
-    /**
-     * Show What's New dialog to user if they have recently updated the app.
-     */
-    private fun showWhatsNewDialog() {
-        /* Don't show the What's New dialog if we're running in Firebase Test Lab. */
-        if (isRunningInFirebaseTestLab(applicationContext)) {
-            Log.i(
-                logTag,
-                "Running in Firebase Test Lab. Not showing What's New dialog."
-            )
-
-            return
-        }
-
-        /*
-         * Load two values for the current app version. One comes from strings.xml and the other
-         * comes from shared preferences. The value from strings.xml should be considered the
-         * definitive value.
-         */
-        val appVersionCurrent = getString(R.string.version_name).replace(".", "")
-        val appVersionSaved = Preferences.currentAppVersion(applicationContext)
-        val appVersionCurrentNumeric = appVersionCurrent.toDouble()
-        val appVersionSavedNumeric = appVersionSaved.toDouble()
-
-        /*
-         * If the definitive current app version is greater than the version stored in shared
-         * preferences, the user has recently updated the app to a newer version.
-         * In this case, display the What's New dialog.
-         */
-        if (appVersionCurrentNumeric > appVersionSavedNumeric) {
-            Log.i(
-                logTag,
-                "User has updated to version $appVersionCurrent from $appVersionSaved. " +
-                        "Displaying What's New Dialog."
-            )
-
-            startActivity(
-                Intent(
-                    applicationContext,
-                    WhatsNewActivity::class.java
-                )
-            )
-
-            /* Overwrite the previous current app version with the known new value. */
-            Preferences.saveCurrentAppVersion(
-                applicationContext,
-                appVersionCurrent
-            )
-        }
+            }
+        )
     }
 }
 

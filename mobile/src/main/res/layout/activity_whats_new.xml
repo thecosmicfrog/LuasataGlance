@@ -75,14 +75,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/whatsnew_title_current"
                 android:textStyle="bold"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/text_dark"
                 android:paddingTop="12dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/whatsnew_content_current"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/text_dark"
                 android:paddingTop="8dp" />
         </LinearLayout>
     </ScrollView>

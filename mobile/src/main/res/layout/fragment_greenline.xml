@@ -30,57 +30,6 @@
 
     tools:context="org.thecosmicfrog.luasataglance.activity.MainActivity$LineFragment">
 
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/greenline_contraintlayout_tab_bar"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="56dp"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/greenline_space1"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent">-->
-
-<!--        <com.google.android.material.tabs.TabLayout-->
-<!--            android:id="@+id/greenline_tablayout"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:background="?attr/colorPrimary"-->
-<!--            android:elevation="@dimen/cardview_laag_elevation"-->
-<!--            android:minHeight="?attr/actionBarSize"-->
-<!--            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toStartOf="@id/fragment_greenline_guideline"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:tabIndicatorHeight="4dp"-->
-<!--            app:tabTextAppearance="@style/LuasAtAGlanceTabLayout" />-->
-
-<!--        <androidx.constraintlayout.widget.Guideline-->
-<!--            android:id="@+id/fragment_greenline_guideline"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            app:layout_constraintGuide_percent="0.9" />-->
-
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:id="@+id/greenline_constraintlayout_overflow_menu"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:background="@color/luas_purple"-->
-<!--            android:elevation="@dimen/cardview_laag_elevation"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toEndOf="@id/fragment_greenline_guideline"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-
-<!--            <ImageButton-->
-<!--                android:id="@+id/imagebutton_overflow_menu"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:background="@color/luas_purple"-->
-<!--                android:src="@drawable/ic_more_vert" />-->
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-
     <Space
         android:id="@+id/greenline_space1"
         android:layout_width="0dp"
@@ -198,12 +147,5 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-<!--    <androidx.viewpager.widget.ViewPager-->
-<!--        android:id="@+id/greenline_viewpager"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="0dp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
 

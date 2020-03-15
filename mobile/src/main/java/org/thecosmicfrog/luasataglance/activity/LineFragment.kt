@@ -20,8 +20,10 @@
  */
 package org.thecosmicfrog.luasataglance.activity
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,6 +35,7 @@ import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -61,6 +64,14 @@ import java.util.*
 class LineFragment : Fragment() {
 
     private val logTag = LineFragment::class.java.simpleName
+    private val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val favouriteStopName = intent?.getStringExtra(Constant.INTENT_EXTRA_STOP_NAME)
+
+            spinnerCardView?.setSelection(favouriteStopName)
+        }
+    }
+
     private var act: FragmentActivity? = null
     private var ctx: Context? = null
     private var rootView: View? = null
@@ -79,6 +90,7 @@ class LineFragment : Fragment() {
     private var recyclerViewStopForecastsOutbound: RecyclerView? = null
     private var linearLayoutManagerInbound: LinearLayoutManager? = null
     private var linearLayoutManagerOutbound: LinearLayoutManager? = null
+    private var mapStopIdLine: StopIdLineMap? = null
 
     companion object {
         private var resLayoutFragmentLine: Int? = 0
@@ -175,6 +187,8 @@ class LineFragment : Fragment() {
         /* Instantiate a new StopNameIdMap. */
         mapStopNameId = StopNameIdMap(localeDefault)
 
+        mapStopIdLine = StopIdLineMap()
+
         return rootView
     }
 
@@ -193,22 +207,22 @@ class LineFragment : Fragment() {
         act = activity
 
         /* Remove Favourites tutorial if it has been completed once already. */
-        if (line == Constant.RED_LINE && Preferences.hasRunOnce(
-                ctx, Constant.TUTORIAL_FAVOURITES
-            )
-        ) {
+        if (line == Constant.RED_LINE && Preferences.hasRunOnce(ctx, Constant.TUTORIAL_FAVOURITES))
+        {
             rootView?.let {
-                displayTutorial(
-                    it,
-                    Constant.RED_LINE,
-                    Constant.TUTORIAL_FAVOURITES,
-                    false
-                )
+                displayTutorial(it, Constant.RED_LINE, Constant.TUTORIAL_FAVOURITES, false)
             }
         }
 
         if (isAdded) {
             isInitialised = initFragment()
+
+            ctx?.let {
+                LocalBroadcastManager.getInstance(ctx as Context).registerReceiver(
+                    broadcastReceiver,
+                    IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
+                )
+            }
 
             /*
              * If an Intent did not bring us to this Activity and there is a stop name saved in
@@ -254,9 +268,7 @@ class LineFragment : Fragment() {
                 }
             } else if (act?.intent?.hasExtra(intentExtraActivityToOpen) == true) {
                 act?.intent?.getStringExtra(intentExtraActivityToOpen)?.let {
-                    activityRouter(
-                        it
-                    )
+                    activityRouter(it)
                 }
 
                 /* Clear the Extra to avoid opening the same Activity on every start. */
@@ -295,7 +307,9 @@ class LineFragment : Fragment() {
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+
         this.isVisibleToUser = isVisibleToUser
+
         if (isInitialised) {
             /* If the Spinner's selected item is "Select a stop...", get out of here. */
             if (spinnerCardView?.spinnerStops?.selectedItemPosition == 0) {
@@ -375,20 +389,10 @@ class LineFragment : Fragment() {
                     shouldAutoReload = true
 
                     /* Hide the select stop tutorial, if it is visible. */
-                    displayTutorial(
-                        rootView,
-                        line,
-                        Constant.TUTORIAL_SELECT_STOP,
-                        false
-                    )
+                    displayTutorial(rootView, line, Constant.TUTORIAL_SELECT_STOP, false)
 
                     /* Show the notifications tutorial. */
-                    displayTutorial(
-                        rootView,
-                        line,
-                        Constant.TUTORIAL_NOTIFICATIONS,
-                        true
-                    )
+                    displayTutorial(rootView, line, Constant.TUTORIAL_NOTIFICATIONS, true)
 
                     /*
                      * Get the stop name from the current position of the Spinner, save it to
@@ -400,11 +404,7 @@ class LineFragment : Fragment() {
                     loadStopForecast(selectedStopName, false)
 
                     if (isVisibleToUser) {
-                        Preferences.saveSelectedStopName(
-                            ctx,
-                            line,
-                            selectedStopName
-                        )
+                        Preferences.saveSelectedStopName(ctx, line, selectedStopName)
                     }
                 }
             }
@@ -419,12 +419,9 @@ class LineFragment : Fragment() {
         swipeRefreshLayout = resSwipeRefreshLayout?.let { rootView?.findViewById(it) }
         swipeRefreshLayout?.setOnRefreshListener{
             /* Start the refresh animation. */
-            swipeRefreshLayout?.setRefreshing(true)
+            swipeRefreshLayout?.isRefreshing = true
 
-            loadStopForecast(
-                Preferences.selectedStopName(ctx, line),
-                true
-            )
+            loadStopForecast(Preferences.selectedStopName(ctx, line), true)
         }
 
         scrollView = resScrollView?.let { rootView?.findViewById(it) }
@@ -442,16 +439,10 @@ class LineFragment : Fragment() {
 
         when (activityToOpen) {
             Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FARES -> {
-                Log.i(
-                    logTag,
-                    "Routing to Activity: " + Constant.CLASS_FARES_ACTIVITY
-                )
+                Log.i(logTag, "Routing to Activity: " + Constant.CLASS_FARES_ACTIVITY)
 
                 startActivity(
-                    Intent(
-                        ctx,
-                        Constant.CLASS_FARES_ACTIVITY
-                    )
+                    Intent(ctx, Constant.CLASS_FARES_ACTIVITY)
                 )
             }
 
@@ -463,10 +454,7 @@ class LineFragment : Fragment() {
                 Log.i(logTag, "Routing to Activity: " + Constant.CLASS_NEWS_ACTIVITY)
 
                 startActivity(
-                    Intent(
-                        ctx,
-                        Constant.CLASS_NEWS_ACTIVITY
-                    )
+                    Intent(ctx, Constant.CLASS_NEWS_ACTIVITY)
                 )
             }
 
@@ -608,6 +596,7 @@ class LineFragment : Fragment() {
         val apiUrl = "https://api.thecosmicfrog.org/cgi-bin"
         val apiAction = "times"
         val apiVer = "3"
+
         setIsLoading(true)
 
         /*
@@ -636,19 +625,12 @@ class LineFragment : Fragment() {
                             val apiCreatedTime = getApiCreatedTime(apiTimes)
                             if (apiCreatedTime != null) {
                                 act?.let {
-                                    showSnackbar(
-                                        it,
-                                        "Times updated at $apiCreatedTime"
-                                    )
+                                    showSnackbar(it, "Times updated at $apiCreatedTime")
                                 }
                             }
                         }
                     } else {
-                        Analytics.nullApitimes(
-                            ctx,
-                            "null",
-                            "null_apitimes_mobile"
-                        )
+                        Analytics.nullApitimes(ctx, "null", "null_apitimes_mobile")
                     }
                 }
             }
@@ -692,21 +674,12 @@ class LineFragment : Fragment() {
                     Log.e(logTag, "Kind: " + retrofitError.kind.toString())
                 }
 
-                Analytics.httpError(
-                    ctx,
-                    "http_error",
-                    "http_error_general_mobile"
-                )
+                Analytics.httpError(ctx, "http_error", "http_error_general_mobile")
             }
         }
 
         /* Call API and get stop forecast from server. */
-        methods.getStopForecast(
-            apiAction,
-            apiVer,
-            mapStopNameId?.get(stopName),
-            callback
-        )
+        methods.getStopForecast(apiAction, apiVer, mapStopNameId?.get(stopName), callback)
     }
 
     /**
@@ -730,18 +703,11 @@ class LineFragment : Fragment() {
                 }
             }
         } catch (e: NullPointerException) {
-            Log.e(
-                logTag,
-                "Failed to find content view during Snackbar creation."
-            )
+            Log.e(logTag, "Failed to find content view during Snackbar creation.")
         } catch (e: ParseException) {
             Log.e(logTag, "Failed to parse created time from API.")
 
-            Analytics.apiCreatedParseError(
-                ctx,
-                "api_error",
-                "api_created_parse_error_mobile"
-            )
+            Analytics.apiCreatedParseError(ctx, "api_error", "api_created_parse_error_mobile")
         }
 
         return null
@@ -755,8 +721,8 @@ class LineFragment : Fragment() {
         val gaeilge = "ga"
         val due = "DUE"
         val mapEnglishGaeilge = EnglishGaeilgeMap()
-        val min = " " + getString(R.string.min)
-        val mins = " " + getString(R.string.mins)
+        val min = " ${getString(R.string.min)}"
+        val mins = " ${getString(R.string.mins)}"
         var minOrMins: String
 
         /* If a valid stop forecast exists... */
@@ -789,8 +755,7 @@ class LineFragment : Fragment() {
                 } else {
                     if (status.isBlank()) {
                         /*
-                         * If the server returns no status message, the Luas RTPI system is
-                         * probably down.
+                         * If server returns no status message, the Luas RTPI system is likely down.
                          */
                         statusCardView?.setStatus(getString(R.string.message_no_status))
                     } else {
@@ -816,21 +781,13 @@ class LineFragment : Fragment() {
 
             if (stopForecast.inboundTrams.size <= 0) {
                 listStopForecastInfoInbound.add(
-                    StopForecastInfo(
-                        getString(R.string.no_trams_forecast),
-                        "",
-                        ""
-                    )
+                    StopForecastInfo(getString(R.string.no_trams_forecast), "", "")
                 )
             }
 
             if (stopForecast.outboundTrams.size <= 0) {
                 listStopForecastInfoOutbound.add(
-                    StopForecastInfo(
-                        getString(R.string.no_trams_forecast),
-                        "",
-                        ""
-                    )
+                    StopForecastInfo(getString(R.string.no_trams_forecast), "", "")
                 )
             }
 
@@ -852,47 +809,34 @@ class LineFragment : Fragment() {
                             minOrMins = ""
                         }
 
-                        dueMinutes.toInt() > 1 -> {
-                            minOrMins = mins
-                        }
+                        dueMinutes.toInt() > 1 -> minOrMins = mins
 
-                        else -> {
-                            minOrMins = min
-                        }
+                        else -> minOrMins = min
+
                     }
 
                     if (tram.direction != null) {
                         when (tram.direction) {
                             Constant.INBOUND -> listStopForecastInfoInbound.add(
-                                StopForecastInfo(
-                                    destination,
-                                    dueMinutes,
-                                    minOrMins
-                                )
+                                StopForecastInfo(destination, dueMinutes, minOrMins)
                             )
                             Constant.OUTBOUND -> listStopForecastInfoOutbound.add(
-                                StopForecastInfo(
-                                    destination,
-                                    dueMinutes,
-                                    minOrMins
-                                )
+                                StopForecastInfo(destination, dueMinutes, minOrMins)
                             )
                             else -> Log.wtf(logTag, "Tram direction makes no sense.")
                         }
                     }
-
-                    val stopForecastAdapterInbound =
-                        StopForecastAdapter(listStopForecastInfoInbound)
-                    val stopForecastAdapterOutbound =
-                        StopForecastAdapter(listStopForecastInfoOutbound)
-
-                    stopForecastAdapterInbound.notifyDataSetChanged()
-                    stopForecastAdapterOutbound.notifyDataSetChanged()
-
-                    recyclerViewStopForecastsInbound?.adapter = stopForecastAdapterInbound
-                    recyclerViewStopForecastsOutbound?.adapter = stopForecastAdapterOutbound
                 }
             }
+
+            val stopForecastAdapterInbound = StopForecastAdapter(listStopForecastInfoInbound)
+            val stopForecastAdapterOutbound = StopForecastAdapter(listStopForecastInfoOutbound)
+
+            stopForecastAdapterInbound.notifyDataSetChanged()
+            stopForecastAdapterOutbound.notifyDataSetChanged()
+
+            recyclerViewStopForecastsInbound?.adapter = stopForecastAdapterInbound
+            recyclerViewStopForecastsOutbound?.adapter = stopForecastAdapterOutbound
         } else {
             /*
              * If no stop forecast can be retrieved, set a generic error message and

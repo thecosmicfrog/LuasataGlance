@@ -80,9 +80,9 @@ object AppUtil {
      * @return Whether or not we are running in Firebase Test Lab.
      */
     @JvmStatic
-    fun isRunningInFirebaseTestLab(context: Context): Boolean {
+    fun isRunningInFirebaseTestLab(context: Context?): Boolean {
         val settingFirebaseTestLab = Settings.System.getString(
-            context.contentResolver,
+            context?.contentResolver,
             "firebase.test.lab"
         )
 

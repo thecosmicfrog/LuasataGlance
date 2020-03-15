@@ -28,7 +28,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@color/off_white">
+    android:background="@android:color/background_light">
 
     <RelativeLayout
         android:orientation="horizontal"
@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_title_version"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/text_dark"
         android:textStyle="bold"
         android:paddingTop="8dp" />
 
@@ -67,13 +67,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/version_name"
-        android:textColor="@color/text_grey" />
+        android:textColor="@color/text_dark" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_title_description"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/text_dark"
         android:textStyle="bold"
         android:paddingTop="8dp" />
 
@@ -81,13 +81,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_description"
-        android:textColor="@color/text_grey" />
+        android:textColor="@color/text_dark" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_title_license"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/text_dark"
         android:textStyle="bold"
         android:paddingTop="8dp" />
 
@@ -102,7 +102,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_title_source_bugs_features"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/text_dark"
         android:textStyle="bold"
         android:paddingTop="8dp" />
 
@@ -111,14 +111,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_source_bugs_features"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/text_dark"
         android:autoLink="web" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_title_privacypolicy"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/text_dark"
         android:textStyle="bold"
         android:paddingTop="8dp" />
 
@@ -133,7 +133,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_developed_by"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/text_dark"
         android:textStyle="bold"
         android:paddingTop="16dp" />
 
@@ -141,7 +141,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_irish_translations"
-        android:textColor="@color/text_grey"
+        android:textColor="@color/text_dark"
         android:textStyle="bold"
         android:paddingTop="8dp" />
 </LinearLayout>

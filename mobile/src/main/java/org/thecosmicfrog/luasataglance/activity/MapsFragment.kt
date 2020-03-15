@@ -32,6 +32,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -72,20 +73,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (isAdded) {
-
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        /* Inflate the layout for this Fragment. */
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.fragment_maps, container, false)
 
         return rootView
@@ -100,31 +89,41 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
             stopCoordsRedLine = StopCoords(Constant.RED_LINE).stopCoords
             stopCoordsGreenLine = StopCoords(Constant.GREEN_LINE).stopCoords
 
-            if (!Preferences.permissionLocationShouldNotAskAgain(context)) {
-                EasyPermissions.requestPermissions(
-                    PermissionRequest.Builder(
-                        this,
-                        requestCodeLocation,
-                        permissionsLocation)
-                        .setRationale(R.string.rationale_location)
-                        .setPositiveButtonText(R.string.rationale_ask_accept)
-                        .setNegativeButtonText(R.string.rationale_ask_decline)
-                        .setTheme(android.R.style.Theme_Material_Light_Dialog_Alert)
-                        .build()
-                )
-            }
-
             /* Obtain the SupportMapFragment and get notified when the map is ready to be used. */
             val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
             mapFragment?.getMapAsync(this)
         }
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+
+        if (isVisibleToUser) {
+            if (!Preferences.permissionLocationShouldNotAskAgain(context)) {
+                EasyPermissions.requestPermissions(
+                    PermissionRequest.Builder(
+                            this,
+                            requestCodeLocation,
+                            permissionsLocation
+                        ).setRationale(
+                            R.string.rationale_location
+                        ).setPositiveButtonText(
+                            R.string.rationale_ask_accept
+                        ).setNegativeButtonText(
+                            R.string.rationale_ask_decline
+                        ).setTheme(
+                            android.R.style.Theme_Material_Light_Dialog_Alert
+                        ).build()
+                )
+            }
+        }
+    }
+
     /**
+     * @param googleMap GoogleMap.
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -135,9 +134,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
         setMyLocationEnabled()
 
         /* Set the default Camera position and zoom. */
-        map?.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(LatLng(53.34167328, -6.265131), 12.0f)
-        )
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(53.34167328, -6.265131), 12.0f))
 
         val stopNamesRedLine = resources.getStringArray(R.array.array_stops_redline)
         val stopNamesGreenLine = resources.getStringArray(R.array.array_stops_greenline)
@@ -163,13 +160,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
         /*
          * When a user taps on a stop's info window, it should open the appropriate stop forecast.
          */
-        map?.setOnInfoWindowClickListener {
-            startActivity(
-                Intent(
-                    context,
-                    MainActivity::class.java
-                ).putExtra(Constant.STOP_NAME, it.title)
-            )
+        map?.setOnInfoWindowClickListener { marker ->
+            context?.let { ctx ->
+                val localBroadcastManager = LocalBroadcastManager.getInstance(ctx)
+
+                val intent = Intent(Constant.INTENT_ACTION_LOAD_STOP)
+                intent.putExtra(Constant.INTENT_EXTRA_STOP_NAME, marker.title)
+
+                localBroadcastManager.sendBroadcast(intent)
+            }
         }
 
         /*
@@ -241,10 +240,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
             "permission_rationale_location_denied"
         )
 
-        Preferences.savePermissionLocationShouldNotAskAgain(
-            context,
-            true
-        )
+        Preferences.savePermissionLocationShouldNotAskAgain(context, true)
     }
 
     /**
@@ -296,7 +292,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
             val markerOptions =
                 MarkerOptions()
                     .position(latLng)
-                    .title(listStopNamesRedLine.get(i))
+                    .title(listStopNamesRedLine[i])
                     .icon(
                         BitmapDescriptorFactory.defaultMarker(
                             BitmapDescriptorFactory.HUE_RED
@@ -314,12 +310,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
             val markerOptions =
                 MarkerOptions()
                     .position(latLng)
-                    .title(listStopNamesGreenLine.get(i))
-                    .icon(
-                        BitmapDescriptorFactory.defaultMarker(
-                            BitmapDescriptorFactory.HUE_GREEN
-                        )
-                    )
+                    .title(listStopNamesGreenLine[i])
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
 
             val marker = map?.addMarker(markerOptions)
 
@@ -612,7 +604,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
     private fun findStopMarker(stopName: String) : Marker {
         for (marker in listMarkers) {
             if (marker.title.equals(stopName, true)) {
-                return marker;
+                return marker
             }
         }
 
