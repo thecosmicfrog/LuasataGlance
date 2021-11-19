@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.util.AppUtil
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil
@@ -25,14 +26,24 @@ class StopForecastAdapter(private val listStopForecastInfo: List<StopForecastInf
 
     override fun onBindViewHolder(holder: StopForecastViewHolder, position: Int) {
         val (destination, dueMinutes, minOrMins) = listStopForecastInfo[position]
+        val regexCannotScheduleNotification = Regex(
+            "${holder.textViewDueMinutes?.resources?.getString(R.string.due)}\$|1\$|2\$"
+        )
 
         holder.textViewDestination?.text = destination
         holder.textViewDueMinutes?.text = dueMinutes
         holder.textViewMinOrMins?.text = minOrMins
 
+
         /* If the tram is due, don't show the "min/mins" TextView to better centre the DUE text. */
         if (holder.textViewMinOrMins?.text.isNullOrBlank()) {
             holder.textViewMinOrMins?.visibility = View.GONE
+        }
+
+        when (holder.textViewDueMinutes?.text?.matches(regexCannotScheduleNotification)) {
+            true -> {
+                holder.textViewSetReminder?.visibility = View.GONE
+            }
         }
 
         /* Set OnClickListener for each item in the RecyclerView. */

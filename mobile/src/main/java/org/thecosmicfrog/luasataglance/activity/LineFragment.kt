@@ -812,7 +812,6 @@ class LineFragment : Fragment() {
                         dueMinutes.toInt() > 1 -> minOrMins = mins
 
                         else -> minOrMins = min
-
                     }
 
                     if (tram.direction != null) {
@@ -832,11 +831,20 @@ class LineFragment : Fragment() {
             val stopForecastAdapterInbound = StopForecastAdapter(listStopForecastInfoInbound)
             val stopForecastAdapterOutbound = StopForecastAdapter(listStopForecastInfoOutbound)
 
+//            stopForecastAdapterInbound.notifyItemRangeChanged(0, 10)
+//            stopForecastAdapterOutbound.notifyItemRangeChanged(0, 10)
+
+//            stopForecastAdapterInbound.notifyItemChanged(0)
+//            stopForecastAdapterOutbound.notifyItemChanged(0)
+
             stopForecastAdapterInbound.notifyDataSetChanged()
             stopForecastAdapterOutbound.notifyDataSetChanged()
 
             recyclerViewStopForecastsInbound?.adapter = stopForecastAdapterInbound
             recyclerViewStopForecastsOutbound?.adapter = stopForecastAdapterOutbound
+
+//            stopForecastAdapterInbound.notifyItemRangeChanged(0, 10)
+//            stopForecastAdapterOutbound.notifyItemRangeChanged(0, 10)
         } else {
             /*
              * If no stop forecast can be retrieved, set a generic error message and

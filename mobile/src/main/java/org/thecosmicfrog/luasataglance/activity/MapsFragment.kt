@@ -201,7 +201,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
         if (hasAllPermissionsGranted(grantResults)) {
             Preferences.savePermissionLocationGranted(context, true)
 
-            activity?.recreate()
+            // Should no longer be necessary.
+//            activity?.recreate()
         }
     }
 

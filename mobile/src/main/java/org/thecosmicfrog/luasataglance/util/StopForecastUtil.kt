@@ -202,7 +202,7 @@ object StopForecastUtil {
      */
     @JvmStatic
     fun showNotifyTimeDialog(rootView: View, stopName: String, dueMinutes: String, resources: Resources) {
-        val regexCannotScheduleNotification = Regex(resources.getString(R.string.due) + "|" + "1 .*|2 .*")
+        val regexCannotScheduleNotification = Regex("${resources.getString(R.string.due)}\$|1\$|2\$")
 
         if (dueMinutes.isEmpty()) {
             return
