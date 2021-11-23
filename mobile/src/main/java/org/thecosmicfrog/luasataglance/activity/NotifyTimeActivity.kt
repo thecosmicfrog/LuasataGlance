@@ -45,7 +45,7 @@ class NotifyTimeActivity : FragmentActivity() {
     private var mapNotifyTimes: Map<String, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(android.R.style.Theme_Material_Dialog)
+        setTheme(R.style.LuasAtAGlancePopupDialog)
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -64,14 +64,6 @@ class NotifyTimeActivity : FragmentActivity() {
         )
         adapterNotifyTime.setDropDownViewResource(R.layout.spinner_notify_time)
         spinnerNotifyTime.adapter = adapterNotifyTime
-
-        /* Set the Spinner's colour to Luas purple. */
-        val spinnerDrawable = spinnerNotifyTime.background.constantState?.newDrawable()
-        spinnerDrawable?.setColorFilter(
-                ContextCompat.getColor(applicationContext, R.color.luas_purple),
-                PorterDuff.Mode.SRC_ATOP
-        )
-        spinnerNotifyTime.background = spinnerDrawable
 
         val buttonNotifyTime = findViewById<Button>(R.id.button_notifytime)
         buttonNotifyTime.setOnClickListener {

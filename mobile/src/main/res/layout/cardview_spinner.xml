@@ -28,5 +28,6 @@
         android:id="@+id/card_view_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"
+        android:popupBackground="@drawable/spinner_background" />
 </merge>

@@ -52,13 +52,15 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
+    <style name="LuasAtAGlancePopupDialog" parent="android:ThemeOverlay.Material.Light">
+        <item name="android:windowBackground">@drawable/popup_dialog_background</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
 

@@ -67,6 +67,7 @@
     </string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
+    <string name="tap_to_set_reminder">Tap to set reminder</string>
     <string name="due">DUE</string>
     <string name="min">min</string>
     <string name="mins">mins</string>

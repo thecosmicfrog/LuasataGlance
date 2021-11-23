@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <corners
+        android:topLeftRadius="@dimen/cardview_laag_corner_radius"
+        android:topRightRadius="@dimen/cardview_laag_corner_radius"
+        android:bottomRightRadius="@dimen/cardview_laag_corner_radius"
+        android:bottomLeftRadius="@dimen/cardview_laag_corner_radius" />
+
+    <solid android:color="@color/luas_purple" />
+</shape>
+

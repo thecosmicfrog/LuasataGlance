@@ -18,7 +18,8 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardview_stop_forecast"
     android:layout_width="fill_parent"
@@ -57,7 +58,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="Test Abbey Street"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/textview_stop_forecast_set_reminder"
@@ -70,7 +70,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:gravity="center_vertical"
-                    android:text="Tap to set reminder"
+                    android:text="@string/tap_to_set_reminder"
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
