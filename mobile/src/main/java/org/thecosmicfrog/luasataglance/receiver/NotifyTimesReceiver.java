@@ -156,7 +156,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                         context,
                         REQUEST_CODE_OPEN_MAIN_ACTIVITY,
                         intentOpenMainActivity,
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
                 );
 
                 /*
@@ -226,7 +226,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                 context,
                 REQUEST_CODE_SCHEDULE_NOTIFICATION,
                 new Intent(context.getPackageName()),
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(

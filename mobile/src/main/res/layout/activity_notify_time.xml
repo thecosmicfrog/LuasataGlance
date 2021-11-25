@@ -18,9 +18,13 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<!--
+    Explicit theme needed here, otherwise app crashes, because... reasons...:
+    https://stackoverflow.com/a/63797256
+ -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-
+    android:theme="@style/Theme.MaterialComponents.Light.Bridge"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

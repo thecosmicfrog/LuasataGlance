@@ -24,12 +24,12 @@ package org.thecosmicfrog.luasataglance.view;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import androidx.core.content.ContextCompat;
-import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.card.MaterialCardView;
 

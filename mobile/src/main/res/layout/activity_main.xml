@@ -25,6 +25,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/off_white"
 
     tools:context="org.thecosmicfrog.luasataglance.activity.MainActivity"
     tools:ignore="MergeRootFrame">

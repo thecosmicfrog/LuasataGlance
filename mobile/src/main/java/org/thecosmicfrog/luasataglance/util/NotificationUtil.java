@@ -120,7 +120,7 @@ public final class NotificationUtil {
                 context,
                 requestCode,
                 intentOpenActivity,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
         /*

@@ -42,6 +42,7 @@
             android:elevation="@dimen/cardview_laag_elevation"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:tabTextColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/guideline_tablayout"
             app:layout_constraintStart_toStartOf="parent"
