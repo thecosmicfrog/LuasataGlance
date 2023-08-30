@@ -1,17 +1,16 @@
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '28.0.3'
+    compileSdk 33
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
-        minSdkVersion 21
-        targetSdkVersion 29
+        minSdk 26
+        targetSdk 33
         versionCode generateVersionCode()
         versionName generateVersionName()
     }
@@ -32,6 +31,7 @@ android {
     }
     productFlavors {
     }
+    namespace 'org.thecosmicfrog.luasataglance'
 }
 
 dependencies {
@@ -47,7 +47,6 @@ dependencies {
     api 'com.google.firebase:firebase-core:17.2.1'
     api 'com.google.firebase:firebase-messaging:20.0.1'
     implementation "androidx.preference:preference:1.1.0"
-    implementation 'com.google.firebase:firebase-perf:19.0.2'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
 }

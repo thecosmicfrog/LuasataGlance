@@ -77,17 +77,15 @@ public class SettingsActivity extends PreferenceActivity
         /*
          * Set status bar colour and elevation.
          */
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(
-                    ContextCompat.getColor(getApplicationContext(),
-                            R.color.luas_purple_statusbar)
-            );
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(
+                ContextCompat.getColor(getApplicationContext(),
+                        R.color.luas_purple_statusbar)
+        );
 
-            toolbar.setElevation(8.0f);
-        }
+        toolbar.setElevation(8.0f);
     }
 
     /**

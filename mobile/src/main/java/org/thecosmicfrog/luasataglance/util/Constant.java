@@ -86,6 +86,11 @@ public final class Constant {
     public static final String REMOTEMESSAGE_VALUE_ACTIVITY_SETTINGS = "settings";
 
     /*
+     * Request codes for permissions.
+     */
+    public static final int REQUEST_CODE_NOTIFY_TIMES = 102;
+
+    /*
      * Resources.
      */
     public static final String RES_LAYOUT_FRAGMENT_LINE = "resLayoutFragmentLine";

@@ -77,6 +77,8 @@
     <string name="cannot_schedule_notification">Tá an tram le teacht go luath. Ní féidir fógra a
         sceideal.
     </string>
+    <string name="please_allow_notification_permissions">Ceadaigh "ceadanna fógra" trí shocruithe do
+        ghléis.</string>
 
     <!--
         Actions

@@ -22,7 +22,6 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import androidx.fragment.app.FragmentActivity;
 import android.view.View;
@@ -30,7 +29,6 @@ import android.view.Window;
 import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 
 public class AboutActivity extends FragmentActivity {
 
@@ -38,12 +36,8 @@ public class AboutActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        /*
-         * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
-         * the default theme set in AndroidManifest.xml.
-         */
-        if (Build.VERSION.SDK_INT >= 21)
-            setTheme(android.R.style.Theme_Material_Dialog);
+        /* Use a Material Dialog theme. */
+        setTheme(android.R.style.Theme_Material_Dialog);
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -51,18 +45,6 @@ public class AboutActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_about);
-
-        TextView textViewSourceCode = findViewById(R.id.textview_sourcecode);
-        textViewSourceCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Analytics.selectContent(
-                        getApplicationContext(),
-                        "link_tapped",
-                        "sourcecode_tapped"
-                );
-            }
-        });
 
         TextView textViewLicense = findViewById(R.id.textview_license);
         textViewLicense.setOnClickListener(new View.OnClickListener() {
@@ -73,12 +55,6 @@ public class AboutActivity extends FragmentActivity {
                                 getApplicationContext(),
                                 LicenseActivity.class
                         )
-                );
-
-                Analytics.selectContent(
-                        getApplicationContext(),
-                        "link_tapped",
-                        "license_tapped"
                 );
             }
         });

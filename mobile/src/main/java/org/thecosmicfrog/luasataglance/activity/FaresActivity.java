@@ -77,15 +77,13 @@ public class FaresActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fares);
 
         /* Set status bar colour. */
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(
-                    ContextCompat.getColor(getApplicationContext(),
-                            R.color.luas_purple_statusbar)
-            );
-        }
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(
+                ContextCompat.getColor(getApplicationContext(),
+                        R.color.luas_purple_statusbar)
+        );
 
         initializeActivity();
     }

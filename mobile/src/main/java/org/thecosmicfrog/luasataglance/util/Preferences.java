@@ -128,16 +128,16 @@ public final class Preferences {
     }
 
     /**
-     * Whether or not location permission has been granted.
+     * Whether or not a user should be prompted for notifications permission.
      * @param context Context.
-     * @return Location permission granted.
+     * @return User should be asked again.
      */
-    public static boolean permissionLocationGranted(Context context) {
+    public static boolean permissionNotificationsShouldNotAskAgain(Context context) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
 
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
-        return prefs.getBoolean("permission_location_granted", false);
+        return prefs.getBoolean("permission_notifications_should_not_ask_again", false);
     }
 
     /**
@@ -295,18 +295,19 @@ public final class Preferences {
     }
 
     /**
-     * Store boolean value of whether or not location permission has been granted.
+     * Store boolean value of whether or not a user should be prompted for location permission.
      * @param context Context.
-     * @param hasGranted Whether or not location permission has been granted.
+     * @param shouldNotAskAgain Whether or not user should be asked again.
      * @return Successfully saved.
      */
-    public static boolean savePermissionLocationGranted(Context context, boolean hasGranted) {
+    public static boolean savePermissionNotificationsShouldNotAskAgain(Context context,
+                                                                  boolean shouldNotAskAgain) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
 
         SharedPreferences.Editor prefs =
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
-        prefs.putBoolean("permission_location_granted", hasGranted);
+        prefs.putBoolean("permission_notifications_should_not_ask_again", shouldNotAskAgain);
 
         return prefs.commit();
     }

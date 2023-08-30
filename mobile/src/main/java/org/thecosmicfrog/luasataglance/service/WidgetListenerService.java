@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
@@ -45,7 +44,6 @@ import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.object.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.object.StopForecast;
 import org.thecosmicfrog.luasataglance.object.StopNameIdMap;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 
@@ -258,12 +256,6 @@ public class WidgetListenerService extends Service {
                         updateStopForecast(context, views, stopForecast);
 
                         appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
-                    } else {
-                        Analytics.nullApitimes(
-                                getApplicationContext(),
-                                "null",
-                                "null_apitimes_widget"
-                        );
                     }
 
                     /* Stop the refresh animations. */
@@ -319,12 +311,6 @@ public class WidgetListenerService extends Service {
                     if (retrofitError.getKind() != null) {
                         Log.e(LOG_TAG, retrofitError.getKind().toString());
                     }
-
-                    Analytics.httpErrorWidget(
-                            getApplicationContext(),
-                            "http_error_widget",
-                            "http_error_general_widget"
-                    );
                 }
             };
 
@@ -607,22 +593,19 @@ public class WidgetListenerService extends Service {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        /* Android Oreo and above require a NotificationChannel to be created. */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel =
-                    new NotificationChannel(
-                            "widgetGetStopForecast",
-                            "Widget get stop forecast",
-                            NotificationManager.IMPORTANCE_HIGH
-                    );
+        NotificationChannel notificationChannel =
+                new NotificationChannel(
+                        "widgetGetStopForecast",
+                        "Widget get stop forecast",
+                        NotificationManager.IMPORTANCE_HIGH
+                );
 
-            /* Configure notification channel. */
-            notificationChannel.setDescription("Widget get stop forecast");
-            notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
+        /* Configure notification channel. */
+        notificationChannel.setDescription("Widget get stop forecast");
+        notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
 
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(notificationChannel);
-            }
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(notificationChannel);
         }
 
         return new NotificationCompat.Builder(

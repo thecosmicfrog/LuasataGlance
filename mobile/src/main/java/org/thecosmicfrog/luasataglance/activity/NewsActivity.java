@@ -58,15 +58,13 @@ public class NewsActivity extends AppCompatActivity {
         /*
          * Set status bar colour.
          */
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(
-                    ContextCompat.getColor(getApplicationContext(),
-                            R.color.luas_purple_statusbar)
-            );
-        }
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(
+                ContextCompat.getColor(getApplicationContext(),
+                        R.color.luas_purple_statusbar)
+        );
 
         /*
          * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
@@ -74,7 +72,6 @@ public class NewsActivity extends AppCompatActivity {
          * Ensure the information is fresh by using no app or web browser cache.
          */
         WebView webViewNews = findViewById(R.id.webview_news);
-        webViewNews.getSettings().setAppCacheEnabled(false);
         webViewNews.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webViewNews.setWebViewClient(new WebViewClient());
 

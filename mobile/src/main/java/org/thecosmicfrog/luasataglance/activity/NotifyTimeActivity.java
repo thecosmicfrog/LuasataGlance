@@ -21,32 +21,43 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.core.content.ContextCompat;
+
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.object.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class NotifyTimeActivity extends FragmentActivity {
+import pub.devrel.easypermissions.EasyPermissions;
+import pub.devrel.easypermissions.PermissionRequest;
+
+public class NotifyTimeActivity extends FragmentActivity implements
+        EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
 
     private final String LOG_TAG = NotifyTimeActivity.class.getSimpleName();
+    private final String[] PERMISSIONS_NOTIFICATIONS = {Manifest.permission.POST_NOTIFICATIONS};
 
     private Map<String, Integer> mapNotifyTimes;
 
@@ -54,12 +65,8 @@ public class NotifyTimeActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         final String DIALOG = "dialog";
 
-        /*
-         * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
-         * the default theme set in AndroidManifest.xml.
-         */
-        if (Build.VERSION.SDK_INT >= 21)
-            setTheme(android.R.style.Theme_Material_Dialog);
+        /* Use a Material Dialog theme. */
+        setTheme(android.R.style.Theme_Material_Dialog);
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -67,6 +74,29 @@ public class NotifyTimeActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_notify_time);
+
+        if (Preferences.permissionNotificationsShouldNotAskAgain(getApplicationContext())) {
+            /* User has disabled notifications. Close the dialog immediately. */
+            finish();
+
+            Toast.makeText(
+                    this,
+                    R.string.please_allow_notification_permissions,
+                    Toast.LENGTH_LONG
+            ).show();
+        } else {
+            EasyPermissions.requestPermissions(
+                    new PermissionRequest.Builder(
+                            this,
+                            Constant.REQUEST_CODE_NOTIFY_TIMES,
+                            PERMISSIONS_NOTIFICATIONS)
+                            .setRationale(R.string.rationale_notifications)
+                            .setPositiveButtonText(R.string.rationale_ask_accept)
+                            .setNegativeButtonText(R.string.rationale_ask_decline)
+                            .setTheme(android.R.style.Theme_Material_Light_Dialog_Alert)
+                            .build()
+            );
+        }
 
         String localeDefault = Locale.getDefault().toString();
 
@@ -113,15 +143,65 @@ public class NotifyTimeActivity extends FragmentActivity {
                 /* Send the Intent. */
                 sendBroadcast(intent);
 
-                Analytics.selectContent(
-                        getApplicationContext(),
-                        "schedule_created",
-                        "schedule_created"
-                );
-
                 /* Dismiss the Dialog. */
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        /* If the user has not granted notification permissions, just close the dialog. */
+        if (!hasAllPermissionsGranted(grantResults)) {
+            finish();
+        }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        Log.i(LOG_TAG, "Notifications permission granted.");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        Log.i(LOG_TAG, "Notifications permission denied.");
+
+        /* User has disabled notifications. Close the dialog immediately. */
+        finish();
+    }
+
+    @Override
+    public void onRationaleAccepted(int requestCode) {
+        Log.i(LOG_TAG, "Notifications rationale accepted.");
+    }
+
+    @Override
+    public void onRationaleDenied(int requestCode) {
+        Log.i(LOG_TAG, "Notifications rationale denied.");
+
+        /* User has disabled notifications. Close the dialog immediately. */
+        finish();
+
+        Preferences.savePermissionNotificationsShouldNotAskAgain(getApplicationContext(), true);
+    }
+
+    /**
+     * Check if all permissions have been granted.
+     * @param grantResults Grant results.
+     * @return All permissions granted or not.
+     */
+    private boolean hasAllPermissionsGranted(@NonNull int[] grantResults) {
+        for (int grantResult : grantResults) {
+            if (grantResult == PackageManager.PERMISSION_DENIED) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
