@@ -120,7 +120,7 @@ public final class NotificationUtil {
                 context,
                 requestCode,
                 intentOpenActivity,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
         /*
@@ -132,23 +132,21 @@ public final class NotificationUtil {
                 );
 
         /* Android Oreo and above require a NotificationChannel to be created. */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel =
-                    new NotificationChannel(
-                            "fcmNotification",
-                            "Firebase Cloud Messaging notification",
-                            NotificationManager.IMPORTANCE_HIGH
-                    );
+        NotificationChannel notificationChannel =
+                new NotificationChannel(
+                        "fcmNotification",
+                        "Firebase Cloud Messaging notification",
+                        NotificationManager.IMPORTANCE_HIGH
+                );
 
-            /* Configure notification channel. */
-            notificationChannel.setDescription("Firebase Cloud Messaging notification");
-            notificationChannel.enableLights(true);
-            notificationChannel.setLightColor(context.getColor(R.color.luas_purple));
-            notificationChannel.setVibrationPattern(new long[] {100, 1000, 1000, 1000, 1000});
-            notificationChannel.enableVibration(true);
+        /* Configure notification channel. */
+        notificationChannel.setDescription("Firebase Cloud Messaging notification");
+        notificationChannel.enableLights(true);
+        notificationChannel.setLightColor(context.getColor(R.color.luas_purple));
+        notificationChannel.setVibrationPattern(new long[] {100, 1000, 1000, 1000, 1000});
+        notificationChannel.enableVibration(true);
 
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
+        notificationManager.createNotificationChannel(notificationChannel);
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, "fcmNotification")

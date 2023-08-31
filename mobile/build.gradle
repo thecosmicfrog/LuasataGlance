@@ -2,12 +2,11 @@ import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'io.fabric'
 
 android {
     namespace 'org.thecosmicfrog.luasataglance'
 
-    compileSdk 30
+    compileSdk 33
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -20,8 +19,8 @@ android {
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdk 26
+        targetSdk 33
         versionCode generateVersionCode()
         versionName generateVersionName()
     }
@@ -31,22 +30,16 @@ android {
             resValue "string", "version_code", generateVersionCode().toString()
             resValue "string", "version_name", generateVersionName()
             resValue "string", "release_date", generateReleaseDate()
-
-            /* Disable Firebase Performance library to prevent false positives during development */
-            resValue "bool", "FIREBASE_PERFORMANCE_ENABLED", "false"
         }
-
         release {
             resValue "string", "version_code", generateVersionCode().toString()
             resValue "string", "version_name", generateVersionName()
             resValue "string", "release_date", generateReleaseDate()
-            resValue "bool", "FIREBASE_PERFORMANCE_ENABLED", "true"
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     productFlavors {
     }
 }
@@ -91,4 +84,3 @@ private static String generateReleaseDate() {
 
     currentDateFormatted
 }
-

@@ -58,12 +58,8 @@ public class FavouritesActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         final String TUTORIAL_FAVOURITES = "favourites";
 
-        /*
-         * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
-         * the default theme set in AndroidManifest.xml.
-         */
-        if (Build.VERSION.SDK_INT >= 21)
-            setTheme(android.R.style.Theme_Material_Dialog);
+        /* Use a Material Dialog theme. */
+        setTheme(android.R.style.Theme_Material_Dialog);
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE);

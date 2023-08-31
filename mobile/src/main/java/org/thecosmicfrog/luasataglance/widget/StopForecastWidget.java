@@ -27,7 +27,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import androidx.annotation.NonNull;
@@ -38,7 +37,6 @@ import android.widget.RemoteViews;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.activity.MainActivity;
 import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
@@ -124,23 +122,11 @@ public class StopForecastWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         Log.i(LOG_TAG, "Widget first created.");
-
-        Analytics.enableWidget(
-                context,
-                "enable_widget",
-                "widget"
-        );
     }
 
     @Override
     public void onDisabled(Context context) {
         Log.i(LOG_TAG, "Widget disabled.");
-
-        Analytics.disableWidget(
-                context,
-                "disable_widget",
-                "widget"
-        );
     }
 
     @Override
@@ -175,12 +161,6 @@ public class StopForecastWidget extends AppWidgetProvider {
                                 stopName
                         )
                 );
-
-                Analytics.selectContent(
-                        context,
-                        "button_tapped",
-                        "widget_stop_name_tapped"
-                );
             }
 
             /*
@@ -203,12 +183,6 @@ public class StopForecastWidget extends AppWidgetProvider {
                         remoteViews,
                         indexNextStopToLoad
                 );
-
-                Analytics.selectContent(
-                        context,
-                        "button_tapped",
-                        "widget_arrow_left_tapped"
-                );
             }
 
             if (intent.getAction().equals(WIDGET_CLICK_ARROW_RIGHT)) {
@@ -227,12 +201,6 @@ public class StopForecastWidget extends AppWidgetProvider {
                         appWidgetsIds,
                         remoteViews,
                         indexNextStopToLoad
-                );
-
-                Analytics.selectContent(
-                        context,
-                        "button_tapped",
-                        "widget_arrow_right_tapped"
                 );
             }
 
@@ -265,12 +233,6 @@ public class StopForecastWidget extends AppWidgetProvider {
                         appWidgetsIds,
                         remoteViews,
                         indexNextStopToLoad
-                );
-
-                Analytics.selectContent(
-                        context,
-                        "button_tapped",
-                        "widget_stop_forecast_tapped"
                 );
             }
         }
@@ -337,11 +299,7 @@ public class StopForecastWidget extends AppWidgetProvider {
         );
 
         /* Start the WidgetListenerService. */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intentWidgetListenerService);
-        } else {
-            context.startService(intentWidgetListenerService);
-        }
+        context.startForegroundService(intentWidgetListenerService);
     }
 
     /**
@@ -411,13 +369,13 @@ public class StopForecastWidget extends AppWidgetProvider {
         intentWidgetClickStopForecast.setAction(WIDGET_CLICK_STOP_FORECAST);
 
         PendingIntent pendingIntentWidgetClickStopName =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopName, 0);
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopName, PendingIntent.FLAG_IMMUTABLE);
         PendingIntent pendingIntentWidgetClickArrowLeft =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowLeft, 0);
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowLeft, PendingIntent.FLAG_IMMUTABLE);
         PendingIntent pendingIntentWidgetClickArrowRight =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowRight, 0);
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowRight, PendingIntent.FLAG_IMMUTABLE);
         PendingIntent pendingIntentWidgetClickStopForecast =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopForecast, 0);
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopForecast, PendingIntent.FLAG_IMMUTABLE);
 
         remoteViews.setOnClickPendingIntent(
                 R.id.textview_stop_name, pendingIntentWidgetClickStopName

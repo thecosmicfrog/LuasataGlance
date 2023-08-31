@@ -27,7 +27,6 @@ import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.util.Analytics
 
 class AboutActivity : FragmentActivity() {
 
@@ -35,13 +34,9 @@ class AboutActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         /*
-         * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
-         * the default theme set in AndroidManifest.xml.
+         * Use a Material Dialog theme.
          */
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            setTheme(android.R.style.Theme_Material_Dialog)
-        }
+        setTheme(android.R.style.Theme_Material_Dialog)
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -50,28 +45,13 @@ class AboutActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_about)
 
-        val textViewSourceCode = findViewById<TextView>(R.id.textview_sourcecode)
-        textViewSourceCode.setOnClickListener {
-            Analytics.selectContent(
-                    applicationContext,
-                    "link_tapped",
-                    "sourcecode_tapped"
-            )
-        }
-
         val textViewLicense = findViewById<TextView>(R.id.textview_license)
         textViewLicense.setOnClickListener {
             startActivity(
-                    Intent(
-                            applicationContext,
-                            LicenseActivity::class.java
-                    )
-            )
-
-            Analytics.selectContent(
+                Intent(
                     applicationContext,
-                    "link_tapped",
-                    "license_tapped"
+                    LicenseActivity::class.java
+                )
             )
         }
     }

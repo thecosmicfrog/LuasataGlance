@@ -73,10 +73,12 @@
     <string name="no_trams_forecast"><b>No trams forecast</b></string>
     <string name="no_trams_forecast_short"><b>No trams</b></string>
     <string name="bottomnav_map_short">Map</string>
-    <string name="bottomnav_favourites_short">Fav\'s</string>
+    <string name="bottomnav_favourites_short">Faves</string>
     <string name="tap_to_load_times"><b>Tap to load times</b></string>
     <string name="cannot_schedule_notification">Tram is due shortly. Cannot schedule notification.
     </string>
+    <string name="please_allow_notification_permissions">Please allow notification permissions
+        through your device\'s settings.</string>
 
     <!--
         Actions
@@ -170,6 +172,8 @@
     <string name="rationale_ask_decline" translatable="false">No thanks</string>
     <string name="rationale_location" translatable="false">Luas at a Glance can optionally show your
         location on the map, making it easier for you to find your nearest Luas stop.</string>
+    <string name="rationale_notifications" translatable="false">Luas at a Glance requires permission
+        to notify you when your tram is due.</string>
 
     <!--
         Settings
@@ -185,12 +189,7 @@
     -->
     <string name="whatsnew_title_current" translatable="false">Version %s (%s)</string>
     <string name="whatsnew_content_current" translatable="false">
-        \u2022 The <b>Luas Map</b> now shows your current location, making it easier for you to find
-        your nearest Luas stop.\n\n
-        \u2022 Improvements for larger screen sizes - now even more trams will be displayed on
-        taller screens! Tweaked text size to aid readability.\n\n
-        \u2022 Other misc. interface tweaks.\n\n
-        \u2022 Updates to privacy policy regarding crash and performance reporting service.
+        \u2022 Minor update to better support new versions of Android.
     </string>
 
     <!--

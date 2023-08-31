@@ -20,27 +20,35 @@
  */
 package org.thecosmicfrog.luasataglance.activity
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.model.NotifyTimesMap
 import org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver
-import org.thecosmicfrog.luasataglance.util.Analytics
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
-import java.util.*
+import pub.devrel.easypermissions.EasyPermissions
+import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks
+import pub.devrel.easypermissions.EasyPermissions.RationaleCallbacks
+import pub.devrel.easypermissions.PermissionRequest
+import java.util.Locale
 
-class NotifyTimeActivity : FragmentActivity() {
+class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCallbacks {
 
     private val logTag = NotifyTimeActivity::class.java.simpleName
+    private val permissionsNotifications = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+
 
     private var mapNotifyTimes: Map<String, Int>? = null
 
@@ -48,12 +56,9 @@ class NotifyTimeActivity : FragmentActivity() {
         val dialog = "dialog"
 
         /*
-         * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
-         * the default theme set in AndroidManifest.xml.
+         * Use a Material Dialog theme.
          */
-        if (Build.VERSION.SDK_INT >= 21) {
-            setTheme(android.R.style.Theme_Material_Dialog)
-        }
+        setTheme(android.R.style.Theme_Material_Dialog)
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -61,6 +66,22 @@ class NotifyTimeActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_notify_time)
+
+        if (Preferences.permissionNotificationsShouldNotAskAgain(applicationContext)) {
+            /* User has disabled notifications. Close the dialog immediately. */
+            finish()
+
+            Toast.makeText(this, R.string.please_allow_notification_permissions, Toast.LENGTH_LONG).show()
+        } else {
+            EasyPermissions.requestPermissions(
+                PermissionRequest.Builder(this, Constant.REQUEST_CODE_NOTIFY_TIMES, *permissionsNotifications)
+                    .setRationale(R.string.rationale_notifications)
+                    .setPositiveButtonText(R.string.rationale_ask_accept)
+                    .setNegativeButtonText(R.string.rationale_ask_decline)
+                    .setTheme(android.R.style.Theme_Material_Light_Dialog_Alert)
+                    .build()
+            )
+        }
 
         val localeDefault = Locale.getDefault().toString()
 
@@ -104,14 +125,55 @@ class NotifyTimeActivity : FragmentActivity() {
             /* Send the Intent. */
             sendBroadcast(intent)
 
-            Analytics.selectContent(
-                    applicationContext,
-                    "schedule_created",
-                    "schedule_created"
-            )
-
             /* Dismiss the Dialog. */
             finish()
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        /* If the user has not granted notification permissions, just close the dialog. */
+        if (!hasAllPermissionsGranted(grantResults)) {
+            finish()
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String?>) {
+        Log.i(logTag, "Notifications permission granted.")
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String?>) {
+        Log.i(logTag, "Notifications permission denied.")
+
+        /* User has disabled notifications. Close the dialog immediately. */finish()
+    }
+
+    override fun onRationaleAccepted(requestCode: Int) {
+        Log.i(logTag, "Notifications rationale accepted.")
+    }
+
+    override fun onRationaleDenied(requestCode: Int) {
+        Log.i(logTag, "Notifications rationale denied.")
+
+        /* User has disabled notifications. Close the dialog immediately. */finish()
+        Preferences.savePermissionNotificationsShouldNotAskAgain(applicationContext, true)
+    }
+
+    /**
+     * Check if all permissions have been granted.
+     * @param grantResults Grant results.
+     * @return All permissions granted or not.
+     */
+    private fun hasAllPermissionsGranted(grantResults: IntArray): Boolean {
+        for (grantResult in grantResults) {
+            if (grantResult == PackageManager.PERMISSION_DENIED) {
+                return false
+            }
+        }
+
+        return true
     }
 }

@@ -22,7 +22,6 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
@@ -41,7 +40,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import org.thecosmicfrog.luasataglance.R;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
@@ -50,9 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private String settingFirebaseTestLab = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        settingFirebaseTestLab = Settings.System.getString(getContentResolver(), "firebase.test.lab");
 
         setContentView(R.layout.activity_main);
 
@@ -63,23 +65,21 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setElevation(0f);
 
         /* Set status and navigation bar colour. */
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(
-                    ContextCompat.getColor(
-                            getApplicationContext(),
-                            R.color.luas_purple_statusbar
-                    )
-            );
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(
+                ContextCompat.getColor(
+                        getApplicationContext(),
+                        R.color.luas_purple_statusbar
+                )
+        );
 
-            window.setNavigationBarColor(
-                    ContextCompat.getColor(
-                            getApplicationContext(),
-                            R.color.luas_purple_statusbar
-                    ));
-        }
+        window.setNavigationBarColor(
+                ContextCompat.getColor(
+                        getApplicationContext(),
+                        R.color.luas_purple_statusbar
+                ));
 
         /*
          * Initialise ViewPager and TabLayout.
@@ -170,12 +170,6 @@ public class MainActivity extends AppCompatActivity {
                                 )
                         );
                     }
-
-                    Analytics.selectContent(
-                            getApplicationContext(),
-                            "button_tapped",
-                            "map_tapped"
-                    );
                 }
             });
         }
@@ -202,12 +196,6 @@ public class MainActivity extends AppCompatActivity {
                                     FavouritesActivity.class
                             )
                     );
-
-                    Analytics.selectContent(
-                            getApplicationContext(),
-                            "button_tapped",
-                            "favourites_tapped"
-                    );
                 }
             });
         }
@@ -228,22 +216,17 @@ public class MainActivity extends AppCompatActivity {
                                     FaresActivity.class
                             )
                     );
-
-                    Analytics.selectContent(
-                            getApplicationContext(),
-                            "button_tapped",
-                            "fares_tapped"
-                    );
                 }
             });
         }
 
         /*
          * Bottom navigation bar - Alerts.
+         * Don't enable the onClickListener if we're in Firebase Test Lab to avoid traversing infinitely through the WebView.
          */
         RelativeLayout relativeLayoutBottomNavAlerts =
                 findViewById(R.id.relativelayout_bottomnav_alerts);
-        if (relativeLayoutBottomNavAlerts != null) {
+        if (relativeLayoutBottomNavAlerts != null && settingFirebaseTestLab == null) {
             relativeLayoutBottomNavAlerts.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -252,12 +235,6 @@ public class MainActivity extends AppCompatActivity {
                                     getApplicationContext(),
                                     NewsActivity.class
                             ).putExtra(Constant.NEWS_TYPE, Constant.NEWS_TYPE_TRAVEL_UPDATES)
-                    );
-
-                    Analytics.selectContent(
-                            getApplicationContext(),
-                            "button_tapped",
-                            "alerts_tapped"
                     );
                 }
             });

@@ -51,7 +51,7 @@ import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.model.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.model.StopForecast;
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap;
-import org.thecosmicfrog.luasataglance.util.Analytics;
+import org.thecosmicfrog.luasataglance.util.AppUtil;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.util.Settings;
@@ -226,6 +226,8 @@ public class LineFragment extends Fragment {
         super.onResume();
 
         activity = getActivity();
+
+        AppUtil.resetShouldNotAskAgainIfPermissionsChangedOutsideApp(context);
 
         /* Remove Favourites tutorial if it has been completed once already. */
         if (line.equals(Constant.RED_LINE)
@@ -866,12 +868,6 @@ public class LineFragment extends Fragment {
                                 );
                             }
                         }
-                    } else {
-                        Analytics.nullApitimes(
-                                context,
-                                "null",
-                                "null_apitimes_mobile"
-                        );
                     }
                 }
             }
@@ -917,12 +913,6 @@ public class LineFragment extends Fragment {
                 if (retrofitError.getKind() != null) {
                     Log.e(LOG_TAG, "Kind: " + retrofitError.getKind().toString());
                 }
-
-                Analytics.httpError(
-                        context,
-                        "http_error",
-                        "http_error_general_mobile"
-                );
             }
         };
 
@@ -963,12 +953,6 @@ public class LineFragment extends Fragment {
             );
         } catch (ParseException e) {
             Log.e(LOG_TAG, "Failed to parse created time from API.");
-
-            Analytics.apiCreatedParseError(
-                    context,
-                    "api_error",
-                    "api_created_parse_error_mobile"
-            );
         }
 
         return null;

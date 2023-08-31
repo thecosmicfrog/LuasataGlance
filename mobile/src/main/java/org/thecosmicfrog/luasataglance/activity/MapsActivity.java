@@ -24,7 +24,6 @@ package org.thecosmicfrog.luasataglance.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -33,7 +32,6 @@ import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,7 +47,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException;
 import org.thecosmicfrog.luasataglance.model.StopCoords;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
@@ -83,26 +80,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stopCoordsRedLine = new StopCoords(Constant.RED_LINE).getStopCoords();
         stopCoordsGreenLine = new StopCoords(Constant.GREEN_LINE).getStopCoords();
 
-        /*
-         * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
-         * the default theme set in AndroidManifest.xml.
-         */
-        if (Build.VERSION.SDK_INT >= 21)
-            setTheme(android.R.style.Theme_Material_Dialog);
-
-        /* Workaround for annoying bug that causes Google Maps in a Dialog to be dimmed. */
-        if (Build.VERSION.SDK_INT <= 22)
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        /* Use a Material Dialog theme. */
+        setTheme(android.R.style.Theme_Material_Dialog);
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         if (!Preferences.permissionLocationShouldNotAskAgain(getApplicationContext())) {
             EasyPermissions.requestPermissions(
-                    new PermissionRequest.Builder(
-                            this,
-                            REQUEST_CODE_LOCATION,
-                            PERMISSIONS_LOCATION)
+                    new PermissionRequest.Builder(this, REQUEST_CODE_LOCATION, PERMISSIONS_LOCATION)
                             .setRationale(R.string.rationale_location)
                             .setPositiveButtonText(R.string.rationale_ask_accept)
                             .setNegativeButtonText(R.string.rationale_ask_decline)
@@ -219,8 +205,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (hasAllPermissionsGranted(grantResults)) {
-            Preferences.savePermissionLocationGranted(getApplicationContext(), true);
-
             recreate();
         }
     }
@@ -228,41 +212,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         Log.i(LOG_TAG, "Location permission granted.");
-        Analytics.permissionLocationGranted(
-                getApplicationContext(),
-                "permission_location_granted",
-                "permission_location_granted"
-        );
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
         Log.i(LOG_TAG, "Location permission denied.");
-        Analytics.permissionLocationDenied(
-                getApplicationContext(),
-                "permission_location_denied",
-                "permission_location_denied"
-        );
     }
 
     @Override
     public void onRationaleAccepted(int requestCode) {
         Log.i(LOG_TAG, "Location rationale accepted.");
-        Analytics.permissionRationaleLocationAccepted(
-                getApplicationContext(),
-                "permission_rationale_location_accepted",
-                "permission_rationale_location_accepted"
-        );
     }
 
     @Override
     public void onRationaleDenied(int requestCode) {
         Log.i(LOG_TAG, "Location rationale denied.");
-        Analytics.permissionRationaleLocationDenied(
-                getApplicationContext(),
-                "permission_rationale_location_denied",
-                "permission_rationale_location_denied"
-        );
 
         Preferences.savePermissionLocationShouldNotAskAgain(getApplicationContext(), true);
     }
@@ -274,7 +238,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void setMyLocationEnabled() {
         if (EasyPermissions.hasPermissions(this, PERMISSIONS_LOCATION)) {
             try {
-                if (map != null && Preferences.permissionLocationGranted(getApplicationContext())) {
+                if (map != null) {
                     Log.i(LOG_TAG, "Enabling user's location.");
 
                     map.setMyLocationEnabled(true);
@@ -288,9 +252,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Check if all permissionsed have been granted.
+     * Check if all permissions have been granted.
      * @param grantResults Grant results.
-     * @return All permissioned granted or not.
+     * @return All permissions granted or not.
      */
     private boolean hasAllPermissionsGranted(@NonNull int[] grantResults) {
         for (int grantResult : grantResults) {

@@ -46,24 +46,20 @@ class NewsActivity : AppCompatActivity() {
          * Set ActionBar colour.
          */
         supportActionBar!!.setBackgroundDrawable(
-                ColorDrawable(
-                        ContextCompat.getColor(application, R.color.luas_purple)
-                )
+            ColorDrawable(ContextCompat.getColor(application, R.color.luas_purple))
         )
 
         /*
          * Set status bar colour.
          */
-        if (Build.VERSION.SDK_INT >= 21) {
-            val window = window
+        val window = window
 
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor = ContextCompat.getColor(
-                    applicationContext,
-                    R.color.luas_purple_statusbar
-            )
-        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = ContextCompat.getColor(
+            applicationContext,
+            R.color.luas_purple_statusbar
+        )
 
         /*
          * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
@@ -72,7 +68,6 @@ class NewsActivity : AppCompatActivity() {
          */
         val webViewNews = findViewById<WebView>(R.id.webview_news)
 
-        webViewNews.settings.setAppCacheEnabled(false)
         webViewNews.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webViewNews.webViewClient = WebViewClient()
 

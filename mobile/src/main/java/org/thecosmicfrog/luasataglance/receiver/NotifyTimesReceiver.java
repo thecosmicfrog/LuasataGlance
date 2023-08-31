@@ -34,6 +34,8 @@ import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.SystemClock;
 import androidx.core.app.NotificationCompat;
+
+import android.util.Log;
 import android.widget.Toast;
 
 import org.thecosmicfrog.luasataglance.R;
@@ -156,7 +158,7 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                         context,
                         REQUEST_CODE_OPEN_MAIN_ACTIVITY,
                         intentOpenMainActivity,
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
                 );
 
                 /*
@@ -169,23 +171,21 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
 
 
                 /* Android Oreo and above require a NotificationChannel to be created. */
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    NotificationChannel notificationChannel =
-                            new NotificationChannel(
-                                    "notifyTimes",
-                                    "Notify Times",
-                                    NotificationManager.IMPORTANCE_HIGH
-                            );
+                NotificationChannel notificationChannel =
+                        new NotificationChannel(
+                                "notifyTimes",
+                                "Notify Times",
+                                NotificationManager.IMPORTANCE_HIGH
+                        );
 
-                    /* Configure notification channel. */
-                    notificationChannel.setDescription("Notify Times");
-                    notificationChannel.enableLights(true);
-                    notificationChannel.setLightColor(context.getColor(R.color.luas_purple));
-                    notificationChannel.setVibrationPattern(new long[] {100, 1000, 1000, 1000, 1000});
-                    notificationChannel.enableVibration(true);
+                /* Configure notification channel. */
+                notificationChannel.setDescription("Notify Times");
+                notificationChannel.enableLights(true);
+                notificationChannel.setLightColor(context.getColor(R.color.luas_purple));
+                notificationChannel.setVibrationPattern(new long[] {100, 1000, 1000, 1000, 1000});
+                notificationChannel.enableVibration(true);
 
-                    notificationManager.createNotificationChannel(notificationChannel);
-                }
+                notificationManager.createNotificationChannel(notificationChannel);
 
                 /*
                  * Create the NotificationBuilder, setting an appropriate title and the message
@@ -226,35 +226,17 @@ public class NotifyTimesReceiver extends BroadcastReceiver {
                 context,
                 REQUEST_CODE_SCHEDULE_NOTIFICATION,
                 new Intent(context.getPackageName()),
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(
                 Context.ALARM_SERVICE
         );
 
-        /*
-         * Due to the restrictions enforced by Doze, we need to ensure our notification will fire.
-         * Check to see which API the device is using, and trigger the appropriate set() method.
-         */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            /* Wake up the devices in Doze mode. */
-            alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
-            );
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            /* Wake up the device in Idle mode. */
-            alarmManager.setExact(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
-            );
-        } else {
-            /* Wake up the device. */
-            alarmManager.set(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
-            );
-        }
+        /* Wake up the device. */
+        alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + notifyDelayMillis, pendingIntent
+        );
     }
 }
