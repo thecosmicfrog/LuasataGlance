@@ -48,9 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private String settingFirebaseTestLab = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        settingFirebaseTestLab = Settings.System.getString(getContentResolver(), "firebase.test.lab");
 
         setContentView(R.layout.activity_main);
 
@@ -218,10 +222,11 @@ public class MainActivity extends AppCompatActivity {
 
         /*
          * Bottom navigation bar - Alerts.
+         * Don't enable the onClickListener if we're in Firebase Test Lab to avoid traversing infinitely through the WebView.
          */
         RelativeLayout relativeLayoutBottomNavAlerts =
                 findViewById(R.id.relativelayout_bottomnav_alerts);
-        if (relativeLayoutBottomNavAlerts != null) {
+        if (relativeLayoutBottomNavAlerts != null && settingFirebaseTestLab == null) {
             relativeLayoutBottomNavAlerts.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
