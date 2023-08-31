@@ -39,7 +39,6 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.perf.FirebasePerformance;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Analytics;
@@ -54,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        configureFirebasePerformanceCollection();
 
         setContentView(R.layout.activity_main);
 
@@ -408,21 +405,6 @@ public class MainActivity extends AppCompatActivity {
         float dpHeight = displayMetrics.heightPixels / density;
 
         Preferences.saveScreenHeight(getApplicationContext(), dpHeight);
-    }
-
-    /**
-     * Enable or disable Firebase Performance collection.
-     */
-    private void configureFirebasePerformanceCollection() {
-        /* Disable Firebase Performance collection if we're running in Firebase Test Lab. */
-        if (isRunningInFirebaseTestLab()) {
-            Log.i(
-                    LOG_TAG,
-                    "Running in Firebase Test Lab. Disabling Firebase Performance collection."
-            );
-
-            FirebasePerformance.getInstance().setPerformanceCollectionEnabled(false);
-        }
     }
 }
 

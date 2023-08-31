@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace 'org.thecosmicfrog.luasataglance'
+
     compileSdkVersion 29
     buildToolsVersion '28.0.3'
 
