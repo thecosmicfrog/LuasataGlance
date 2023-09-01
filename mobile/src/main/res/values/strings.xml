@@ -178,9 +178,6 @@
     <!--
         Settings
     -->
-    <string name="pref_title_notifications">Notifications</string>
-    <string name="pref_summary_notifications">Receive push notifications</string>
-    <string name="pref_key_notifications" translatable="false">notifications</string>
     <string name="pref_title_default_stop">Default Stop</string>
     <string name="pref_key_default_stop" translatable="false">default_stop</string>
 

@@ -54,11 +54,6 @@ public final class Constant {
     public static final Class CLASS_SETTINGS_ACTIVITY = SettingsActivity.class;
 
     /*
-     * Firebase messaging.
-     */
-    public static final String NOTIFICATIONS = "notifications";
-
-    /*
      * News.
      */
     public static final String NEWS_TYPE = "newsType";
