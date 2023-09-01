@@ -107,13 +107,6 @@
                 android:resource="@xml/stop_forecast_widget_info" />
         </receiver>
 
-        <service android:name=".service.WearMessageListenerService" android:exported="true">
-            <intent-filter>
-                <action
-                    android:name="com.google.android.gms.wearable.BIND_LISTENER"
-                    tools:ignore="WearableBindListener" />
-            </intent-filter>
-        </service>
         <service
             android:name=".service.WidgetListenerService"
             android:enabled="true" />
@@ -159,14 +152,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name=".service.WearMessageListenerService"
-            android:exported="true">
-            <intent-filter>
-                <action
-                    android:name="com.google.android.gms.wearable.BIND_LISTENER"
-                    tools:ignore="WearableBindListener" />
             </intent-filter>
         </service>
     </application>

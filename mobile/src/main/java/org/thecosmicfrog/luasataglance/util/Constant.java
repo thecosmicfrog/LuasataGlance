@@ -44,15 +44,6 @@ public final class Constant {
     public static final String STOP_FORECAST = "stop_forecast";
 
     /*
-     * Android Wear API paths.
-     */
-    public static final String PATH_FAVOURITES_OPEN_APP_MOBILE = "/favourites_open_app_mobile";
-    public static final String PATH_FAVOURITES_FETCH_MOBILE = "/favourites_fetch_mobile";
-    public static final String PATH_FAVOURITES_FETCH_WEAR = "/favourites_fetch_wear";
-    public static final String PATH_STOPFORECAST_FETCH_MOBILE = "/stopforecast_fetch_mobile";
-    public static final String PATH_STOPFORECAST_FETCH_WEAR = "/stopforecast_fetch_wear";
-
-    /*
      * Classes.
      */
     public static final Class CLASS_FARES_ACTIVITY = FaresActivity.class;
