@@ -25,6 +25,10 @@ android {
         versionName generateVersionName()
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
     buildTypes {
         debug{
             resValue "string", "version_code", generateVersionCode().toString()

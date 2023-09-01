@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,12 +48,15 @@ import android.widget.Toast;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
+import org.thecosmicfrog.luasataglance.databinding.FragmentGreenlineBinding;
+import org.thecosmicfrog.luasataglance.databinding.FragmentRedlineBinding;
 import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.model.NotifyTimesMap;
 import org.thecosmicfrog.luasataglance.model.StopForecast;
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap;
 import org.thecosmicfrog.luasataglance.util.AppUtil;
 import org.thecosmicfrog.luasataglance.util.Constant;
+import org.thecosmicfrog.luasataglance.util.LineFragmentViewBindingAdapter;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.util.Settings;
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
@@ -79,15 +83,7 @@ public class LineFragment extends Fragment {
 
     private final String LOG_TAG = LineFragment.class.getSimpleName();
 
-    private static int resLayoutFragmentLine;
     private static int resMenuLine;
-    private static int resProgressBar;
-    private static int resSpinnerCardView;
-    private static int resStatusCardView;
-    private static int resSwipeRefreshLayout;
-    private static int resScrollView;
-    private static int resInboundStopForecastCardView;
-    private static int resOutboundStopForecastCardView;
     private static int resArrayStopsRedLine;
     private static int resArrayStopsGreenLine;
     private static StopNameIdMap mapStopNameId;
@@ -95,7 +91,7 @@ public class LineFragment extends Fragment {
 
     private FragmentActivity activity;
     private Context context;
-    private View rootView = null;
+    private LineFragmentViewBindingAdapter viewBinding;
     private Menu menu;
     private TabLayout tabLayout;
     private ProgressBar progressBar;
@@ -127,41 +123,13 @@ public class LineFragment extends Fragment {
         switch (line) {
             case Constant.RED_LINE:
                 bundle.putString(Constant.LINE, Constant.RED_LINE);
-                bundle.putInt(Constant.RES_LAYOUT_FRAGMENT_LINE, R.layout.fragment_redline);
                 bundle.putInt(Constant.RES_MENU_LINE, R.menu.menu_red_line);
-                bundle.putInt(Constant.RES_PROGRESSBAR, R.id.redline_progressbar);
-                bundle.putInt(Constant.RES_SPINNER_CARDVIEW, R.id.redline_spinner_card_view);
-                bundle.putInt(Constant.RES_STATUS_CARDVIEW, R.id.redline_statuscardview);
-                bundle.putInt(Constant.RES_SWIPEREFRESHLAYOUT, R.id.redline_swiperefreshlayout);
-                bundle.putInt(Constant.RES_SCROLLVIEW, R.id.redline_scrollview);
-                bundle.putInt(
-                        Constant.RES_INBOUND_STOPFORECASTCARDVIEW,
-                        R.id.redline_inbound_stopforecastcardview
-                );
-                bundle.putInt(
-                        Constant.RES_OUTBOUND_STOPFORECASTCARDVIEW,
-                        R.id.redline_outbound_stopforecastcardview
-                );
 
                 break;
 
             case Constant.GREEN_LINE:
                 bundle.putString(Constant.LINE, Constant.GREEN_LINE);
-                bundle.putInt(Constant.RES_LAYOUT_FRAGMENT_LINE, R.layout.fragment_greenline);
                 bundle.putInt(Constant.RES_MENU_LINE, R.menu.menu_green_line);
-                bundle.putInt(Constant.RES_PROGRESSBAR, R.id.greenline_progressbar);
-                bundle.putInt(Constant.RES_SPINNER_CARDVIEW, R.id.greenline_spinner_card_view);
-                bundle.putInt(Constant.RES_STATUS_CARDVIEW, R.id.greenline_statuscardview);
-                bundle.putInt(Constant.RES_SWIPEREFRESHLAYOUT, R.id.greenline_swiperefreshlayout);
-                bundle.putInt(Constant.RES_SCROLLVIEW, R.id.greenline_scrollview);
-                bundle.putInt(
-                        Constant.RES_INBOUND_STOPFORECASTCARDVIEW,
-                        R.id.greenline_inbound_stopforecastcardview
-                );
-                bundle.putInt(
-                        Constant.RES_OUTBOUND_STOPFORECASTCARDVIEW,
-                        R.id.greenline_outbound_stopforecastcardview
-                );
 
                 break;
 
@@ -200,13 +168,18 @@ public class LineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         /* Inflate the layout for this fragment. */
-        rootView = inflater.inflate(resLayoutFragmentLine, container, false);
+        Bundle bundle = getArguments();
+        String line = bundle.getString(Constant.LINE);
+
+        viewBinding = getBinding(line, container);
 
         /* Initialise correct locale. */
         localeDefault = Locale.getDefault().toString();
 
         /* Instantiate a new StopNameIdMap. */
         mapStopNameId = new StopNameIdMap(localeDefault);
+
+        View rootView = viewBinding.getLinearlayoutFragment().getRootView();
 
         return rootView;
     }
@@ -233,7 +206,7 @@ public class LineFragment extends Fragment {
         if (line.equals(Constant.RED_LINE)
                 && Preferences.hasRunOnce(context, Constant.TUTORIAL_FAVOURITES)) {
             StopForecastUtil.displayTutorial(
-                    rootView,
+                    viewBinding,
                     Constant.RED_LINE,
                     Constant.TUTORIAL_FAVOURITES,
                     false
@@ -306,7 +279,7 @@ public class LineFragment extends Fragment {
             }
 
             /* Display tutorial for selecting a stop, if required. */
-            StopForecastUtil.displayTutorial(rootView, line, Constant.TUTORIAL_SELECT_STOP, true);
+            StopForecastUtil.displayTutorial(viewBinding, line, Constant.TUTORIAL_SELECT_STOP, true);
 
             /*
              * Reload stop forecast.
@@ -373,6 +346,25 @@ public class LineFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private LineFragmentViewBindingAdapter getBinding(String line, ViewGroup viewGroup) {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+
+        switch (line) {
+            case Constant.RED_LINE:
+                FragmentRedlineBinding fragmentRedlineBinding = FragmentRedlineBinding.inflate(inflater, viewGroup, false);
+                return new LineFragmentViewBindingAdapter(fragmentRedlineBinding, null);
+
+            case Constant.GREEN_LINE:
+                FragmentGreenlineBinding fragmentGreenlineBinding = FragmentGreenlineBinding.inflate(inflater, viewGroup, false);
+                return new LineFragmentViewBindingAdapter(null, fragmentGreenlineBinding);
+
+            default:
+                Log.wtf(LOG_TAG, "Invalid line specified.");
+        }
+
+        return null;
+    }
+
     /**
      * Initialise local variables for this Fragment instance.
      */
@@ -380,17 +372,7 @@ public class LineFragment extends Fragment {
         resArrayStopsRedLine = getArguments().getInt(Constant.RES_ARRAY_STOPS_RED_LINE);
         resArrayStopsGreenLine = getArguments().getInt(Constant.RES_ARRAY_STOPS_GREEN_LINE);
         line = getArguments().getString(Constant.LINE);
-        resLayoutFragmentLine = getArguments().getInt(Constant.RES_LAYOUT_FRAGMENT_LINE);
         resMenuLine = getArguments().getInt(Constant.RES_MENU_LINE);
-        resProgressBar = getArguments().getInt(Constant.RES_PROGRESSBAR);
-        resSpinnerCardView = getArguments().getInt(Constant.RES_SPINNER_CARDVIEW);
-        resStatusCardView = getArguments().getInt(Constant.RES_STATUS_CARDVIEW);
-        resSwipeRefreshLayout = getArguments().getInt(Constant.RES_SWIPEREFRESHLAYOUT);
-        resScrollView = getArguments().getInt(Constant.RES_SCROLLVIEW);
-        resInboundStopForecastCardView =
-                getArguments().getInt(Constant.RES_INBOUND_STOPFORECASTCARDVIEW);
-        resOutboundStopForecastCardView =
-                getArguments().getInt(Constant.RES_OUTBOUND_STOPFORECASTCARDVIEW);
     }
 
     /**
@@ -399,13 +381,12 @@ public class LineFragment extends Fragment {
     private boolean initFragment() {
         tabLayout = activity.findViewById(R.id.tablayout);
 
-        progressBar = rootView.findViewById(resProgressBar);
+        progressBar = viewBinding.getProgressbar();
 
         setIsLoading(false);
 
         /* Set up Spinner and onItemSelectedListener. */
-        spinnerCardView =
-                rootView.findViewById(resSpinnerCardView);
+        spinnerCardView = viewBinding.getSpinnerCardView();
         spinnerCardView.setLine(line);
 
         spinnerCardView.getSpinnerStops().setOnItemSelectedListener(
@@ -439,7 +420,7 @@ public class LineFragment extends Fragment {
 
                             /* Hide the select stop tutorial, if it is visible. */
                             StopForecastUtil.displayTutorial(
-                                    rootView,
+                                    viewBinding,
                                     line,
                                     Constant.TUTORIAL_SELECT_STOP,
                                     false
@@ -447,7 +428,7 @@ public class LineFragment extends Fragment {
 
                             /* Show the notifications tutorial. */
                             StopForecastUtil.displayTutorial(
-                                    rootView,
+                                    viewBinding,
                                     line,
                                     Constant.TUTORIAL_NOTIFICATIONS,
                                     true
@@ -479,12 +460,10 @@ public class LineFragment extends Fragment {
                 });
 
         /* Set up Status CardView. */
-        statusCardView =
-                rootView.findViewById(resStatusCardView);
+        statusCardView = viewBinding.getStatuscardview();
 
         /* Set up SwipeRefreshLayout. */
-        swipeRefreshLayout =
-                rootView.findViewById(resSwipeRefreshLayout);
+        swipeRefreshLayout = viewBinding.getSwiperefreshlayout();
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -502,21 +481,15 @@ public class LineFragment extends Fragment {
                 }
         );
 
-        scrollView = rootView.findViewById(resScrollView);
+        scrollView = viewBinding.getScrollview();
 
         /* Set up stop forecast CardViews. */
-        inboundStopForecastCardView =
-                rootView.findViewById(
-                    resInboundStopForecastCardView
-                );
+        inboundStopForecastCardView = viewBinding.getInboundStopforecastcardview();
         inboundStopForecastCardView.setStopForecastDirection(
                 getString(R.string.inbound)
         );
 
-        outboundStopForecastCardView =
-                rootView.findViewById(
-                        resOutboundStopForecastCardView
-                );
+        outboundStopForecastCardView = viewBinding.getOutboundStopforecastcardview();
         outboundStopForecastCardView.setStopForecastDirection(
                 getString(R.string.outbound)
         );
@@ -655,19 +628,19 @@ public class LineFragment extends Fragment {
          * When the user opens the notification dialog as part of the tutorial, scroll back up to
          * the top so that the next tutorial is definitely visible. This should only ever run once.
          */
-        if (!Preferences.hasRunOnce(rootView.getContext(), Constant.TUTORIAL_NOTIFICATIONS)) {
+        if (!Preferences.hasRunOnce(context, Constant.TUTORIAL_NOTIFICATIONS)) {
             if (scrollView != null) {
                 scrollView.setScrollY(0);
             }
         }
 
-        Preferences.saveHasRunOnce(rootView.getContext(), Constant.TUTORIAL_NOTIFICATIONS, true);
+        Preferences.saveHasRunOnce(context, Constant.TUTORIAL_NOTIFICATIONS, true);
 
         /* We're done with the notifications tutorial. Hide it. */
-        StopForecastUtil.displayTutorial(rootView, line, Constant.TUTORIAL_NOTIFICATIONS, false);
+        StopForecastUtil.displayTutorial(viewBinding, line, Constant.TUTORIAL_NOTIFICATIONS, false);
 
         /* Then, display the final tutorial. */
-        StopForecastUtil.displayTutorial(rootView, line, Constant.TUTORIAL_FAVOURITES, true);
+        StopForecastUtil.displayTutorial(viewBinding, line, Constant.TUTORIAL_FAVOURITES, true);
 
         Preferences.saveNotifyStopName(
                 context,

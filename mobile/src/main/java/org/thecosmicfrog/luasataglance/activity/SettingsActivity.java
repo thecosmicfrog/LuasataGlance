@@ -21,7 +21,6 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -38,8 +37,7 @@ import android.widget.LinearLayout;
 
 import org.thecosmicfrog.luasataglance.R;
 
-public class SettingsActivity extends PreferenceActivity
-        implements Preference.OnPreferenceChangeListener {
+public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

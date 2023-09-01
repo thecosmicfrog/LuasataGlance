@@ -34,6 +34,8 @@ import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import org.thecosmicfrog.luasataglance.api.ApiFares
 import org.thecosmicfrog.luasataglance.api.ApiMethods
+import org.thecosmicfrog.luasataglance.databinding.ActivityAboutBinding
+import org.thecosmicfrog.luasataglance.databinding.ActivityFaresBinding
 import retrofit.Callback
 import retrofit.RestAdapter
 import retrofit.RetrofitError
@@ -58,10 +60,15 @@ class FaresActivity : AppCompatActivity() {
     private var textViewFaresPeak: TextView? = null
     private var mapStopNameId: StopNameIdMap? = null
 
+    private lateinit var viewBinding: ActivityFaresBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_fares)
+        viewBinding = ActivityFaresBinding.inflate(layoutInflater)
+        val rootView = viewBinding.root
+
+        setContentView(rootView)
 
         /* Set status bar colour. */
         val window = window
@@ -83,12 +90,11 @@ class FaresActivity : AppCompatActivity() {
         /* Instantiate a new StopNameIdMap. */
         mapStopNameId = StopNameIdMap(localeDefault)
 
-        scrollViewFares = findViewById(R.id.scrollview_fares)
+        scrollViewFares = viewBinding.scrollviewFares
 
-        spinnerFaresLine = findViewById(R.id.spinner_fares_line)
+        spinnerFaresLine = viewBinding.spinnerFaresLine
         spinnerFaresLine?.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int,
-                                        l: Long) {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, l: Long) {
                 var resArrayStops = 0
 
                 when (position) {
@@ -119,7 +125,7 @@ class FaresActivity : AppCompatActivity() {
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
 
-        spinnerFaresOrigin = findViewById(R.id.spinner_fares_origin)
+        spinnerFaresOrigin = viewBinding.spinnerFaresOrigin
         spinnerFaresOrigin?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 loadFaresBasedOnSpinnerSelected()
@@ -128,7 +134,7 @@ class FaresActivity : AppCompatActivity() {
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
 
-        spinnerFaresDestination = findViewById(R.id.spinner_fares_destination)
+        spinnerFaresDestination = viewBinding.spinnerFaresDestination
         spinnerFaresDestination?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 loadFaresBasedOnSpinnerSelected()
@@ -137,7 +143,7 @@ class FaresActivity : AppCompatActivity() {
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
 
-        spinnerFaresAdults = findViewById(R.id.spinner_fares_adults)
+        spinnerFaresAdults = viewBinding.spinnerFaresAdults
         spinnerFaresAdults?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 loadFaresBasedOnSpinnerSelected()
@@ -146,7 +152,7 @@ class FaresActivity : AppCompatActivity() {
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
 
-        spinnerFaresChildren = findViewById(R.id.spinner_fares_children)
+        spinnerFaresChildren = viewBinding.spinnerFaresChildren
         spinnerFaresChildren?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 loadFaresBasedOnSpinnerSelected()
@@ -196,8 +202,8 @@ class FaresActivity : AppCompatActivity() {
 
         setIsLoading(false)
 
-        textViewFaresOffPeak = findViewById(R.id.textview_fares_offpeak)
-        textViewFaresPeak = findViewById(R.id.textview_fares_peak)
+        textViewFaresOffPeak = viewBinding.textviewFaresOffpeak
+        textViewFaresPeak = viewBinding.textviewFaresPeak
     }
 
     /**
@@ -298,7 +304,8 @@ class FaresActivity : AppCompatActivity() {
      * @param loading Whether or not progress bar should animate.
      */
     private fun setIsLoading(loading: Boolean) {
-        val progressBarFares = findViewById<ProgressBar>(R.id.progressbar_fares)
+        val progressBarFares = viewBinding.progressbarFares
+
         runOnUiThread {
             if (loading) {
                 progressBarFares.visibility = View.VISIBLE

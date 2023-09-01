@@ -35,6 +35,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.databinding.ActivityFavouritesBinding;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
@@ -51,11 +52,17 @@ public class FavouritesActivity extends FragmentActivity {
 
     private final String LOG_TAG = FavouritesActivity.class.getSimpleName();
 
+    private ActivityFavouritesBinding viewBinding;
     private ArrayAdapter<CharSequence> adapterFavouriteStops;
     private List<CharSequence> listFavouriteStops;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        viewBinding = ActivityFavouritesBinding.inflate(getLayoutInflater());
+        View rootView = viewBinding.getRoot();
+
         final String TUTORIAL_FAVOURITES = "favourites";
 
         /* Use a Material Dialog theme. */
@@ -64,11 +71,9 @@ public class FavouritesActivity extends FragmentActivity {
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        super.onCreate(savedInstanceState);
+        setContentView(rootView);
 
-        setContentView(R.layout.activity_favourites);
-
-        ImageButton buttonEdit = findViewById(R.id.imagebutton_edit);
+        ImageButton buttonEdit = viewBinding.imagebuttonEdit;
         buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,9 +96,7 @@ public class FavouritesActivity extends FragmentActivity {
         /*
          * Populate ListView with the user's favourite stops, as read from file.
          */
-        ListView listViewFavouriteStops = findViewById(
-                R.id.listview_favourite_stops
-        );
+        ListView listViewFavouriteStops = viewBinding.listviewFavouriteStops;
 
         if (listFavouriteStops != null) {
             listViewFavouriteStops.setAdapter(adapterFavouriteStops);
@@ -133,8 +136,7 @@ public class FavouritesActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
 
-        TextView textViewFavouritesNoneSelected
-                = findViewById(R.id.textview_favourites_none_selected);
+        TextView textViewFavouritesNoneSelected = viewBinding.textviewFavouritesNoneSelected;
         textViewFavouritesNoneSelected.setVisibility(View.GONE);
 
         /*
@@ -156,9 +158,7 @@ public class FavouritesActivity extends FragmentActivity {
                     /*
                      * Populate ListView with the user's favourite stops, as read from file.
                      */
-                    ListView listViewFavouriteStops = findViewById(
-                            R.id.listview_favourite_stops
-                    );
+                    ListView listViewFavouriteStops = viewBinding.listviewFavouriteStops;
 
                     /*
                      * Update ArrayAdapter with newly-selected favourite stops, then set it to the
@@ -206,8 +206,7 @@ public class FavouritesActivity extends FragmentActivity {
              */
             Log.i(LOG_TAG, "Favourites not yet set up.");
 
-            TextView textViewFavouritesNoneSelected
-                    = findViewById(R.id.textview_favourites_none_selected);
+            TextView textViewFavouritesNoneSelected = viewBinding.textviewFavouritesNoneSelected;
             textViewFavouritesNoneSelected.setVisibility(View.VISIBLE);
         } catch (IOException e) {
             /*

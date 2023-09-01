@@ -27,25 +27,29 @@ import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.databinding.ActivityAboutBinding
 
 class AboutActivity : FragmentActivity() {
 
     private val logTag = AboutActivity::class.java.simpleName
 
+    private lateinit var viewBinding: ActivityAboutBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        /*
-         * Use a Material Dialog theme.
-         */
+        super.onCreate(savedInstanceState)
+
+        viewBinding = ActivityAboutBinding.inflate(layoutInflater)
+        val rootView = viewBinding.root
+
+        /* Use a Material Dialog theme. */
         setTheme(android.R.style.Theme_Material_Dialog)
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
 
-        super.onCreate(savedInstanceState)
+        setContentView(rootView)
 
-        setContentView(R.layout.activity_about)
-
-        val textViewLicense = findViewById<TextView>(R.id.textview_license)
+        val textViewLicense = viewBinding.textviewLicense
         textViewLicense.setOnClickListener {
             startActivity(
                 Intent(

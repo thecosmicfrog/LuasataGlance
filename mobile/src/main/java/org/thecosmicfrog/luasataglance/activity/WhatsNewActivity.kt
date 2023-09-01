@@ -20,35 +20,35 @@
  */
 package org.thecosmicfrog.luasataglance.activity
 
-import android.os.Build
 import android.os.Bundle
 import android.view.Window
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.databinding.ActivityWhatsNewBinding
 
 class WhatsNewActivity : FragmentActivity() {
 
+    private lateinit var viewBinding: ActivityWhatsNewBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        /*
-         * Use a Material Dialog theme.
-         */
+        super.onCreate(savedInstanceState)
+
+        viewBinding = ActivityWhatsNewBinding.inflate(layoutInflater)
+        val rootView = viewBinding.root
+
+        /* Use a Material Dialog theme. */
         setTheme(android.R.style.Theme_Material_Dialog)
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
 
-        super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_whats_new)
+        setContentView(rootView)
 
         formatAndSetWhatsNewTitles()
     }
 
     private fun formatAndSetWhatsNewTitles() {
-        val textViewWhatsNewTitleCurrent =
-                findViewById<TextView>(R.id.textview_whatsnew_title_current)
-
+        val textViewWhatsNewTitleCurrent = viewBinding.textviewWhatsnewTitleCurrent
         textViewWhatsNewTitleCurrent.text = String.format(
                 getString(R.string.whatsnew_title_current),
                 getString(R.string.version_name),

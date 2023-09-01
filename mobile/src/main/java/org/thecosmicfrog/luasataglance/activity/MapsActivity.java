@@ -45,6 +45,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.databinding.ActivityMapsBinding;
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException;
 import org.thecosmicfrog.luasataglance.model.StopCoords;
 import org.thecosmicfrog.luasataglance.util.Constant;
@@ -66,6 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final String LOG_TAG = MapsActivity.class.getSimpleName();
     private final String[] PERMISSIONS_LOCATION = {Manifest.permission.ACCESS_FINE_LOCATION};
 
+    private ActivityMapsBinding viewBinding;
     private GoogleMap map;
     private double[][] stopCoordsRedLine;
     private double[][] stopCoordsGreenLine;
@@ -74,6 +76,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        viewBinding = ActivityMapsBinding.inflate(getLayoutInflater());
+        View view = viewBinding.getRoot();
 
         listMarkers = new ArrayList<>();
 
@@ -97,7 +102,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             );
         }
 
-        setContentView(R.layout.activity_maps);
+//        setContentView(R.layout.activity_maps);
+        setContentView(view);
 
         /* Obtain the SupportMapFragment and get notified when the map is ready to be used. */
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -112,7 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private void initButtons() {
         /* Initialise close button. */
-        ImageButton imageButtonCloseMap = findViewById(R.id.imagebutton_close_map);
+        ImageButton imageButtonCloseMap = viewBinding.imagebuttonCloseMap;
         imageButtonCloseMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

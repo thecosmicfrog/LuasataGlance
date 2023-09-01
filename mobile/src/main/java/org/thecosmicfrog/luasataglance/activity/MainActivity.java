@@ -40,6 +40,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.databinding.ActivityMainBinding;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 import org.thecosmicfrog.luasataglance.view.TutorialCardView;
@@ -48,15 +49,18 @@ public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private String settingFirebaseTestLab = null;
+    private ActivityMainBinding viewBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        settingFirebaseTestLab = Settings.System.getString(getContentResolver(), "firebase.test.lab");
+        viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        View rootView = viewBinding.getRoot();
 
-        setContentView(R.layout.activity_main);
+        String settingFirebaseTestLab = Settings.System.getString(getContentResolver(), "firebase.test.lab");
+
+        setContentView(rootView);
 
         getScreenHeight();
 
@@ -84,149 +88,135 @@ public class MainActivity extends AppCompatActivity {
         /*
          * Initialise ViewPager and TabLayout.
          */
-        final ViewPager viewPager = findViewById(R.id.viewpager);
-        final TabLayout tabLayout = findViewById(R.id.tablayout);
+        final ViewPager viewPager = viewBinding.viewpager;
+        final TabLayout tabLayout = viewBinding.tablayout;
 
-        if (tabLayout != null && viewPager != null) {
-            tabLayout.addTab(
-                    tabLayout.newTab().setTag(Constant.RED_LINE).setText(
-                            getString(R.string.tab_red_line)
-                    )
-            );
-            tabLayout.addTab(
-                    tabLayout.newTab().setTag(Constant.GREEN_LINE).setText(
-                            getString(R.string.tab_green_line)
-                    )
-            );
-            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-            tabLayout.setBackgroundColor(
-                    ContextCompat.getColor(getApplicationContext(), R.color.luas_purple)
-            );
+        tabLayout.addTab(
+                tabLayout.newTab().setTag(Constant.RED_LINE).setText(
+                        getString(R.string.tab_red_line)
+                )
+        );
+        tabLayout.addTab(
+                tabLayout.newTab().setTag(Constant.GREEN_LINE).setText(
+                        getString(R.string.tab_green_line)
+                )
+        );
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setBackgroundColor(
+                ContextCompat.getColor(getApplicationContext(), R.color.luas_purple)
+        );
 
-            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    viewPager.setCurrentItem(tab.getPosition());
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
 
-                    setTabIndicatorColor(tabLayout);
-                }
+                setTabIndicatorColor(tabLayout);
+            }
 
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-                }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-                }
-            });
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
 
-            final PagerAdapter pagerAdapter = new PagerAdapter(
-                    getSupportFragmentManager(),
-                    tabLayout.getTabCount()
-            );
+        final PagerAdapter pagerAdapter = new PagerAdapter(
+                getSupportFragmentManager(),
+                tabLayout.getTabCount()
+        );
 
-            viewPager.setAdapter(pagerAdapter);
-            viewPager.addOnPageChangeListener(
-                    new TabLayout.TabLayoutOnPageChangeListener(tabLayout)
-            );
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(
+                new TabLayout.TabLayoutOnPageChangeListener(tabLayout)
+        );
 
-            setTabIndicatorColor(tabLayout);
-        } else {
-            Log.wtf(LOG_TAG, "tabLayout or viewPager is null.");
-        }
+        setTabIndicatorColor(tabLayout);
 
         /*
          * Bottom navigation bar - Luas Map.
          */
-        RelativeLayout relativeLayoutBottomNavMap =
-                findViewById(R.id.relativelayout_bottomnav_map);
-        if (relativeLayoutBottomNavMap != null) {
-            relativeLayoutBottomNavMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /*
-                     * Open Maps Activity.
-                     * If we have a selected stop saved to shared preferences, open the map on that
-                     * stop. Otherwise, open the map at a default position.
-                     */
-                    if (Preferences.selectedStopName(getApplicationContext(), "no_line") != null) {
-                        startActivity(
-                                new Intent(
-                                        getApplicationContext(),
-                                        MapsActivity.class
-                                ).putExtra(
-                                        Constant.STOP_NAME,
-                                        Preferences.selectedStopName(
-                                                getApplicationContext(),
-                                                Constant.NO_LINE
-                                        )
-                                )
-                        );
-                    } else {
-                        startActivity(
-                                new Intent(
-                                        getApplicationContext(),
-                                        MapsActivity.class
-                                )
-                        );
-                    }
+        RelativeLayout relativeLayoutBottomNavMap = viewBinding.relativelayoutBottomnavMap;
+        relativeLayoutBottomNavMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*
+                 * Open Maps Activity.
+                 * If we have a selected stop saved to shared preferences, open the map on that
+                 * stop. Otherwise, open the map at a default position.
+                 */
+                if (Preferences.selectedStopName(getApplicationContext(), "no_line") != null) {
+                    startActivity(
+                            new Intent(
+                                    getApplicationContext(),
+                                    MapsActivity.class
+                            ).putExtra(
+                                    Constant.STOP_NAME,
+                                    Preferences.selectedStopName(
+                                            getApplicationContext(),
+                                            Constant.NO_LINE
+                                    )
+                            )
+                    );
+                } else {
+                    startActivity(
+                            new Intent(
+                                    getApplicationContext(),
+                                    MapsActivity.class
+                            )
+                    );
                 }
-            });
-        }
+            }
+        });
 
         /*
          * Bottom navigation bar - Favourites.
          */
-        RelativeLayout relativeLayoutBottomNavFavourites =
-                findViewById(R.id.relativelayout_bottomnav_favourites);
-        if (relativeLayoutBottomNavFavourites != null) {
-            relativeLayoutBottomNavFavourites.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TutorialCardView tutorialCardViewFavourites =
-                            findViewById(R.id.tutorialcardview_favourites);
-                    if (tutorialCardViewFavourites != null) {
-                        tutorialCardViewFavourites.setVisibility(View.GONE);
-                    }
-
-                    /* Open Favourites Activity. */
-                    startActivity(
-                            new Intent(
-                                    getApplicationContext(),
-                                    FavouritesActivity.class
-                            )
-                    );
+        RelativeLayout relativeLayoutBottomNavFavourites = viewBinding.relativelayoutBottomnavFavourites;
+        relativeLayoutBottomNavFavourites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TutorialCardView tutorialCardViewFavourites =
+                        findViewById(R.id.tutorialcardview_favourites);
+                if (tutorialCardViewFavourites != null) {
+                    tutorialCardViewFavourites.setVisibility(View.GONE);
                 }
-            });
-        }
+
+                /* Open Favourites Activity. */
+                startActivity(
+                        new Intent(
+                                getApplicationContext(),
+                                FavouritesActivity.class
+                        )
+                );
+            }
+        });
 
         /*
          * Bottom navigation bar - Fares.
          */
-        RelativeLayout relativeLayoutBottomNavFares =
-                findViewById(R.id.relativelayout_bottomnav_fares);
-        if (relativeLayoutBottomNavFares != null) {
-            relativeLayoutBottomNavFares.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /* Open Fares Activity. */
-                    startActivity(
-                            new Intent(
-                                    getApplicationContext(),
-                                    FaresActivity.class
-                            )
-                    );
-                }
-            });
-        }
+        RelativeLayout relativeLayoutBottomNavFares = viewBinding.relativelayoutBottomnavFares;
+        relativeLayoutBottomNavFares.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /* Open Fares Activity. */
+                startActivity(
+                        new Intent(
+                                getApplicationContext(),
+                                FaresActivity.class
+                        )
+                );
+            }
+        });
 
         /*
          * Bottom navigation bar - Alerts.
          * Don't enable the onClickListener if we're in Firebase Test Lab to avoid traversing infinitely through the WebView.
          */
-        RelativeLayout relativeLayoutBottomNavAlerts =
-                findViewById(R.id.relativelayout_bottomnav_alerts);
-        if (relativeLayoutBottomNavAlerts != null && settingFirebaseTestLab == null) {
+        RelativeLayout relativeLayoutBottomNavAlerts = viewBinding.relativelayoutBottomnavAlerts;
+        if (settingFirebaseTestLab == null) {
             relativeLayoutBottomNavAlerts.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -264,10 +254,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(LOG_TAG, "Screen density is " + DENSITY_DPI + " DPI.");
 
-        final TextView textViewBottomNavMap =
-                findViewById(R.id.textview_bottomnav_map);
-        final TextView textViewBottomNavFavourites =
-                findViewById(R.id.textview_bottomnav_favourites);
+        final TextView textViewBottomNavMap = viewBinding.textviewBottomnavMap;
+        final TextView textViewBottomNavFavourites = viewBinding.textviewBottomnavFavourites;
 
         /*
          * If the screen density is particularly low, or if the number of lines in the bottom

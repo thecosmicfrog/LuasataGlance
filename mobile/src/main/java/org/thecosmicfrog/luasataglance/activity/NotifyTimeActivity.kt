@@ -34,6 +34,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.databinding.ActivityNotifyTimeBinding
 import org.thecosmicfrog.luasataglance.model.NotifyTimesMap
 import org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver
 import org.thecosmicfrog.luasataglance.util.Constant
@@ -49,10 +50,16 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
     private val logTag = NotifyTimeActivity::class.java.simpleName
     private val permissionsNotifications = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
 
-
     private var mapNotifyTimes: Map<String, Int>? = null
 
+    private lateinit var viewBinding: ActivityNotifyTimeBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewBinding = ActivityNotifyTimeBinding.inflate(layoutInflater)
+        val rootView = viewBinding.root
+
         val dialog = "dialog"
 
         /*
@@ -63,9 +70,7 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
 
-        super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_notify_time)
+        setContentView(rootView)
 
         if (Preferences.permissionNotificationsShouldNotAskAgain(applicationContext)) {
             /* User has disabled notifications. Close the dialog immediately. */
@@ -87,7 +92,7 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
 
         mapNotifyTimes = NotifyTimesMap(localeDefault, dialog)
 
-        val spinnerNotifyTime = findViewById<Spinner>(R.id.spinner_notifytime)
+        val spinnerNotifyTime = viewBinding.spinnerNotifytime
         val adapterNotifyTime: ArrayAdapter<*> = ArrayAdapter.createFromResource(
                 applicationContext, R.array.array_notifytime_mins, R.layout.spinner_notify_time
         )
@@ -102,7 +107,7 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
         )
         spinnerNotifyTime.background = spinnerDrawable
 
-        val buttonNotifyTime = findViewById<Button>(R.id.button_notifytime)
+        val buttonNotifyTime = viewBinding.buttonNotifytime
         buttonNotifyTime.setOnClickListener {
             /*
              * Create an Intent to send the user-selected notification time back to

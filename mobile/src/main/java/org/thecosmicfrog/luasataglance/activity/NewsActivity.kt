@@ -30,17 +30,23 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.databinding.ActivityNewsBinding
 import org.thecosmicfrog.luasataglance.util.Constant
 
 class NewsActivity : AppCompatActivity() {
 
+    private lateinit var viewBinding : ActivityNewsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewBinding = ActivityNewsBinding.inflate(layoutInflater)
+        val view = viewBinding.root
 
         val urlNews = "https://luas.ie/news/"
         val urlTravelUpdates = "https://luas.ie/travel-updates/"
 
-        setContentView(R.layout.activity_news)
+        setContentView(view)
 
         /*
          * Set ActionBar colour.
@@ -66,8 +72,7 @@ class NewsActivity : AppCompatActivity() {
          * browser is liable to open.
          * Ensure the information is fresh by using no app or web browser cache.
          */
-        val webViewNews = findViewById<WebView>(R.id.webview_news)
-
+        val webViewNews = viewBinding.webviewNews
         webViewNews.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webViewNews.webViewClient = WebViewClient()
 
