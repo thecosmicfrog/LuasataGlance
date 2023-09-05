@@ -21,7 +21,6 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import android.webkit.WebSettings
@@ -36,6 +35,7 @@ import org.thecosmicfrog.luasataglance.util.Constant
 class NewsActivity : AppCompatActivity() {
 
     private lateinit var viewBinding : ActivityNewsBinding
+    private lateinit var webViewNews : WebView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,7 @@ class NewsActivity : AppCompatActivity() {
          * Set ActionBar colour.
          */
         supportActionBar!!.setBackgroundDrawable(
-            ColorDrawable(ContextCompat.getColor(application, R.color.luas_purple))
+            ColorDrawable(ContextCompat.getColor(applicationContext, R.color.luas_purple))
         )
 
         /*
@@ -72,7 +72,7 @@ class NewsActivity : AppCompatActivity() {
          * browser is liable to open.
          * Ensure the information is fresh by using no app or web browser cache.
          */
-        val webViewNews = viewBinding.webviewNews
+        webViewNews = viewBinding.webviewNews
         webViewNews.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webViewNews.webViewClient = WebViewClient()
 
@@ -88,6 +88,14 @@ class NewsActivity : AppCompatActivity() {
                 webViewNews.loadUrl(urlNews)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        /* Destroy WebView to prevent memory leaks. */
+        webViewNews.removeAllViews()
+        webViewNews.destroy()
     }
 }
 

@@ -21,7 +21,6 @@
 package org.thecosmicfrog.luasataglance.model
 
 import java.io.Serializable
-import java.util.*
 
 class StopForecast : Serializable {
     var message: String? = null

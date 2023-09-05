@@ -22,13 +22,13 @@
 package org.thecosmicfrog.luasataglance.view;
 
 import android.content.Context;
-import androidx.cardview.widget.CardView;
-
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.util.Preferences;

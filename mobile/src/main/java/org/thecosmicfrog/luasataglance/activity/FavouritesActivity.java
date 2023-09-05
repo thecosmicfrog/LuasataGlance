@@ -22,8 +22,6 @@
 package org.thecosmicfrog.luasataglance.activity;
 
 import android.content.Intent;
-import android.os.Build;
-import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +31,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.fragment.app.FragmentActivity;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.databinding.ActivityFavouritesBinding;

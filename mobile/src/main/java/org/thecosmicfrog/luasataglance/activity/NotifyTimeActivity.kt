@@ -28,8 +28,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Window
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity

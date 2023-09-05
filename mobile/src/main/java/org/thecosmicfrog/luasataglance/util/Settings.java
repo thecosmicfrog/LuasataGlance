@@ -23,8 +23,6 @@ package org.thecosmicfrog.luasataglance.util;
 
 import android.content.Context;
 import android.content.Intent;
-
-import androidx.appcompat.app.AlertDialog;
 import android.view.MenuItem;
 
 import org.thecosmicfrog.luasataglance.R;

@@ -21,26 +21,29 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.ScrollView
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import org.thecosmicfrog.luasataglance.api.ApiFares
 import org.thecosmicfrog.luasataglance.api.ApiMethods
-import org.thecosmicfrog.luasataglance.databinding.ActivityAboutBinding
 import org.thecosmicfrog.luasataglance.databinding.ActivityFaresBinding
+import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import retrofit.Callback
 import retrofit.RestAdapter
 import retrofit.RetrofitError
 import retrofit.client.Response
-import java.util.*
+import java.util.Locale
 
 class FaresActivity : AppCompatActivity() {
 

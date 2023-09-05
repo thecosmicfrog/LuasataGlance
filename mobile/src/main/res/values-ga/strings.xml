@@ -28,7 +28,6 @@
         Activities
     -->
     <string name="title_activity_fares">Táillí</string>
-    <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_license">Ceadúnas</string>
     <string name="title_activity_maps">Léarscáil</string>
@@ -47,7 +46,6 @@
     <string name="message">Ag fanacht le stádas Luas\u2026</string>
     <string name="message_title">Stádas</string>
     <string name="message_success">Gach seirbhís ag feidhmiú mar is gnách</string>
-    <string name="message_not_running">Tram ar bith geallta ag an stad seo</string>
     <string name="message_no_status">Stádas ar bith faighte ón bhfreastalaí. Is le córas RTPI Luas an
         chúis.
     </string>
@@ -84,12 +82,8 @@
         Actions
     -->
     <string name="action_about">Eolas Faoi</string>
-    <string name="action_favourites">Ceanáin</string>
-    <string name="action_favourites_edit">Athraigh</string>
-    <string name="action_favourites_save">Sábháil</string>
     <string name="action_news">Nuacht Luas</string>
     <string name="action_news_alert">Airdeall</string>
-    <string name="action_reload">Athnuaigh</string>
     <string name="action_settings">Roghanna</string>
 
     <!--
@@ -158,7 +152,6 @@
         Notify dialog
     -->
     <string name="notify_set">Sceideal</string>
-    <string name="notify_title">Socraigh fógra tram</string>
     <string name="notify_when">Cathain ar mhaith leat fógra a fháil faoin tram seo?</string>
     <string name="notify_successful">Fógra sceidealaithe.</string>
     <string name="notify_invalid_time">Am mícheart. Tá an tram le sroicheadh roimhe sin.</string>
@@ -166,8 +159,6 @@
     <!--
         Settings
     -->
-    <string name="pref_title_notifications">Fógraí</string>
-    <string name="pref_summary_notifications">Gheobhaidh tú fógraí</string>
     <string name="pref_title_default_stop">Stad Réamhshocraithe</string>
 
     <!--

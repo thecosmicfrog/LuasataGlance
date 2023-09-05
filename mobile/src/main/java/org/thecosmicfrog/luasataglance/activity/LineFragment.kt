@@ -72,6 +72,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
+import kotlin.concurrent.timerTask
 
 class LineFragment : Fragment() {
     private val logTag = LineFragment::class.java.simpleName
@@ -81,6 +82,8 @@ class LineFragment : Fragment() {
     private var shouldAutoReload = false
     private var isVisibleToUser = false
     private var line: String? = null
+    private var timer: Timer? = null
+    private var timerTaskReload: TimerTask? = null
 
     private lateinit var activity: FragmentActivity
     private lateinit var context: Context
@@ -94,8 +97,6 @@ class LineFragment : Fragment() {
     private lateinit var outboundStopForecastCardView: StopForecastCardView
     private lateinit var imageViewBottomNavAlerts: ImageView
     private lateinit var textViewBottomNavAlerts: TextView
-    private lateinit var timerTaskReload: TimerTask
-//    private lateinit var line: String
 
     override fun onAttach(c: Context) {
         super.onAttach(c)
@@ -116,16 +117,26 @@ class LineFragment : Fragment() {
 
         viewBinding = getBinding(line, container)
 
-        /* Initialise correct locale. */localeDefault = Locale.getDefault().toString()
+        /* Initialise correct locale. */
+        localeDefault = Locale.getDefault().toString()
 
-        /* Instantiate a new StopNameIdMap. */mapStopNameId = StopNameIdMap(localeDefault!!)
+        /* Instantiate a new StopNameIdMap. */
+        mapStopNameId = StopNameIdMap(localeDefault!!)
         return viewBinding?.linearlayoutFragment!!.rootView
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        viewBinding = null
     }
 
     override fun onPause() {
         super.onPause()
 
-        /* Stop the auto-reload TimerTask. */timerTaskReload.cancel()
+        /* Stop the auto-reload TimerTask. */
+        timer?.cancel()
+        timerTaskReload?.cancel()
     }
 
     override fun onResume() {
@@ -285,7 +296,7 @@ class LineFragment : Fragment() {
         spinnerCardView = viewBinding?.spinnerCardView!!
         spinnerCardView.setLine(line)
         spinnerCardView.spinnerStops.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 /*
                  * onItemSelected() is triggered on creation of the tab. Prevent this by
                  * only triggering when the tab is visible to user. This is to prevent the
@@ -338,7 +349,8 @@ class LineFragment : Fragment() {
         /* Set up Status CardView. */
         statusCardView = viewBinding?.statuscardview!!
 
-        /* Set up SwipeRefreshLayout. */swipeRefreshLayout = viewBinding?.swiperefreshlayout!!
+        /* Set up SwipeRefreshLayout. */
+        swipeRefreshLayout = viewBinding?.swiperefreshlayout!!
         swipeRefreshLayout.setOnRefreshListener {
 
             /* Start by clearing the currently-displayed stop forecast. */
@@ -353,7 +365,8 @@ class LineFragment : Fragment() {
         }
         scrollView = viewBinding?.scrollview!!
 
-        /* Set up stop forecast CardViews. */inboundStopForecastCardView = viewBinding?.inboundStopforecastcardview!!
+        /* Set up stop forecast CardViews. */
+        inboundStopForecastCardView = viewBinding?.inboundStopforecastcardview!!
         inboundStopForecastCardView.setStopForecastDirection(getString(R.string.inbound))
         outboundStopForecastCardView = viewBinding?.outboundStopforecastcardview!!
         outboundStopForecastCardView.setStopForecastDirection(getString(R.string.outbound))
@@ -520,27 +533,24 @@ class LineFragment : Fragment() {
     private fun autoReloadStopForecast(delayTimeMillis: Int) {
         val reloadTimeMillis = 10000
 
-        timerTaskReload = object : TimerTask() {
-            override fun run() {
-                /* Check Fragment is attached to Activity to avoid NullPointerExceptions. */
-                if (isAdded) {
-                    activity.runOnUiThread {
-                        if (shouldAutoReload) {
-                            loadStopForecast(
-                                Preferences.selectedStopName(
-                                    activity.applicationContext,
-                                    line
-                                ),
-                                false
-                            )
-                        }
-                    }
-                }
+        timerTaskReload = timerTask {
+            if (shouldAutoReload) {
+                loadStopForecast(
+                    Preferences.selectedStopName(
+                        context,
+                        line
+                    ),
+                    false
+                )
             }
         }
 
+        /* If there is already an existing timer, cancel it to avoid memory leaks. */
+        timer?.cancel()
+
         /* Schedule the auto-reload task to run. */
-        Timer().schedule(timerTaskReload, delayTimeMillis.toLong(), reloadTimeMillis.toLong())
+        timer = Timer()
+        timer?.schedule(timerTaskReload, delayTimeMillis.toLong(), reloadTimeMillis.toLong())
     }
 
     /**
@@ -566,28 +576,26 @@ class LineFragment : Fragment() {
 
         val callback: Callback<ApiTimes?> = object : Callback<ApiTimes?> {
             override fun success(apiTimes: ApiTimes?, response: Response) {
-                /* Check Fragment is attached to Activity to avoid NullPointerExceptions. */
-                if (isAdded) {
-                    /* If the server returned times. */
-                    if (apiTimes != null) {
-                        /* Then create a stop forecast with this data. */
-                        val stopForecast = createStopForecast(apiTimes)
-                        clearStopForecast()
+                /* If the server returned times. */
+                if (apiTimes != null) {
+                    /* Then create a stop forecast with this data. */
+                    val stopForecast = createStopForecast(apiTimes)
+                    clearStopForecast()
 
-                        /* Update the stop forecast. */
-                        updateStopForecast(stopForecast)
+                    /* Update the stop forecast. */
+                    updateStopForecast(stopForecast)
 
-                        /* Stop the refresh animations. */
-                        setIsLoading(false)
-                        swipeRefreshLayout.isRefreshing = false
-                        if (shouldShowSnackbar) {
-                            val apiCreatedTime = getApiCreatedTime(apiTimes)
-                            if (apiCreatedTime != null) {
-                                showSnackbar(
-                                    activity,
-                                    "Times updated at $apiCreatedTime"
-                                )
-                            }
+                    /* Stop the refresh animations. */
+                    setIsLoading(false)
+                    swipeRefreshLayout.isRefreshing = false
+
+                    if (shouldShowSnackbar) {
+                        val apiCreatedTime = getApiCreatedTime(apiTimes)
+                        if (apiCreatedTime != null) {
+                            showSnackbar(
+                                activity,
+                                "Times updated at $apiCreatedTime"
+                            )
                         }
                     }
                 }
@@ -600,34 +608,37 @@ class LineFragment : Fragment() {
                  * If we get a message or a response from the server, there's likely an issue with
                  * the client request or the server's response itself.
                  */
-                if (retrofitError.message != null) {
-                    Log.e(logTag, "Message: " + retrofitError.message)
+                retrofitError.message?.let {
+                    Log.e(logTag, "Message: $it")
                 }
-                if (retrofitError.response != null) {
-                    if (retrofitError.response.url != null) {
-                        Log.e(logTag, "Response: " + retrofitError.response.url)
+
+                retrofitError.response?.let { response ->
+                    response.url?.let {
+                        Log.e(logTag, "Response: $it")
                     }
-                    Log.e(logTag, "Status: " + retrofitError.response.status)
-                    if (retrofitError.response.headers != null) {
-                        Log.e(
-                            logTag, "Headers: " +
-                                    retrofitError.response.headers.toString()
-                        )
+
+                    Log.e(logTag, "Status: ${response.status}")
+
+                    response.headers?.let {
+                        Log.e(logTag, "Headers: $it")
                     }
-                    if (retrofitError.response.body != null) {
-                        Log.e(logTag, "Body: " + retrofitError.response.body.toString())
+
+                    response.body?.let {
+                        Log.e(logTag, "Body: $it")
                     }
-                    if (retrofitError.response.reason != null) {
-                        Log.e(logTag, "Reason: " + retrofitError.response.reason)
+
+                    response.reason?.let {
+                        Log.e(logTag, "Reason: $it")
                     }
+
                 }
 
                 /*
                  * If we don't receive a message or response, we can still get an idea of what's
                  * going on by getting the "kind" of error.
                  */
-                if (retrofitError.kind != null) {
-                    Log.e(logTag, "Kind: " + retrofitError.kind.toString())
+                retrofitError.kind?.let {
+                    Log.e(logTag, "Kind: $it")
                 }
             }
         }

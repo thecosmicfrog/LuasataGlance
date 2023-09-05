@@ -41,16 +41,11 @@ object StopForecastUtil {
      * @param shouldDisplay Whether or not tutorial should display.
      */
     @JvmStatic
-//    fun displayTutorial(rootView: View, line: String, tutorial: String?, shouldDisplay: Boolean) {
     fun displayTutorial(viewBinding: LineFragmentViewBindingAdapter, line: String, tutorial: String?, shouldDisplay: Boolean) {
         /* Only display tutorials on the Red Line tab. */
         if (line == Constant.RED_LINE) {
             when (tutorial) {
-//                val redLineViewBinding: FragmentRedlineBinding = viewBinding as FragmentRedlineBinding
                 Constant.TUTORIAL_SELECT_STOP -> {
-//                    val tutorialCardViewSelectStop: TutorialCardView = rootView.findViewById(
-//                        R.id.tutorialcardview_select_stop
-//                    )
                     val tutorialCardViewSelectStop = viewBinding.tutorialcardviewSelectStop
 
                     tutorialCardViewSelectStop?.setTutorial(
@@ -76,9 +71,6 @@ object StopForecastUtil {
                 }
 
                 Constant.TUTORIAL_NOTIFICATIONS -> {
-//                    val tutorialCardViewNotifications: TutorialCardView = rootView.findViewById(
-//                        R.id.tutorialcardview_notifications
-//                    )
                     val tutorialCardViewNotifications = viewBinding.tutorialcardviewNotifications
 
                     tutorialCardViewNotifications?.setTutorial(
@@ -103,9 +95,6 @@ object StopForecastUtil {
                     }
                 }
                 Constant.TUTORIAL_FAVOURITES -> {
-//                    val tutorialCardViewFavourites: TutorialCardView = rootView.findViewById(
-//                        R.id.tutorialcardview_favourites
-//                    )
                     val tutorialCardViewFavourites = viewBinding.tutorialcardviewFavourites
 
                     tutorialCardViewFavourites?.setTutorial(

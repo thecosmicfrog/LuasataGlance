@@ -28,7 +28,6 @@
         Activities
     -->
     <string name="title_activity_fares">Fares</string>
-    <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
     <string name="title_activity_license">License</string>
     <string name="title_activity_maps">Luas Map</string>
@@ -47,7 +46,6 @@
     <string name="message">Awaiting Luas status&#8230;</string>
     <string name="message_title">Status</string>
     <string name="message_success">normally</string>
-    <string name="message_not_running">No trams expected at this stop</string>
     <string name="message_no_status">No status message received from server. The Luas RTPI system
         may be down.
     </string>
@@ -84,12 +82,8 @@
         Actions
     -->
     <string name="action_about">About</string>
-    <string name="action_favourites">Favourites</string>
-    <string name="action_favourites_edit">Edit</string>
-    <string name="action_favourites_save">Save</string>
     <string name="action_news">Luas News</string>
     <string name="action_news_alert">Alerts</string>
-    <string name="action_reload">Reload</string>
     <string name="action_settings">Settings</string>
 
     <!--
@@ -160,7 +154,6 @@
         Notify dialog
     -->
     <string name="notify_set">Schedule</string>
-    <string name="notify_title">Schedule tram notification</string>
     <string name="notify_when">When would you like to be notified about this tram?</string>
     <string name="notify_successful">Notification scheduled.</string>
     <string name="notify_invalid_time">Invalid time: Tram expected before then.</string>

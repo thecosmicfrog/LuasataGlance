@@ -21,12 +21,9 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Window
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
-import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivityAboutBinding
 
 class AboutActivity : FragmentActivity() {

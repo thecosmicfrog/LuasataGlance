@@ -22,7 +22,6 @@ package org.thecosmicfrog.luasataglance.activity
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivityLicenseBinding

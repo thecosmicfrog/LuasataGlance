@@ -24,15 +24,15 @@ package org.thecosmicfrog.luasataglance.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -102,7 +102,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             );
         }
 
-//        setContentView(R.layout.activity_maps);
         setContentView(view);
 
         /* Obtain the SupportMapFragment and get notified when the map is ready to be used. */
