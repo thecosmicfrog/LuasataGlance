@@ -286,7 +286,7 @@
         <item>Carrickmines</item>
         <item>Laughanstown</item>
         <item>Cherrywood</item>
-        <item>Bride\'s Glen</item>
+        <item>Brides Glen</item>
     </string-array>
 
     <string-array name="array_stops_all">
@@ -357,7 +357,7 @@
         <item>Carrickmines</item>
         <item>Laughanstown</item>
         <item>Cherrywood</item>
-        <item>Bride\'s Glen</item>
+        <item>Brides Glen</item>
     </string-array>
 
     <string-array name="array_notifytime_mins">

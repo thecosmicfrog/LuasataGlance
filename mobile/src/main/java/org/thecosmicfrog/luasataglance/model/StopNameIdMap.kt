@@ -163,7 +163,7 @@ class StopNameIdMap(localeDefault: String) : HashMap<String?, String?>() {
             put("Carrickmines", "CCK")
             put("Laughanstown", "LAU")
             put("Cherrywood", "CHE")
-            put("Bride's Glen", "BRI")
+            put("Brides Glen", "BRI")
         }
     }
 }

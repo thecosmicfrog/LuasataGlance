@@ -100,6 +100,6 @@ public class EnglishGaeilgeMap extends HashMap<String, String> {
         put("Carrickmines", "Carraig Mhaighin");
         put("Laughanstown", "Baile an Locháin");
         put("Cherrywood", "Coill na Silíní");
-        put("Bride's Glen", "Gleann Bhríde");
+        put("Brides Glen", "Gleann Bhríde");
     }
 }

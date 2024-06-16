@@ -573,7 +573,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 )
         );
 
-        /* Draw Polylines from St. Stephen's Green to Bride's Glen. */
+        /* Draw Polylines from St. Stephen's Green to Brides Glen. */
         for (int i = 13; i < listStopNamesGreenLine.size() - 1; i++) {
             googleMap.addPolyline(
                     new PolylineOptions().add(

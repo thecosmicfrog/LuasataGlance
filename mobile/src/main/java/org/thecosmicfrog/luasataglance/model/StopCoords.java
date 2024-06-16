@@ -98,7 +98,7 @@ public class StopCoords {
             { 53.25436204, -6.17160237 }, /* Carrickmines */
             { 53.25063905, -6.15495121 }, /* Laughanstown */
             { 53.24538459, -6.14582634 }, /* Cherrywood */
-            { 53.24186949, -6.14277935 }, /* Bride's Glen */
+            { 53.24186949, -6.14277935 }, /* Brides Glen */
     };
     private double[][] stopCoords = new double[0][0];
 
