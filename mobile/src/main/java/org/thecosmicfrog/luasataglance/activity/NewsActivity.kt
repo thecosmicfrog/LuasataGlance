@@ -21,7 +21,6 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import android.webkit.WebSettings
@@ -30,48 +29,50 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.databinding.ActivityNewsBinding
 import org.thecosmicfrog.luasataglance.util.Constant
 
 class NewsActivity : AppCompatActivity() {
 
+    private lateinit var viewBinding : ActivityNewsBinding
+    private lateinit var webViewNews : WebView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewBinding = ActivityNewsBinding.inflate(layoutInflater)
+        val view = viewBinding.root
 
         val urlNews = "https://luas.ie/news/"
         val urlTravelUpdates = "https://luas.ie/travel-updates/"
 
-        setContentView(R.layout.activity_news)
+        setContentView(view)
 
         /*
          * Set ActionBar colour.
          */
         supportActionBar!!.setBackgroundDrawable(
-                ColorDrawable(
-                        ContextCompat.getColor(application, R.color.luas_purple)
-                )
+            ColorDrawable(ContextCompat.getColor(applicationContext, R.color.luas_purple))
         )
 
         /*
          * Set status bar colour.
          */
-        if (Build.VERSION.SDK_INT >= 21) {
-            val window = window
+        val window = window
 
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor = ContextCompat.getColor(
-                    applicationContext,
-                    R.color.luas_purple_statusbar
-            )
-        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = ContextCompat.getColor(
+            applicationContext,
+            R.color.luas_purple_statusbar
+        )
 
         /*
          * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
          * browser is liable to open.
          * Ensure the information is fresh by using no app or web browser cache.
          */
-        val webViewNews = findViewById<WebView>(R.id.webview_news)
-
+        webViewNews = viewBinding.webviewNews
         webViewNews.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webViewNews.webViewClient = WebViewClient()
 
@@ -87,6 +88,14 @@ class NewsActivity : AppCompatActivity() {
                 webViewNews.loadUrl(urlNews)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        /* Destroy WebView to prevent memory leaks. */
+        webViewNews.removeAllViews()
+        webViewNews.destroy()
     }
 }
 

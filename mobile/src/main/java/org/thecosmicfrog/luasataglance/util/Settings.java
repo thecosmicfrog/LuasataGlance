@@ -23,8 +23,6 @@ package org.thecosmicfrog.luasataglance.util;
 
 import android.content.Context;
 import android.content.Intent;
-
-import androidx.appcompat.app.AlertDialog;
 import android.view.MenuItem;
 
 import org.thecosmicfrog.luasataglance.R;
@@ -36,7 +34,14 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public final class Settings {
 
+    private static String settingFirebaseTestLab = null;
+
     public static void getSettings(Context context, MenuItem item) {
+        settingFirebaseTestLab = android.provider.Settings.System.getString(
+                context.getContentResolver(),
+                "firebase.test.lab"
+        );
+
         /*
          * Handle action bar item clicks here. The action bar will automatically handle clicks on
          * the Home/Up button, so long as you specify a parent activity in AndroidManifest.xml.
@@ -44,6 +49,15 @@ public final class Settings {
         int id = item.getItemId();
 
         if (id == R.id.action_news) {
+            /* Don't enable Luas News button if we're in Firebase Test Lab to avoid traversing infinitely through the WebView. */
+            if (settingFirebaseTestLab == null) {
+                context.startActivity(
+                        new Intent(
+                                context,
+                                NewsActivity.class
+                        ).putExtra(Constant.NEWS_TYPE, Constant.NEWS_TYPE_LUAS_NEWS)
+                );
+            }
             context.startActivity(
                     new Intent(
                             context,

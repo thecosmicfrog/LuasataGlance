@@ -21,25 +21,23 @@
 
 package org.thecosmicfrog.luasataglance.activity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import org.thecosmicfrog.luasataglance.R;
 
-public class SettingsActivity extends PreferenceActivity
-        implements Preference.OnPreferenceChangeListener {
+public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +51,8 @@ public class SettingsActivity extends PreferenceActivity
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        /*
-         * Hack to add toolbar to PreferencesActivity.
-         */
-        LinearLayout linearLayoutRootView = (LinearLayout)
-                findViewById(android.R.id.list).getParent().getParent().getParent();
+        /* Hack to add toolbar to PreferencesActivity. */
+        LinearLayout linearLayoutRootView = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
 
         Toolbar toolbar = (Toolbar) LayoutInflater.from(this).inflate(
                 R.layout.settings_toolbar,
@@ -77,17 +72,15 @@ public class SettingsActivity extends PreferenceActivity
         /*
          * Set status bar colour and elevation.
          */
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(
-                    ContextCompat.getColor(getApplicationContext(),
-                            R.color.luas_purple_statusbar)
-            );
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(
+                ContextCompat.getColor(getApplicationContext(),
+                        R.color.luas_purple_statusbar)
+        );
 
-            toolbar.setElevation(8.0f);
-        }
+        toolbar.setElevation(8.0f);
     }
 
     /**
@@ -117,20 +110,17 @@ public class SettingsActivity extends PreferenceActivity
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         String stringValue = newValue.toString();
 
-        if (preference instanceof ListPreference) {
+        if (preference instanceof ListPreference listPreference) {
             /*
              * For ListPreferences, look up the correct display value in the preference's
              * 'entries' list (since they have separate labels/values).
              */
-            ListPreference listPreference = (ListPreference) preference;
             int prefIndex = listPreference.findIndexOfValue(stringValue);
 
             if (prefIndex >= 0)
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
         } else {
-            /*
-             * For other preferences, set the summary to the value's simple string representation.
-             */
+            /* For other preferences, set the summary to the value's simple string representation. */
             preference.setSummary(stringValue);
         }
 

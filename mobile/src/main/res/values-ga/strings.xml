@@ -28,7 +28,6 @@
         Activities
     -->
     <string name="title_activity_fares">Táillí</string>
-    <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_license">Ceadúnas</string>
     <string name="title_activity_maps">Léarscáil</string>
@@ -47,7 +46,6 @@
     <string name="message">Ag fanacht le stádas Luas\u2026</string>
     <string name="message_title">Stádas</string>
     <string name="message_success">Gach seirbhís ag feidhmiú mar is gnách</string>
-    <string name="message_not_running">Tram ar bith geallta ag an stad seo</string>
     <string name="message_no_status">Stádas ar bith faighte ón bhfreastalaí. Is le córas RTPI Luas an
         chúis.
     </string>
@@ -77,17 +75,15 @@
     <string name="cannot_schedule_notification">Tá an tram le teacht go luath. Ní féidir fógra a
         sceideal.
     </string>
+    <string name="please_allow_notification_permissions">Ceadaigh "ceadanna fógra" trí shocruithe do
+        ghléis.</string>
 
     <!--
         Actions
     -->
     <string name="action_about">Eolas Faoi</string>
-    <string name="action_favourites">Ceanáin</string>
-    <string name="action_favourites_edit">Athraigh</string>
-    <string name="action_favourites_save">Sábháil</string>
     <string name="action_news">Nuacht Luas</string>
     <string name="action_news_alert">Airdeall</string>
-    <string name="action_reload">Athnuaigh</string>
     <string name="action_settings">Roghanna</string>
 
     <!--
@@ -95,7 +91,7 @@
     -->
     <string name="about_title_version">Leagan</string>
     <string name="about_title_description">Cur Síos</string>
-    <string name="about_description">Aip ghutháin agus Wear OS a léiríonn eolas fíor-ama don
+    <string name="about_description">Aip ghutháin a léiríonn eolas fíor-ama don
         Luas, córas iarnróid éadroim Bhaile Átha Cliath.</string>
     <string name="about_title_license">Ceadúnas Foinse Oscailte</string>
     <string name="about_license"><u>GNU General Public License (GPLv3)</u></string>
@@ -156,16 +152,15 @@
         Notify dialog
     -->
     <string name="notify_set">Sceideal</string>
-    <string name="notify_title">Socraigh fógra tram</string>
     <string name="notify_when">Cathain ar mhaith leat fógra a fháil faoin tram seo?</string>
     <string name="notify_successful">Fógra sceidealaithe.</string>
+    <string name="notify_unsuccessful_exact_alarm">Níorbh fhéidir fógra a chruthú. Tabhair cead aip chun aláraim chruinne a shocrú.
+    </string>
     <string name="notify_invalid_time">Am mícheart. Tá an tram le sroicheadh roimhe sin.</string>
 
     <!--
         Settings
     -->
-    <string name="pref_title_notifications">Fógraí</string>
-    <string name="pref_summary_notifications">Gheobhaidh tú fógraí</string>
     <string name="pref_title_default_stop">Stad Réamhshocraithe</string>
 
     <!--

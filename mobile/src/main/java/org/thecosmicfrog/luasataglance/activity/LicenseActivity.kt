@@ -22,9 +22,9 @@ package org.thecosmicfrog.luasataglance.activity
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.databinding.ActivityLicenseBinding
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -33,12 +33,17 @@ class LicenseActivity : AppCompatActivity() {
 
     private val logTag = LicenseActivity::class.java.simpleName
 
+    private lateinit var viewBinding: ActivityLicenseBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_license)
+        viewBinding = ActivityLicenseBinding.inflate(layoutInflater)
+        val rootView = viewBinding.root
 
-        val textViewLicenseContent = findViewById<TextView>(R.id.textview_license_content)
+        setContentView(rootView)
+
+        val textViewLicenseContent = viewBinding.textviewLicenseContent
         val inputStream = resources.openRawResource(R.raw.license)
         val bufferedReader = BufferedReader(InputStreamReader(inputStream))
 

@@ -54,23 +54,21 @@ object StopForecastUtil {
      * @param shouldDisplay Whether or not tutorial should display.
      */
     @JvmStatic
-    fun displayTutorial(rootView: View?, line: String?, tutorial: String?, shouldDisplay: Boolean) {
+    fun displayTutorial(viewBinding: LineFragmentViewBindingAdapter, line: String, tutorial: String?, shouldDisplay: Boolean) {
         /* Only display tutorials on the Red Line tab. */
         if (line == Constant.RED_LINE) {
             when (tutorial) {
                 Constant.TUTORIAL_SELECT_STOP -> {
-                    val tutorialCardViewSelectStop: TutorialCardView? = rootView?.findViewById(
-                        R.id.tutorialcardview_select_stop
-                    )
+                    val tutorialCardViewSelectStop = viewBinding.tutorialcardviewSelectStop
 
                     tutorialCardViewSelectStop?.setTutorial(
-                        rootView.context?.resources?.getText(
+                        tutorialCardViewSelectStop.context.resources.getText(
                             R.string.select_stop_tutorial
                         )
                     )
 
                     if (shouldDisplay) {
-                        if (!Preferences.hasRunOnce(rootView?.context, tutorial)) {
+                        if (!Preferences.hasRunOnce(tutorialCardViewSelectStop?.context, tutorial)) {
                             Log.i(
                                 logTag,
                                 "First time launching. Displaying select stop tutorial."
@@ -78,7 +76,7 @@ object StopForecastUtil {
 
                             tutorialCardViewSelectStop?.visibility = View.VISIBLE
 
-                            Preferences.saveHasRunOnce(rootView?.context, tutorial, true)
+                            Preferences.saveHasRunOnce(tutorialCardViewSelectStop?.context, tutorial, true)
                         }
                     } else {
                         tutorialCardViewSelectStop?.visibility = View.GONE
@@ -86,42 +84,40 @@ object StopForecastUtil {
                 }
 
                 Constant.TUTORIAL_NOTIFICATIONS -> {
-                    val tutorialCardViewNotifications: TutorialCardView? = rootView?.findViewById(
-                        R.id.tutorialcardview_notifications
-                    )
+                    val tutorialCardViewNotifications = viewBinding.tutorialcardviewNotifications
 
                     tutorialCardViewNotifications?.setTutorial(
-                        rootView.context?.resources?.getText(
+                        tutorialCardViewNotifications.context.resources.getText(
                             R.string.notifications_tutorial
                         )
                     )
 
                     if (shouldDisplay) {
-                        if (!Preferences.hasRunOnce(rootView?.context, tutorial)) {
-                            Log.i(
-                                logTag,
-                                "First time launching. Displaying notifications tutorial."
-                            )
+                        if (tutorialCardViewNotifications != null) {
+                            if (!Preferences.hasRunOnce(tutorialCardViewNotifications.context, tutorial)) {
+                                Log.i(
+                                    logTag,
+                                    "First time launching. Displaying notifications tutorial."
+                                )
 
-                            tutorialCardViewNotifications?.visibility = View.VISIBLE
+                                tutorialCardViewNotifications.visibility = View.VISIBLE
+                            }
                         }
                     } else {
                         tutorialCardViewNotifications?.visibility = View.GONE
                     }
                 }
                 Constant.TUTORIAL_FAVOURITES -> {
-                    val tutorialCardViewFavourites: TutorialCardView? = rootView?.findViewById(
-                        R.id.tutorialcardview_favourites
-                    )
+                    val tutorialCardViewFavourites = viewBinding.tutorialcardviewFavourites
 
                     tutorialCardViewFavourites?.setTutorial(
-                        rootView.context?.resources?.getText(
+                        tutorialCardViewFavourites.context.resources.getText(
                             R.string.favourites_tutorial
                         )
                     )
 
                     if (shouldDisplay) {
-                        if (!Preferences.hasRunOnce(rootView?.context, tutorial)) {
+                        if (!Preferences.hasRunOnce(tutorialCardViewFavourites?.context, tutorial)) {
                             Log.i(
                                 logTag,
                                 "First time launching. Displaying favourites tutorial."

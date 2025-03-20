@@ -21,24 +21,30 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.ScrollView
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import org.thecosmicfrog.luasataglance.api.ApiFares
 import org.thecosmicfrog.luasataglance.api.ApiMethods
+import org.thecosmicfrog.luasataglance.api.HttpInterceptor
+import org.thecosmicfrog.luasataglance.databinding.ActivityFaresBinding
+import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import retrofit.Callback
 import retrofit.RestAdapter
 import retrofit.RetrofitError
 import retrofit.client.Response
-import java.util.*
+import java.util.Locale
 
 class FaresActivity : AppCompatActivity() {
 
@@ -58,19 +64,22 @@ class FaresActivity : AppCompatActivity() {
     private var textViewFaresPeak: TextView? = null
     private var mapStopNameId: StopNameIdMap? = null
 
+    private lateinit var viewBinding: ActivityFaresBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_fares)
+        viewBinding = ActivityFaresBinding.inflate(layoutInflater)
+        val rootView = viewBinding.root
+
+        setContentView(rootView)
 
         /* Set status bar colour. */
-        if (Build.VERSION.SDK_INT >= 21) {
-            val window = window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor = ContextCompat.getColor(applicationContext,
-                    R.color.luas_purple_statusbar)
-        }
+        val window = window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = ContextCompat.getColor(applicationContext,
+                R.color.luas_purple_statusbar)
 
         initializeActivity()
     }
@@ -85,12 +94,11 @@ class FaresActivity : AppCompatActivity() {
         /* Instantiate a new StopNameIdMap. */
         mapStopNameId = StopNameIdMap(localeDefault)
 
-        scrollViewFares = findViewById(R.id.scrollview_fares)
+        scrollViewFares = viewBinding.scrollviewFares
 
-        spinnerFaresLine = findViewById(R.id.spinner_fares_line)
+        spinnerFaresLine = viewBinding.spinnerFaresLine
         spinnerFaresLine?.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int,
-                                        l: Long) {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, l: Long) {
                 var resArrayStops = 0
 
                 when (position) {
@@ -121,7 +129,7 @@ class FaresActivity : AppCompatActivity() {
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
 
-        spinnerFaresOrigin = findViewById(R.id.spinner_fares_origin)
+        spinnerFaresOrigin = viewBinding.spinnerFaresOrigin
         spinnerFaresOrigin?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 loadFaresBasedOnSpinnerSelected()
@@ -130,7 +138,7 @@ class FaresActivity : AppCompatActivity() {
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
 
-        spinnerFaresDestination = findViewById(R.id.spinner_fares_destination)
+        spinnerFaresDestination = viewBinding.spinnerFaresDestination
         spinnerFaresDestination?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 loadFaresBasedOnSpinnerSelected()
@@ -139,7 +147,7 @@ class FaresActivity : AppCompatActivity() {
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
 
-        spinnerFaresAdults = findViewById(R.id.spinner_fares_adults)
+        spinnerFaresAdults = viewBinding.spinnerFaresAdults
         spinnerFaresAdults?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 loadFaresBasedOnSpinnerSelected()
@@ -148,7 +156,7 @@ class FaresActivity : AppCompatActivity() {
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
 
-        spinnerFaresChildren = findViewById(R.id.spinner_fares_children)
+        spinnerFaresChildren = viewBinding.spinnerFaresChildren
         spinnerFaresChildren?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 loadFaresBasedOnSpinnerSelected()
@@ -198,8 +206,8 @@ class FaresActivity : AppCompatActivity() {
 
         setIsLoading(false)
 
-        textViewFaresOffPeak = findViewById(R.id.textview_fares_offpeak)
-        textViewFaresPeak = findViewById(R.id.textview_fares_peak)
+        textViewFaresOffPeak = viewBinding.textviewFaresOffpeak
+        textViewFaresPeak = viewBinding.textviewFaresPeak
     }
 
     /**
@@ -222,6 +230,7 @@ class FaresActivity : AppCompatActivity() {
          */
         val restAdapter = RestAdapter.Builder()
                 .setEndpoint(apiUrl)
+                .setRequestInterceptor(HttpInterceptor())
                 .build()
 
         val methods = restAdapter.create(ApiMethods::class.java)
@@ -300,7 +309,8 @@ class FaresActivity : AppCompatActivity() {
      * @param loading Whether or not progress bar should animate.
      */
     private fun setIsLoading(loading: Boolean) {
-        val progressBarFares = findViewById<ProgressBar>(R.id.progressbar_fares)
+        val progressBarFares = viewBinding.progressbarFares
+
         runOnUiThread {
             if (loading) {
                 progressBarFares.visibility = View.VISIBLE

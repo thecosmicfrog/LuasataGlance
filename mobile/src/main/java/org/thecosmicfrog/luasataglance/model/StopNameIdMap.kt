@@ -20,8 +20,6 @@
  */
 package org.thecosmicfrog.luasataglance.model
 
-import java.util.*
-
 class StopNameIdMap(localeDefault: String?) : HashMap<String?, String?>() {
     init {
         if (localeDefault?.startsWith("ga") == true) {
@@ -165,7 +163,7 @@ class StopNameIdMap(localeDefault: String?) : HashMap<String?, String?>() {
             put("Carrickmines", "CCK")
             put("Laughanstown", "LAU")
             put("Cherrywood", "CHE")
-            put("Bride's Glen", "BRI")
+            put("Brides Glen", "BRI")
         }
     }
 }

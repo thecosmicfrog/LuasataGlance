@@ -24,10 +24,7 @@ package org.thecosmicfrog.luasataglance.activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.core.content.ContextCompat;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -35,7 +32,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.thecosmicfrog.luasataglance.R;
+import org.thecosmicfrog.luasataglance.databinding.ActivityFavouritesSelectBinding;
 import org.thecosmicfrog.luasataglance.util.Serializer;
 
 import java.io.BufferedInputStream;
@@ -54,6 +57,7 @@ public class FavouritesSelectActivity extends AppCompatActivity {
     private final String LOG_TAG = FavouritesSelectActivity.class.getSimpleName();
     private final String FILE_FAVOURITES = "favourites";
 
+    private ActivityFavouritesSelectBinding viewBinding;
     private ArrayAdapter<String> adapterFavouriteStops;
     private SparseBooleanArray checkedItems;
     private List<CharSequence> selectedItems;
@@ -62,7 +66,10 @@ public class FavouritesSelectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_favourites_select);
+        viewBinding = ActivityFavouritesSelectBinding.inflate(getLayoutInflater());
+        View rootView = viewBinding.getRoot();
+
+        setContentView(rootView);
 
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(
@@ -101,7 +108,7 @@ public class FavouritesSelectActivity extends AppCompatActivity {
         /*
          * Populate ListView with all stops on both lines.
          */
-        final ListView listViewStops = findViewById(R.id.listview_stops);
+        final ListView listViewStops = viewBinding.listviewStops;
         listViewStops.setAdapter(adapterFavouriteStops);
         listViewStops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -126,8 +133,7 @@ public class FavouritesSelectActivity extends AppCompatActivity {
         /*
          * Use a Floating Action Button (FAB) to save the selected Favourites.
          */
-        FloatingActionButton fabFavouritesSave =
-                findViewById(R.id.fab_favourites_save);
+        FloatingActionButton fabFavouritesSave = viewBinding.fabFavouritesSave;
         fabFavouritesSave.setBackgroundTintList(
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.message_success))
         );

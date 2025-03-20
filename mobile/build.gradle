@@ -4,17 +4,24 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace = "org.thecosmicfrog.luasataglance"
+    namespace 'org.thecosmicfrog.luasataglance'
+
+    compileSdk 34
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = '17'
     }
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
+        targetSdk 34
+        minSdk 29
         compileSdk 34
-        minSdkVersion 29
-        targetSdkVersion 34
         versionCode generateVersionCode()
         versionName generateVersionName()
     }
@@ -29,9 +36,7 @@ android {
             resValue "string", "version_name", generateVersionName()
             resValue "string", "release_date", generateReleaseDate()
         }
-
         release {
-            resValue "string", "version_code", generateVersionCode().toString()
             resValue "string", "version_name", generateVersionName()
             resValue "string", "release_date", generateReleaseDate()
 
@@ -39,32 +44,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     productFlavors {
     }
 }
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'androidx.appcompat:appcompat:1.2.0'
+    api 'androidx.appcompat:appcompat:1.6.1'
     api 'androidx.cardview:cardview:1.0.0'
-    api 'com.google.android.gms:play-services-wearable:17.1.0'
+    api 'com.google.android.material:material:1.9.0'
     api 'com.squareup.retrofit:retrofit:1.9.0'
     api 'com.squareup.okhttp:okhttp:2.7.5'
     api 'androidx.legacy:legacy-support-v4:1.0.0'
-    api 'com.google.android.gms:play-services-maps:18.0.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.transition:transition:1.4.1'
-    implementation "androidx.constraintlayout:constraintlayout:2.1.2"
-    implementation "androidx.preference:preference-ktx:1.1.1"
-    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    api 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation "androidx.preference:preference-ktx:1.2.1"
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
     implementation 'pub.devrel:easypermissions:3.0.0'
-    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.core:core-ktx:1.10.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-
-repositories {
-    mavenCentral()
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 }
 
 private Integer generateVersionCode() {

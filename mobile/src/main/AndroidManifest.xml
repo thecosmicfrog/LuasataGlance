@@ -7,12 +7,19 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Required for Luas Map to be able to open Google Maps app. -->
+    <queries>
+        <package android:name="com.google.android.apps.maps" />
+    </queries>
 
     <application
         android:allowBackup="true"
@@ -60,31 +67,25 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.thecosmicfrog.luasataglance.activity.SettingsActivity" />
         </activity>
-        <activity
-            android:name=".widget.StopForecastWidgetConfigureActivity"
-            android:exported="false">
+        <activity android:name=".widget.StopForecastWidgetConfigureActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".receiver.NotifyTimesReceiver"
-            android:exported="false">
+        <receiver android:name=".receiver.NotifyTimesReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".receiver.OnAppUpdateReceiver"
-            android:exported="false">
+        <receiver android:name=".receiver.OnAppUpdateReceiver"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".widget.StopForecastWidget"
-            android:exported="false">
+        <receiver android:name=".widget.StopForecastWidget" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -96,12 +97,24 @@
 
         <service
             android:name=".service.WidgetListenerService"
+            android:foregroundServiceType="dataSync"
             android:enabled="true" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+<!--        <activity-->
+<!--            android:name=".activity.MapsActivity"-->
+<!--            android:label="@string/title_activity_maps"-->
+<!--            android:theme="@style/Theme.AppCompat.Dialog">-->
+<!--            <meta-data-->
+<!--                android:name="android.support.PARENT_ACTIVITY"-->
+<!--                android:value="org.thecosmicfrog.luasataglance.activity.MainActivity" />-->
+<!--        </activity>-->
+<!--        <activity-->
+<!--            android:name=".activity.FavouritesActivity"-->
+<!--            android:theme="@style/Theme.AppCompat.Dialog" />-->
         <activity
             android:name=".activity.FaresActivity"
             android:label="@string/title_activity_fares">

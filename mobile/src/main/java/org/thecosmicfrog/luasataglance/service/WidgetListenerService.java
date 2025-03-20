@@ -30,18 +30,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.IBinder;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import com.squareup.okhttp.OkHttpClient;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
+import org.thecosmicfrog.luasataglance.api.HttpInterceptor;
 import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.model.StopForecast;
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap;
@@ -241,6 +242,7 @@ public class WidgetListenerService extends Service {
             final RestAdapter restAdapter = new RestAdapter.Builder()
                     .setClient(new OkClient(okHttpClient))
                     .setEndpoint(API_URL)
+                    .setRequestInterceptor(new HttpInterceptor())
                     .build();
 
             ApiMethods methods = restAdapter.create(ApiMethods.class);
@@ -594,22 +596,19 @@ public class WidgetListenerService extends Service {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        /* Android Oreo and above require a NotificationChannel to be created. */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel =
-                    new NotificationChannel(
-                            "widgetGetStopForecast",
-                            "Widget get stop forecast",
-                            NotificationManager.IMPORTANCE_HIGH
-                    );
+        NotificationChannel notificationChannel =
+                new NotificationChannel(
+                        "widgetGetStopForecast",
+                        "Widget get stop forecast",
+                        NotificationManager.IMPORTANCE_HIGH
+                );
 
-            /* Configure notification channel. */
-            notificationChannel.setDescription("Widget get stop forecast");
-            notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
+        /* Configure notification channel. */
+        notificationChannel.setDescription("Widget get stop forecast");
+        notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
 
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(notificationChannel);
-            }
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(notificationChannel);
         }
 
         return new NotificationCompat.Builder(

@@ -27,13 +27,13 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
-import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import androidx.annotation.NonNull;
 
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.activity.MainActivity;
@@ -300,11 +300,7 @@ public class StopForecastWidget extends AppWidgetProvider {
         );
 
         /* Start the WidgetListenerService. */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intentWidgetListenerService);
-        } else {
-            context.startService(intentWidgetListenerService);
-        }
+        context.startForegroundService(intentWidgetListenerService);
     }
 
     /**
@@ -374,13 +370,13 @@ public class StopForecastWidget extends AppWidgetProvider {
         intentWidgetClickStopForecast.setAction(WIDGET_CLICK_STOP_FORECAST);
 
         PendingIntent pendingIntentWidgetClickStopName =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopName, 0);
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopName, PendingIntent.FLAG_IMMUTABLE);
         PendingIntent pendingIntentWidgetClickArrowLeft =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowLeft, 0);
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowLeft, PendingIntent.FLAG_IMMUTABLE);
         PendingIntent pendingIntentWidgetClickArrowRight =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowRight, 0);
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickArrowRight, PendingIntent.FLAG_IMMUTABLE);
         PendingIntent pendingIntentWidgetClickStopForecast =
-                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopForecast, 0);
+                PendingIntent.getBroadcast(context, 0, intentWidgetClickStopForecast, PendingIntent.FLAG_IMMUTABLE);
 
         remoteViews.setOnClickPendingIntent(
                 R.id.textview_stop_name, pendingIntentWidgetClickStopName

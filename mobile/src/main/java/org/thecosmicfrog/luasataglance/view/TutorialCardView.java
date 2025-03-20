@@ -22,7 +22,6 @@
 package org.thecosmicfrog.luasataglance.view;
 
 import android.content.Context;
-import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 

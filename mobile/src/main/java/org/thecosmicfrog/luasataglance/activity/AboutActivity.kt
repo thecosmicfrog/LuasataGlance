@@ -21,41 +21,39 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Window
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.databinding.ActivityAboutBinding
 
 class AboutActivity : FragmentActivity() {
 
     private val logTag = AboutActivity::class.java.simpleName
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        /*
-         * If the user is on Lollipop or above, use a Material Dialog theme. Otherwise, fall back to
-         * the default theme set in AndroidManifest.xml.
-         */
+    private lateinit var viewBinding: ActivityAboutBinding
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            setTheme(android.R.style.Theme_Material_Dialog)
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewBinding = ActivityAboutBinding.inflate(layoutInflater)
+        val rootView = viewBinding.root
+
+        /* Use a Material Dialog theme. */
+        setTheme(android.R.style.Theme_Material_Dialog)
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
 
-        super.onCreate(savedInstanceState)
+        setContentView(rootView)
 
-        setContentView(R.layout.activity_about)
-
-        val textViewLicense = findViewById<TextView>(R.id.textview_license)
+        val textViewLicense = viewBinding.textviewLicense
         textViewLicense.setOnClickListener {
             startActivity(
-                    Intent(
-                            applicationContext,
-                            LicenseActivity::class.java
-                    )
+                Intent(
+                    applicationContext,
+                    LicenseActivity::class.java
+                )
             )
         }
     }
