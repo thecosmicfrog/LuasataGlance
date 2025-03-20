@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2023 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -45,6 +45,7 @@ import com.google.android.material.tabs.TabLayout
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.api.ApiMethods
 import org.thecosmicfrog.luasataglance.api.ApiTimes
+import org.thecosmicfrog.luasataglance.api.HttpInterceptor
 import org.thecosmicfrog.luasataglance.databinding.FragmentGreenlineBinding
 import org.thecosmicfrog.luasataglance.databinding.FragmentRedlineBinding
 import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap
@@ -352,16 +353,17 @@ class LineFragment : Fragment() {
         /* Set up SwipeRefreshLayout. */
         swipeRefreshLayout = viewBinding?.swiperefreshlayout!!
         swipeRefreshLayout.setOnRefreshListener {
+            val stopName = Preferences.selectedStopName(context, line)
 
             /* Start by clearing the currently-displayed stop forecast. */
             clearStopForecast()
 
             /* Start the refresh animation. */
             swipeRefreshLayout.isRefreshing = true
-            loadStopForecast(
-                Preferences.selectedStopName(context, line),
-                true
-            )
+
+            if (stopName != null) {
+                loadStopForecast(stopName, true)
+            }
         }
         scrollView = viewBinding?.scrollview!!
 
@@ -535,13 +537,11 @@ class LineFragment : Fragment() {
 
         timerTaskReload = timerTask {
             if (shouldAutoReload) {
-                loadStopForecast(
-                    Preferences.selectedStopName(
-                        context,
-                        line
-                    ),
-                    false
-                )
+                val stopName = Preferences.selectedStopName(context, line)
+
+                if (stopName != null) {
+                    loadStopForecast(stopName, false)
+                }
             }
         }
 
@@ -571,6 +571,7 @@ class LineFragment : Fragment() {
          */
         val restAdapter = RestAdapter.Builder()
             .setEndpoint(apiUrl)
+            .setRequestInterceptor(HttpInterceptor())
             .build()
         val methods = restAdapter.create(ApiMethods::class.java)
 

@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2023 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -21,14 +21,22 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PorterDuff
+import android.net.Uri
+import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
@@ -45,92 +53,189 @@ import java.util.Locale
 
 class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCallbacks {
 
-    private val logTag = NotifyTimeActivity::class.java.simpleName
-    private val permissionsNotifications = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
-
-    private var mapNotifyTimes: Map<String, Int>? = null
-
+    private lateinit var context: Context
     private lateinit var viewBinding: ActivityNotifyTimeBinding
+    private var mapNotifyTimes: Map<String, Int>? = null
+    private val logTag = NotifyTimeActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewBinding = ActivityNotifyTimeBinding.inflate(layoutInflater)
-        val rootView = viewBinding.root
+        initActivity()
+        initViews()
+        checkRequiredPermissions()
+    }
 
-        val dialog = "dialog"
-
-        /*
-         * Use a Material Dialog theme.
-         */
+    /**
+     * Initialise Activity.
+     */
+    private fun initActivity() {
         setTheme(android.R.style.Theme_Material_Dialog)
-
-        /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
 
-        setContentView(rootView)
+        viewBinding = ActivityNotifyTimeBinding.inflate(layoutInflater)
+        context = viewBinding.root.context
 
-        if (Preferences.permissionNotificationsShouldNotAskAgain(applicationContext)) {
-            /* User has disabled notifications. Close the dialog immediately. */
-            finish()
+        setContentView(viewBinding.root)
+    }
 
-            Toast.makeText(this, R.string.please_allow_notification_permissions, Toast.LENGTH_LONG).show()
-        } else {
-            EasyPermissions.requestPermissions(
-                PermissionRequest.Builder(this, Constant.REQUEST_CODE_NOTIFY_TIMES, *permissionsNotifications)
-                    .setRationale(R.string.rationale_notifications)
-                    .setPositiveButtonText(R.string.rationale_ask_accept)
-                    .setNegativeButtonText(R.string.rationale_ask_decline)
-                    .setTheme(android.R.style.Theme_Material_Light_Dialog_Alert)
-                    .build()
-            )
-        }
+    /**
+     * Initialise Views.
+     */
+    private fun initViews() {
+        initNotifyTimeSpinner()
+        initNotifyButton()
+    }
 
+    /**
+     * Initialise Spinner.
+     */
+    private fun initNotifyTimeSpinner() {
         val localeDefault = Locale.getDefault().toString()
+        mapNotifyTimes = NotifyTimesMap(localeDefault, "dialog")
 
-        mapNotifyTimes = NotifyTimesMap(localeDefault, dialog)
+        viewBinding.spinnerNotifytime.apply {
+            adapter = ArrayAdapter.createFromResource(
+                applicationContext,
+                R.array.array_notifytime_mins,
+                R.layout.spinner_notify_time
+            ).apply {
+                setDropDownViewResource(R.layout.spinner_notify_time)
+            }
 
-        val spinnerNotifyTime = viewBinding.spinnerNotifytime
-        val adapterNotifyTime: ArrayAdapter<*> = ArrayAdapter.createFromResource(
-                applicationContext, R.array.array_notifytime_mins, R.layout.spinner_notify_time
-        )
-        adapterNotifyTime.setDropDownViewResource(R.layout.spinner_notify_time)
-        spinnerNotifyTime.adapter = adapterNotifyTime
+            background = background.constantState?.newDrawable()?.apply {
+                setColorFilter(
+                    ContextCompat.getColor(context, R.color.luas_purple),
+                    PorterDuff.Mode.SRC_ATOP
+                )
+            }
+        }
+    }
 
-        /* Set the Spinner's colour to Luas purple. */
-        val spinnerDrawable = spinnerNotifyTime.background.constantState?.newDrawable()
-        spinnerDrawable?.setColorFilter(
-                ContextCompat.getColor(applicationContext, R.color.luas_purple),
-                PorterDuff.Mode.SRC_ATOP
-        )
-        spinnerNotifyTime.background = spinnerDrawable
+    /**
+     * Initialise Notify Button.
+     */
+    private fun initNotifyButton() {
+        viewBinding.buttonNotifytime.setOnClickListener {
+            if (!checkAndRequestExactAlarmPermission()) return@setOnClickListener
 
-        val buttonNotifyTime = viewBinding.buttonNotifytime
-        buttonNotifyTime.setOnClickListener {
-            /*
-             * Create an Intent to send the user-selected notification time back to
-             * LineFragment.
-             */
-            val intent = Intent()
-            intent.setPackage(packageName)
-            intent.setClass(applicationContext, NotifyTimesReceiver::class.java)
-            intent.action = NotifyTimeActivity::class.java.name
-            intent.putExtra(
-                    Constant.NOTIFY_STOP_NAME,
-                    Preferences.notifyStopName(applicationContext)
-            )
+            sendNotificationIntent()
 
-            intent.putExtra(
-                    Constant.NOTIFY_TIME,
-                    mapNotifyTimes!![spinnerNotifyTime.selectedItem.toString()]
-            )
-
-            /* Send the Intent. */
-            sendBroadcast(intent)
-
-            /* Dismiss the Dialog. */
             finish()
         }
+    }
+
+    /**
+     * Check required permissions are granted.
+     */
+    private fun checkRequiredPermissions() {
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+            checkNotificationPermission()
+        } else {
+            checkAndRequestExactAlarmPermission()
+        }
+    }
+
+    /**
+     * Check user has granted notification permissions.
+     */
+    private fun checkNotificationPermission() {
+        when {
+            Preferences.permissionNotificationsShouldNotAskAgain(applicationContext) -> {
+                showToastAndFinish(R.string.please_allow_notification_permissions)
+            }
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED -> {
+                showNotificationPermissionDialog()
+            }
+            else -> checkAndRequestExactAlarmPermission()
+        }
+    }
+
+    /**
+     * Show notification permission dialog.
+     */
+    private fun showNotificationPermissionDialog() {
+        AlertDialog.Builder(this, R.style.LuasAtAGlancePermissionsRequestDialog)
+            .setMessage(getString(R.string.rationale_notifications))
+            .setPositiveButton(getString(R.string.rationale_ask_accept)) { dialog, _ ->
+                requestNotificationPermissions()
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.rationale_ask_decline)) { dialog, _ ->
+                dialog.dismiss()
+                finish()
+            }
+            .create()
+            .show()
+    }
+
+    /**
+     * Check if exact alarm permission is granted and request if not.
+     */
+    private fun checkAndRequestExactAlarmPermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.S) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            return if (!isExactAlarmPermissionGranted(alarmManager)) {
+                showExactAlarmPermissionDialog()
+                false
+            } else {
+                true
+            }
+        }
+        return true
+    }
+
+    /**
+     * Check if exact alarm permission is granted.
+     */
+    private fun isExactAlarmPermissionGranted(alarmManager: AlarmManager): Boolean {
+        return if (Build.VERSION.SDK_INT >= VERSION_CODES.S) {
+            alarmManager.canScheduleExactAlarms()
+        } else {
+            true
+        }
+    }
+
+    /**
+     * Show exact alarm permission dialog.
+     */
+    private fun showExactAlarmPermissionDialog() {
+        AlertDialog.Builder(this, R.style.LuasAtAGlancePermissionsRequestDialog)
+            .setMessage(getString(R.string.rationale_exact_alarm))
+            .setPositiveButton(getString(R.string.rationale_ask_accept)) { dialog, _ ->
+                openExactAlarmSystemSettings()
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.rationale_ask_decline)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+    /**
+     * Send notification Intent.
+     */
+    private fun sendNotificationIntent() {
+        Intent().apply {
+            setPackage(packageName)
+            setClass(applicationContext, NotifyTimesReceiver::class.java)
+            action = NotifyTimeActivity::class.java.name
+            putExtra(Constant.NOTIFY_STOP_NAME, Preferences.notifyStopName(applicationContext))
+            putExtra(
+                Constant.NOTIFY_TIME,
+                mapNotifyTimes!![viewBinding.spinnerNotifytime.selectedItem.toString()]
+            )
+        }.also { sendBroadcast(it) }
+    }
+
+    /**
+     * Show confirmation Toast and close the Activity.
+     */
+    private fun showToastAndFinish(@StringRes messageResId: Int) {
+        Toast.makeText(this, messageResId, Toast.LENGTH_LONG).show()
+
+        finish()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
@@ -138,9 +243,18 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
 
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        /* If the user has not granted notification permissions, just close the dialog. */
-        if (!hasAllPermissionsGranted(grantResults)) {
-            finish()
+        when {
+            !hasAllPermissionsGranted(grantResults) -> {
+                finish()
+            }
+            requestCode == Constant.REQUEST_CODE_NOTIFY_TIMES &&
+                    Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU &&
+                    checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
+                /* Add a small delay to ensure the notification dialog is fully dismissed before requesting the next permission. */
+                viewBinding.root.postDelayed({
+                    checkAndRequestExactAlarmPermission()
+                }, 200)
+            }
         }
     }
 
@@ -151,7 +265,8 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
     override fun onPermissionsDenied(requestCode: Int, perms: List<String?>) {
         Log.i(logTag, "Notifications permission denied.")
 
-        /* User has disabled notifications. Close the dialog immediately. */finish()
+        /* User has disabled notifications. Close the dialog immediately. */
+        finish()
     }
 
     override fun onRationaleAccepted(requestCode: Int) {
@@ -161,8 +276,48 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
     override fun onRationaleDenied(requestCode: Int) {
         Log.i(logTag, "Notifications rationale denied.")
 
-        /* User has disabled notifications. Close the dialog immediately. */finish()
+        /* User has disabled notifications. Close the dialog immediately. */
+        finish()
+
         Preferences.savePermissionNotificationsShouldNotAskAgain(applicationContext, true)
+    }
+
+    /**
+     * Request notification permissions from user by opening the system settings.
+     */
+    private fun requestNotificationPermissions() {
+        val permissionsNotifications = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+
+        EasyPermissions.requestPermissions(
+            PermissionRequest.Builder(this, Constant.REQUEST_CODE_NOTIFY_TIMES, *permissionsNotifications)
+                .setRationale(R.string.rationale_notifications)
+                .setPositiveButtonText(R.string.rationale_ask_accept)
+                .setNegativeButtonText(R.string.rationale_ask_decline)
+                .setTheme(android.R.style.Theme_Material_Light_Dialog_Alert)
+                .build()
+        )
+    }
+
+    /**
+     * Open the Android system settings for exact alarm permission so user can enable it.
+     */
+    private fun openExactAlarmSystemSettings() {
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.S) {
+            try {
+                Intent().apply {
+                    action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                    data = Uri.parse("package:$packageName")
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }.also { startActivity(it) }
+            } catch (e: Exception) {
+                Log.e(logTag, "Failed to open exact alarm settings", e)
+
+                /* Open the "App info" settings instead (user has to scroll down to "Alarms and reminders". */
+                startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.parse("package:$packageName")
+                })
+            }
+        }
     }
 
     /**

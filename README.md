@@ -2,11 +2,11 @@
 
 Android app providing real-time tram stop information for Dublin's Luas light rail service.
 
-[Project website](https://luasataglance.thecosmicfrog.org)
+[GitHub](https://github.com/thecosmicfrog/LuasataGlance)
 
 ## Copyright and Licence
 
-Copyright 2015-2023 Aaron Hastings
+Copyright 2015-2025 Aaron Hastings
 
 >This program is free software: you can redistribute it and/or modify
 >it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ Copyright 2015-2023 Aaron Hastings
 
 ## Contributors
 
-Developed by Aaron Hastings (aaron@thecosmicfrog.org)
+Developed by Aaron Hastings
 * __web:__     aaronhastings.me
 * __github:__  thecosmicfrog
 * __twitter:__ @thecosmicfrog

@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2023 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -51,11 +51,8 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        /*
-         * Hack to add toolbar to PreferencesActivity.
-         */
-        LinearLayout linearLayoutRootView = (LinearLayout)
-                findViewById(android.R.id.list).getParent().getParent().getParent();
+        /* Hack to add toolbar to PreferencesActivity. */
+        LinearLayout linearLayoutRootView = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
 
         Toolbar toolbar = (Toolbar) LayoutInflater.from(this).inflate(
                 R.layout.settings_toolbar,
@@ -113,20 +110,17 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         String stringValue = newValue.toString();
 
-        if (preference instanceof ListPreference) {
+        if (preference instanceof ListPreference listPreference) {
             /*
              * For ListPreferences, look up the correct display value in the preference's
              * 'entries' list (since they have separate labels/values).
              */
-            ListPreference listPreference = (ListPreference) preference;
             int prefIndex = listPreference.findIndexOfValue(stringValue);
 
             if (prefIndex >= 0)
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
         } else {
-            /*
-             * For other preferences, set the summary to the value's simple string representation.
-             */
+            /* For other preferences, set the summary to the value's simple string representation. */
             preference.setSummary(stringValue);
         }
 

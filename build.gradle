@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         // Gradle
-        classpath 'com.android.tools.build:gradle:8.3.2'
+        classpath 'com.android.tools.build:gradle:8.5.0'
 
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -23,7 +23,7 @@ plugins {
 }
 
 allprojects {
-    ext.versionCode = 172
+    ext.versionCode = 182
 
     repositories {
         google()

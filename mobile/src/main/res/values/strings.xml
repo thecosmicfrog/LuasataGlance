@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2015-2023 Aaron Hastings
+    Copyright 2015-2025 Aaron Hastings
 
     This file is part of Luas at a Glance.
 
@@ -156,6 +156,8 @@
     <string name="notify_set">Schedule</string>
     <string name="notify_when">When would you like to be notified about this tram?</string>
     <string name="notify_successful">Notification scheduled.</string>
+    <string name="notify_unsuccessful_exact_alarm">Notification creation failed. Please grant app permission to set exact alarms."
+    </string>
     <string name="notify_invalid_time">Invalid time: Tram expected before then.</string>
 
     <!--
@@ -167,6 +169,8 @@
         location on the map, making it easier for you to find your nearest Luas stop.</string>
     <string name="rationale_notifications" translatable="false">Luas at a Glance requires permission
         to notify you when your tram is due.</string>
+    <string name="rationale_exact_alarm" translatable="false">We also need permission to set accurate reminders. Please enable
+        us to do this on the next screen.</string>
 
     <!--
         Settings
@@ -179,7 +183,8 @@
     -->
     <string name="whatsnew_title_current" translatable="false">Version %s (%s)</string>
     <string name="whatsnew_content_current" translatable="false">
-        \u2022 Minor update to better support new versions of Android.
+        \u2022 Fixed issue where "Gleann Bhríde" would not appear when using Irish (Gaeilge) as the device language.\n
+        \u2022 Other minor bug fixes.
     </string>
 
     <!--

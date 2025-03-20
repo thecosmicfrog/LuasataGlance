@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2015-2023 Aaron Hastings
+    Copyright 2015-2025 Aaron Hastings
 
     This file is part of Luas at a Glance.
 
@@ -154,6 +154,8 @@
     <string name="notify_set">Sceideal</string>
     <string name="notify_when">Cathain ar mhaith leat fógra a fháil faoin tram seo?</string>
     <string name="notify_successful">Fógra sceidealaithe.</string>
+    <string name="notify_unsuccessful_exact_alarm">Níorbh fhéidir fógra a chruthú. Tabhair cead aip chun aláraim chruinne a shocrú.
+    </string>
     <string name="notify_invalid_time">Am mícheart. Tá an tram le sroicheadh roimhe sin.</string>
 
     <!--

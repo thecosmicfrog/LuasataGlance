@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2023 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -42,6 +42,7 @@ import com.squareup.okhttp.OkHttpClient;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.api.ApiMethods;
 import org.thecosmicfrog.luasataglance.api.ApiTimes;
+import org.thecosmicfrog.luasataglance.api.HttpInterceptor;
 import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.model.StopForecast;
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap;
@@ -241,6 +242,7 @@ public class WidgetListenerService extends Service {
             final RestAdapter restAdapter = new RestAdapter.Builder()
                     .setClient(new OkClient(okHttpClient))
                     .setEndpoint(API_URL)
+                    .setRequestInterceptor(new HttpInterceptor())
                     .build();
 
             ApiMethods methods = restAdapter.create(ApiMethods.class);

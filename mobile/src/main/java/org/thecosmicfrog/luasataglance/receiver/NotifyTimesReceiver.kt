@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2023 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -30,7 +30,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.RingtoneManager
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.SystemClock
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import org.thecosmicfrog.luasataglance.R
@@ -74,31 +76,32 @@ class NotifyTimesReceiver : BroadcastReceiver() {
             return
         }
 
-        /* Inform user the notification has been scheduled successfully. */
-        Toast.makeText(
-            context,
-            context.getString(R.string.notify_successful),
-            Toast.LENGTH_SHORT
-        ).show()
-
-        scheduleNotification(
+        val notificationScheduled = scheduleNotification(
             context,
             notifyStopNameExpected,
             notifyTimeUserRequestedMins,
             notifyDelayMillis
         )
+
+        if (notificationScheduled) {
+            /* Inform user the notification has been scheduled successfully. */
+            Toast.makeText(
+                context,
+                context.getString(R.string.notify_successful),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     /**
      * Schedule notification for tram.
      * @param context Context.
      * @param notifyStopName Name of stop to notify for.
-     * @param notifyTimeUserRequestedMins Minutes before tram arrival the user has requested to
-     * be notified at.
+     * @param notifyTimeUserRequestedMins Minutes before tram arrival the user has requested to be notified at.
      * @param notifyDelayMillis Milliseconds to wait before firing off notification.
      */
     private fun scheduleNotification(context: Context, notifyStopName: String, notifyTimeUserRequestedMins: Int,
-        notifyDelayMillis: Int) {
+                                     notifyDelayMillis: Int): Boolean {
         val requestCodeOpenMainActivity = 0
         val requestCodeScheduleNotification = 1
         val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -175,8 +178,7 @@ class NotifyTimesReceiver : BroadcastReceiver() {
             }
         }
 
-        /* Neat Kotlin trick to save using a full if/else for SDK version check. */
-        val receiverExported: Int? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Context.RECEIVER_EXPORTED else null
+        val receiverExported: Int? = if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) Context.RECEIVER_EXPORTED else null
         context.applicationContext.registerReceiver(
             broadcastReceiver,
             IntentFilter("org.thecosmicfrog.luasataglance"),
@@ -192,10 +194,24 @@ class NotifyTimesReceiver : BroadcastReceiver() {
 
         /* Wake up the device. */
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            SystemClock.elapsedRealtime() + notifyDelayMillis,
-            pendingIntent
-        )
+
+        try {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + notifyDelayMillis,
+                pendingIntent
+            )
+
+            return true
+        } catch (e: SecurityException) {
+            Log.w(logTag, "Failed to schedule exact alarm.")
+            Toast.makeText(
+                context,
+                context.getString(R.string.notify_unsuccessful_exact_alarm),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+        return false
     }
 }

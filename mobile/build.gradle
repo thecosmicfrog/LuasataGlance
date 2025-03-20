@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
-        minSdk 26
+        minSdk 29
         targetSdk 34
         versionCode generateVersionCode()
         versionName generateVersionName()

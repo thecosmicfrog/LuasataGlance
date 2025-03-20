@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2015-2023 Aaron Hastings
+    Copyright 2015-2025 Aaron Hastings
 
     This file is part of Luas at a Glance.
 
@@ -53,6 +53,13 @@
     <style name="LuasAtAGlanceActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/luas_purple</item>
         <item name="background">@color/luas_purple</item>
+    </style>
+
+    <style name="LuasAtAGlancePermissionsRequestDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">#FFFFFF</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorSecondary">#000000</item>
+        <item name="android:windowFrame">@null</item>
     </style>
 
 </resources>

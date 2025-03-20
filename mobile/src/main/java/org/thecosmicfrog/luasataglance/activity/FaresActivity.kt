@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2023 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -37,6 +37,7 @@ import androidx.core.content.ContextCompat
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.api.ApiFares
 import org.thecosmicfrog.luasataglance.api.ApiMethods
+import org.thecosmicfrog.luasataglance.api.HttpInterceptor
 import org.thecosmicfrog.luasataglance.databinding.ActivityFaresBinding
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import retrofit.Callback
@@ -229,6 +230,7 @@ class FaresActivity : AppCompatActivity() {
          */
         val restAdapter = RestAdapter.Builder()
                 .setEndpoint(apiUrl)
+                .setRequestInterceptor(HttpInterceptor())
                 .build()
 
         val methods = restAdapter.create(ApiMethods::class.java)
