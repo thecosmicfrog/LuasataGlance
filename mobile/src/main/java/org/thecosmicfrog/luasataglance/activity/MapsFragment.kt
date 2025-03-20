@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -41,7 +41,6 @@ import com.google.android.gms.maps.model.*
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException
 import org.thecosmicfrog.luasataglance.model.StopCoords
-import org.thecosmicfrog.luasataglance.util.Analytics
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -205,38 +204,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         Log.i(logTag, "Location permission granted.")
-        Analytics.permissionLocationGranted(
-            context,
-            "permission_location_granted",
-            "permission_location_granted"
-        )
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         Log.i(logTag, "Location permission denied.")
-        Analytics.permissionLocationDenied(
-            context,
-            "permission_location_denied",
-            "permission_location_denied"
-        )
     }
 
     override fun onRationaleAccepted(requestCode: Int) {
         Log.i(logTag, "Location rationale accepted.")
-        Analytics.permissionRationaleLocationAccepted(
-            context,
-            "permission_rationale_location_accepted",
-            "permission_rationale_location_accepted"
-        )
     }
 
     override fun onRationaleDenied(requestCode: Int) {
         Log.i(logTag, "Location rationale denied.")
-        Analytics.permissionRationaleLocationDenied(
-            context,
-            "permission_rationale_location_denied",
-            "permission_rationale_location_denied"
-        )
 
         Preferences.savePermissionLocationShouldNotAskAgain(context, true)
     }

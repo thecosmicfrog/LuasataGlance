@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -79,12 +79,6 @@ object StopForecastUtil {
                             tutorialCardViewSelectStop?.visibility = View.VISIBLE
 
                             Preferences.saveHasRunOnce(rootView?.context, tutorial, true)
-
-                            Analytics.tutorialBegin(
-                                rootView?.context,
-                                "tutorial_begin",
-                                "select_stop_begin"
-                            )
                         }
                     } else {
                         tutorialCardViewSelectStop?.visibility = View.GONE
@@ -110,12 +104,6 @@ object StopForecastUtil {
                             )
 
                             tutorialCardViewNotifications?.visibility = View.VISIBLE
-
-                            Analytics.tutorialBegin(
-                                rootView?.context,
-                                "tutorial_begin",
-                                "notifications_begin"
-                            )
                         }
                     } else {
                         tutorialCardViewNotifications?.visibility = View.GONE
@@ -140,12 +128,6 @@ object StopForecastUtil {
                             )
 
                             tutorialCardViewFavourites?.visibility = View.VISIBLE
-
-                            Analytics.tutorialBegin(
-                                rootView?.context,
-                                "tutorial_begin",
-                                "favourites_begin"
-                            )
                         }
                     } else {
                         tutorialCardViewFavourites?.visibility = View.GONE

@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -38,7 +38,6 @@ import android.widget.RemoteViews;
 import org.thecosmicfrog.luasataglance.R;
 import org.thecosmicfrog.luasataglance.activity.MainActivity;
 import org.thecosmicfrog.luasataglance.service.WidgetListenerService;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.Preferences;
 
@@ -124,23 +123,11 @@ public class StopForecastWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         Log.i(LOG_TAG, "Widget first created.");
-
-        Analytics.enableWidget(
-                context,
-                "enable_widget",
-                "widget"
-        );
     }
 
     @Override
     public void onDisabled(Context context) {
         Log.i(LOG_TAG, "Widget disabled.");
-
-        Analytics.disableWidget(
-                context,
-                "disable_widget",
-                "widget"
-        );
     }
 
     @Override
@@ -175,12 +162,6 @@ public class StopForecastWidget extends AppWidgetProvider {
                                 stopName
                         )
                 );
-
-                Analytics.selectContent(
-                        context,
-                        "button_tapped",
-                        "widget_stop_name_tapped"
-                );
             }
 
             /*
@@ -203,12 +184,6 @@ public class StopForecastWidget extends AppWidgetProvider {
                         remoteViews,
                         indexNextStopToLoad
                 );
-
-                Analytics.selectContent(
-                        context,
-                        "button_tapped",
-                        "widget_arrow_left_tapped"
-                );
             }
 
             if (intent.getAction().equals(WIDGET_CLICK_ARROW_RIGHT)) {
@@ -227,12 +202,6 @@ public class StopForecastWidget extends AppWidgetProvider {
                         appWidgetsIds,
                         remoteViews,
                         indexNextStopToLoad
-                );
-
-                Analytics.selectContent(
-                        context,
-                        "button_tapped",
-                        "widget_arrow_right_tapped"
                 );
             }
 
@@ -265,12 +234,6 @@ public class StopForecastWidget extends AppWidgetProvider {
                         appWidgetsIds,
                         remoteViews,
                         indexNextStopToLoad
-                );
-
-                Analytics.selectContent(
-                        context,
-                        "button_tapped",
-                        "widget_stop_forecast_tapped"
                 );
             }
         }

@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -28,7 +28,6 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Display
 import android.view.WindowManager
-import com.google.firebase.perf.FirebasePerformance
 
 object AppUtil {
 
@@ -47,22 +46,6 @@ object AppUtil {
             context,
             dpHeight
         )
-    }
-
-    /**
-     * Enable or disable Firebase Performance collection.
-     */
-    @JvmStatic
-    fun configureFirebasePerformanceCollection(context: Context) {
-        /* Disable Firebase Performance collection if we're running in Firebase Test Lab. */
-        if (isRunningInFirebaseTestLab(context)) {
-            Log.i(
-                logTag,
-                "Running in Firebase Test Lab. Disabling Firebase Performance collection."
-            )
-
-            FirebasePerformance.getInstance().isPerformanceCollectionEnabled = false
-        }
     }
 
     val isEmulator: Boolean

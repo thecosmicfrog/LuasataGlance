@@ -24,26 +24,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!--
-            Set custom default icon. This is used when no icon is set for incoming notification
-            messages.
-        -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/laag_logo_notification" />
-        <!--
-            Set color used with incoming notification messages. This is used when no color is set
-            for the incoming notification message.
-        -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/luas_purple" />
-        <!--
-            Enable or disable Firebase Performance library.
-        -->
-        <meta-data
-            android:name="firebase_performance_collection_enabled"
-            android:value="@bool/FIREBASE_PERFORMANCE_ENABLED" />
 
         <!--
             Official Google hack required since targeting API level >= 28 (Android 9.0).
@@ -115,15 +95,6 @@
         </receiver>
 
         <service
-            android:name=".service.WearMessageListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action
-                    android:name="com.google.android.gms.wearable.BIND_LISTENER"
-                    tools:ignore="WearableBindListener" />
-            </intent-filter>
-        </service>
-        <service
             android:name=".service.WidgetListenerService"
             android:enabled="true" />
 
@@ -151,24 +122,6 @@
         <activity
             android:name=".activity.WhatsNewActivity"
             android:theme="@style/Theme.AppCompat.Dialog" />
-
-        <service
-            android:name=".service.MessagingService"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service
-            android:name=".service.WearMessageListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action
-                    android:name="com.google.android.gms.wearable.BIND_LISTENER"
-                    tools:ignore="WearableBindListener" />
-            </intent-filter>
-        </service>
     </application>
 
 </manifest>

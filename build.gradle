@@ -4,7 +4,7 @@ buildscript {
     ext.kotlin_version = '1.6.0'
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {
             url 'https://maven.google.com/'
             name 'Google'
@@ -15,16 +15,10 @@ buildscript {
     }
     dependencies {
         // Gradle
-        classpath 'com.android.tools.build:gradle:7.0.3'
+        classpath 'com.android.tools.build:gradle:8.9.0'
 
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // Firebase
-        classpath 'com.google.gms:google-services:4.3.10'
-
-        // Firebase Performance Monitoring plugin
-        classpath 'com.google.firebase:perf-plugin:1.4.0'
 
         // Crashlytics plugin
         classpath 'io.fabric.tools:gradle:1.29.0'
@@ -43,7 +37,7 @@ allprojects {
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 

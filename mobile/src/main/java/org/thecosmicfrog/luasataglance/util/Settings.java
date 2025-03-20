@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -55,12 +55,6 @@ public final class Settings {
                             Constant.NEWS_TYPE_LUAS_NEWS
                     )
             );
-
-            Analytics.selectContent(
-                    context,
-                    "menuitem_tapped",
-                    "news_tapped"
-            );
         }
 
         if (id == R.id.action_settings) {
@@ -72,12 +66,6 @@ public final class Settings {
                             FLAG_ACTIVITY_NEW_TASK
                     )
             );
-
-            Analytics.selectContent(
-                    context,
-                    "menuitem_tapped",
-                    "settings_tapped"
-            );
         }
 
         if (id == R.id.action_about) {
@@ -88,12 +76,6 @@ public final class Settings {
                     ).setFlags(
                             FLAG_ACTIVITY_NEW_TASK
                     )
-            );
-
-            Analytics.selectContent(
-                    context,
-                    "menuitem_tapped",
-                    "about_tapped"
             );
         }
     }

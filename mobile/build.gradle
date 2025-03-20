@@ -1,17 +1,10 @@
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
-apply plugin: 'io.fabric'
-apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
-    compileSdkVersion 31
-
-    viewBinding {
-        enabled = true
-    }
+    namespace = "org.thecosmicfrog.luasataglance"
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
@@ -19,10 +12,15 @@ android {
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
-        minSdkVersion 23
-        targetSdkVersion 31
+        compileSdk 34
+        minSdkVersion 29
+        targetSdkVersion 34
         versionCode generateVersionCode()
         versionName generateVersionName()
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     buildTypes {
@@ -30,16 +28,12 @@ android {
             resValue "string", "version_code", generateVersionCode().toString()
             resValue "string", "version_name", generateVersionName()
             resValue "string", "release_date", generateReleaseDate()
-
-            /* Disable Firebase Performance library to prevent false positives during development */
-            resValue "bool", "FIREBASE_PERFORMANCE_ENABLED", "false"
         }
 
         release {
             resValue "string", "version_code", generateVersionCode().toString()
             resValue "string", "version_name", generateVersionName()
             resValue "string", "release_date", generateReleaseDate()
-            resValue "bool", "FIREBASE_PERFORMANCE_ENABLED", "true"
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -59,21 +53,16 @@ dependencies {
     api 'com.squareup.okhttp:okhttp:2.7.5'
     api 'androidx.legacy:legacy-support-v4:1.0.0'
     api 'com.google.android.gms:play-services-maps:18.0.0'
-    api 'com.google.firebase:firebase-core:20.0.0'
-    api 'com.google.firebase:firebase-messaging:23.0.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.transition:transition:1.4.1'
     implementation "androidx.constraintlayout:constraintlayout:2.1.2"
     implementation "androidx.preference:preference-ktx:1.1.1"
-    implementation 'com.google.firebase:firebase-perf:20.0.3'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation "androidx.core:core-ktx:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
-// Firebase
-apply plugin: 'com.google.gms.google-services'
 repositories {
     mavenCentral()
 }

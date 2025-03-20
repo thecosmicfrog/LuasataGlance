@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -72,7 +72,6 @@ class NewsActivity : AppCompatActivity() {
          */
         val webViewNews = findViewById<WebView>(R.id.webview_news)
 
-        webViewNews.settings.setAppCacheEnabled(false)
         webViewNews.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webViewNews.webViewClient = WebViewClient()
 

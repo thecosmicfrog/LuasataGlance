@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -27,7 +27,6 @@ import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.util.Analytics
 
 class AboutActivity : FragmentActivity() {
 
@@ -50,15 +49,6 @@ class AboutActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_about)
 
-        val textViewSourceCode = findViewById<TextView>(R.id.textview_sourcecode)
-        textViewSourceCode.setOnClickListener {
-            Analytics.selectContent(
-                    applicationContext,
-                    "link_tapped",
-                    "sourcecode_tapped"
-            )
-        }
-
         val textViewLicense = findViewById<TextView>(R.id.textview_license)
         textViewLicense.setOnClickListener {
             startActivity(
@@ -66,12 +56,6 @@ class AboutActivity : FragmentActivity() {
                             applicationContext,
                             LicenseActivity::class.java
                     )
-            )
-
-            Analytics.selectContent(
-                    applicationContext,
-                    "link_tapped",
-                    "license_tapped"
             )
         }
     }

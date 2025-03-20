@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -44,7 +44,6 @@ import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.api.ApiMethods
 import org.thecosmicfrog.luasataglance.api.ApiTimes
 import org.thecosmicfrog.luasataglance.model.*
-import org.thecosmicfrog.luasataglance.util.Analytics
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.createStopForecast
@@ -629,8 +628,6 @@ class LineFragment : Fragment() {
                                 }
                             }
                         }
-                    } else {
-                        Analytics.nullApitimes(ctx, "null", "null_apitimes_mobile")
                     }
                 }
             }
@@ -673,8 +670,6 @@ class LineFragment : Fragment() {
                 if (retrofitError.kind != null) {
                     Log.e(logTag, "Kind: " + retrofitError.kind.toString())
                 }
-
-                Analytics.httpError(ctx, "http_error", "http_error_general_mobile")
             }
         }
 
@@ -706,8 +701,6 @@ class LineFragment : Fragment() {
             Log.e(logTag, "Failed to find content view during Snackbar creation.")
         } catch (e: ParseException) {
             Log.e(logTag, "Failed to parse created time from API.")
-
-            Analytics.apiCreatedParseError(ctx, "api_error", "api_created_parse_error_mobile")
         }
 
         return null

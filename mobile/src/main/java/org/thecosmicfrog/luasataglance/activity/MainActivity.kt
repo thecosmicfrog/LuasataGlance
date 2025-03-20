@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -34,7 +34,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.adapter.ReplacerPagerAdapter
 import org.thecosmicfrog.luasataglance.databinding.ActivityMainBinding
-import org.thecosmicfrog.luasataglance.util.AppUtil.configureFirebasePerformanceCollection
 import org.thecosmicfrog.luasataglance.util.AppUtil.getScreenHeight
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.view.NonSwipeableViewPager
@@ -53,8 +52,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        configureFirebasePerformanceCollection(applicationContext)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 

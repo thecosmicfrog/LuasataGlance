@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -45,7 +45,6 @@ import org.thecosmicfrog.luasataglance.api.ApiTimes;
 import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap;
 import org.thecosmicfrog.luasataglance.model.StopForecast;
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap;
-import org.thecosmicfrog.luasataglance.util.Analytics;
 import org.thecosmicfrog.luasataglance.util.Constant;
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil;
 
@@ -258,12 +257,6 @@ public class WidgetListenerService extends Service {
                         updateStopForecast(context, views, stopForecast);
 
                         appWidgetManager.partiallyUpdateAppWidget(widgetId, views);
-                    } else {
-                        Analytics.nullApitimes(
-                                getApplicationContext(),
-                                "null",
-                                "null_apitimes_widget"
-                        );
                     }
 
                     /* Stop the refresh animations. */
@@ -319,12 +312,6 @@ public class WidgetListenerService extends Service {
                     if (retrofitError.getKind() != null) {
                         Log.e(LOG_TAG, retrofitError.getKind().toString());
                     }
-
-                    Analytics.httpErrorWidget(
-                            getApplicationContext(),
-                            "http_error_widget",
-                            "http_error_general_widget"
-                    );
                 }
             };
 

@@ -1,7 +1,7 @@
 /**
  * @author Aaron Hastings
  *
- * Copyright 2015-2020 Aaron Hastings
+ * Copyright 2015-2025 Aaron Hastings
  *
  * This file is part of Luas at a Glance.
  *
@@ -21,19 +21,15 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.content.Intent
-import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.model.NotifyTimesMap
 import org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver
-import org.thecosmicfrog.luasataglance.util.Analytics
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 import java.util.*
@@ -87,12 +83,6 @@ class NotifyTimeActivity : FragmentActivity() {
 
             /* Send the Intent. */
             sendBroadcast(intent)
-
-            Analytics.selectContent(
-                    applicationContext,
-                    "schedule_created",
-                    "schedule_created"
-            )
 
             /* Dismiss the Dialog. */
             finish()
