@@ -21,7 +21,6 @@
 package org.thecosmicfrog.luasataglance.model
 
 import org.thecosmicfrog.luasataglance.util.Constant
-import java.util.*
 
 class StopIdLineMap : HashMap<String?, String?>() {
     init {

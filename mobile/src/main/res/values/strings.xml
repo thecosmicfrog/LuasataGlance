@@ -28,6 +28,7 @@
         Activities
     -->
     <string name="title_activity_fares">Fares</string>
+    <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
     <string name="title_activity_license">License</string>
     <string name="title_activity_maps">Luas Map</string>
@@ -53,15 +54,9 @@
         your network connection. If there are no issues, the Luas RTPI system may be down.
     </string>
     <string name="information">\u2139</string>
+    <string name="select_stop_using_picker">Select a stop using the picker above</string>
     <string name="select_stop_tutorial">Let\'s get started! Select a stop using the picker above.
         \nTimes will update <b>every 10 seconds</b>.
-    </string>
-    <string name="notifications_tutorial">Great! You can also schedule notifications for incoming
-        trams. Just tap on a tram below to try it out.
-    </string>
-    <string name="favourites_tutorial">Perfect! Okay, one last thing. See that <b>Favourites</b>
-        (\u2605) button at the bottom of the screen? That lets you save your favourite stops for
-        quick access. Try tapping it now.
     </string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
@@ -83,6 +78,7 @@
         Actions
     -->
     <string name="action_about">About</string>
+    <string name="action_favourites">Favourites</string>
     <string name="action_news">Luas News</string>
     <string name="action_news_alert">Alerts</string>
     <string name="action_settings">Settings</string>

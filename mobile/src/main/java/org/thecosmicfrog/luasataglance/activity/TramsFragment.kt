@@ -40,13 +40,13 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.adapter.TabsPagerAdapter
-import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import org.thecosmicfrog.luasataglance.model.StopIdLineMap
+import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import org.thecosmicfrog.luasataglance.util.AppUtil
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.Settings
-import java.util.*
+import java.util.Locale
 
 class TramsFragment : Fragment() {
 
@@ -115,6 +115,8 @@ class TramsFragment : Fragment() {
         val mapStopIdLine = StopIdLineMap()
         val broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
+                if (!isAdded) return
+
                 val stopName = intent?.getStringExtra(Constant.INTENT_EXTRA_STOP_NAME)
                 val stopId = mapStopNameId[stopName]
                 val stopLine = mapStopIdLine[stopId]
@@ -180,12 +182,12 @@ class TramsFragment : Fragment() {
         when (tabLayout.selectedTabPosition) {
             0 ->
                 tabLayout.setSelectedTabIndicatorColor(
-                    ContextCompat.getColor(context as Context, R.color.tab_red_line)
+                    ContextCompat.getColor(requireContext(), R.color.tab_red_line)
                 )
 
             1 ->
                 tabLayout.setSelectedTabIndicatorColor(
-                    ContextCompat.getColor(context as Context, R.color.tab_green_line)
+                    ContextCompat.getColor(requireContext(), R.color.tab_green_line)
                 )
 
             else -> return

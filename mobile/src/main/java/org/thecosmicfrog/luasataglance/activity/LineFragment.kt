@@ -43,9 +43,20 @@ import com.google.android.material.tabs.TabLayout
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.api.ApiMethods
 import org.thecosmicfrog.luasataglance.api.ApiTimes
-import org.thecosmicfrog.luasataglance.model.*
+import org.thecosmicfrog.luasataglance.databinding.FragmentGreenlineBinding
+import org.thecosmicfrog.luasataglance.databinding.FragmentRedlineBinding
+import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap
+import org.thecosmicfrog.luasataglance.model.StopForecast
+import org.thecosmicfrog.luasataglance.model.StopForecastAdapter
+import org.thecosmicfrog.luasataglance.model.StopForecastInfo
+import org.thecosmicfrog.luasataglance.model.StopIdLineMap
+import org.thecosmicfrog.luasataglance.model.StopNameIdMap
+import org.thecosmicfrog.luasataglance.model.Tram
+import org.thecosmicfrog.luasataglance.util.AppUtil
 import org.thecosmicfrog.luasataglance.util.Constant
+import org.thecosmicfrog.luasataglance.util.LineFragmentViewBindingAdapter
 import org.thecosmicfrog.luasataglance.util.Preferences
+import org.thecosmicfrog.luasataglance.util.StopForecastUtil
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.createStopForecast
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.displayTutorial
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.showSnackbar
@@ -58,7 +69,9 @@ import retrofit.client.Response
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.Timer
+import java.util.TimerTask
 
 class LineFragment : Fragment() {
 
@@ -71,6 +84,7 @@ class LineFragment : Fragment() {
         }
     }
 
+    private var viewBinding: LineFragmentViewBindingAdapter? = null
     private var act: FragmentActivity? = null
     private var ctx: Context? = null
     private var rootView: View? = null
@@ -98,8 +112,8 @@ class LineFragment : Fragment() {
         private var resStatusCardView: Int? = 0
         private var resSwipeRefreshLayout: Int? = 0
         private var resScrollView: Int? = 0
-        private var resArrayStopsRedLine: Int? = 0
-        private var resArrayStopsGreenLine: Int? = 0
+        private var resArrayStopsRedLine = 0
+        private var resArrayStopsGreenLine = 0
         private var mapStopNameId: StopNameIdMap? = null
         private var localeDefault: String? = null
 
@@ -119,35 +133,10 @@ class LineFragment : Fragment() {
             when (line) {
                 Constant.RED_LINE -> {
                     bundle.putString(Constant.LINE, Constant.RED_LINE)
-                    bundle.putInt(Constant.RES_LAYOUT_FRAGMENT_LINE, R.layout.fragment_redline)
-                    bundle.putInt(Constant.RES_PROGRESSBAR, R.id.redline_progressbar)
-                    bundle.putInt(Constant.RES_SPINNER_CARDVIEW, R.id.redline_spinner_card_view)
-                    bundle.putInt(Constant.RES_STATUS_CARDVIEW, R.id.redline_statuscardview)
-                    bundle.putInt(
-                        Constant.RES_SWIPEREFRESHLAYOUT,
-                        R.id.redline_swiperefreshlayout
-                    )
-                    bundle.putInt(Constant.RES_SCROLLVIEW, R.id.redline_scrollview)
-                    bundle.putInt(
-                        Constant.RES_STOPFORECASTCONSTRAINTLAYOUT,
-                        R.id.redline_stopforecastconstraintlayout
-                    )
                 }
 
                 Constant.GREEN_LINE -> {
                     bundle.putString(Constant.LINE, Constant.GREEN_LINE)
-                    bundle.putInt(Constant.RES_LAYOUT_FRAGMENT_LINE, R.layout.fragment_greenline)
-                    bundle.putInt(Constant.RES_PROGRESSBAR, R.id.greenline_progressbar)
-                    bundle.putInt(Constant.RES_SPINNER_CARDVIEW, R.id.greenline_spinner_card_view)
-                    bundle.putInt(Constant.RES_STATUS_CARDVIEW, R.id.greenline_statuscardview)
-                    bundle.putInt(
-                        Constant.RES_SWIPEREFRESHLAYOUT,
-                        R.id.greenline_swiperefreshlayout)
-                    bundle.putInt(Constant.RES_SCROLLVIEW, R.id.greenline_scrollview)
-                    bundle.putInt(
-                        Constant.RES_STOPFORECASTCONSTRAINTLAYOUT,
-                        R.id.greenline_stopforecastconstraintlayout
-                    )
                 }
 
                 Constant.NO_LINE -> Log.e(
@@ -175,20 +164,24 @@ class LineFragment : Fragment() {
         initFragmentVars()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        /* Inflate the layout for this fragment. */
-        rootView = resLayoutFragmentLine?.let { inflater.inflate(it, container, false) }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val bundle = arguments
+        val line = bundle!!.getString(Constant.LINE)
+
+        viewBinding = getBinding(line, container)
 
         /* Initialise correct locale. */
         localeDefault = Locale.getDefault().toString()
 
         /* Instantiate a new StopNameIdMap. */
-        mapStopNameId = StopNameIdMap(localeDefault)
+        mapStopNameId = StopNameIdMap(localeDefault!!)
+        return viewBinding?.stopForecastConstraintLayout!!.rootView
+    }
 
-        mapStopIdLine = StopIdLineMap()
+    override fun onDestroyView() {
+        super.onDestroyView()
 
-        return rootView
+        viewBinding = null
     }
 
     override fun onPause() {
@@ -203,17 +196,11 @@ class LineFragment : Fragment() {
 
         super.onResume()
 
-        act = activity
+        act = requireActivity()
 
-        /* Remove Favourites tutorial if it has been completed once already. */
-        if (line == Constant.RED_LINE && Preferences.hasRunOnce(ctx, Constant.TUTORIAL_FAVOURITES))
-        {
-            rootView?.let {
-                displayTutorial(it, Constant.RED_LINE, Constant.TUTORIAL_FAVOURITES, false)
-            }
-        }
+        AppUtil.resetShouldNotAskAgainIfPermissionsChangedOutsideApp(context)
 
-        if (isAdded) {
+        if (isAdded && viewBinding != null && line != null) {
             isInitialised = initFragment()
 
             ctx?.let {
@@ -265,20 +252,13 @@ class LineFragment : Fragment() {
                 if (hasSetTabAndSpinner) {
                     act?.intent?.removeExtra(Constant.NOTIFY_STOP_NAME)
                 }
-            } else if (act?.intent?.hasExtra(intentExtraActivityToOpen) == true) {
-                act?.intent?.getStringExtra(intentExtraActivityToOpen)?.let {
-                    activityRouter(it)
-                }
-
-                /* Clear the Extra to avoid opening the same Activity on every start. */
-                act?.intent?.removeExtra(intentExtraActivityToOpen)
             } else if (Preferences.defaultStopName(ctx) != getString(R.string.none)
                 && Preferences.defaultStopName(ctx) != null) {
                 setTabAndSpinner(Preferences.defaultStopName(ctx))
             }
 
             /* Display tutorial for selecting a stop, if required. */
-            displayTutorial(rootView, line, Constant.TUTORIAL_SELECT_STOP, true)
+            displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, true)
 
             /*
              * Reload stop forecast.
@@ -291,10 +271,8 @@ class LineFragment : Fragment() {
                 autoReloadStopForecast(0)
             }
 
-            recyclerViewStopForecastsInbound =
-                rootView?.findViewById(R.id.recyclerview_stop_forecasts_inbound)
-            recyclerViewStopForecastsOutbound =
-                rootView?.findViewById(R.id.recyclerview_stop_forecasts_outbound)
+            recyclerViewStopForecastsInbound = viewBinding?.recyclerViewStopForecastsInbound
+            recyclerViewStopForecastsOutbound = viewBinding?.recyclerViewStopForecastsOutbound
             linearLayoutManagerInbound = LinearLayoutManager(ctx)
             linearLayoutManagerOutbound = LinearLayoutManager(ctx)
             linearLayoutManagerInbound?.orientation = LinearLayoutManager.VERTICAL
@@ -312,7 +290,12 @@ class LineFragment : Fragment() {
         if (isInitialised) {
             /* If the Spinner's selected item is "Select a stop...", get out of here. */
             if (spinnerCardView?.spinnerStops?.selectedItemPosition == 0) {
-                Log.i(logTag, "Spinner selected item is \"Select a stop...\"")
+                StopForecastUtil.clearStopForecast(
+                    statusCardView,
+                    recyclerViewStopForecastsInbound,
+                    recyclerViewStopForecastsOutbound
+                )
+
                 return
             }
 
@@ -335,19 +318,32 @@ class LineFragment : Fragment() {
         }
     }
 
+    private fun getBinding(line: String?, viewGroup: ViewGroup?): LineFragmentViewBindingAdapter? {
+        val inflater = LayoutInflater.from(getContext())
+        when (line) {
+            Constant.RED_LINE -> {
+                val fragmentRedlineBinding = FragmentRedlineBinding.inflate(inflater, viewGroup, false)
+                return LineFragmentViewBindingAdapter(fragmentRedlineBinding, null)
+            }
+
+            Constant.GREEN_LINE -> {
+                val fragmentGreenlineBinding = FragmentGreenlineBinding.inflate(inflater, viewGroup, false)
+                return LineFragmentViewBindingAdapter(null, fragmentGreenlineBinding)
+            }
+
+            else -> Log.wtf(logTag, "Invalid line specified.")
+        }
+
+        return null
+    }
+
     /**
      * Initialise local variables for this Fragment instance.
      */
     private fun initFragmentVars() {
-        resArrayStopsRedLine = arguments?.getInt(Constant.RES_ARRAY_STOPS_RED_LINE)
-        resArrayStopsGreenLine = arguments?.getInt(Constant.RES_ARRAY_STOPS_GREEN_LINE)
-        line = arguments?.getString(Constant.LINE)
-        resLayoutFragmentLine = arguments?.getInt(Constant.RES_LAYOUT_FRAGMENT_LINE)
-        resProgressBar = arguments?.getInt(Constant.RES_PROGRESSBAR)
-        resSpinnerCardView = arguments?.getInt(Constant.RES_SPINNER_CARDVIEW)
-        resStatusCardView = arguments?.getInt(Constant.RES_STATUS_CARDVIEW)
-        resSwipeRefreshLayout = arguments?.getInt(Constant.RES_SWIPEREFRESHLAYOUT)
-        resScrollView = arguments?.getInt(Constant.RES_SCROLLVIEW)
+        resArrayStopsRedLine = requireArguments().getInt(Constant.RES_ARRAY_STOPS_RED_LINE)
+        resArrayStopsGreenLine = requireArguments().getInt(Constant.RES_ARRAY_STOPS_GREEN_LINE)
+        line = requireArguments().getString(Constant.LINE)
     }
 
     /**
@@ -355,11 +351,11 @@ class LineFragment : Fragment() {
      */
     private fun initFragment(): Boolean {
         tabLayout = act?.findViewById(R.id.trams_tablayout)
-        progressBar = resProgressBar?.let { rootView?.findViewById(it) }
+        progressBar = viewBinding?.progressbar!!
         setIsLoading(false)
 
         /* Set up Spinner and onItemSelectedListener. */
-        spinnerCardView = resSpinnerCardView?.let { rootView?.findViewById(it) }
+        spinnerCardView = viewBinding?.spinnerCardView!!
         spinnerCardView?.setLine(line)
         spinnerCardView?.spinnerStops?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
@@ -380,6 +376,12 @@ class LineFragment : Fragment() {
                         shouldAutoReload = false
                         swipeRefreshLayout?.isEnabled = false
 
+                        StopForecastUtil.clearStopForecast(
+                            statusCardView,
+                            recyclerViewStopForecastsInbound,
+                            recyclerViewStopForecastsOutbound
+                        )
+
                         return
                     } else {
                         swipeRefreshLayout?.isEnabled = true
@@ -388,10 +390,7 @@ class LineFragment : Fragment() {
                     shouldAutoReload = true
 
                     /* Hide the select stop tutorial, if it is visible. */
-                    displayTutorial(rootView, line, Constant.TUTORIAL_SELECT_STOP, false)
-
-                    /* Show the notifications tutorial. */
-                    displayTutorial(rootView, line, Constant.TUTORIAL_NOTIFICATIONS, true)
+                    displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, false)
 
                     /*
                      * Get the stop name from the current position of the Spinner, save it to
@@ -412,66 +411,21 @@ class LineFragment : Fragment() {
         }
 
         /* Set up Status CardView. */
-        statusCardView = resStatusCardView?.let { rootView?.findViewById(it) }
+        statusCardView = viewBinding?.statuscardview!!
 
         /* Set up SwipeRefreshLayout. */
-        swipeRefreshLayout = resSwipeRefreshLayout?.let { rootView?.findViewById(it) }
-        swipeRefreshLayout?.setOnRefreshListener{
+        swipeRefreshLayout = viewBinding?.swiperefreshlayout!!
+        swipeRefreshLayout?.setOnRefreshListener {
             /* Start the refresh animation. */
             swipeRefreshLayout?.isRefreshing = true
 
             loadStopForecast(Preferences.selectedStopName(ctx, line), true)
         }
 
-        scrollView = resScrollView?.let { rootView?.findViewById(it) }
+        scrollView = viewBinding?.scrollview!!
         scrollView?.isNestedScrollingEnabled = false
 
         return true
-    }
-
-    /**
-     * Utility method to open an Activity based on a passed tag value.
-     * @param activityToOpen Value of Activity to open.
-     */
-    private fun activityRouter(activityToOpen: String) {
-        Log.i(logTag, "Intent received to open Activity.")
-
-        when (activityToOpen) {
-            Constant.REMOTEMESSAGE_VALUE_ACTIVITY_FARES -> {
-                Log.i(logTag, "Routing to Activity: " + Constant.CLASS_FARES_ACTIVITY)
-
-                startActivity(
-                    Intent(ctx, Constant.CLASS_FARES_ACTIVITY)
-                )
-            }
-
-            Constant.REMOTEMESSAGE_VALUE_ACTIVITY_MAIN ->
-                /* We're already in MainActivity. Nothing to do here. */
-                Log.i(logTag, "Already on MainActivity. Not routing anywhere.")
-
-            Constant.REMOTEMESSAGE_VALUE_ACTIVITY_NEWS -> {
-                Log.i(logTag, "Routing to Activity: " + Constant.CLASS_NEWS_ACTIVITY)
-
-                startActivity(
-                    Intent(ctx, Constant.CLASS_NEWS_ACTIVITY)
-                )
-            }
-
-            Constant.REMOTEMESSAGE_VALUE_ACTIVITY_SETTINGS -> {
-                Log.i(logTag, "Routing to Activity: " + Constant.CLASS_SETTINGS_ACTIVITY)
-
-                startActivity(
-                    Intent(ctx, Constant.CLASS_SETTINGS_ACTIVITY)
-                )
-            }
-
-            else ->
-                /*
-                 * We should have never gotten to this point, as NotificationUtil should
-                 * pass MainActivity as its default case.
-                 */
-                Log.wtf(logTag, "activityToOpen key does not correspond to any known value.")
-        }
     }
 
     /**
@@ -498,18 +452,11 @@ class LineFragment : Fragment() {
      * Set the current tab and the position of the Spinner.
      */
     private fun setTabAndSpinner(stopName: String?): Boolean {
-        lateinit var listStopsRedLine: List<String>
-        lateinit var listStopsGreenLine: List<String>
+        val arrayStopsRedLine = resources.getStringArray(resArrayStopsRedLine)
+        val arrayStopGreenLine = resources.getStringArray(resArrayStopsGreenLine)
 
-        resArrayStopsRedLine?.let {
-            val arrayStopsRedLine = resources.getStringArray(it)
-            listStopsRedLine = listOf(*arrayStopsRedLine)
-        }
-        resArrayStopsGreenLine?.let {
-            val arrayStopsGreenLine = resources.getStringArray(it)
-            listStopsGreenLine = listOf(*arrayStopsGreenLine)
-        }
-
+        val listStopsRedLine = listOf(*arrayStopsRedLine)
+        val listStopsGreenLine = listOf(*arrayStopGreenLine)
         var listStopsThisLine: List<String>? = null
         var indexOtherLine = -1
 
@@ -839,4 +786,3 @@ class LineFragment : Fragment() {
         }
     }
 }
-

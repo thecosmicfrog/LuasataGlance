@@ -1,5 +1,6 @@
 package org.thecosmicfrog.luasataglance.model
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +10,14 @@ import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil
 
-class StopForecastAdapter(private val listStopForecastInfo: List<StopForecastInfo>):
-    RecyclerView.Adapter<StopForecastViewHolder>() {
+class StopForecastAdapter(
+    private val listStopForecastInfo: List<StopForecastInfo>): RecyclerView.Adapter<StopForecastViewHolder>() {
+
+    private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : StopForecastViewHolder {
+        context = parent.context
+
         val itemView = LayoutInflater.from(parent.context).inflate(
                 R.layout.cardview_stop_forecast,
                 parent,
@@ -27,7 +32,7 @@ class StopForecastAdapter(private val listStopForecastInfo: List<StopForecastInf
         val destValue = holder.textViewDestination?.resources?.getString(R.string.no_trams_forecast)
         val dueMinsValue = holder.textViewDueMinutes?.resources?.getString(R.string.due)
         val regexCannotScheduleNotification = Regex(
-            "${destValue}\$|${dueMinsValue}\$|1\$|2\$"
+            "${destValue}\$|${dueMinsValue}\$|1\$|2\$|^\$"
         )
 
         holder.textViewDestination?.text = destination
@@ -55,10 +60,9 @@ class StopForecastAdapter(private val listStopForecastInfo: List<StopForecastInf
         /* Set OnClickListener for each item in the RecyclerView. */
         holder.itemView.setOnClickListener {
             StopForecastUtil.showNotifyTimeDialog(
-                it.rootView,
-                Preferences.selectedStopName(it.context, Constant.NO_LINE),
-                holder.textViewDueMinutes?.text as String,
-                it.resources
+                context,
+                Preferences.selectedStopName(context, Constant.NO_LINE),
+                holder.textViewDueMinutes?.text.toString()
             )
         }
     }

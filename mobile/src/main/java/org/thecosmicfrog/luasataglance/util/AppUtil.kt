@@ -20,14 +20,16 @@
  */
 package org.thecosmicfrog.luasataglance.util
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Build
 import android.provider.Settings
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Display
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 
 object AppUtil {
 
@@ -69,9 +71,31 @@ object AppUtil {
             "firebase.test.lab"
         )
 
-        Log.i(logTag, "Running in Firebase Test Lab.")
-
         return settingFirebaseTestLab != null && settingFirebaseTestLab == "true"
+    }
+
+    /**
+     * If the user has changed the permissions of Luas at a Glance using the Android system settings, ensure the "ShouldNotAskAgain"
+     * preferences are reset.
+     * @param context Context.
+     */
+    fun resetShouldNotAskAgainIfPermissionsChangedOutsideApp(context: Context?) {
+        val fineLocationPermission = ContextCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarseLocationPermission = ContextCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val notificationsPermission = ContextCompat.checkSelfPermission(context!!, Manifest.permission.POST_NOTIFICATIONS)
+
+        val locationPermissionGranted =
+            fineLocationPermission == PackageManager.PERMISSION_GRANTED ||
+                    coarseLocationPermission == PackageManager.PERMISSION_GRANTED
+        val notificationsPermissionGranted = notificationsPermission == PackageManager.PERMISSION_GRANTED
+
+        if (locationPermissionGranted) {
+            Preferences.savePermissionLocationShouldNotAskAgain(context, false)
+        }
+
+        if (notificationsPermissionGranted) {
+            Preferences.savePermissionNotificationsShouldNotAskAgain(context, false)
+        }
     }
 }
 

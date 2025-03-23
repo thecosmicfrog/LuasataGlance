@@ -19,18 +19,25 @@
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.thecosmicfrog.luasataglance.model
+package org.thecosmicfrog.luasataglance.adapter
 
 import android.content.Intent
+import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.model.FavouriteInfo
+import org.thecosmicfrog.luasataglance.model.FavouriteViewHolder
 import org.thecosmicfrog.luasataglance.util.Constant
 
 class FavouriteAdapter(private val listFavouriteInfo: List<FavouriteInfo>):
     RecyclerView.Adapter<FavouriteViewHolder>() {
+
+    private val logTag = FavouriteAdapter::class.java.simpleName
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : FavouriteViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
@@ -47,7 +54,17 @@ class FavouriteAdapter(private val listFavouriteInfo: List<FavouriteInfo>):
 
         holder.textViewFavouriteStopName ?.text = favouriteStopName
 
-        /* Set OnClickListener for each item in the RecyclerView. */
+        setLineIndicatorColor(holder, favouriteStopName)
+
+        setOnClickListeners(holder, favouriteStopName)
+    }
+
+    /**
+     * Set OnClickListener for each item in the RecyclerView.
+     * @param holder The ViewHolder for the RecyclerView.
+     * @param favouriteStopName The name of the stop.
+     */
+    private fun setOnClickListeners(holder: FavouriteViewHolder, favouriteStopName: CharSequence) {
         holder.itemView.setOnClickListener {
             val localBroadcastManager = LocalBroadcastManager.getInstance(holder.itemView.context)
 
@@ -58,8 +75,35 @@ class FavouriteAdapter(private val listFavouriteInfo: List<FavouriteInfo>):
         }
     }
 
+    /**
+     * Set line indicator color based on the stop name and its associated line.
+     * @param holder The ViewHolder for the RecyclerView.
+     * @param favouriteStopName The name of the stop.
+     */
+    private fun setLineIndicatorColor(holder: FavouriteViewHolder, favouriteStopName: CharSequence) {
+        val lineIndicator = holder.itemView.findViewById<View>(R.id.view_line_indicator)
+        val context = holder.itemView.context
+
+        val redLineStops = context.resources.getStringArray(R.array.array_stops_redline)
+        val greenLineStops = context.resources.getStringArray(R.array.array_stops_greenline)
+
+        when (favouriteStopName) {
+            in redLineStops -> {
+                lineIndicator.setBackgroundColor(context.getColor(R.color.tab_red_line))
+            }
+
+            in greenLineStops -> {
+                lineIndicator.setBackgroundColor(context.getColor(R.color.tab_green_line))
+            }
+
+            else -> {
+                lineIndicator.setBackgroundColor(Color.TRANSPARENT)
+                Log.wtf(logTag, "Stop name not found in red or green line arrays.")
+            }
+        }
+    }
+
     override fun getItemCount(): Int {
         return listFavouriteInfo.size
     }
 }
-

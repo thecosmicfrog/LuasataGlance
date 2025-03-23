@@ -128,6 +128,19 @@ public final class Preferences {
     }
 
     /**
+     * Whether or not location permission has been granted.
+     * @param context Context.
+     * @return Location permission granted.
+     */
+    public static boolean permissionLocationGranted(Context context) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getBoolean("permission_location_granted", false);
+    }
+
+    /**
      * Whether or not a user should be prompted for notifications permission.
      * @param context Context.
      * @return User should be asked again.
@@ -290,6 +303,23 @@ public final class Preferences {
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
         prefs.putBoolean("permission_location_should_not_ask_again", shouldNotAskAgain);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Store boolean value of whether or not location permission has been granted.
+     * @param context Context.
+     * @param hasGranted Whether or not location permission has been granted.
+     * @return Successfully saved.
+     */
+    public static boolean savePermissionLocationGranted(Context context, boolean hasGranted) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.putBoolean("permission_location_granted", hasGranted);
 
         return prefs.commit();
     }

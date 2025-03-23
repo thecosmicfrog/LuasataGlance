@@ -23,27 +23,44 @@ package org.thecosmicfrog.luasataglance.util
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Color
-import android.provider.Settings.Global.getString
 import android.util.Log
 import android.view.View
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity
 import org.thecosmicfrog.luasataglance.api.ApiTimes
-import org.thecosmicfrog.luasataglance.model.NotifyTimesMap
 import org.thecosmicfrog.luasataglance.model.StopForecast
-import org.thecosmicfrog.luasataglance.view.TutorialCardView
+import org.thecosmicfrog.luasataglance.model.StopForecastAdapter
+import org.thecosmicfrog.luasataglance.model.StopForecastInfo
+import org.thecosmicfrog.luasataglance.view.StatusCardView
 import java.util.*
 
 object StopForecastUtil {
 
     private val logTag = StopForecastUtil::class.java.simpleName
+
+    /**
+     * Clear the stop forecast by inserting blank StopForecastInfo objects into the inbound and outbound RecyclerViews.
+     * @param recyclerViewInbound Inbound RecyclerView.
+     * @param recyclerViewOutbound Outbound RecyclerView.
+     * @param statusCardView StatusCardView.
+     */
+    fun clearStopForecast(
+        statusCardView: StatusCardView?,
+        recyclerViewInbound: RecyclerView?,
+        recyclerViewOutbound: RecyclerView?,
+    ) {
+        val emptyList = listOf(StopForecastInfo("", "", ""))
+        val emptyAdapter = StopForecastAdapter(emptyList)
+
+        recyclerViewInbound?.adapter = emptyAdapter
+        recyclerViewOutbound?.adapter = emptyAdapter
+        statusCardView?.setStatus("")
+    }
 
     /**
      * Determine if this is the first time the app has been launched and, if so, display a brief
@@ -80,53 +97,6 @@ object StopForecastUtil {
                         }
                     } else {
                         tutorialCardViewSelectStop?.visibility = View.GONE
-                    }
-                }
-
-                Constant.TUTORIAL_NOTIFICATIONS -> {
-                    val tutorialCardViewNotifications = viewBinding.tutorialcardviewNotifications
-
-                    tutorialCardViewNotifications?.setTutorial(
-                        tutorialCardViewNotifications.context.resources.getText(
-                            R.string.notifications_tutorial
-                        )
-                    )
-
-                    if (shouldDisplay) {
-                        if (tutorialCardViewNotifications != null) {
-                            if (!Preferences.hasRunOnce(tutorialCardViewNotifications.context, tutorial)) {
-                                Log.i(
-                                    logTag,
-                                    "First time launching. Displaying notifications tutorial."
-                                )
-
-                                tutorialCardViewNotifications.visibility = View.VISIBLE
-                            }
-                        }
-                    } else {
-                        tutorialCardViewNotifications?.visibility = View.GONE
-                    }
-                }
-                Constant.TUTORIAL_FAVOURITES -> {
-                    val tutorialCardViewFavourites = viewBinding.tutorialcardviewFavourites
-
-                    tutorialCardViewFavourites?.setTutorial(
-                        tutorialCardViewFavourites.context.resources.getText(
-                            R.string.favourites_tutorial
-                        )
-                    )
-
-                    if (shouldDisplay) {
-                        if (!Preferences.hasRunOnce(tutorialCardViewFavourites?.context, tutorial)) {
-                            Log.i(
-                                logTag,
-                                "First time launching. Displaying favourites tutorial."
-                            )
-
-                            tutorialCardViewFavourites?.visibility = View.VISIBLE
-                        }
-                    } else {
-                        tutorialCardViewFavourites?.visibility = View.GONE
                     }
                 }
                 else ->
@@ -174,58 +144,38 @@ object StopForecastUtil {
 
     /**
      * Show dialog for choosing notification times.
-     * @param stopName          Stop name to notify for.
-     * @param textViewStopTimes Array of TextViews for times in a stop forecast.
-     * @param index             Index representing which specific tram to notify for.
+     * @param context Context for accessing resources and starting activity
+     * @param scrollView ScrollView to adjust scroll position
+     * @param viewBinding View binding adapter for tutorial display
+     * @param line Current line (RED_LINE or GREEN_LINE)
+     * @param stopName Stop name to notify for
+     * @param notifyStopTimeStr Time string to check for notification
      */
     @JvmStatic
-    fun showNotifyTimeDialog(rootView: View, stopName: String, dueMinutes: String, resources: Resources) {
-        val regexCannotScheduleNotification = Regex("${resources.getString(R.string.due)}\$|1\$|2\$")
+    fun showNotifyTimeDialog(
+        context: Context,
+        stopName: String,
+        notifyStopTimeStr: String
+    ) {
+        if (notifyStopTimeStr.isEmpty()) return
 
-        if (dueMinutes.isEmpty()) {
-            return
-        }
-
-        if (dueMinutes matches regexCannotScheduleNotification) {
+        /* Don't permit the user to schedule a notification for a tram that is due now, or in 1 or 2 minutes. */
+        if (notifyStopTimeStr.matches(Regex("${context.getString(R.string.due)}|1|2"))) {
             Toast.makeText(
-                rootView.context,
-                resources.getString(R.string.cannot_schedule_notification),
+                context,
+                context.getString(R.string.cannot_schedule_notification),
                 Toast.LENGTH_LONG
             ).show()
 
             return
         }
 
-//        /*
-//         * When the user opens the notification dialog as part of the tutorial, scroll back up to
-//         * the top so that the next tutorial is definitely visible. This should only ever run once.
-//         */
-//        if (!Preferences.hasRunOnce(rootView.context, Constant.TUTORIAL_NOTIFICATIONS)) {
-////            scrollView?.setScrollY(0) // TODO: Get this working.
-//            val scrollView = rootView.findViewById<NestedScrollView>(R.id.redline_scrollview)
-//            scrollView?.scrollY = 0
-//        }
+        Preferences.saveNotifyStopName(context, stopName)
+        Preferences.saveNotifyStopTimeExpected(context, Integer.parseInt(notifyStopTimeStr))
 
-        Preferences.saveHasRunOnce(rootView.context, Constant.TUTORIAL_NOTIFICATIONS, true)
-
-        /* We're done with the notification tutorial. Hide it. */
-        displayTutorial(rootView, Constant.RED_LINE, Constant.TUTORIAL_NOTIFICATIONS, false)
-
-        /* Then, display the final tutorial. */
-        displayTutorial(rootView, Constant.RED_LINE, Constant.TUTORIAL_FAVOURITES, true)
-
-        Preferences.saveNotifyStopName(rootView.context, stopName)
-
-        Preferences.saveNotifyStopTimeExpected(
-            rootView.context,
-            dueMinutes.toInt()
-        )
-
-        rootView.context.startActivity(
-            Intent(
-                rootView.context,
-                NotifyTimeActivity::class.java
-            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(
+            Intent(context, NotifyTimeActivity::class.java)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         )
     }
 

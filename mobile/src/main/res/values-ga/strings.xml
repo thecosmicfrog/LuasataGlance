@@ -28,6 +28,7 @@
         Activities
     -->
     <string name="title_activity_fares">Táillí</string>
+    <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_license">Ceadúnas</string>
     <string name="title_activity_maps">Léarscáil</string>
@@ -52,18 +53,13 @@
     <string name="message_error">Fadhb ag fáil eolais ón gcóras Luas RTPI.\n\nDéan seiceáil ar
         do nasc idirlíne. Muna bhfuil fadhb ann, is le córas RTPI Luas an chúis.</string>
     <string name="information">\u2139</string>
+    <string name="select_stop_using_picker">Roghnaigh stad leis an roghnóir thuas</string>
     <string name="select_stop_tutorial">Tosóimis! Roghnaigh stad leis an roghnóir thuas.\n
         Déanfar na hamanna a uasdátú <b>gach 10 soicind</b>.
     </string>
-    <string name="notifications_tutorial">Iontach! Tá tú tar éis cláraithe chun fógraí a fháil ar
-        thramanna atá le teacht. Ní gá ach brú ar an tram thíos chun triail a bhaint as.
-    </string>
-    <string name="favourites_tutorial">Foirfe! Ní gá ach rud amháin eile a dhéanamh. An bhfeiceann
-        tú an cnaipe <b>Ceanáin</b> ag bun an scáileáin? Ligean sé dhuit na stadanna is
-        fearr leat a shábháil. Bain triail anois as.
-    </string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
+    <string name="tap_to_set_reminder">Cliceáil chun meabhrúchán a shocrú</string>
     <string name="due">ANN</string>
     <string name="min">nóim</string>
     <string name="mins">nóim</string>
@@ -82,6 +78,7 @@
         Actions
     -->
     <string name="action_about">Eolas Faoi</string>
+    <string name="action_favourites">Ceanáin</string>
     <string name="action_news">Nuacht Luas</string>
     <string name="action_news_alert">Airdeall</string>
     <string name="action_settings">Roghanna</string>

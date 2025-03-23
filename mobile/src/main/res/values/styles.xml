@@ -34,7 +34,7 @@
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/text_dark</item>
 
-        <!-- Change general color accent to the Luas shade of purple. -->
+        <!-- Change general colour accent to the Luas shade of purple. -->
         <item name="colorAccent">@color/luas_purple</item>
 
         <!-- Hack to change SettingsActivity toolbar color and back button to white. -->
@@ -51,8 +51,11 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="LuasAtAGlancePopupDialog" parent="android:ThemeOverlay.Material.Light">
+    <style name="LuasAtAGlancePopupDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/popup_dialog_background</item>
+<!--        <item name="android:windowBackground">#FFFFFF</item>-->
+<!--        <item name="android:textColorPrimary">#000000</item>-->
+<!--        <item name="android:textColorSecondary">#000000</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">

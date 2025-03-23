@@ -21,6 +21,8 @@
 
 package org.thecosmicfrog.luasataglance.util
 
+import androidx.recyclerview.widget.RecyclerView
+import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.FragmentGreenlineBinding
 import org.thecosmicfrog.luasataglance.databinding.FragmentRedlineBinding
 
@@ -31,15 +33,16 @@ class LineFragmentViewBindingAdapter(b1: FragmentRedlineBinding?, b2: FragmentGr
      * used without too much hacky code in the LineFragment class.
      * Source: https://stackoverflow.com/a/67680181/2083329
      */
-    val linearlayoutFragment = b1?.linearlayoutFragmentRedline ?: b2?.linearlayoutFragmentGreenline
-    val inboundStopforecastcardview = b1?.redlineInboundStopforecastcardview ?: b2?.greenlineInboundStopforecastcardview
-    val outboundStopforecastcardview = b1?.redlineOutboundStopforecastcardview ?: b2?.greenlineOutboundStopforecastcardview
+    val stopForecastConstraintLayout = b1?.redlineStopforecastconstraintlayout ?: b2?.greenlineStopforecastconstraintlayout
+    val recyclerViewStopForecastsInbound = b1?.redlineStopforecastconstraintlayout?.findViewById<RecyclerView>(R.id.recyclerview_stop_forecasts_inbound)
+        ?: b2?.greenlineStopforecastconstraintlayout?.findViewById(R.id.recyclerview_stop_forecasts_inbound)
+
+    val recyclerViewStopForecastsOutbound = b1?.redlineStopforecastconstraintlayout?.findViewById<RecyclerView>(R.id.recyclerview_stop_forecasts_outbound)
+        ?: b2?.greenlineStopforecastconstraintlayout?.findViewById(R.id.recyclerview_stop_forecasts_outbound)
     val progressbar = b1?.redlineProgressbar ?: b2?.greenlineProgressbar
     val scrollview = b1?.redlineScrollview ?: b2?.greenlineScrollview
     val spinnerCardView = b1?.redlineSpinnerCardView ?: b2?.greenlineSpinnerCardView
     val statuscardview = b1?.redlineStatuscardview ?: b2?.greenlineStatuscardview
-    val tutorialcardviewFavourites = b1?.tutorialcardviewFavourites ?: b2?.tutorialcardviewFavourites
-    val tutorialcardviewNotifications = b1?.tutorialcardviewNotifications ?: b2?.tutorialcardviewNotifications
     val tutorialcardviewSelectStop = b1?.tutorialcardviewSelectStop ?: b2?.tutorialcardviewSelectStop
     val swiperefreshlayout = b1?.redlineSwiperefreshlayout ?: b2?.greenlineSwiperefreshlayout
 }

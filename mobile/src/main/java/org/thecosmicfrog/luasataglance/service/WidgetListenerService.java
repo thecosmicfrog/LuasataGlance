@@ -570,7 +570,7 @@ public class WidgetListenerService extends Service {
 
             /*
              * If no stop forecast can be retrieved, set a generic error message and
-             * change the color of the message title box red.
+             * change the colour of the message title box red.
              */
             views.setInt(
                     R.id.linearlayout_stop_name,

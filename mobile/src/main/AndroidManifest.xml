@@ -124,17 +124,17 @@
         </activity>
         <activity
             android:name=".activity.NotifyTimeActivity"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+            android:theme="@style/LuasAtAGlancePopupDialog" />
         <activity
             android:name=".activity.LicenseActivity"
             android:label="@string/title_activity_license"
             android:parentActivityName=".activity.AboutActivity" />
         <activity
             android:name=".activity.AboutActivity"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+            android:theme="@style/LuasAtAGlancePopupDialog" />
         <activity
             android:name=".activity.WhatsNewActivity"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+            android:theme="@style/LuasAtAGlancePopupDialog" />
     </application>
 
 </manifest>

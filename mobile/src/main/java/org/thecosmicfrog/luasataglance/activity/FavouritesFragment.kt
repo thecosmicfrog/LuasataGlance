@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.model.FavouriteAdapter
+import org.thecosmicfrog.luasataglance.adapter.FavouriteAdapter
 import org.thecosmicfrog.luasataglance.model.FavouriteInfo
 import org.thecosmicfrog.luasataglance.util.Preferences
 import java.io.BufferedInputStream

@@ -34,6 +34,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.Window
+import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -70,13 +71,18 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
      * Initialise Activity.
      */
     private fun initActivity() {
-        setTheme(android.R.style.Theme_Material_Dialog)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
 
         viewBinding = ActivityNotifyTimeBinding.inflate(layoutInflater)
         context = viewBinding.root.context
 
         setContentView(viewBinding.root)
+
+        /* Set dialog width to 80% of screen width. */
+        val displayMetrics = resources.displayMetrics
+        val width = (displayMetrics.widthPixels * 0.80).toInt()
+
+        window?.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
     }
 
     /**
