@@ -39,7 +39,6 @@ class StopForecastAdapter(
         holder.textViewDueMinutes?.text = dueMinutes
         holder.textViewMinOrMins?.text = minOrMins
 
-
         /* If the tram is due, don't show the "min/mins" TextView to better centre the DUE text. */
         if (holder.textViewMinOrMins?.text.isNullOrBlank()) {
             holder.textViewMinOrMins?.visibility = View.GONE

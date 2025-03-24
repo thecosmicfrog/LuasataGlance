@@ -27,7 +27,6 @@
     <!--
         Activities
     -->
-    <string name="title_activity_fares">Fares</string>
     <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
     <string name="title_activity_license">License</string>
@@ -60,6 +59,10 @@
     </string>
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
+    <string name="northbound">Northbound</string>
+    <string name="southbound">Southbound</string>
+    <string name="westbound">Westbound</string>
+    <string name="eastbound">Eastbound</string>
     <string name="tap_to_set_reminder">Tap to set reminder</string>
     <string name="due">DUE</string>
     <string name="min">min</string>
@@ -106,29 +109,9 @@
     -->
     <string name="content_desc_action_bar_up_description">Navigate up</string>
     <string name="content_desc_bottomnav_alerts">Alerts button</string>
-    <string name="content_desc_bottomnav_fares">Fares button</string>
     <string name="content_desc_bottomnav_favourites">Favourites button</string>
     <string name="content_desc_bottomnav_map">Luas Map button</string>
     <string name="content_desc_map_close">Close Luas Map</string>
-
-    <!--
-        Fares
-    -->
-    <string name="fares_instructions">To calculate fares for your journey, select an
-        <b>Origin</b>, <b>Destination</b> and the number of <b>Adults</b> and <b>Children</b> who
-        will be travelling.</string>
-    <string name="fares_note"><b>Note:</b> Actual fares may differ. See
-        <a href="https://luas.ie/ticket-types.html">luas.ie</a> for full fare details and ticket
-        options.
-    </string>
-    <string name="fares_offpeak">Single Off-Peak</string>
-    <string name="fares_peak">Single Peak</string>
-    <string name="fares_title_line">Line</string>
-    <string name="fares_title_origin">Origin</string>
-    <string name="fares_title_destination">Destination</string>
-    <string name="fares_title_adults">Adults</string>
-    <string name="fares_title_children">Children</string>
-    <string name="fares_zero">€0.00</string>
 
     <!--
         Favourites

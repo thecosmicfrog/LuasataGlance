@@ -54,13 +54,6 @@
             android:name=".activity.FavouritesSelectActivity"
             android:label="@string/title_activity_favourites_select" />
         <activity
-            android:name=".activity.NewsActivity"
-            android:parentActivityName=".activity.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.thecosmicfrog.luasataglance.activity.MainActivity" />
-        </activity>
-        <activity
             android:name=".activity.SettingsActivity"
             android:parentActivityName=".activity.MainActivity">
             <meta-data
@@ -104,24 +97,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-<!--        <activity-->
-<!--            android:name=".activity.MapsActivity"-->
-<!--            android:label="@string/title_activity_maps"-->
-<!--            android:theme="@style/Theme.AppCompat.Dialog">-->
-<!--            <meta-data-->
-<!--                android:name="android.support.PARENT_ACTIVITY"-->
-<!--                android:value="org.thecosmicfrog.luasataglance.activity.MainActivity" />-->
-<!--        </activity>-->
-<!--        <activity-->
-<!--            android:name=".activity.FavouritesActivity"-->
-<!--            android:theme="@style/Theme.AppCompat.Dialog" />-->
-        <activity
-            android:name=".activity.FaresActivity"
-            android:label="@string/title_activity_fares">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
         <activity
             android:name=".activity.NotifyTimeActivity"
             android:theme="@style/LuasAtAGlancePopupDialog" />

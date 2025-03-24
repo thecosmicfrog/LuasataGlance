@@ -21,6 +21,7 @@
 
 package org.thecosmicfrog.luasataglance.util
 
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.FragmentGreenlineBinding
@@ -34,9 +35,12 @@ class LineFragmentViewBindingAdapter(b1: FragmentRedlineBinding?, b2: FragmentGr
      * Source: https://stackoverflow.com/a/67680181/2083329
      */
     val stopForecastConstraintLayout = b1?.redlineStopforecastconstraintlayout ?: b2?.greenlineStopforecastconstraintlayout
+    val textViewStopForecastInbound = b1?.redlineStopforecastconstraintlayout?.findViewById<TextView>(R.id.textview_stop_forecast_inbound)
+        ?: b2?.greenlineStopforecastconstraintlayout?.findViewById(R.id.textview_stop_forecast_inbound)
+    val textViewStopForecastOutbound = b1?.redlineStopforecastconstraintlayout?.findViewById<TextView>(R.id.textview_stop_forecast_outbound)
+        ?: b2?.greenlineStopforecastconstraintlayout?.findViewById(R.id.textview_stop_forecast_outbound)
     val recyclerViewStopForecastsInbound = b1?.redlineStopforecastconstraintlayout?.findViewById<RecyclerView>(R.id.recyclerview_stop_forecasts_inbound)
         ?: b2?.greenlineStopforecastconstraintlayout?.findViewById(R.id.recyclerview_stop_forecasts_inbound)
-
     val recyclerViewStopForecastsOutbound = b1?.redlineStopforecastconstraintlayout?.findViewById<RecyclerView>(R.id.recyclerview_stop_forecasts_outbound)
         ?: b2?.greenlineStopforecastconstraintlayout?.findViewById(R.id.recyclerview_stop_forecasts_outbound)
     val progressbar = b1?.redlineProgressbar ?: b2?.greenlineProgressbar

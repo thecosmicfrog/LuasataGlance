@@ -37,7 +37,6 @@ import org.thecosmicfrog.luasataglance.model.StopForecast
 import org.thecosmicfrog.luasataglance.model.StopForecastAdapter
 import org.thecosmicfrog.luasataglance.model.StopForecastInfo
 import org.thecosmicfrog.luasataglance.view.StatusCardView
-import java.util.*
 
 object StopForecastUtil {
 
@@ -63,9 +62,33 @@ object StopForecastUtil {
     }
 
     /**
+     * Set the titles for the inbound and outbound directions.
+     * On the Red Line, the inbound direction is "Eastbound" and the outbound direction is "Westbound".
+     * On the Green Line, the inbound direction is "Northbound" and the outbound direction is "Southbound".
+     *
+     * Inbound and outbound are legacy Luas terms and just cause confusion for users.
+     * @param context Context.
+     * @param line Line to set titles for.
+     * @param viewBinding ViewBinding.
+     */
+    fun setStopForecastDirectionTitles(context: Context, line: String?, viewBinding: LineFragmentViewBindingAdapter?) {
+        val (inboundText, outboundText) = when (line) {
+            Constant.RED_LINE -> context.getString(R.string.eastbound) to context.getString(R.string.westbound)
+            Constant.GREEN_LINE -> context.getString(R.string.northbound) to context.getString(R.string.southbound)
+            else -> {
+                /* If for some reason the line doesn't make sense, set the titles to empty strings. */
+                Log.wtf(logTag, "Invalid line specified.")
+                "" to ""
+            }
+        }
+
+        viewBinding?.textViewStopForecastInbound?.text = inboundText
+        viewBinding?.textViewStopForecastOutbound?.text = outboundText
+    }
+
+    /**
      * Determine if this is the first time the app has been launched and, if so, display a brief
      * tutorial on how to use a particular feature of the app.
-     * @param rootView      Root View.
      * @param line          Currently-selected line.
      * @param tutorial      Tutorial to display.
      * @param shouldDisplay Whether or not tutorial should display.
@@ -86,10 +109,7 @@ object StopForecastUtil {
 
                     if (shouldDisplay) {
                         if (!Preferences.hasRunOnce(tutorialCardViewSelectStop?.context, tutorial)) {
-                            Log.i(
-                                logTag,
-                                "First time launching. Displaying select stop tutorial."
-                            )
+                            Log.i(logTag, "First time launching. Displaying select stop tutorial.")
 
                             tutorialCardViewSelectStop?.visibility = View.VISIBLE
 
@@ -145,9 +165,6 @@ object StopForecastUtil {
     /**
      * Show dialog for choosing notification times.
      * @param context Context for accessing resources and starting activity
-     * @param scrollView ScrollView to adjust scroll position
-     * @param viewBinding View binding adapter for tutorial display
-     * @param line Current line (RED_LINE or GREEN_LINE)
      * @param stopName Stop name to notify for
      * @param notifyStopTimeStr Time string to check for notification
      */

@@ -87,7 +87,6 @@ class LineFragment : Fragment() {
     private var viewBinding: LineFragmentViewBindingAdapter? = null
     private var act: FragmentActivity? = null
     private var ctx: Context? = null
-    private var rootView: View? = null
     private var tabLayout: TabLayout? = null
     private var progressBar: ProgressBar? = null
     private var spinnerCardView: SpinnerCardView? = null
@@ -192,8 +191,6 @@ class LineFragment : Fragment() {
     }
 
     override fun onResume() {
-        val intentExtraActivityToOpen = "activityToOpen"
-
         super.onResume()
 
         act = requireActivity()
@@ -351,6 +348,9 @@ class LineFragment : Fragment() {
      */
     private fun initFragment(): Boolean {
         tabLayout = act?.findViewById(R.id.trams_tablayout)
+
+        StopForecastUtil.setStopForecastDirectionTitles(requireContext(), line, viewBinding)
+
         progressBar = viewBinding?.progressbar!!
         setIsLoading(false)
 
@@ -685,7 +685,7 @@ class LineFragment : Fragment() {
 
             if (status != null) {
                 /* A lot of Luas statuses relate to lifts being out of service. Ignore these. */
-                if (operatingNormally || status.toLowerCase().contains("lift")) {
+                if (operatingNormally || status.lowercase().contains("lift")) {
                     /*
                      * No error message on server. Change the message title TextView to
                      * green and set a default success message.

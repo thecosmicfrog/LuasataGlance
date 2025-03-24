@@ -27,16 +27,6 @@ import retrofit.http.Query
 interface ApiMethods {
 
     @GET("/luas-api.php")
-    fun getFares(
-        @Query("action") action: String?,
-        @Query("from") from: String?,
-        @Query("to") to: String?,
-        @Query("adults") adults: String?,
-        @Query("children") children: String?,
-        cb: Callback<ApiFares>
-    )
-
-    @GET("/luas-api.php")
     fun getStopForecast(
         @Query("action") action: String?,
         @Query("ver") ver: String?,

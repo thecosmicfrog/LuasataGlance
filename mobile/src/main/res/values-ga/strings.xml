@@ -27,7 +27,6 @@
     <!--
         Activities
     -->
-    <string name="title_activity_fares">Táillí</string>
     <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_license">Ceadúnas</string>
@@ -59,6 +58,10 @@
     </string>
     <string name="inbound">Bealach Isteach</string>
     <string name="outbound">Bealach Amach</string>
+    <string name="northbound">Ó thuaidh</string>
+    <string name="southbound">Ó dheas</string>
+    <string name="westbound">Siar</string>
+    <string name="eastbound">Soir</string>
     <string name="tap_to_set_reminder">Cliceáil chun meabhrúchán a shocrú</string>
     <string name="due">ANN</string>
     <string name="min">nóim</string>
@@ -106,28 +109,9 @@
     -->
     <string name="content_desc_action_bar_up_description">Nascleanúint suas</string>
     <string name="content_desc_bottomnav_alerts">Cnaipe Airdeall</string>
-    <string name="content_desc_bottomnav_fares">Cnaipe Táillí</string>
     <string name="content_desc_bottomnav_favourites">Cnaipe Ceanáin</string>
     <string name="content_desc_bottomnav_map">Cnaipe Léarscáil</string>
     <string name="content_desc_map_close">Cnaipe dún léarscáil</string>
-
-    <!--
-        Fares
-    -->
-    <string name="fares_instructions">Chun táillí do thurais a ríofa, roghnaigh
-        <b>Tús</b>, <b>Ceann scríbe</b> agus líon na n<b>Daoine fásta</b> agus na b<b>Páistí</b>
-        a bheidh ag taisteal.</string>
-    <string name="fares_note"><b>Nóta:</b> D\'fhéadadh na fíortháillí bheith difriúil. 
-        Féach ar <a href="https://luas.ie/ticket-types.html">luas.ie</a> le tuilleadh eolais a
-        fháil.</string>
-    <string name="fares_offpeak">Singil seachbhuaic</string>
-    <string name="fares_peak">Singil buaic</string>
-    <string name="fares_title_line">Líne</string>
-    <string name="fares_title_origin">Tús</string>
-    <string name="fares_title_destination">Ceann scríbe</string>
-    <string name="fares_title_adults">Daoine fásta</string>
-    <string name="fares_title_children">Páistí</string>
-    <string name="fares_zero">€0.00</string>
 
     <!--
         Favourites
