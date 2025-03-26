@@ -588,7 +588,7 @@ class LineFragment : Fragment() {
                         val stopForecast = createStopForecast(apiTimes)
 
                         /* Update the UI with the stop forecast. */
-                        updateStopForecast(stopForecast)
+                        updateStopForecastUi(stopForecast)
 
                         if (shouldShowSnackbar) {
                             val apiCreatedTime = getApiCreatedTime(apiTimes)
@@ -651,7 +651,7 @@ class LineFragment : Fragment() {
      * Draw stop forecast to screen.
      * @param stopForecast StopForecast model containing data for requested stop.
      */
-    private fun updateStopForecast(stopForecast: StopForecast?) {
+    private fun updateStopForecastUi(stopForecast: StopForecast?) {
         val gaeilge = "ga"
         val due = "DUE"
         val mapEnglishGaeilge = EnglishGaeilgeMap()
