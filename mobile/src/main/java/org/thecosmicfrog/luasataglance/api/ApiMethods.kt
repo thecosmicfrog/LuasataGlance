@@ -20,18 +20,16 @@
  */
 package org.thecosmicfrog.luasataglance.api
 
-import retrofit.Callback
-import retrofit.http.GET
-import retrofit.http.Query
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface ApiMethods {
-
-    @GET("/luas-api.php")
-    fun getStopForecast(
+    @GET("luas-api.php")
+    suspend fun getStopForecast(
         @Query("action") action: String?,
         @Query("ver") ver: String?,
-        @Query("station") station: String?,
-        cb: Callback<ApiTimes?>
-    )
+        @Query("station") station: String?
+    ): Response<ApiTimes>
 }
 

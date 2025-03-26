@@ -35,14 +35,16 @@ import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.launch
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.api.ApiMethods
 import org.thecosmicfrog.luasataglance.api.ApiTimes
+import org.thecosmicfrog.luasataglance.api.RetrofitClient
 import org.thecosmicfrog.luasataglance.databinding.FragmentGreenlineBinding
 import org.thecosmicfrog.luasataglance.databinding.FragmentRedlineBinding
 import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap
@@ -51,7 +53,6 @@ import org.thecosmicfrog.luasataglance.model.StopForecastAdapter
 import org.thecosmicfrog.luasataglance.model.StopForecastInfo
 import org.thecosmicfrog.luasataglance.model.StopIdLineMap
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap
-import org.thecosmicfrog.luasataglance.model.Tram
 import org.thecosmicfrog.luasataglance.util.AppUtil
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.LineFragmentViewBindingAdapter
@@ -62,10 +63,8 @@ import org.thecosmicfrog.luasataglance.util.StopForecastUtil.displayTutorial
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.showSnackbar
 import org.thecosmicfrog.luasataglance.view.SpinnerCardView
 import org.thecosmicfrog.luasataglance.view.StatusCardView
-import retrofit.Callback
-import retrofit.RestAdapter
-import retrofit.RetrofitError
-import retrofit.client.Response
+import retrofit2.HttpException
+import java.io.IOException
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -533,98 +532,6 @@ class LineFragment : Fragment() {
     }
 
     /**
-     * Load the stop forecast for a particular stop.
-     * @param stopName The stop for which to load a stop forecast.
-     * @param shouldShowSnackbar Whether or not we should show a Snackbar to the user with the API
-     * created time.
-     */
-    private fun loadStopForecast(stopName: String, shouldShowSnackbar: Boolean) {
-        val apiUrl = "https://api.thecosmicfrog.org/cgi-bin"
-        val apiAction = "times"
-        val apiVer = "3"
-
-        setIsLoading(true)
-
-        /*
-         * Prepare Retrofit API call.
-         */
-        val restAdapter = RestAdapter.Builder().setEndpoint(apiUrl).build()
-        val methods = restAdapter.create(ApiMethods::class.java)
-
-        val callback: Callback<ApiTimes?> = object : Callback<ApiTimes?> {
-            override fun success(apiTimes: ApiTimes?, response: Response) {
-                /* Check Fragment is attached to Activity to avoid NullPointerExceptions. */
-                if (isAdded) {
-                    /* If the server returned times. */
-                    if (apiTimes != null) {
-                        /* Then create a stop forecast with this data. */
-                        val stopForecast = createStopForecast(apiTimes)
-
-                        /* Update the stop forecast. */
-                        updateStopForecast(stopForecast)
-
-                        /* Stop the refresh animations. */
-                        setIsLoading(false)
-                        swipeRefreshLayout?.isRefreshing = false
-
-                        if (shouldShowSnackbar) {
-                            val apiCreatedTime = getApiCreatedTime(apiTimes)
-                            if (apiCreatedTime != null) {
-                                act?.let {
-                                    showSnackbar(it, "Times updated at $apiCreatedTime")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            override fun failure(retrofitError: RetrofitError) {
-                Log.e(logTag, "Failure during call to server.")
-
-                /*
-                 * If we get a message or a response from the server, there's likely an issue with
-                 * the client request or the server's response itself.
-                 */
-                if (retrofitError.message != null) {
-                    Log.e(logTag, "Message: " + retrofitError.message)
-                }
-
-                if (retrofitError.response != null) {
-                    if (retrofitError.response.url != null) {
-                        Log.e(logTag, "Response: " + retrofitError.response.url)
-                    }
-
-                    Log.e(logTag, "Status: " + retrofitError.response.status.toString())
-
-                    if (retrofitError.response.headers != null) {
-                        Log.e(logTag, "Headers: " + retrofitError.response.headers.toString())
-                    }
-
-                    if (retrofitError.response.body != null) {
-                        Log.e(logTag, "Body: " + retrofitError.response.body.toString())
-                    }
-
-                    if (retrofitError.response.reason != null) {
-                        Log.e(logTag, "Reason: " + retrofitError.response.reason)
-                    }
-                }
-
-                /*
-                 * If we don't receive a message or response, we can still get an idea of what's
-                 * going on by getting the "kind" of error.
-                 */
-                if (retrofitError.kind != null) {
-                    Log.e(logTag, "Kind: " + retrofitError.kind.toString())
-                }
-            }
-        }
-
-        /* Call API and get stop forecast from server. */
-        methods.getStopForecast(apiAction, apiVer, mapStopNameId?.get(stopName), callback)
-    }
-
-    /**
      * Get the "created" time from the API response and format it so that only the time (and not
      * date) is returned.
      * @param apiTimes ApiTimes model.
@@ -644,13 +551,100 @@ class LineFragment : Fragment() {
                     return dateFormat.format(currentTime)
                 }
             }
-        } catch (e: NullPointerException) {
+        } catch (_: NullPointerException) {
             Log.e(logTag, "Failed to find content view during Snackbar creation.")
-        } catch (e: ParseException) {
+        } catch (_: ParseException) {
             Log.e(logTag, "Failed to parse created time from API.")
         }
 
         return null
+    }
+
+    /**
+     * Load the stop forecast for a particular stop.
+     * @param stopName The stop for which to load a stop forecast.
+     * @param shouldShowSnackbar Whether or not we should show a Snackbar to the user with the API
+     * created time.
+     */
+    private fun loadStopForecast(stopName: String?, shouldShowSnackbar: Boolean) {
+        /* Launch coroutine to make API call. */
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                setIsLoading(true)
+
+                /* Make API call. */
+                val response = RetrofitClient.apiMethods.getStopForecast(
+                    action = "times",
+                    ver = "3",
+                    station = mapStopNameId?.get(stopName)
+                )
+
+                if (response.isSuccessful) {
+                    val apiTimes = response.body()
+
+                    /* If the server returned times. */
+                    if (apiTimes != null) {
+                        /* Then create a stop forecast with this data. */
+                        val stopForecast = createStopForecast(apiTimes)
+
+                        /* Update the UI with the stop forecast. */
+                        updateStopForecast(stopForecast)
+
+                        if (shouldShowSnackbar) {
+                            val apiCreatedTime = getApiCreatedTime(apiTimes)
+                            if (apiCreatedTime != null) {
+                                act?.let {
+                                    showSnackbar(it, "Times updated at $apiCreatedTime")
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Log.e(logTag, "Error calling URL: ${response.raw().request.url}")
+                    Log.e(logTag, "Response status code: ${response.code()}")
+                    Log.e(logTag, "Response headers: ${response.headers()}")
+
+                    response.errorBody()?.string()?.let { errorBody ->
+                        Log.e(logTag, "Response error body: $errorBody")
+                    }
+
+                    Log.e(logTag, "Response message: ${response.message()}")
+
+                    statusCardView?.setStatus(getString(R.string.message_error))
+                    statusCardView?.setStatusColor(R.color.message_error)
+
+                    statusCardView?.setStatus(getString(R.string.message_error))
+                    statusCardView?.setStatusColor(R.color.message_error)
+                }
+
+            } catch (e: Exception) {
+                when (e) {
+                    is IOException -> {
+                        Log.e(logTag, "I/O error message: ${e.message}")
+                        Log.e(logTag, "I/O error cause: ${e.cause}")
+                    }
+                    is HttpException -> {
+                        Log.e(logTag, "HTTP error: ${e.message}")
+                        Log.e(logTag, "HTTP error status code: ${e.code()}")
+                        Log.e(logTag, "Response message: ${e.response()?.message()}")
+                        e.response()?.errorBody()?.string()?.let { errorBody ->
+                            Log.e(logTag, "Response error body: $errorBody")
+                        }
+                    }
+                    else -> {
+                        Log.e(logTag, "Unexpected error: ${e.message}")
+                        Log.e(logTag, "Error type: ${e.javaClass.simpleName}")
+                        e.printStackTrace()
+                    }
+                }
+
+                statusCardView?.setStatus(getString(R.string.message_error))
+                statusCardView?.setStatusColor(R.color.message_error)
+            } finally {
+                setIsLoading(false)
+                swipeRefreshLayout?.isRefreshing = false
+            }
+        }
     }
 
     /**
@@ -665,124 +659,78 @@ class LineFragment : Fragment() {
         val mins = " ${getString(R.string.mins)}"
         var minOrMins: String
 
-        /* If a valid stop forecast exists... */
-        if (stopForecast != null) {
-            var operatingNormally = false
+        if (stopForecast == null) {
+            statusCardView?.setStatus(getString(R.string.message_error))
+            statusCardView?.setStatusColor(R.color.message_error)
+            return
+        }
 
-            if (stopForecast.stopForecastStatusDirectionInbound.operatingNormally != null
-                && stopForecast.stopForecastStatusDirectionOutbound.operatingNormally != null) {
-                if (stopForecast.stopForecastStatusDirectionInbound.operatingNormally == true
-                    && stopForecast.stopForecastStatusDirectionOutbound.operatingNormally == true) {
-                    operatingNormally = true
-                }
-            }
+        val operatingNormally = stopForecast.stopForecastStatusDirectionInbound.operatingNormally == true &&
+                stopForecast.stopForecastStatusDirectionOutbound.operatingNormally == true
 
-            val status: String? = if (localeDefault?.startsWith(gaeilge) == true) {
-                getString(R.string.message_success)
+        val status = if (localeDefault?.startsWith(gaeilge) == true) {
+            getString(R.string.message_success)
+        } else {
+            stopForecast.message
+        }
+
+        status?.let {
+            /* A lot of Luas statuses relate to lifts being out of service. Ignore these. */
+            if (operatingNormally || it.lowercase().contains("lift")) {
+                statusCardView?.setStatus(it)
+                statusCardView?.setStatusColor(R.color.message_success)
             } else {
-                stopForecast.message
-            }
-
-            if (status != null) {
-                /* A lot of Luas statuses relate to lifts being out of service. Ignore these. */
-                if (operatingNormally || status.lowercase().contains("lift")) {
-                    /*
-                     * No error message on server. Change the message title TextView to
-                     * green and set a default success message.
-                     */
-                    statusCardView?.setStatus(status)
-                    statusCardView?.setStatusColor(R.color.message_success)
-                } else {
-                    if (status.isBlank()) {
-                        /*
-                         * If server returns no status message, the Luas RTPI system is likely down.
-                         */
-                        statusCardView?.setStatus(getString(R.string.message_no_status))
-                    } else {
-                        /* Set the error message from the server. */
-                        statusCardView?.setStatus(status)
-                    }
-
-                    /* Change the color of the message title TextView to red. */
-                    statusCardView?.setStatusColor(R.color.message_error)
-                }
-            }
-
-            var destination: String?
-            val listStopForecastInfoInbound: MutableList<StopForecastInfo> = ArrayList()
-            val listStopForecastInfoOutbound: MutableList<StopForecastInfo> = ArrayList()
-
-            listStopForecastInfoInbound.clear()
-            listStopForecastInfoOutbound.clear()
-
-            val listAllTrams: MutableList<Tram> = ArrayList()
-            listAllTrams.addAll(stopForecast.inboundTrams)
-            listAllTrams.addAll(stopForecast.outboundTrams)
-
-            if (stopForecast.inboundTrams.size <= 0) {
-                listStopForecastInfoInbound.add(
-                    StopForecastInfo(getString(R.string.no_trams_forecast), "", "")
+                statusCardView?.setStatus(
+                    /* If server returns no status message, the Luas RTPI system is likely down. */
+                    if (it.isBlank()) getString(R.string.message_no_status) else it
                 )
+                /* Change the color of the message title TextView to red. */
+                statusCardView?.setStatusColor(R.color.message_error)
             }
+        }
 
-            if (stopForecast.outboundTrams.size <= 0) {
-                listStopForecastInfoOutbound.add(
-                    StopForecastInfo(getString(R.string.no_trams_forecast), "", "")
-                )
-            }
+        val listStopForecastInfoInbound = mutableListOf<StopForecastInfo>()
+        val listStopForecastInfoOutbound = mutableListOf<StopForecastInfo>()
 
-            for (tram in listAllTrams) {
-                var dueMinutes = tram.dueMinutes
+        if (stopForecast.inboundTrams.isEmpty()) {
+            listStopForecastInfoInbound.add(
+                StopForecastInfo(getString(R.string.no_trams_forecast), "", "")
+            )
+        }
 
-                destination = if (localeDefault?.startsWith(gaeilge) == true) {
+        if (stopForecast.outboundTrams.isEmpty()) {
+            listStopForecastInfoOutbound.add(
+                StopForecastInfo(getString(R.string.no_trams_forecast), "", "")
+            )
+        }
+
+        (stopForecast.inboundTrams + stopForecast.outboundTrams).forEach { tram ->
+            tram.dueMinutes?.let { dueMinutes ->
+                val destination = if (localeDefault?.startsWith(gaeilge) == true) {
                     mapEnglishGaeilge[tram.destination]
                 } else {
                     tram.destination
                 }
 
-                if (dueMinutes != null) {
-                    when {
-                        dueMinutes.equals(due, ignoreCase = true) -> {
-                            if (localeDefault?.startsWith(gaeilge) == true) {
-                                dueMinutes = mapEnglishGaeilge[dueMinutes]
-                            }
-                            minOrMins = ""
-                        }
-
-                        dueMinutes.toInt() > 1 -> minOrMins = mins
-
-                        else -> minOrMins = min
+                minOrMins = when {
+                    dueMinutes.equals(due, ignoreCase = true) -> {
+                        if (localeDefault?.startsWith(gaeilge) == true) {
+                            mapEnglishGaeilge[dueMinutes] ?: ""
+                        } else ""
                     }
+                    dueMinutes.toInt() > 1 -> mins
+                    else -> min
+                }
 
-                    if (tram.direction != null) {
-                        when (tram.direction) {
-                            Constant.INBOUND -> listStopForecastInfoInbound.add(
-                                StopForecastInfo(destination, dueMinutes, minOrMins)
-                            )
-                            Constant.OUTBOUND -> listStopForecastInfoOutbound.add(
-                                StopForecastInfo(destination, dueMinutes, minOrMins)
-                            )
-                            else -> Log.wtf(logTag, "Tram direction makes no sense.")
-                        }
-                    }
+                val stopForecastInfo = StopForecastInfo(destination, dueMinutes, minOrMins)
+                when (tram.direction) {
+                    Constant.INBOUND -> listStopForecastInfoInbound.add(stopForecastInfo)
+                    Constant.OUTBOUND -> listStopForecastInfoOutbound.add(stopForecastInfo)
                 }
             }
-
-            val stopForecastAdapterInbound = StopForecastAdapter(listStopForecastInfoInbound)
-            val stopForecastAdapterOutbound = StopForecastAdapter(listStopForecastInfoOutbound)
-
-            stopForecastAdapterInbound.notifyDataSetChanged()
-            stopForecastAdapterOutbound.notifyDataSetChanged()
-
-            recyclerViewStopForecastsInbound?.adapter = stopForecastAdapterInbound
-            recyclerViewStopForecastsOutbound?.adapter = stopForecastAdapterOutbound
-        } else {
-            /*
-             * If no stop forecast can be retrieved, set a generic error message and
-             * change the color of the message title box red.
-             */
-            statusCardView?.setStatus(getString(R.string.message_error))
-            statusCardView?.setStatusColor(R.color.message_error)
         }
+
+        recyclerViewStopForecastsInbound?.adapter = StopForecastAdapter(listStopForecastInfoInbound)
+        recyclerViewStopForecastsOutbound?.adapter = StopForecastAdapter(listStopForecastInfoOutbound)
     }
 }

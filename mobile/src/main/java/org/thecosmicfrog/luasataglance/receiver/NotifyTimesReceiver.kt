@@ -20,7 +20,6 @@
  */
 package org.thecosmicfrog.luasataglance.receiver
 
-import android.app.Activity
 import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -36,14 +35,13 @@ import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.activity.MainActivity
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 
 class NotifyTimesReceiver : BroadcastReceiver() {
+
     private val logTag = NotifyTimesReceiver::class.java.simpleName
 
     override fun onReceive(context: Context, intent: Intent) {
