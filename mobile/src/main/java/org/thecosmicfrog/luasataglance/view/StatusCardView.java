@@ -61,6 +61,9 @@ public class StatusCardView extends MaterialCardView {
     public void init(Context context) {
         inflate(context, R.layout.cardview_status, this);
 
+        /* Remove default MaterialCardView stroke (thin border around the card). */
+        setStrokeWidth(0);
+
         textViewStatusTitle = findViewById(R.id.textview_status_title);
         textViewStatus = findViewById(R.id.textview_status);
     }

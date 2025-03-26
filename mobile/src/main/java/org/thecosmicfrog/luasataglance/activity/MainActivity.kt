@@ -85,18 +85,6 @@ class MainActivity : AppCompatActivity() {
     private fun configureAppAesthetics() {
         /* Hide the ActionBar for aesthetic reasons. */
         supportActionBar?.hide()
-
-        /* Set status and navigation bar colour. */
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.statusBarColor = ContextCompat.getColor(
-            applicationContext,
-            R.color.luas_purple_statusbar
-        )
-        window.navigationBarColor = ContextCompat.getColor(
-            applicationContext,
-            R.color.luas_purple_statusbar
-        )
     }
 
     private fun setUpAppNavigation() {

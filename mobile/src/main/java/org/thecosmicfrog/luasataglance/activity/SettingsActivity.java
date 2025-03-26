@@ -69,17 +69,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
             }
         });
 
-        /*
-         * Set status bar colour and elevation.
-         */
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(
-                ContextCompat.getColor(getApplicationContext(),
-                        R.color.luas_purple_statusbar)
-        );
-
+         /* Set toolbar elevation. */
         toolbar.setElevation(8.0f);
     }
 

@@ -29,6 +29,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity
@@ -178,11 +179,7 @@ object StopForecastUtil {
 
         /* Don't permit the user to schedule a notification for a tram that is due now, or in 1 or 2 minutes. */
         if (notifyStopTimeStr.matches(Regex("${context.getString(R.string.due)}|1|2"))) {
-            Toast.makeText(
-                context,
-                context.getString(R.string.cannot_schedule_notification),
-                Toast.LENGTH_LONG
-            ).show()
+            showSnackbar((context as Activity), context.getString(R.string.cannot_schedule_notification))
 
             return
         }
@@ -203,11 +200,13 @@ object StopForecastUtil {
      */
     @JvmStatic
     fun showSnackbar(activity: Activity, message: String) {
+        val bottomNavigationBar = activity.findViewById<BottomNavigationView>(R.id.bottomnavigationview)
+
         Snackbar.make(
             activity.findViewById(android.R.id.content),
             message,
             Snackbar.LENGTH_LONG
-        ).setTextColor(Color.WHITE).show()
+        ).setAnchorView(bottomNavigationBar).setTextColor(Color.WHITE).show()
     }
 
     /**

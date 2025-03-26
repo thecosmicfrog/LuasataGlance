@@ -90,7 +90,6 @@
         android:contentDescription="@string/favourites_edit"
         android:elevation="@dimen/cardview_laag_elevation"
         android:src="@drawable/ic_edit"
-        android:tint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:rippleColor="@android:color/white" />

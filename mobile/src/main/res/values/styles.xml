@@ -18,21 +18,19 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Overrides. -->
-    <style
-        name="TextAppearance.Design.Snackbar.Message"
-        parent="android:TextAppearance"
-        tools:override="true">
-
-        <item name="android:textColor">@color/text_dark</item>
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.Bridge">
+<resources>
+    <style name="AppTheme" parent="Theme.Material3.DayNight">
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/text_dark</item>
+
+        <!-- Disable Material 3 dynamic colours. -->
+        <item name="colorPrimary">@android:color/white</item>
+        <item name="colorSurface">@android:color/white</item>
+
+        <item name="android:statusBarColor">@color/luas_purple_statusbar</item>
+        <item name="android:navigationBarColor">@color/luas_purple_statusbar</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
 
         <!-- Change general colour accent to the Luas shade of purple. -->
         <item name="colorAccent">@color/luas_purple</item>
@@ -40,6 +38,12 @@
         <!-- Hack to change SettingsActivity toolbar color and back button to white. -->
         <item name="toolbarStyle">@style/toolbar_settings</item>
         <item name="colorControlNormal">@android:color/white</item>
+
+        <item name="floatingActionButtonStyle">
+            @style/LuasAtAGlanceFloatingActionButton
+        </item>
+
+        <item name="snackbarStyle">@style/LuasAtAGlanceSnackbar</item>
     </style>
 
     <style name="toolbar_settings" parent="@style/Widget.AppCompat.Toolbar">
@@ -53,9 +57,6 @@
 
     <style name="LuasAtAGlancePopupDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/popup_dialog_background</item>
-<!--        <item name="android:windowBackground">#FFFFFF</item>-->
-<!--        <item name="android:textColorPrimary">#000000</item>-->
-<!--        <item name="android:textColorSecondary">#000000</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -70,11 +71,29 @@
         <item name="background">@color/luas_purple</item>
     </style>
 
+    <style name="LuasAtAGlanceBottomNavigationBarActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/luas_purple_light</item>
+    </style>
+
     <style name="LuasAtAGlancePermissionsRequestDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">#FFFFFF</item>
         <item name="android:textColorPrimary">#000000</item>
         <item name="android:textColorSecondary">#000000</item>
         <item name="android:windowFrame">@null</item>
+    </style>
+
+    <style name="LuasAtAGlanceFloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">@color/message_warning</item>
+    </style>
+
+    <style name="LuasAtAGlanceSnackbar" parent="Widget.Material3.Snackbar">
+        <item name="backgroundTint">@color/luas_purple</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="shapeAppearance">@style/LuasAtAGlanceSnackbarShapeAppearance</item>
+    </style>
+
+    <style name="LuasAtAGlanceSnackbarShapeAppearance" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerSize">@dimen/cardview_laag_corner_radius</item>
     </style>
 </resources>
 

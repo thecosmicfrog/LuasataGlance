@@ -41,14 +41,14 @@
             android:background="?attr/colorPrimary"
             android:elevation="@dimen/cardview_laag_elevation"
             android:minHeight="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:tabTextColor="@android:color/white"
+            app:tabIndicatorHeight="5dp"
+            app:tabIndicatorFullWidth="true"
+            app:tabTextAppearance="@style/LuasAtAGlanceTabLayout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/guideline_tablayout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tabIndicatorHeight="4dp"
-            app:tabTextAppearance="@style/LuasAtAGlanceTabLayout" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_tablayout"

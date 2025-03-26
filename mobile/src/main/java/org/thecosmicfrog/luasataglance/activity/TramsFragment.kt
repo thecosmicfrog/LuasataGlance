@@ -66,7 +66,7 @@ class TramsFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View? {
         /* Inflate the layout for this Fragment. */
         rootView = inflater.inflate(R.layout.fragment_trams, container, false)
 

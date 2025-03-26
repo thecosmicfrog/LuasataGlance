@@ -21,6 +21,7 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlarmManager
 import android.app.AlertDialog
 import android.content.Context
@@ -40,6 +41,8 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivityNotifyTimeBinding
 import org.thecosmicfrog.luasataglance.model.NotifyTimesMap
@@ -148,7 +151,7 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
     private fun checkNotificationPermission() {
         when {
             Preferences.permissionNotificationsShouldNotAskAgain(applicationContext) -> {
-                showToastAndFinish(R.string.please_allow_notification_permissions)
+                showSnackbarAndFinish(R.string.please_allow_notification_permissions)
             }
             checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED -> {
                 showNotificationPermissionDialog()
@@ -236,10 +239,17 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
     }
 
     /**
-     * Show confirmation Toast and close the Activity.
+     * Show Snackbar and close the Activity.
      */
-    private fun showToastAndFinish(@StringRes messageResId: Int) {
+    private fun showSnackbarAndFinish(@StringRes messageResId: Int) {
         Toast.makeText(this, messageResId, Toast.LENGTH_LONG).show()
+
+        Snackbar.make(
+            (context as Activity).findViewById(android.R.id.content),
+            context.getString(messageResId),
+            Snackbar.LENGTH_LONG
+        ).setAnchorView((context as Activity).findViewById<BottomNavigationView>(R.id.bottomnavigationview))
+            .show()
 
         finish()
     }

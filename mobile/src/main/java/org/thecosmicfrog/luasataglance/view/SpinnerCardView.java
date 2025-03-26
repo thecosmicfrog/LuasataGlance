@@ -69,6 +69,9 @@ public class SpinnerCardView extends MaterialCardView {
 
         spinnerStops = findViewById(R.id.card_view_spinner);
 
+        /* Remove default MaterialCardView stroke (thin border around the card). */
+        setStrokeWidth(0);
+
         /*
          * Set the Spinner's colour to Luas purple.
          */
