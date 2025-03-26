@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.api.ApiTimes
@@ -298,24 +299,45 @@ class LineFragment : Fragment() {
             /* When this tab is visible to the user, load a stop forecast. */
             if (isVisibleToUser) {
                 if (spinnerCardView?.spinnerStops?.selectedItem != null) {
-                    val stopName = spinnerCardView?.spinnerStops?.selectedItem.toString()
+                    /* Coroutine to assist with adding the delay below. */
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        /* Add slight delay to prevent UI jank on tab change. */
+                        delay(500L)
 
-                    Preferences.saveSelectedStopName(ctx, Constant.NO_LINE, stopName)
+                        val stopName = spinnerCardView?.spinnerStops?.selectedItem.toString()
 
-                    loadStopForecast(stopName, false)
+                        Preferences.saveSelectedStopName(ctx, Constant.NO_LINE, stopName)
 
-                    shouldAutoReload = true
+                        loadStopForecast(stopName, false)
+
+                        shouldAutoReload = true
+                    }
                 } else {
                     Log.w(logTag, "Spinner selected item is null.")
                 }
             } else {
                 shouldAutoReload = false
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    /*
+                     * Clear the stop forecast of the "exiting tab" on tab change to avoid loading a stale
+                     * stop forecast the next time the user opens it. Slight delay to prevent UI jank.
+                     */
+                    delay(500L)
+
+                    StopForecastUtil.clearStopForecast(
+                        statusCardView,
+                        recyclerViewStopForecastsInbound,
+                        recyclerViewStopForecastsOutbound
+                    )
+                }
             }
         }
     }
 
     private fun getBinding(line: String?, viewGroup: ViewGroup?): LineFragmentViewBindingAdapter? {
-        val inflater = LayoutInflater.from(getContext())
+        val inflater = LayoutInflater.from(context)
+
         when (line) {
             Constant.RED_LINE -> {
                 val fragmentRedlineBinding = FragmentRedlineBinding.inflate(inflater, viewGroup, false)
