@@ -34,9 +34,7 @@ import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity
 import org.thecosmicfrog.luasataglance.api.ApiTimes
 import org.thecosmicfrog.luasataglance.model.StopForecast
-import org.thecosmicfrog.luasataglance.model.StopForecastAdapter
-import org.thecosmicfrog.luasataglance.model.StopForecastInfo
-import org.thecosmicfrog.luasataglance.view.StatusCardView
+import org.thecosmicfrog.luasataglance.model.StopForecastShimmerAdapter
 
 object StopForecastUtil {
 
@@ -46,19 +44,11 @@ object StopForecastUtil {
      * Clear the stop forecast by inserting blank StopForecastInfo objects into the inbound and outbound RecyclerViews.
      * @param recyclerViewInbound Inbound RecyclerView.
      * @param recyclerViewOutbound Outbound RecyclerView.
-     * @param statusCardView StatusCardView.
      */
-    fun clearStopForecast(
-        statusCardView: StatusCardView?,
-        recyclerViewInbound: RecyclerView?,
-        recyclerViewOutbound: RecyclerView?,
-    ) {
-        val emptyList = listOf(StopForecastInfo("", "", ""))
-        val emptyAdapter = StopForecastAdapter(emptyList)
-
-        recyclerViewInbound?.adapter = emptyAdapter
-        recyclerViewOutbound?.adapter = emptyAdapter
-        statusCardView?.setStatus("")
+    fun clearStopForecast(recyclerViewInbound: RecyclerView?, recyclerViewOutbound: RecyclerView?) {
+        val stopForecastShimmerAdapter = StopForecastShimmerAdapter()
+        recyclerViewInbound?.adapter = stopForecastShimmerAdapter
+        recyclerViewOutbound?.adapter = stopForecastShimmerAdapter
     }
 
     /**

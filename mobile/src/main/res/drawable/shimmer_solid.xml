@@ -18,18 +18,9 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<resources>
-    <color name="luas_purple">#ff4d3475</color>
-    <color name="luas_purple_light">#664A9D</color>
-    <color name="luas_purple_statusbar">#ff3f2a5f</color>
-    <color name="message_success">#ff006600</color>
-    <color name="message_warning">#ED8C00</color>
-    <color name="message_error">#ffe00000</color>
-    <color name="off_white">#ffefefef</color>
-    <color name="shimmer_gradient_start">#ffcacaca</color>
-    <color name="shimmer_gradient_end">#ff787878</color>
-    <color name="tab_red_line">#ffff4d4d</color>
-    <color name="tab_green_line">#ff33ad5C</color>
-    <color name="text_dark">#ff3C4043</color>
-    <color name="text_link">#ff80cbc4</color>
-</resources>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="@dimen/cardview_laag_corner_radius" />
+    <solid android:color="@color/shimmer_gradient_end" />
+</shape>

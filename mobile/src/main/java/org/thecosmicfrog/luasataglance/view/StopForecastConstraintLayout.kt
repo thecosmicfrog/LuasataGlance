@@ -27,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import org.thecosmicfrog.luasataglance.R
 
 class StopForecastConstraintLayout : ConstraintLayout {
+
     private val logTag = StopForecastConstraintLayout::class.java.simpleName
 
     constructor(context: Context?) : super(context!!) {

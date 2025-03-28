@@ -20,23 +20,32 @@
  */
 package org.thecosmicfrog.luasataglance.model
 
-import android.view.View
-import android.widget.TextView
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.thecosmicfrog.luasataglance.R
 
-class StopForecastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class StopForecastShimmerAdapter(): RecyclerView.Adapter<StopForecastViewHolder>() {
 
-    val textViewDestination: TextView? =
-        itemView.findViewById(R.id.textview_stop_forecast_destination)
+    private lateinit var context: Context
 
-    val textViewDueMinutes: TextView? =
-        itemView.findViewById(R.id.textview_stop_forecast_due_time_value)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : StopForecastViewHolder {
+        context = parent.context
 
-    val textViewMinOrMins: TextView? =
-        itemView.findViewById(R.id.textview_stop_forecast_due_time_min_mins)
+        val itemView = LayoutInflater.from(parent.context).inflate(
+                R.layout.cardview_stop_forecast_shimmer,
+                parent,
+                false
+            )
 
-    val textViewSetReminder: TextView? =
-        itemView.findViewById(R.id.textview_stop_forecast_set_reminder)
+        return StopForecastViewHolder(itemView)
+    }
+
+    override fun onBindViewHolder(holder: StopForecastViewHolder, position: Int) {}
+
+    override fun getItemCount(): Int {
+        return 1
+    }
 }
 

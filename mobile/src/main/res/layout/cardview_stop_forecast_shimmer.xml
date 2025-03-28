@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2015-2025 Aaron Hastings
+
+    This file is part of Luas at a Glance.
+
+    Luas at a Glance is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Luas at a Glance is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardview_stop_forecast"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:layout_marginBottom="5dp"
+    app:cardCornerRadius="@dimen/cardview_laag_corner_radius">
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_stop_forecast"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp">
+
+            <View
+                android:id="@+id/shimmer_stop_name"
+                android:layout_width="200dp"
+                android:layout_height="16dp"
+                android:background="@drawable/shimmer_gradient"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/shimmer_reminder_text"
+                android:layout_width="120dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/shimmer_gradient"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shimmer_stop_name" />
+
+            <View
+                android:id="@+id/shimmer_minutes"
+                android:layout_width="24dp"
+                android:layout_height="16dp"
+                android:background="@drawable/shimmer_solid"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/shimmer_mins_text"
+                android:layout_width="24dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/shimmer_solid"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shimmer_minutes" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+</com.google.android.material.card.MaterialCardView>

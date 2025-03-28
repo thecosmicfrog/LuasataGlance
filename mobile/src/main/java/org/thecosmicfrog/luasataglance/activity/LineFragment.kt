@@ -276,6 +276,9 @@ class LineFragment : Fragment() {
             linearLayoutManagerOutbound?.orientation = LinearLayoutManager.VERTICAL
             recyclerViewStopForecastsInbound?.layoutManager = linearLayoutManagerInbound
             recyclerViewStopForecastsOutbound?.layoutManager = linearLayoutManagerOutbound
+
+            /* Clears the stop forecast at app startup to show the shimmer effect. */
+            StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
         }
     }
 
@@ -287,11 +290,7 @@ class LineFragment : Fragment() {
         if (isInitialised) {
             /* If the Spinner's selected item is "Select a stop...", get out of here. */
             if (spinnerCardView?.spinnerStops?.selectedItemPosition == 0) {
-                StopForecastUtil.clearStopForecast(
-                    statusCardView,
-                    recyclerViewStopForecastsInbound,
-                    recyclerViewStopForecastsOutbound
-                )
+                StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
 
                 return
             }
@@ -324,12 +323,7 @@ class LineFragment : Fragment() {
                      * stop forecast the next time the user opens it. Slight delay to prevent UI jank.
                      */
                     delay(500L)
-
-                    StopForecastUtil.clearStopForecast(
-                        statusCardView,
-                        recyclerViewStopForecastsInbound,
-                        recyclerViewStopForecastsOutbound
-                    )
+                    StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
                 }
             }
         }
@@ -397,11 +391,7 @@ class LineFragment : Fragment() {
                         shouldAutoReload = false
                         swipeRefreshLayout?.isEnabled = false
 
-                        StopForecastUtil.clearStopForecast(
-                            statusCardView,
-                            recyclerViewStopForecastsInbound,
-                            recyclerViewStopForecastsOutbound
-                        )
+                        StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
 
                         return
                     } else {
@@ -412,6 +402,8 @@ class LineFragment : Fragment() {
 
                     /* Hide the select stop tutorial, if it is visible. */
                     displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, false)
+
+                    StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
 
                     /*
                      * Get the stop name from the current position of the Spinner, save it to
@@ -635,8 +627,7 @@ class LineFragment : Fragment() {
                     statusCardView?.setStatus(getString(R.string.message_error))
                     statusCardView?.setStatusColor(R.color.message_error)
 
-                    statusCardView?.setStatus(getString(R.string.message_error))
-                    statusCardView?.setStatusColor(R.color.message_error)
+                    StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
                 }
 
             } catch (e: Exception) {
@@ -662,6 +653,8 @@ class LineFragment : Fragment() {
 
                 statusCardView?.setStatus(getString(R.string.message_error))
                 statusCardView?.setStatusColor(R.color.message_error)
+
+                StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
             } finally {
                 setIsLoading(false)
                 swipeRefreshLayout?.isRefreshing = false
