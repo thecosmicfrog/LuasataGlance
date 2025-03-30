@@ -184,7 +184,7 @@
     <string name="whatsnew_title_current" translatable="false">Version %s (%s)</string>
     <string name="whatsnew_content_current" translatable="false">
         \u2022 Fixed issue where "Gleann Bhríde" would not appear when using Irish (Gaeilge) as the device language.\n
-        \u2022 Other minor bug fixes.
+        \u2022 Fixed intermittent crash.
     </string>
 
     <!--

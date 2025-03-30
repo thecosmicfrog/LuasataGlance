@@ -687,155 +687,160 @@ class LineFragment : Fragment() {
      * @param stopForecast StopForecast model containing data for requested stop.
      */
     private fun updateStopForecast(stopForecast: StopForecast?) {
-        val localeGaeilge = "ga"
-        val due = "DUE"
-        val mapEnglishGaeilge = EnglishGaeilgeMap()
-        val min = " " + getString(R.string.min)
-        val mins = " " + getString(R.string.mins)
-        var minOrMins: String
+        /* Extra check for Fragment attachment since this is called asynchronously from a Retrofit callback. */
+        if (isAdded) {
+            val localeGaeilge = "ga"
+            val due = "DUE"
+            val mapEnglishGaeilge = EnglishGaeilgeMap()
+            val min = " " + getString(R.string.min)
+            val mins = " " + getString(R.string.mins)
+            var minOrMins: String
 
-        /* If a valid stop forecast exists... */
-        if (stopForecast != null) {
-            var operatingNormally = false
+            /* If a valid stop forecast exists... */
+            if (stopForecast != null) {
+                var operatingNormally = false
 
-            if (stopForecast.stopForecastStatusDirectionInbound.operatingNormally != null &&
-                stopForecast.stopForecastStatusDirectionOutbound.operatingNormally != null) {
-                if (stopForecast.stopForecastStatusDirectionInbound.operatingNormally!! &&
-                    stopForecast.stopForecastStatusDirectionOutbound.operatingNormally!!) {
-                    operatingNormally = true
+                if (stopForecast.stopForecastStatusDirectionInbound.operatingNormally != null &&
+                    stopForecast.stopForecastStatusDirectionOutbound.operatingNormally != null
+                ) {
+                    if (stopForecast.stopForecastStatusDirectionInbound.operatingNormally!! &&
+                        stopForecast.stopForecastStatusDirectionOutbound.operatingNormally!!
+                    ) {
+                        operatingNormally = true
+                    }
                 }
-            }
 
-            val status: String? = if (localeDefault!!.startsWith(localeGaeilge)) {
-                getString(R.string.message_success)
-            } else {
-                stopForecast.message
-            }
-            if (status != null) {
-                /* A lot of Luas status messages relate to lifts being out of service. Ignore these. */
-                if (operatingNormally || status.lowercase(Locale.getDefault()).contains("lift")) {
-                    /*
-                     * No error message on server. Change the message title TextView to
-                     * green and set a default success message.
-                     */
-                    statusCardView.setStatus(status)
-                    statusCardView.setStatusColor(R.color.message_success)
-
-                    /* Change the alerts image to the default white image. */
-                    imageViewBottomNavAlerts.setImageResource(
-                        R.drawable.ic_error_alerts
-                    )
-
-                    /* Change the color of the Alerts TextView to white (default). */
-                    textViewBottomNavAlerts.setTextColor(
-                        ContextCompat.getColor(requireContext(), android.R.color.white)
-                    )
+                val status: String? = if (localeDefault!!.startsWith(localeGaeilge)) {
+                    getString(R.string.message_success)
                 } else {
-                    if (status == "") {
+                    stopForecast.message
+                }
+                if (status != null) {
+                    /* A lot of Luas status messages relate to lifts being out of service. Ignore these. */
+                    if (operatingNormally || status.lowercase(Locale.getDefault()).contains("lift")) {
                         /*
-                         * If the server returns no status message, the Luas RTPI system is
-                         * probably down.
+                         * No error message on server. Change the message title TextView to
+                         * green and set a default success message.
                          */
-                        statusCardView.setStatus(
-                            getString(R.string.message_no_status)
+                        statusCardView.setStatus(status)
+                        statusCardView.setStatusColor(R.color.message_success)
+
+                        /* Change the alerts image to the default white image. */
+                        imageViewBottomNavAlerts.setImageResource(
+                            R.drawable.ic_error_alerts
+                        )
+
+                        /* Change the color of the Alerts TextView to white (default). */
+                        textViewBottomNavAlerts.setTextColor(
+                            ContextCompat.getColor(requireContext(), android.R.color.white)
                         )
                     } else {
-                        /* Set the error message from the server. */
-                        statusCardView.setStatus(status)
-                    }
-
-                    /* Change the color of the message title TextView to red. */
-                    statusCardView.setStatusColor(R.color.message_error)
-
-                    /* Change the Alerts image to the red version. */
-                    imageViewBottomNavAlerts.setImageResource(
-                        R.drawable.ic_error_alerts_red
-                    )
-
-                    /* Change the color of the Alerts TextView to red. */
-                    textViewBottomNavAlerts.setTextColor(
-                        ContextCompat.getColor(requireContext(), R.color.message_error)
-                    )
-                }
-            }
-
-            /*
-             * Pull in all trams from the StopForecast, but only display up to five
-             * inbound and outbound trams.
-             */
-            if (stopForecast.inboundTrams.size == 0) {
-                inboundStopForecastCardView.setNoTramsForecast()
-            } else {
-                var inboundTram: String?
-
-                for (i in stopForecast.inboundTrams.indices) {
-                    var dueMinutes = stopForecast.inboundTrams[i].dueMinutes
-
-                    if (i < 6) {
-                        inboundTram = if (localeDefault!!.startsWith(localeGaeilge)) {
-                            mapEnglishGaeilge[stopForecast.inboundTrams[i].destination]
+                        if (status == "") {
+                            /*
+                             * If the server returns no status message, the Luas RTPI system is
+                             * probably down.
+                             */
+                            statusCardView.setStatus(
+                                getString(R.string.message_no_status)
+                            )
                         } else {
-                            stopForecast.inboundTrams[i].destination
+                            /* Set the error message from the server. */
+                            statusCardView.setStatus(status)
                         }
 
-                        if (dueMinutes != null) {
-                            if (dueMinutes.equals(due, ignoreCase = true)) {
-                                if (localeDefault!!.startsWith(localeGaeilge)) {
-                                    dueMinutes = mapEnglishGaeilge[dueMinutes]
-                                }
-                                minOrMins = ""
-                            } else if (dueMinutes.toInt() > 1) {
-                                minOrMins = mins
+                        /* Change the color of the message title TextView to red. */
+                        statusCardView.setStatusColor(R.color.message_error)
+
+                        /* Change the Alerts image to the red version. */
+                        imageViewBottomNavAlerts.setImageResource(
+                            R.drawable.ic_error_alerts_red
+                        )
+
+                        /* Change the color of the Alerts TextView to red. */
+                        textViewBottomNavAlerts.setTextColor(
+                            ContextCompat.getColor(requireContext(), R.color.message_error)
+                        )
+                    }
+                }
+
+                /*
+                 * Pull in all trams from the StopForecast, but only display up to five
+                 * inbound and outbound trams.
+                 */
+                if (stopForecast.inboundTrams.size == 0) {
+                    inboundStopForecastCardView.setNoTramsForecast()
+                } else {
+                    var inboundTram: String?
+
+                    for (i in stopForecast.inboundTrams.indices) {
+                        var dueMinutes = stopForecast.inboundTrams[i].dueMinutes
+
+                        if (i < 6) {
+                            inboundTram = if (localeDefault!!.startsWith(localeGaeilge)) {
+                                mapEnglishGaeilge[stopForecast.inboundTrams[i].destination]
                             } else {
-                                minOrMins = min
+                                stopForecast.inboundTrams[i].destination
                             }
 
-                            inboundStopForecastCardView.setStopNames(i, inboundTram)
-                            inboundStopForecastCardView.setStopTimes(i, dueMinutes + minOrMins)
+                            if (dueMinutes != null) {
+                                if (dueMinutes.equals(due, ignoreCase = true)) {
+                                    if (localeDefault!!.startsWith(localeGaeilge)) {
+                                        dueMinutes = mapEnglishGaeilge[dueMinutes]
+                                    }
+                                    minOrMins = ""
+                                } else if (dueMinutes.toInt() > 1) {
+                                    minOrMins = mins
+                                } else {
+                                    minOrMins = min
+                                }
+
+                                inboundStopForecastCardView.setStopNames(i, inboundTram)
+                                inboundStopForecastCardView.setStopTimes(i, dueMinutes + minOrMins)
+                            }
                         }
                     }
                 }
-            }
 
-            if (stopForecast.outboundTrams.size == 0) {
-                outboundStopForecastCardView.setNoTramsForecast()
-            } else {
-                var outboundTram: String?
+                if (stopForecast.outboundTrams.size == 0) {
+                    outboundStopForecastCardView.setNoTramsForecast()
+                } else {
+                    var outboundTram: String?
 
-                for (i in stopForecast.outboundTrams.indices) {
-                    var dueMinutes = stopForecast.outboundTrams[i].dueMinutes
-                    if (i < 6) {
-                        outboundTram = if (localeDefault!!.startsWith(localeGaeilge)) {
-                            mapEnglishGaeilge[stopForecast.outboundTrams[i].destination]
-                        } else {
-                            stopForecast.outboundTrams[i].destination
-                        }
-
-                        if (dueMinutes != null) {
-                            if (dueMinutes.equals(due, ignoreCase = true)) {
-                                if (localeDefault!!.startsWith(localeGaeilge)) {
-                                    dueMinutes = mapEnglishGaeilge[dueMinutes]
-                                }
-                                minOrMins = ""
-                            } else if (dueMinutes.toInt() > 1) {
-                                minOrMins = mins
+                    for (i in stopForecast.outboundTrams.indices) {
+                        var dueMinutes = stopForecast.outboundTrams[i].dueMinutes
+                        if (i < 6) {
+                            outboundTram = if (localeDefault!!.startsWith(localeGaeilge)) {
+                                mapEnglishGaeilge[stopForecast.outboundTrams[i].destination]
                             } else {
-                                minOrMins = min
+                                stopForecast.outboundTrams[i].destination
                             }
 
-                            outboundStopForecastCardView.setStopNames(i, outboundTram)
-                            outboundStopForecastCardView.setStopTimes(i, dueMinutes + minOrMins)
+                            if (dueMinutes != null) {
+                                if (dueMinutes.equals(due, ignoreCase = true)) {
+                                    if (localeDefault!!.startsWith(localeGaeilge)) {
+                                        dueMinutes = mapEnglishGaeilge[dueMinutes]
+                                    }
+                                    minOrMins = ""
+                                } else if (dueMinutes.toInt() > 1) {
+                                    minOrMins = mins
+                                } else {
+                                    minOrMins = min
+                                }
+
+                                outboundStopForecastCardView.setStopNames(i, outboundTram)
+                                outboundStopForecastCardView.setStopTimes(i, dueMinutes + minOrMins)
+                            }
                         }
                     }
                 }
+            } else {
+                /*
+                 * If no stop forecast can be retrieved, set a generic error message and
+                 * change the color of the message title box red.
+                 */
+                statusCardView.setStatus(getString(R.string.message_error))
+                statusCardView.setStatusColor(R.color.message_error)
             }
-        } else {
-            /*
-             * If no stop forecast can be retrieved, set a generic error message and
-             * change the color of the message title box red.
-             */
-            statusCardView.setStatus(getString(R.string.message_error))
-            statusCardView.setStatusColor(R.color.message_error)
         }
     }
 
