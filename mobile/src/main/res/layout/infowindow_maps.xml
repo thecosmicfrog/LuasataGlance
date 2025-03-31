@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2015-2025 Aaron Hastings
+
+    This file is part of Luas at a Glance.
+
+    Luas at a Glance is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Luas at a Glance is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/cardview_laag_elevation"
+        app:cardCornerRadius="@dimen/cardview_laag_corner_radius">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clipToPadding="true"
+            android:paddingEnd="0dp"
+            android:paddingStart="0dp">
+
+            <View
+                android:id="@+id/view_line_indicator"
+                android:layout_width="12dp"
+                android:layout_height="0dp"
+                android:background="@drawable/view_line_indicator_background"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- translationY: Raise the text a bit because it looks vertically off-centre without it (optical illusion). -->
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:translationY="-1dp"
+                android:textColor="@color/text_dark"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:paddingStart="22dp"
+                android:paddingEnd="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/view_line_indicator"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/imagebutton_chevron"
+                tools:text="St. Stephen's Green" />
+
+            <ImageButton
+                android:id="@+id/imagebutton_chevron"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:scaleType="fitCenter"
+                android:src="@drawable/chevron_right"
+                android:contentDescription="@string/content_desc_map_chevron"
+                android:paddingStart="8dp"
+                android:paddingEnd="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/title"
+                app:layout_constraintTop_toTopOf="@id/title"
+                app:tint="@color/text_dark" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/MapsInfoWindowPointer"
+        android:layout_width="30dp"
+        android:layout_height="15dp"
+        android:translationY="-1dp"
+        android:layout_gravity="center"
+        app:cardElevation="@dimen/cardview_laag_elevation" />
+</LinearLayout>

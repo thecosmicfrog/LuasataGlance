@@ -71,6 +71,19 @@
         <item name="background">@color/luas_purple</item>
     </style>
 
+    <!-- "Pointer" at bottom of custom Google Maps info window. -->
+    <style name="MapsInfoWindowPointer" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/MapsInfoWindowPointerShape</item>
+    </style>
+
+    <style name="MapsInfoWindowPointerShape" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomRight">15dp</item>
+        <item name="cornerSizeBottomLeft">15dp</item>
+    </style>
+
     <style name="LuasAtAGlanceBottomNavigationBarActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/luas_purple_light</item>
     </style>

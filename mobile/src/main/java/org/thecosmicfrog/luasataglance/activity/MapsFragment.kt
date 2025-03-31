@@ -30,6 +30,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -133,6 +134,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
      */
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+
+        initCustomInfoWindow()
 
         setMyLocationEnabled()
 
@@ -593,6 +596,58 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
         Log.wtf(logTag, "No stop markers found for stop: $stopName")
 
         throw StopMarkerNotFoundException()
+    }
+
+    /**
+     * Initialise the custom info window for the map.
+     */
+    private fun initCustomInfoWindow() {
+        map?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+            override fun getInfoWindow(marker: Marker): View? {
+                val view = layoutInflater.inflate(R.layout.infowindow_maps, null)
+
+                view.findViewById<TextView>(R.id.title).text = marker.title
+                setMapInfoWindowLineIndicator(view, marker.title)
+
+                return view
+            }
+
+            override fun getInfoContents(marker: Marker): View? {
+                return null
+            }
+        })
+    }
+
+    /**
+     * Set an aesthetically-pleasing indicator colour for map info windows based on the stop name.
+     * @param view The info window view containing the line indicator.
+     * @param stopName The name of the stop.
+     */
+    private fun setMapInfoWindowLineIndicator(view: View, stopName: String?) {
+        val lineIndicator = view.findViewById<View>(R.id.view_line_indicator)
+        val backgroundDrawable = lineIndicator.background
+
+        val redLineStops = resources.getStringArray(R.array.array_stops_redline)
+        val greenLineStops = resources.getStringArray(R.array.array_stops_greenline)
+
+        when (stopName) {
+            in redLineStops -> {
+                backgroundDrawable.setTint(
+                    ContextCompat.getColor(requireContext(), R.color.tab_red_line)
+                )
+            }
+            in greenLineStops -> {
+                backgroundDrawable.setTint(
+                    ContextCompat.getColor(requireContext(), R.color.tab_green_line)
+                )
+            }
+            else -> {
+                backgroundDrawable.setTint(
+                    ContextCompat.getColor(requireContext(), android.R.color.transparent)
+                )
+                Log.wtf("MapInfoWindow", "Stop name not found in red or green line arrays.")
+            }
+        }
     }
 }
 

@@ -112,6 +112,7 @@
     <string name="content_desc_bottomnav_favourites">Cnaipe Ceanáin</string>
     <string name="content_desc_bottomnav_map">Cnaipe Léarscáil</string>
     <string name="content_desc_map_close">Cnaipe dún léarscáil</string>
+    <string name="content_desc_map_chevron">Oscail an stad seo</string>
 
     <!--
         Favourites
