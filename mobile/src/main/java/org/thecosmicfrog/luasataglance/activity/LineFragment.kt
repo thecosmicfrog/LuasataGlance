@@ -206,89 +206,89 @@ class LineFragment : Fragment() {
 
         AppUtil.resetShouldNotAskAgainIfPermissionsChangedOutsideApp(context)
 
-        if (isAdded && viewBinding != null && line != null) {
-            isInitialised = initFragment()
+        if (!isAdded || viewBinding == null || line == null) return
 
-            broadcastReceiver?.let {
-                LocalBroadcastManager.getInstance(ctx as Context).registerReceiver(
-                    it,
-                    IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
-                )
-            }
+        isInitialised = initFragment()
 
-            /*
-             * If an Intent did not bring us to this Activity and there is a stop name saved in
-             * shared preferences, load that stop.
-             * This provides persistence to the app across shutdowns.
-             */
-            if (act?.intent?.hasExtra(Constant.STOP_NAME)?.not() == true) {
-                if (Preferences.selectedStopName(ctx, Constant.NO_LINE) != null) {
-                    val stopName = Preferences.selectedStopName(ctx, Constant.NO_LINE)
-
-                    setTabAndSpinner(stopName)
-                }
-            }
-
-            /*
-             * If a Favourite stop brought us to this Activity, load that stop's forecast.
-             * If a tapped notification brought us to this Activity, load the forecast for the stop
-             * sent with that Intent.
-             * If the previous cases are not matched, and the user has selected a default stop, load
-             * the forecast for that.
-             */
-            if (act?.intent?.hasExtra(Constant.STOP_NAME) == true) {
-                val stopName = act?.intent?.getStringExtra(Constant.STOP_NAME)
-
-                /*
-                 * Track whether or not the tab and spinner has been set. If it has, clear the Extra
-                 * so it doesn't break the Default Stop setting.
-                 */
-                val hasSetTabAndSpinner = setTabAndSpinner(stopName)
-                if (hasSetTabAndSpinner) {
-                    act?.intent?.removeExtra(Constant.STOP_NAME)
-                }
-            } else if (act?.intent?.hasExtra(Constant.NOTIFY_STOP_NAME) == true) {
-                /*
-                 * Track whether or not the tab and spinner has been set. If it has, clear the Extra
-                 * so it doesn't break the Default Stop setting.
-                 */
-                val hasSetTabAndSpinner = setTabAndSpinner(
-                    act?.intent?.getStringExtra(Constant.NOTIFY_STOP_NAME)
-                )
-                if (hasSetTabAndSpinner) {
-                    act?.intent?.removeExtra(Constant.NOTIFY_STOP_NAME)
-                }
-            } else if (Preferences.defaultStopName(ctx) != getString(R.string.none)
-                && Preferences.defaultStopName(ctx) != null) {
-                setTabAndSpinner(Preferences.defaultStopName(ctx))
-            }
-
-            /* Display tutorial for selecting a stop, if required. */
-            displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, true)
-
-            /*
-             * Reload stop forecast.
-             * Induce 10 second delay if app is launching from cold start (timerTaskReload == null)
-             * in order to prevent two HTTP requests in rapid succession.
-             */
-            if (timerTaskReload == null) {
-                autoReloadStopForecast(10000)
-            } else {
-                autoReloadStopForecast(0)
-            }
-
-            recyclerViewStopForecastsInbound = viewBinding?.recyclerViewStopForecastsInbound
-            recyclerViewStopForecastsOutbound = viewBinding?.recyclerViewStopForecastsOutbound
-            linearLayoutManagerInbound = LinearLayoutManager(ctx)
-            linearLayoutManagerOutbound = LinearLayoutManager(ctx)
-            linearLayoutManagerInbound?.orientation = LinearLayoutManager.VERTICAL
-            linearLayoutManagerOutbound?.orientation = LinearLayoutManager.VERTICAL
-            recyclerViewStopForecastsInbound?.layoutManager = linearLayoutManagerInbound
-            recyclerViewStopForecastsOutbound?.layoutManager = linearLayoutManagerOutbound
-
-            /* Clears the stop forecast at app startup to show the shimmer effect. */
-            StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
+        broadcastReceiver?.let {
+            LocalBroadcastManager.getInstance(ctx as Context).registerReceiver(
+                it,
+                IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
+            )
         }
+
+        /*
+         * If an Intent did not bring us to this Activity and there is a stop name saved in
+         * shared preferences, load that stop.
+         * This provides persistence to the app across shutdowns.
+         */
+        if (act?.intent?.hasExtra(Constant.STOP_NAME)?.not() == true) {
+            if (Preferences.selectedStopName(ctx, Constant.NO_LINE) != null) {
+                val stopName = Preferences.selectedStopName(ctx, Constant.NO_LINE)
+
+                setTabAndSpinner(stopName)
+            }
+        }
+
+        /*
+         * If a Favourite stop brought us to this Activity, load that stop's forecast.
+         * If a tapped notification brought us to this Activity, load the forecast for the stop
+         * sent with that Intent.
+         * If the previous cases are not matched, and the user has selected a default stop, load
+         * the forecast for that.
+         */
+        if (act?.intent?.hasExtra(Constant.STOP_NAME) == true) {
+            val stopName = act?.intent?.getStringExtra(Constant.STOP_NAME)
+
+            /*
+             * Track whether or not the tab and spinner has been set. If it has, clear the Extra
+             * so it doesn't break the Default Stop setting.
+             */
+            val hasSetTabAndSpinner = setTabAndSpinner(stopName)
+            if (hasSetTabAndSpinner) {
+                act?.intent?.removeExtra(Constant.STOP_NAME)
+            }
+        } else if (act?.intent?.hasExtra(Constant.NOTIFY_STOP_NAME) == true) {
+            /*
+             * Track whether or not the tab and spinner has been set. If it has, clear the Extra
+             * so it doesn't break the Default Stop setting.
+             */
+            val hasSetTabAndSpinner = setTabAndSpinner(
+                act?.intent?.getStringExtra(Constant.NOTIFY_STOP_NAME)
+            )
+            if (hasSetTabAndSpinner) {
+                act?.intent?.removeExtra(Constant.NOTIFY_STOP_NAME)
+            }
+        } else if (Preferences.defaultStopName(ctx) != getString(R.string.none)
+            && Preferences.defaultStopName(ctx) != null) {
+            setTabAndSpinner(Preferences.defaultStopName(ctx))
+        }
+
+        /* Display tutorial for selecting a stop, if required. */
+        displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, true)
+
+        /*
+         * Reload stop forecast.
+         * Induce 10 second delay if app is launching from cold start (timerTaskReload == null)
+         * in order to prevent two HTTP requests in rapid succession.
+         */
+        if (timerTaskReload == null) {
+            autoReloadStopForecast(10000)
+        } else {
+            autoReloadStopForecast(0)
+        }
+
+        recyclerViewStopForecastsInbound = viewBinding?.recyclerViewStopForecastsInbound
+        recyclerViewStopForecastsOutbound = viewBinding?.recyclerViewStopForecastsOutbound
+        linearLayoutManagerInbound = LinearLayoutManager(ctx)
+        linearLayoutManagerOutbound = LinearLayoutManager(ctx)
+        linearLayoutManagerInbound?.orientation = LinearLayoutManager.VERTICAL
+        linearLayoutManagerOutbound?.orientation = LinearLayoutManager.VERTICAL
+        recyclerViewStopForecastsInbound?.layoutManager = linearLayoutManagerInbound
+        recyclerViewStopForecastsOutbound?.layoutManager = linearLayoutManagerOutbound
+
+        /* Clears the stop forecast at app startup to show the shimmer effect. */
+        StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -467,17 +467,13 @@ class LineFragment : Fragment() {
      * @param loading Whether or not progress bar should animate.
      */
     private fun setIsLoading(loading: Boolean) {
-        if (isAdded) {
-            /*
-             * Only run if Fragment is attached to Activity. Without this check, the app is liable
-             * to crash when the screen is rotated many times in a given period of time.
-             */
-            act?.runOnUiThread {
-                if (loading) {
-                    progressBar?.visibility = View.VISIBLE
-                } else {
-                    progressBar?.visibility = View.INVISIBLE
-                }
+        if (!isAdded) return
+
+        act?.runOnUiThread {
+            if (loading) {
+                progressBar?.visibility = View.VISIBLE
+            } else {
+                progressBar?.visibility = View.INVISIBLE
             }
         }
     }
@@ -763,11 +759,11 @@ class LineFragment : Fragment() {
      * Set the status of the StatusCardView to red and clear the stop forecast.
      */
     private fun statusRedAndClearStopForecast() {
-        if (isAdded) {
-            statusCardView?.setStatus(getString(R.string.message_error))
-            statusCardView?.setStatusColor(R.color.message_error)
+        if (!isAdded) return
 
-            StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
-        }
+        statusCardView?.setStatus(getString(R.string.message_error))
+        statusCardView?.setStatusColor(R.color.message_error)
+
+        StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
     }
 }

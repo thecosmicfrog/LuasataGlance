@@ -61,40 +61,40 @@ class AlertsFragment : Fragment() {
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 
+        if (!isAdded || !isVisibleToUser) return
+
         val urlTravelUpdates = "https://luas.ie/travel-updates/"
 
-        if (isAdded && isVisibleToUser) {
-            val progressBarNews = rootView?.findViewById<ProgressBar>(R.id.progressbar_news)
-            val swipeRefreshLayoutNews =
-                rootView?.findViewById<SwipeRefreshLayout>(R.id.swiperefreshlayout_news)
+        val progressBarNews = rootView?.findViewById<ProgressBar>(R.id.progressbar_news)
+        val swipeRefreshLayoutNews =
+            rootView?.findViewById<SwipeRefreshLayout>(R.id.swiperefreshlayout_news)
 
-            /*
-             * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
-             * browser is liable to open.
-             * Ensure the information is fresh by using no app or web browser cache.
-             */
-            val webViewNews = rootView?.findViewById<WebView>(R.id.webview_news)
+        /*
+         * Create a new WebView and explicitly set the WebViewClient. Otherwise, an external
+         * browser is liable to open.
+         * Ensure the information is fresh by using no app or web browser cache.
+         */
+        val webViewNews = rootView?.findViewById<WebView>(R.id.webview_news)
 
-            webViewNews?.settings?.cacheMode = WebSettings.LOAD_NO_CACHE
+        webViewNews?.settings?.cacheMode = WebSettings.LOAD_NO_CACHE
 
-            webViewNews?.webViewClient = object : WebViewClient() {
-                override fun onPageCommitVisible(view: WebView, url: String) {
-                    super.onPageCommitVisible(view, url)
+        webViewNews?.webViewClient = object : WebViewClient() {
+            override fun onPageCommitVisible(view: WebView, url: String) {
+                super.onPageCommitVisible(view, url)
 
-                    progressBarNews?.visibility = View.INVISIBLE
-                }
+                progressBarNews?.visibility = View.INVISIBLE
             }
+        }
 
-            webViewNews?.loadUrl(urlTravelUpdates)
+        webViewNews?.loadUrl(urlTravelUpdates)
 
-            swipeRefreshLayoutNews?.setOnRefreshListener {
-                progressBarNews?.visibility = View.VISIBLE
+        swipeRefreshLayoutNews?.setOnRefreshListener {
+            progressBarNews?.visibility = View.VISIBLE
 
-                webViewNews?.clearCache(true)
-                webViewNews?.reload()
+            webViewNews?.clearCache(true)
+            webViewNews?.reload()
 
-                swipeRefreshLayoutNews.isRefreshing = false
-            }
+            swipeRefreshLayoutNews.isRefreshing = false
         }
     }
 }

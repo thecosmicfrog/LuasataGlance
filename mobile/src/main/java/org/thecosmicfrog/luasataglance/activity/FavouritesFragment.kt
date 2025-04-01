@@ -73,45 +73,45 @@ class FavouritesFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        if (!isAdded) return
+
         val tutorialFavourites = "favourites"
 
-        if (isAdded) {
-            val fabFavouritesEdit =
-                rootView?.findViewById<FloatingActionButton>(R.id.fab_favourites_edit)
-            fabFavouritesEdit?.setOnClickListener {
-                startActivity(
-                    Intent(
-                        context,
-                        FavouritesSelectActivity::class.java
-                    )
+        val fabFavouritesEdit =
+            rootView?.findViewById<FloatingActionButton>(R.id.fab_favourites_edit)
+        fabFavouritesEdit?.setOnClickListener {
+            startActivity(
+                Intent(
+                    context,
+                    FavouritesSelectActivity::class.java
                 )
-            }
-
-            val textViewFavouritesNoneSelected = rootView?.findViewById<TextView>(
-                R.id.textview_favourites_none_selected
             )
-            textViewFavouritesNoneSelected?.visibility = View.GONE
-
-            Preferences.saveHasRunOnce(context, tutorialFavourites, true)
-
-            listFavouriteStops = openListFavouritesStops()
-
-            val listFavouriteInfo: MutableList<FavouriteInfo> = ArrayList()
-
-            for (favouriteStop in listFavouriteStops as MutableList<CharSequence>) {
-                listFavouriteInfo.add(FavouriteInfo(favouriteStop))
-            }
-
-            val favouriteAdapter = FavouriteAdapter(listFavouriteInfo)
-            favouriteAdapter.notifyDataSetChanged()
-
-            val linearLayoutManagerFavourites = LinearLayoutManager(context)
-            linearLayoutManagerFavourites.orientation = LinearLayoutManager.VERTICAL
-
-            val recyclerViewFavourites = rootView?.findViewById<RecyclerView>(R.id.recyclerview_favourite_stops)
-            recyclerViewFavourites?.layoutManager = linearLayoutManagerFavourites
-            recyclerViewFavourites?.adapter = favouriteAdapter
         }
+
+        val textViewFavouritesNoneSelected = rootView?.findViewById<TextView>(
+            R.id.textview_favourites_none_selected
+        )
+        textViewFavouritesNoneSelected?.visibility = View.GONE
+
+        Preferences.saveHasRunOnce(context, tutorialFavourites, true)
+
+        listFavouriteStops = openListFavouritesStops()
+
+        val listFavouriteInfo: MutableList<FavouriteInfo> = ArrayList()
+
+        for (favouriteStop in listFavouriteStops as MutableList<CharSequence>) {
+            listFavouriteInfo.add(FavouriteInfo(favouriteStop))
+        }
+
+        val favouriteAdapter = FavouriteAdapter(listFavouriteInfo)
+        favouriteAdapter.notifyDataSetChanged()
+
+        val linearLayoutManagerFavourites = LinearLayoutManager(context)
+        linearLayoutManagerFavourites.orientation = LinearLayoutManager.VERTICAL
+
+        val recyclerViewFavourites = rootView?.findViewById<RecyclerView>(R.id.recyclerview_favourite_stops)
+        recyclerViewFavourites?.layoutManager = linearLayoutManagerFavourites
+        recyclerViewFavourites?.adapter = favouriteAdapter
     }
 
     private fun openListFavouritesStops(): MutableList<CharSequence> {

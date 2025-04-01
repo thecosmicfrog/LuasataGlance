@@ -87,16 +87,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
     override fun onResume() {
         super.onResume()
 
-        if (isAdded) {
-            listMarkers = mutableListOf()
+        if (!isAdded) return
 
-            stopCoordsRedLine = StopCoords(Constant.RED_LINE).stopCoords
-            stopCoordsGreenLine = StopCoords(Constant.GREEN_LINE).stopCoords
+        listMarkers = mutableListOf()
 
-            /* Obtain the SupportMapFragment and get notified when the map is ready to be used. */
-            val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-            mapFragment?.getMapAsync(this)
-        }
+        stopCoordsRedLine = StopCoords(Constant.RED_LINE).stopCoords
+        stopCoordsGreenLine = StopCoords(Constant.GREEN_LINE).stopCoords
+
+        /* Obtain the SupportMapFragment and get notified when the map is ready to be used. */
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(this)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

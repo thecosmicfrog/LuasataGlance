@@ -102,16 +102,16 @@ class TramsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (isAdded) {
-            initOverflowMenu()
-            showWhatsNewDialog()
+        if (!isAdded) return
 
-            broadcastReceiver?.let {
-                LocalBroadcastManager.getInstance(context as Context).registerReceiver(
-                    it,
-                    IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
-                )
-            }
+        initOverflowMenu()
+        showWhatsNewDialog()
+
+        broadcastReceiver?.let {
+            LocalBroadcastManager.getInstance(context as Context).registerReceiver(
+                it,
+                IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
+            )
         }
     }
 
