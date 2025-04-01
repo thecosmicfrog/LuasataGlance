@@ -36,11 +36,13 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withStarted
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.thecosmicfrog.luasataglance.R
@@ -76,15 +78,9 @@ import java.util.TimerTask
 class LineFragment : Fragment() {
 
     private val logTag = LineFragment::class.java.simpleName
-    private val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val favouriteStopName = intent?.getStringExtra(Constant.INTENT_EXTRA_STOP_NAME)
-
-            spinnerCardView?.setSelection(favouriteStopName)
-        }
-    }
 
     private var viewBinding: LineFragmentViewBindingAdapter? = null
+    private var broadcastReceiver: BroadcastReceiver? = null
     private var act: FragmentActivity? = null
     private var ctx: Context? = null
     private var tabLayout: TabLayout? = null
@@ -94,6 +90,7 @@ class LineFragment : Fragment() {
     private var scrollView: NestedScrollView? = null
     private var statusCardView: StatusCardView? = null
     private var isInitialised = false
+    private var timer: Timer? = null
     private var timerTaskReload: TimerTask? = null
     private var shouldAutoReload = false
     private var line: String? = null
@@ -102,15 +99,8 @@ class LineFragment : Fragment() {
     private var recyclerViewStopForecastsOutbound: RecyclerView? = null
     private var linearLayoutManagerInbound: LinearLayoutManager? = null
     private var linearLayoutManagerOutbound: LinearLayoutManager? = null
-    private var mapStopIdLine: StopIdLineMap? = null
 
     companion object {
-        private var resLayoutFragmentLine: Int? = 0
-        private var resProgressBar: Int? = 0
-        private var resSpinnerCardView: Int? = 0
-        private var resStatusCardView: Int? = 0
-        private var resSwipeRefreshLayout: Int? = 0
-        private var resScrollView: Int? = 0
         private var resArrayStopsRedLine = 0
         private var resArrayStopsGreenLine = 0
         private var mapStopNameId: StopNameIdMap? = null
@@ -177,6 +167,22 @@ class LineFragment : Fragment() {
         return viewBinding?.stopForecastConstraintLayout!!.rootView
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        /* Cancel the auto-reload TimerTask. */
+        timer?.cancel()
+        timer = null
+        timerTaskReload?.cancel()
+        timerTaskReload = null
+
+        /* Unregister the BroadcastReceiver to prevent memory leaks. */
+        broadcastReceiver?.let {
+            LocalBroadcastManager.getInstance(ctx as Context).unregisterReceiver(it)
+            broadcastReceiver = null
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
 
@@ -186,8 +192,11 @@ class LineFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
-        /* Stop the auto-reload TimerTask. */
-        timerTaskReload?.cancel()
+        /* Unregister the BroadcastReceiver to prevent memory leaks. */
+        broadcastReceiver?.let {
+            LocalBroadcastManager.getInstance(ctx as Context).unregisterReceiver(it)
+            broadcastReceiver = null
+        }
     }
 
     override fun onResume() {
@@ -200,9 +209,9 @@ class LineFragment : Fragment() {
         if (isAdded && viewBinding != null && line != null) {
             isInitialised = initFragment()
 
-            ctx?.let {
+            broadcastReceiver?.let {
                 LocalBroadcastManager.getInstance(ctx as Context).registerReceiver(
-                    broadcastReceiver,
+                    it,
                     IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
                 )
             }
@@ -303,13 +312,15 @@ class LineFragment : Fragment() {
                         /* Add slight delay to prevent UI jank on tab change. */
                         delay(500L)
 
-                        val stopName = spinnerCardView?.spinnerStops?.selectedItem.toString()
+                        withStarted {
+                            val stopName = spinnerCardView?.spinnerStops?.selectedItem.toString()
 
-                        Preferences.saveSelectedStopName(ctx, Constant.NO_LINE, stopName)
+                            Preferences.saveSelectedStopName(ctx, Constant.NO_LINE, stopName)
 
-                        loadStopForecast(stopName, false)
+                            loadStopForecast(stopName, false)
 
-                        shouldAutoReload = true
+                            shouldAutoReload = true
+                        }
                     }
                 } else {
                     Log.w(logTag, "Spinner selected item is null.")
@@ -323,7 +334,10 @@ class LineFragment : Fragment() {
                      * stop forecast the next time the user opens it. Slight delay to prevent UI jank.
                      */
                     delay(500L)
-                    StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
+
+                    withStarted {
+                        StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
+                    }
                 }
             }
         }
@@ -363,6 +377,13 @@ class LineFragment : Fragment() {
      */
     private fun initFragment(): Boolean {
         tabLayout = act?.findViewById(R.id.trams_tablayout)
+
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val favouriteStopName = intent?.getStringExtra(Constant.INTENT_EXTRA_STOP_NAME)
+                spinnerCardView?.setSelection(favouriteStopName)
+            }
+        }
 
         StopForecastUtil.setStopForecastDirectionTitles(requireContext(), line, viewBinding)
 
@@ -522,27 +543,22 @@ class LineFragment : Fragment() {
     fun autoReloadStopForecast(delayTimeMillis: Int) {
         val reloadTimeMillis = 10000
 
+        /* Cancel existing timer. */
+        timer?.cancel()
+        timer = Timer()
+
         timerTaskReload = object : TimerTask() {
             override fun run() {
-                /* Check Fragment is attached to Activity to avoid NullPointerExceptions. */
-                if (isAdded) {
-                    act?.runOnUiThread {
-                        if (shouldAutoReload) {
-                            loadStopForecast(
-                                Preferences.selectedStopName(
-                                    act?.applicationContext,
-                                    line
-                                ),
-                                false
-                            )
-                        }
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                    if (shouldAutoReload) {
+                        loadStopForecast(Preferences.selectedStopName(ctx, line), false)
                     }
                 }
             }
         }
 
         /* Schedule the auto-reload task to run. */
-        Timer().schedule(timerTaskReload, delayTimeMillis.toLong(), reloadTimeMillis.toLong())
+        timer?.schedule(timerTaskReload, delayTimeMillis.toLong(), reloadTimeMillis.toLong())
     }
 
     /**
@@ -624,10 +640,7 @@ class LineFragment : Fragment() {
 
                     Log.e(logTag, "Response message: ${response.message()}")
 
-                    statusCardView?.setStatus(getString(R.string.message_error))
-                    statusCardView?.setStatusColor(R.color.message_error)
-
-                    StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
+                    statusRedAndClearStopForecast()
                 }
 
             } catch (e: Exception) {
@@ -651,10 +664,7 @@ class LineFragment : Fragment() {
                     }
                 }
 
-                statusCardView?.setStatus(getString(R.string.message_error))
-                statusCardView?.setStatusColor(R.color.message_error)
-
-                StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
+                statusRedAndClearStopForecast()
             } finally {
                 setIsLoading(false)
                 swipeRefreshLayout?.isRefreshing = false
@@ -675,8 +685,8 @@ class LineFragment : Fragment() {
         var minOrMins: String
 
         if (stopForecast == null) {
-            statusCardView?.setStatus(getString(R.string.message_error))
-            statusCardView?.setStatusColor(R.color.message_error)
+            statusRedAndClearStopForecast()
+
             return
         }
 
@@ -747,5 +757,17 @@ class LineFragment : Fragment() {
 
         recyclerViewStopForecastsInbound?.adapter = StopForecastAdapter(listStopForecastInfoInbound)
         recyclerViewStopForecastsOutbound?.adapter = StopForecastAdapter(listStopForecastInfoOutbound)
+    }
+
+    /**
+     * Set the status of the StatusCardView to red and clear the stop forecast.
+     */
+    private fun statusRedAndClearStopForecast() {
+        if (isAdded) {
+            statusCardView?.setStatus(getString(R.string.message_error))
+            statusCardView?.setStatusColor(R.color.message_error)
+
+            StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
+        }
     }
 }

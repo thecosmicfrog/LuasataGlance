@@ -53,6 +53,8 @@ class TramsFragment : Fragment() {
     private val logTag = TramsFragment::class.java.simpleName
 
     private var rootView: View? = null
+    private var viewPager: ViewPager? = null
+    private var broadcastReceiver: BroadcastReceiver? = null
 
     companion object {
         fun newInstance(): Fragment {
@@ -69,8 +71,32 @@ class TramsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         /* Inflate the layout for this Fragment. */
         rootView = inflater.inflate(R.layout.fragment_trams, container, false)
+        val mapStopNameId = StopNameIdMap(Locale.getDefault().toString())
+        val mapStopIdLine = StopIdLineMap()
+
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (!isAdded) return
+
+                val stopName = intent?.getStringExtra(Constant.INTENT_EXTRA_STOP_NAME)
+                val stopId = mapStopNameId[stopName]
+                val stopLine = mapStopIdLine[stopId]
+
+                viewPager?.currentItem = when (stopLine) {
+                    Constant.RED_LINE -> 0
+                    Constant.GREEN_LINE -> 1
+                    else -> 0
+                }
+            }
+        }
 
         return rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initFragment()
     }
 
     override fun onResume() {
@@ -78,11 +104,30 @@ class TramsFragment : Fragment() {
 
         if (isAdded) {
             initOverflowMenu()
-
-            initFragment()
-
             showWhatsNewDialog()
+
+            broadcastReceiver?.let {
+                LocalBroadcastManager.getInstance(context as Context).registerReceiver(
+                    it,
+                    IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
+                )
+            }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        broadcastReceiver?.let { broadcastReceiver ->
+            context?.let { ctx ->
+                LocalBroadcastManager.getInstance(ctx).unregisterReceiver(broadcastReceiver)
+            }
+        }
+        broadcastReceiver = null
+
+        viewPager?.adapter = null
+        viewPager = null
+        rootView = null
     }
 
     private fun initOverflowMenu() {
@@ -102,39 +147,15 @@ class TramsFragment : Fragment() {
 
                             return true
                         }
-                    })
+                    }
+                )
             }
         })
     }
 
     private fun initFragment() {
-        val viewPager = rootView?.findViewById<ViewPager>(R.id.trams_viewpager)
+        viewPager = rootView?.findViewById<ViewPager>(R.id.trams_viewpager)
         val tabLayout = rootView?.findViewById<TabLayout>(R.id.trams_tablayout)
-        val localeDefault = Locale.getDefault().toString()
-        val mapStopNameId = StopNameIdMap(localeDefault)
-        val mapStopIdLine = StopIdLineMap()
-        val broadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (!isAdded) return
-
-                val stopName = intent?.getStringExtra(Constant.INTENT_EXTRA_STOP_NAME)
-                val stopId = mapStopNameId[stopName]
-                val stopLine = mapStopIdLine[stopId]
-
-                viewPager?.currentItem = when (stopLine) {
-                    Constant.RED_LINE -> 0
-                    Constant.GREEN_LINE -> 1
-                    else -> 0
-                }
-            }
-        }
-
-        context?.let {
-            LocalBroadcastManager.getInstance(context as Context).registerReceiver(
-                broadcastReceiver,
-                IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
-            )
-        }
 
         /* Only add tabs if they don't already exist. */
         if (tabLayout?.tabCount ?: 0 < 2) {

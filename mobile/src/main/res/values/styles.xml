@@ -19,7 +19,7 @@
 -->
 
 <resources>
-    <style name="AppTheme" parent="Theme.Material3.DayNight">
+    <style name="AppTheme" parent="Theme.Material3.Light">
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/text_dark</item>
 

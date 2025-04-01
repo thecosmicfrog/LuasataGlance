@@ -39,14 +39,11 @@ import org.thecosmicfrog.luasataglance.view.NonSwipeableViewPager
 class MainActivity : AppCompatActivity() {
 
     private val logTag = MainActivity::class.java.simpleName
-    private val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            nonSwipeableViewPagerReplacer.currentItem = Constant.BOTTOMNAV_MENU_ITEM_INDEX_TRAMS
-        }
-    }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var nonSwipeableViewPagerReplacer: NonSwipeableViewPager
+
+    private var broadcastReceiver: BroadcastReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +51,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                nonSwipeableViewPagerReplacer.currentItem = Constant.BOTTOMNAV_MENU_ITEM_INDEX_TRAMS
+            }
+        }
+        broadcastReceiver?.let {
+            LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
+                it,
+                IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
+            )
+        }
 
         setUpAppNavigation()
 
@@ -64,13 +73,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+    }
 
-        applicationContext?.let {
-            LocalBroadcastManager.getInstance(applicationContext as Context).registerReceiver(
-                broadcastReceiver,
-                IntentFilter(Constant.INTENT_ACTION_LOAD_STOP)
-            )
+    override fun onDestroy() {
+        super.onDestroy()
+
+        broadcastReceiver?.let {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(it)
         }
+        broadcastReceiver = null
     }
 
     override fun onNewIntent(intent: Intent) {
