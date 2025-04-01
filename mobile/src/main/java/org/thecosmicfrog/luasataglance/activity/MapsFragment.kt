@@ -60,8 +60,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
     private var rootView: View? = null
     private var map: GoogleMap? = null
 
-    private lateinit var stopCoordsRedLine: Array<out DoubleArray>
-    private lateinit var stopCoordsGreenLine: Array<out DoubleArray>
+    private lateinit var stopCoordsRedLine: Array<DoubleArray>
+    private lateinit var stopCoordsGreenLine: Array<DoubleArray>
     private lateinit var listMarkers: MutableList<Marker>
 
     companion object {

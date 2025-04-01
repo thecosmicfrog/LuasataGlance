@@ -31,8 +31,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.thecosmicfrog.luasataglance.R
 
 class FavouritesSelectAdapter(
-    private val stops: ArrayList<CharSequence>,
-    private val selectedStops: ArrayList<CharSequence>
+    private val stops: ArrayList<CharSequence?>,
+    private val selectedStops: ArrayList<CharSequence?>?
 ) : RecyclerView.Adapter<FavouritesSelectAdapter.ViewHolder>() {
 
     private val logTag = FavouritesSelectAdapter::class.java.simpleName
@@ -55,23 +55,25 @@ class FavouritesSelectAdapter(
 
         /* Clear any existing listeners to prevent duplicate calls. */
         holder.checkBox.setOnCheckedChangeListener(null)
-        holder.checkBox.isChecked = selectedStops.contains(stop)
+        holder.checkBox.isChecked = selectedStops?.contains(stop) == true
 
         /* Toggle the checkbox state. */
         val onClickListener = View.OnClickListener {
-            if (selectedStops.contains(stop)) {
+            if (selectedStops?.contains(stop) == true) {
                 selectedStops.remove(stop)
             } else {
-                selectedStops.add(stop)
+                selectedStops?.add(stop) == true
             }
-            holder.checkBox.isChecked = selectedStops.contains(stop)
+            holder.checkBox.isChecked = selectedStops?.contains(stop) == true
         }
 
         /* Allow the user to tap either the entire card or the checkbox to toggle the selection. */
         holder.itemView.setOnClickListener(onClickListener)
         holder.checkBox.setOnClickListener(onClickListener)
 
-        setLineIndicatorColor(holder, stop)
+        stop?.let {
+            setLineIndicatorColor(holder, it)
+        }
     }
 
     /**

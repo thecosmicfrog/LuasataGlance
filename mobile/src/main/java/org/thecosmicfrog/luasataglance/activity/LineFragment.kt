@@ -54,7 +54,6 @@ import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap
 import org.thecosmicfrog.luasataglance.model.StopForecast
 import org.thecosmicfrog.luasataglance.model.StopForecastAdapter
 import org.thecosmicfrog.luasataglance.model.StopForecastInfo
-import org.thecosmicfrog.luasataglance.model.StopIdLineMap
 import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import org.thecosmicfrog.luasataglance.util.AppUtil
 import org.thecosmicfrog.luasataglance.util.Constant
