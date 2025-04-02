@@ -22,6 +22,7 @@ package org.thecosmicfrog.luasataglance.activity
 
 import android.os.Bundle
 import android.view.Window
+import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivityWhatsNewBinding
@@ -38,11 +39,18 @@ class WhatsNewActivity : FragmentActivity() {
 
         /* Use a Material Dialog theme. */
         setTheme(android.R.style.Theme_Material_Dialog)
+        window.setBackgroundDrawableResource(android.R.color.transparent)
 
         /* This is a Dialog. Get rid of the default Window title. */
         requestWindowFeature(Window.FEATURE_NO_TITLE)
 
         setContentView(rootView)
+
+        /* Set dialog width to 80% of screen width. */
+        val displayMetrics = resources.displayMetrics
+        val width = (displayMetrics.widthPixels * 0.80).toInt()
+
+        window?.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
 
         formatAndSetWhatsNewTitles()
     }
