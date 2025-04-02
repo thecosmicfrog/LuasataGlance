@@ -51,7 +51,7 @@
     </string>
     <string name="message_error">Fadhb ag fáil eolais ón gcóras Luas RTPI.\n\nDéan seiceáil ar
         do nasc idirlíne. Muna bhfuil fadhb ann, is le córas RTPI Luas an chúis.</string>
-    <string name="information">\u2139</string>
+    <string name="tutorial_information">Eolas teagaisc</string>
     <string name="select_stop_using_picker">Roghnaigh stad leis an roghnóir thuas</string>
     <string name="select_stop_tutorial">Tosóimis! Roghnaigh stad leis an roghnóir thuas.\n
         Déanfar na hamanna a uasdátú <b>gach 10 soicind</b>.

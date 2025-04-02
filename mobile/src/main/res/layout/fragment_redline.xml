@@ -127,14 +127,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:requiresFadingEdge="vertical"
+            android:fadingEdgeLength="32dp"
+            android:paddingBottom="56dp"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="80dp">
+                android:orientation="vertical">
 
                 <Space
                     android:layout_width="match_parent"
@@ -143,9 +145,9 @@
                 <org.thecosmicfrog.luasataglance.view.StopForecastConstraintLayout
                     android:id="@+id/redline_stopforecastconstraintlayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="64dp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
-
