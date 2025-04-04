@@ -18,12 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.thecosmicfrog.luasataglance.model
 
-data class StopForecastInfo(
-    val destination: String?,
-    val dueMinutes: String?,
-    val minOrMins: String?,
-    val showMinOrMins: Boolean = true
-)
+package org.thecosmicfrog.luasataglance.util
 
+import android.content.Context
+import androidx.annotation.StringRes
+
+/**
+ * A simple wrapper around the Android Context to provide string resources.
+ * Required for accessing string resources in ViewModel.
+ * https://stackoverflow.com/a/61532615
+ */
+class ResourceProvider(private val context: Context) {
+
+    fun getString(@StringRes resId: Int): String {
+        return context.getString(resId)
+    }
+}

@@ -48,21 +48,17 @@ class StopForecastAdapter(
     }
 
     override fun onBindViewHolder(holder: StopForecastViewHolder, position: Int) {
-        val (destination, dueMinutes, minOrMins) = listStopForecastInfo[position]
+        val stopForecast = listStopForecastInfo[position]
         val destValue = holder.textViewDestination?.resources?.getString(R.string.no_trams_forecast)
         val dueMinsValue = holder.textViewDueMinutes?.resources?.getString(R.string.due)
         val regexCannotScheduleNotification = Regex(
             "${destValue}\$|${dueMinsValue}\$|1\$|2\$|^\$"
         )
 
-        holder.textViewDestination?.text = destination
-        holder.textViewDueMinutes?.text = dueMinutes
-        holder.textViewMinOrMins?.text = minOrMins
-
-        /* If the tram is due, don't show the "min/mins" TextView to better centre the DUE text. */
-        if (holder.textViewMinOrMins?.text.isNullOrBlank()) {
-            holder.textViewMinOrMins?.visibility = View.GONE
-        }
+        holder.textViewDestination?.text = stopForecast.destination
+        holder.textViewDueMinutes?.text = stopForecast.dueMinutes
+        holder.textViewMinOrMins?.text = stopForecast.minOrMins
+        holder.textViewMinOrMins?.visibility = if (stopForecast.showMinOrMins) View.VISIBLE else View.GONE
 
         /*
          * If the tram is arriving soon, or if there are no trams scheduled, don't show the

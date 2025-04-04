@@ -18,12 +18,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.thecosmicfrog.luasataglance.model
 
-data class StopForecastInfo(
-    val destination: String?,
-    val dueMinutes: String?,
-    val minOrMins: String?,
-    val showMinOrMins: Boolean = true
+data class Status(
+    val message: String,
+    val isError: Boolean
 )
-

@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Luas at a Glance.  If not, see <http:></http:>//www.gnu.org/licenses/>.
+ * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.thecosmicfrog.luasataglance.activity
 
@@ -35,6 +35,7 @@ import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -42,41 +43,32 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.api.ApiTimes
-import org.thecosmicfrog.luasataglance.api.RetrofitClient
 import org.thecosmicfrog.luasataglance.databinding.FragmentGreenlineBinding
 import org.thecosmicfrog.luasataglance.databinding.FragmentRedlineBinding
-import org.thecosmicfrog.luasataglance.model.EnglishGaeilgeMap
+import org.thecosmicfrog.luasataglance.model.LineViewModel
+import org.thecosmicfrog.luasataglance.model.LineViewModelFactory
 import org.thecosmicfrog.luasataglance.model.StopForecast
 import org.thecosmicfrog.luasataglance.model.StopForecastAdapter
-import org.thecosmicfrog.luasataglance.model.StopForecastInfo
-import org.thecosmicfrog.luasataglance.model.StopNameIdMap
 import org.thecosmicfrog.luasataglance.util.AppUtil
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.LineFragmentViewBindingAdapter
 import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil
-import org.thecosmicfrog.luasataglance.util.StopForecastUtil.createStopForecast
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.displayTutorial
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.showSnackbar
 import org.thecosmicfrog.luasataglance.view.SpinnerCardView
 import org.thecosmicfrog.luasataglance.view.StatusCardView
-import retrofit2.HttpException
-import java.io.IOException
-import java.text.DateFormat
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.Timer
-import java.util.TimerTask
 
 class LineFragment : Fragment() {
 
     private val logTag = LineFragment::class.java.simpleName
+    private val viewModel: LineViewModel by viewModels {
+        LineViewModelFactory.getInstance(requireContext())
+    }
 
     private var viewBinding: LineFragmentViewBindingAdapter? = null
     private var broadcastReceiver: BroadcastReceiver? = null
@@ -89,9 +81,6 @@ class LineFragment : Fragment() {
     private var scrollView: NestedScrollView? = null
     private var statusCardView: StatusCardView? = null
     private var isInitialised = false
-    private var timer: Timer? = null
-    private var timerTaskReload: TimerTask? = null
-    private var shouldAutoReload = false
     private var line: String? = null
     private var isVisibleToUser = false
     private var recyclerViewStopForecastsInbound: RecyclerView? = null
@@ -102,8 +91,6 @@ class LineFragment : Fragment() {
     companion object {
         private var resArrayStopsRedLine = 0
         private var resArrayStopsGreenLine = 0
-        private var mapStopNameId: StopNameIdMap? = null
-        private var localeDefault: String? = null
 
         fun newInstance(line: String?): LineFragment {
             val lineFragment = LineFragment()
@@ -158,22 +145,22 @@ class LineFragment : Fragment() {
 
         viewBinding = getBinding(line, container)
 
-        /* Initialise correct locale. */
-        localeDefault = Locale.getDefault().toString()
-
-        /* Instantiate a new StopNameIdMap. */
-        mapStopNameId = StopNameIdMap(localeDefault!!)
         return viewBinding?.stopForecastConstraintLayout!!.rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.setLocale(Locale.getDefault())
+        viewModel.initStopNameIdMap()
+
+        initObservers()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        /* Cancel the auto-reload TimerTask. */
-        timer?.cancel()
-        timer = null
-        timerTaskReload?.cancel()
-        timerTaskReload = null
+        viewModel.stopAutoReload()
 
         /* Unregister the BroadcastReceiver to prevent memory leaks. */
         broadcastReceiver?.let {
@@ -271,11 +258,7 @@ class LineFragment : Fragment() {
          * Induce 10 second delay if app is launching from cold start (timerTaskReload == null)
          * in order to prevent two HTTP requests in rapid succession.
          */
-        if (timerTaskReload == null) {
-            autoReloadStopForecast(10000)
-        } else {
-            autoReloadStopForecast(0)
-        }
+        autoReloadStopForecast(10000L)
 
         recyclerViewStopForecastsInbound = viewBinding?.recyclerViewStopForecastsInbound
         recyclerViewStopForecastsOutbound = viewBinding?.recyclerViewStopForecastsOutbound
@@ -316,16 +299,19 @@ class LineFragment : Fragment() {
 
                             Preferences.saveSelectedStopName(ctx, Constant.NO_LINE, stopName)
 
-                            loadStopForecast(stopName, false)
+                            viewModel.loadStopForecast(
+                                stopName = stopName,
+                                stopId = viewModel.getStopId(stopName)
+                            )
 
-                            shouldAutoReload = true
+                            autoReloadStopForecast(0L)
                         }
                     }
                 } else {
                     Log.w(logTag, "Spinner selected item is null.")
                 }
             } else {
-                shouldAutoReload = false
+                viewModel.stopAutoReload()
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     /*
@@ -408,7 +394,6 @@ class LineFragment : Fragment() {
                      * to do anything. Just clear the stop forecast and get out of here.
                      */
                     if (position == 0) {
-                        shouldAutoReload = false
                         swipeRefreshLayout?.isEnabled = false
 
                         StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
@@ -417,8 +402,6 @@ class LineFragment : Fragment() {
                     } else {
                         swipeRefreshLayout?.isEnabled = true
                     }
-
-                    shouldAutoReload = true
 
                     /* Hide the select stop tutorial, if it is visible. */
                     displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, false)
@@ -432,7 +415,10 @@ class LineFragment : Fragment() {
                     val selectedStopName =
                         spinnerCardView?.spinnerStops?.getItemAtPosition(position).toString()
 
-                    loadStopForecast(selectedStopName, false)
+                    viewModel.loadStopForecast(
+                        stopName = selectedStopName,
+                        stopId = viewModel.getStopId(selectedStopName)
+                    )
 
                     if (isVisibleToUser) {
                         Preferences.saveSelectedStopName(ctx, line, selectedStopName)
@@ -449,10 +435,12 @@ class LineFragment : Fragment() {
         /* Set up SwipeRefreshLayout. */
         swipeRefreshLayout = viewBinding?.swiperefreshlayout!!
         swipeRefreshLayout?.setOnRefreshListener {
-            /* Start the refresh animation. */
-            swipeRefreshLayout?.isRefreshing = true
-
-            loadStopForecast(Preferences.selectedStopName(ctx, line), true)
+            viewModel.loadStopForecast(
+                stopName = Preferences.selectedStopName(ctx, line),
+                stopId = viewModel.getStopId(Preferences.selectedStopName(ctx, line)),
+                isRefreshing = true,
+                shouldShowSnackbar = true
+            )
         }
 
         scrollView = viewBinding?.scrollview!!
@@ -535,134 +523,69 @@ class LineFragment : Fragment() {
      * Automatically reload the stop forecast after a defined period.
      * @param delayTimeMillis The delay (ms) before starting the timer.
      */
-    fun autoReloadStopForecast(delayTimeMillis: Int) {
-        val reloadTimeMillis = 10000
+    fun autoReloadStopForecast(delayTimeMillis: Long) {
+        viewModel.stopAutoReload()
 
-        /* Cancel existing timer. */
-        timer?.cancel()
-        timer = Timer()
-
-        timerTaskReload = object : TimerTask() {
-            override fun run() {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                    if (shouldAutoReload) {
-                        loadStopForecast(Preferences.selectedStopName(ctx, line), false)
-                    }
-                }
-            }
+        if (isVisibleToUser) {
+            viewModel.startAutoReload(
+                stopName = Preferences.selectedStopName(ctx, line),
+                stopNameId = viewModel.getStopId(Preferences.selectedStopName(ctx, line)),
+                delayMillis = delayTimeMillis.toLong()
+            )
+        } else {
+            viewModel.stopAutoReload()
         }
-
-        /* Schedule the auto-reload task to run. */
-        timer?.schedule(timerTaskReload, delayTimeMillis.toLong(), reloadTimeMillis.toLong())
     }
 
     /**
-     * Get the "created" time from the API response and format it so that only the time (and not
-     * date) is returned.
-     * @param apiTimes ApiTimes model.
-     * @return String representing the 24hr time (HH:mm:ss) of the API's "created" time.
+     * Initialise observers for the ViewModel.
      */
-    private fun getApiCreatedTime(apiTimes: ApiTimes): String? {
-        try {
-            if (apiTimes.createdTime != null) {
-                val currentTime = SimpleDateFormat(
-                    "yyyy-MM-dd'T'HH:mm:ss",
-                    Locale.getDefault()
-                ).parse(apiTimes.createdTime)
-
-                val dateFormat: DateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-
-                if (currentTime != null) {
-                    return dateFormat.format(currentTime)
-                }
-            }
-        } catch (_: NullPointerException) {
-            Log.e(logTag, "Failed to find content view during Snackbar creation.")
-        } catch (_: ParseException) {
-            Log.e(logTag, "Failed to parse created time from API.")
-        }
-
-        return null
-    }
-
-    /**
-     * Load the stop forecast for a particular stop.
-     * @param stopName The stop for which to load a stop forecast.
-     * @param shouldShowSnackbar Whether or not we should show a Snackbar to the user with the API
-     * created time.
-     */
-    private fun loadStopForecast(stopName: String?, shouldShowSnackbar: Boolean) {
-        /* Launch coroutine to make API call. */
+    private fun initObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                setIsLoading(true)
+            viewModel.status.collect { status ->
+                status?.let { (message, isError) ->
+                    statusCardView?.setStatus(message)
+                    statusCardView?.setStatusColor(
+                        if (isError) R.color.message_error else R.color.message_success
+                    )
+                }
+            }
+        }
 
-                /* Make API call. */
-                val response = RetrofitClient.apiMethods.getStopForecast(
-                    action = "times",
-                    ver = "3",
-                    station = mapStopNameId?.get(stopName)
-                )
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.stopForecast.collect { stopForecast ->
+                updateStopForecastUi(stopForecast)
+            }
+        }
 
-                if (response.isSuccessful) {
-                    val apiTimes = response.body()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isLoading.collect { isLoading ->
+                setIsLoading(isLoading)
+            }
+        }
 
-                    /* If the server returned times. */
-                    if (apiTimes != null) {
-                        /* Then create a stop forecast with this data. */
-                        val stopForecast = createStopForecast(apiTimes)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isRefreshing.collect { isRefreshing ->
+                swipeRefreshLayout?.isRefreshing = isRefreshing
+            }
+        }
 
-                        /* Update the UI with the stop forecast. */
-                        updateStopForecastUi(stopForecast)
-
-                        if (shouldShowSnackbar) {
-                            val apiCreatedTime = getApiCreatedTime(apiTimes)
-                            if (apiCreatedTime != null) {
-                                act?.let {
-                                    showSnackbar(it, "Times updated at $apiCreatedTime")
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    Log.e(logTag, "Error calling URL: ${response.raw().request.url}")
-                    Log.e(logTag, "Response status code: ${response.code()}")
-                    Log.e(logTag, "Response headers: ${response.headers()}")
-
-                    response.errorBody()?.string()?.let { errorBody ->
-                        Log.e(logTag, "Response error body: $errorBody")
-                    }
-
-                    Log.e(logTag, "Response message: ${response.message()}")
-
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.error.collect { error ->
+                error?.let {
                     statusRedAndClearStopForecast()
+                    Log.e(logTag, "Error loading stop forecast: $it")
                 }
+            }
+        }
 
-            } catch (e: Exception) {
-                when (e) {
-                    is IOException -> {
-                        Log.e(logTag, "I/O error message: ${e.message}")
-                        Log.e(logTag, "I/O error cause: ${e.cause}")
-                    }
-                    is HttpException -> {
-                        Log.e(logTag, "HTTP error: ${e.message}")
-                        Log.e(logTag, "HTTP error status code: ${e.code()}")
-                        Log.e(logTag, "Response message: ${e.response()?.message()}")
-                        e.response()?.errorBody()?.string()?.let { errorBody ->
-                            Log.e(logTag, "Response error body: $errorBody")
-                        }
-                    }
-                    else -> {
-                        Log.e(logTag, "Unexpected error: ${e.message}")
-                        Log.e(logTag, "Error type: ${e.javaClass.simpleName}")
-                        e.printStackTrace()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.showSnackbarWithTime.collect { message ->
+                message?.let {
+                    act?.let { activity ->
+                        showSnackbar(activity, it)
                     }
                 }
-
-                statusRedAndClearStopForecast()
-            } finally {
-                setIsLoading(false)
-                swipeRefreshLayout?.isRefreshing = false
             }
         }
     }
@@ -672,86 +595,21 @@ class LineFragment : Fragment() {
      * @param stopForecast StopForecast model containing data for requested stop.
      */
     private fun updateStopForecastUi(stopForecast: StopForecast?) {
-        val gaeilge = "ga"
-        val due = "DUE"
-        val mapEnglishGaeilge = EnglishGaeilgeMap()
-        val min = " ${getString(R.string.min)}"
-        val mins = " ${getString(R.string.mins)}"
-        var minOrMins: String
-
         if (stopForecast == null) {
             statusRedAndClearStopForecast()
-
             return
         }
 
-        val operatingNormally = stopForecast.stopForecastStatusDirectionInbound.operatingNormally == true &&
-                stopForecast.stopForecastStatusDirectionOutbound.operatingNormally == true
+        viewModel.updateStatus(stopForecast)
 
-        val status = if (localeDefault?.startsWith(gaeilge) == true) {
-            getString(R.string.message_success)
-        } else {
-            stopForecast.message
-        }
-
-        status?.let {
-            /* A lot of Luas statuses relate to lifts being out of service. Ignore these. */
-            if (operatingNormally || it.lowercase().contains("lift")) {
-                statusCardView?.setStatus(it)
-                statusCardView?.setStatusColor(R.color.message_success)
-            } else {
-                statusCardView?.setStatus(
-                    /* If server returns no status message, the Luas RTPI system is likely down. */
-                    if (it.isBlank()) getString(R.string.message_no_status) else it
-                )
-                /* Change the color of the message title TextView to red. */
-                statusCardView?.setStatusColor(R.color.message_error)
-            }
-        }
-
-        val listStopForecastInfoInbound = mutableListOf<StopForecastInfo>()
-        val listStopForecastInfoOutbound = mutableListOf<StopForecastInfo>()
-
-        if (stopForecast.inboundTrams.isEmpty()) {
-            listStopForecastInfoInbound.add(
-                StopForecastInfo(getString(R.string.no_trams_forecast), "", "")
-            )
-        }
-
-        if (stopForecast.outboundTrams.isEmpty()) {
-            listStopForecastInfoOutbound.add(
-                StopForecastInfo(getString(R.string.no_trams_forecast), "", "")
-            )
-        }
-
-        (stopForecast.inboundTrams + stopForecast.outboundTrams).forEach { tram ->
-            tram.dueMinutes?.let { dueMinutes ->
-                val destination = if (localeDefault?.startsWith(gaeilge) == true) {
-                    mapEnglishGaeilge[tram.destination]
-                } else {
-                    tram.destination
-                }
-
-                minOrMins = when {
-                    dueMinutes.equals(due, ignoreCase = true) -> {
-                        if (localeDefault?.startsWith(gaeilge) == true) {
-                            mapEnglishGaeilge[dueMinutes] ?: ""
-                        } else ""
-                    }
-                    dueMinutes.toInt() > 1 -> mins
-                    else -> min
-                }
-
-                val stopForecastInfo = StopForecastInfo(destination, dueMinutes, minOrMins)
-                when (tram.direction) {
-                    Constant.INBOUND -> listStopForecastInfoInbound.add(stopForecastInfo)
-                    Constant.OUTBOUND -> listStopForecastInfoOutbound.add(stopForecastInfo)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.stopForecastInfo.collect { pair ->
+                pair?.let { (inbound, outbound) ->
+                    recyclerViewStopForecastsInbound ?.adapter = StopForecastAdapter(inbound)
+                    recyclerViewStopForecastsOutbound?.adapter = StopForecastAdapter(outbound)
                 }
             }
         }
-
-        recyclerViewStopForecastsInbound?.adapter = StopForecastAdapter(listStopForecastInfoInbound)
-        recyclerViewStopForecastsOutbound?.adapter = StopForecastAdapter(listStopForecastInfoOutbound)
     }
 
     /**
