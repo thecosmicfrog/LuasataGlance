@@ -33,11 +33,13 @@
             android:id="@+id/textview_status_title"
             android:text="@string/message_title"
             android:textStyle="bold"
+            android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/message_success"
             android:textColor="@android:color/white"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:paddingVertical="3dp" />
 
         <TextView
             android:id="@+id/textview_status"
@@ -50,6 +52,7 @@
             android:scrollHorizontally="false"
             android:autoLink="all"
             android:text="@string/message"
-            android:textSize="18sp" />
+            android:textSize="16sp"
+            android:paddingVertical="3dp" />
     </LinearLayout>
 </merge>

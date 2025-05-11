@@ -25,7 +25,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updatePadding
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -49,6 +55,29 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            enableEdgeToEdge()
+
+            /* Ensure the system status and navigation bars are light in colour regardless of light/dark mode. */
+            WindowInsetsControllerCompat(window, binding.root).apply {
+                isAppearanceLightStatusBars = false
+                isAppearanceLightNavigationBars = false
+            }
+
+            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                view.updatePadding(top = insets.top, bottom = insets.bottom)
+                WindowInsetsCompat.CONSUMED
+            }
+
+            window.isNavigationBarContrastEnforced = false
+        } else {
+            WindowCompat.setDecorFitsSystemWindows(window, true)
+
+            window.statusBarColor = resources.getColor(R.color.luas_purple_statusbar)
+            window.navigationBarColor = resources.getColor(R.color.luas_purple_statusbar)
+        }
 
         setContentView(binding.root)
 
@@ -171,4 +200,3 @@ class MainActivity : AppCompatActivity() {
         )
     }
 }
-

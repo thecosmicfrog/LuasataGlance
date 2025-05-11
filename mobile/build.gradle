@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android'
 android {
     namespace 'org.thecosmicfrog.luasataglance'
 
-    compileSdk 34
+    compileSdk 35
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -19,9 +19,9 @@ android {
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
-        targetSdk 34
+        targetSdk 35
         minSdk 29
-        compileSdk 34
+        compileSdk 35
         versionCode generateVersionCode()
         versionName generateVersionName()
     }
@@ -36,6 +36,9 @@ android {
             resValue "string", "version_code", generateVersionCode().toString()
             resValue "string", "version_name", generateVersionName()
             resValue "string", "release_date", generateReleaseDate()
+
+            applicationIdSuffix ".debug"
+            debuggable true
         }
         release {
             resValue "string", "version_name", generateVersionName()
@@ -62,7 +65,9 @@ dependencies {
     implementation "androidx.preference:preference-ktx:1.2.1"
     implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
-    implementation "androidx.core:core-ktx:1.10.1"
+    implementation 'androidx.activity:activity-ktx:1.10.1'
+    implementation "androidx.core:core-ktx:1.16.0"
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'

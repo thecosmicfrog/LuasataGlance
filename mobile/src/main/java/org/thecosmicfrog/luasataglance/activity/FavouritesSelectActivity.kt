@@ -24,10 +24,9 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.adapter.FavouritesSelectAdapter
@@ -53,12 +52,8 @@ class FavouritesSelectActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         viewBinding = ActivityFavouritesSelectBinding.inflate(layoutInflater)
-        val rootView: FrameLayout? = viewBinding?.getRoot()
+        val rootView: CoordinatorLayout? = viewBinding?.getRoot()
         setContentView(rootView)
-
-        supportActionBar?.setBackgroundDrawable(
-            ContextCompat.getColor(application, R.color.luas_purple).toDrawable()
-        )
 
         selectedStops = ArrayList<CharSequence?>()
         val listAllStops = loadAllStops()
@@ -76,14 +71,13 @@ class FavouritesSelectActivity : AppCompatActivity() {
         val allStops = getResources().getStringArray(R.array.array_stops_all)
         val listAllStops = ArrayList<CharSequence?>()
 
-        /* Skip the first element ("None" at index 0) and add the rest. */
         for (i in 1..<allStops.size) {
-            if (allStops[i] != getString(R.string.select_a_stop)) {
-                listAllStops.add(allStops[i])
-            }
+            listAllStops.add(allStops[i])
         }
 
-        return listAllStops
+        val listAllStopsAlphabetised = ArrayList(listAllStops.sortedBy { it?.toString()?.lowercase() })
+
+        return listAllStopsAlphabetised
     }
 
     /**
@@ -140,15 +134,6 @@ class FavouritesSelectActivity : AppCompatActivity() {
     private fun saveFavourites() {
         try {
             if (!selectedStops!!.isEmpty()) {
-                val allStops = getResources().getStringArray(R.array.array_stops_all)
-
-                /* Sorting magic to ensure stops are saved in the order they appear on the map. */
-                selectedStops?.sortWith(Comparator { stop1: CharSequence?, stop2: CharSequence? ->
-                    val indexStop1 = listOf<String?>(*allStops).indexOf(stop1.toString())
-                    val indexStop2 = listOf<String?>(*allStops).indexOf(stop2.toString())
-                    indexStop1.compareTo(indexStop2)
-                })
-
                 val file = openFileOutput(fileFavourites, MODE_PRIVATE)
                 file.write(Serializer.serialize(selectedStops))
                 file.close()

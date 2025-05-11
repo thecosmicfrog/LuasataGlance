@@ -185,6 +185,18 @@ class LineFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        viewModel.stopAutoReload()
+
+        /* Unregister the BroadcastReceiver to prevent memory leaks. */
+        broadcastReceiver?.let {
+            LocalBroadcastManager.getInstance(ctx as Context).unregisterReceiver(it)
+            broadcastReceiver = null
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -279,13 +291,6 @@ class LineFragment : Fragment() {
         this.isVisibleToUser = isVisibleToUser
 
         if (isInitialised) {
-            /* If the Spinner's selected item is "Select a stop...", get out of here. */
-            if (spinnerCardView?.spinnerStops?.selectedItemPosition == 0) {
-                StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
-
-                return
-            }
-
             /* When this tab is visible to the user, load a stop forecast. */
             if (isVisibleToUser) {
                 if (spinnerCardView?.spinnerStops?.selectedItem != null) {
@@ -377,7 +382,7 @@ class LineFragment : Fragment() {
 
         /* Set up Spinner and onItemSelectedListener. */
         spinnerCardView = viewBinding?.spinnerCardView!!
-        spinnerCardView?.setLine(line)
+        line?.let { spinnerCardView?.setLine(it) }
         spinnerCardView?.spinnerStops?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: View?, position: Int,
@@ -389,19 +394,7 @@ class LineFragment : Fragment() {
                  * Alerts button changing colour out of sync with the currently-visible tab.
                  */
                 if (isVisibleToUser) {
-                    /*
-                     * If the Spinner's selected item is "Select a stop...", we don't need
-                     * to do anything. Just clear the stop forecast and get out of here.
-                     */
-                    if (position == 0) {
-                        swipeRefreshLayout?.isEnabled = false
-
-                        StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
-
-                        return
-                    } else {
-                        swipeRefreshLayout?.isEnabled = true
-                    }
+                    swipeRefreshLayout?.isEnabled = true
 
                     /* Hide the select stop tutorial, if it is visible. */
                     displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, false)
@@ -472,8 +465,8 @@ class LineFragment : Fragment() {
         val arrayStopsRedLine = resources.getStringArray(resArrayStopsRedLine)
         val arrayStopGreenLine = resources.getStringArray(resArrayStopsGreenLine)
 
-        val listStopsRedLine = listOf(*arrayStopsRedLine)
-        val listStopsGreenLine = listOf(*arrayStopGreenLine)
+        val listStopsRedLine = arrayStopsRedLine.toList().sortedBy { it.lowercase() }
+        val listStopsGreenLine = arrayStopGreenLine.toList().sortedBy { it.lowercase() }
         var listStopsThisLine: List<String>? = null
         var indexOtherLine = -1
 

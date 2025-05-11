@@ -132,6 +132,8 @@ class LineViewModel(private val resourceProvider: ResourceProvider) : ViewModel(
                 }
 
             } catch (e: Exception) {
+                Log.e(logTag, "Error loading stop forecast", e)
+
                 when (e) {
                     is IOException -> _error.value = "Network error"
                     is HttpException -> _error.value = "Server error: ${e.code()}"

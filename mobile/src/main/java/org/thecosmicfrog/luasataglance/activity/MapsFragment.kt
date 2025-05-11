@@ -148,10 +148,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
         val listStopNamesRedLine = stopNamesRedLine.toMutableList()
         val listStopNamesGreenLine = stopNamesGreenLine.toMutableList()
 
-        /* Remove the two "Select a stop..." entries from the List. */
-        listStopNamesRedLine.remove(getString(R.string.select_a_stop))
-        listStopNamesGreenLine.remove(getString(R.string.select_a_stop))
-
         /* Compile a List of all stops. */
         val listStopNamesAll = mutableListOf<String>()
         listStopNamesAll.addAll(listStopNamesRedLine)

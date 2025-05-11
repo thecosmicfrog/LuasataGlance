@@ -41,7 +41,6 @@
     -->
     <string name="tab_red_line">Red Line</string>
     <string name="tab_green_line">Green Line</string>
-    <string name="select_a_stop">Select a stop\u2026</string>
     <string name="none">None</string>
     <string name="message">Awaiting Luas status&#8230;</string>
     <string name="message_title">Status</string>
@@ -113,15 +112,17 @@
     <string name="content_desc_bottomnav_map">Luas Map button</string>
     <string name="content_desc_map_close">Close Luas Map</string>
     <string name="content_desc_map_chevron">Open this stop</string>
+    <string name="content_desc_tabbar_menu">Settings menu</string>
 
     <!--
         Favourites
     -->
     <string name="favourites_title">Favourites</string>
-    <string name="favourites_edit">Edit</string>
+    <string name="favourites_edit">Edit favourites</string>
     <string name="favourites_none_selected">Let\'s get started!\n\nTap the <b>Edit</b> button
         in the bottom-right corner of this screen to start adding your most frequently-used Luas stops.
     </string>
+    <string name="favourites_save_selected">Save selected</string>
 
     <!--
         Notification
@@ -201,7 +202,6 @@
     </string-array>
 
     <string-array name="array_stops_redline">
-        <item>Select a stop\u2026</item>
         <item>The Point</item>
         <item>Spencer Dock</item>
         <item>Mayor Square - NCI</item>
@@ -237,7 +237,6 @@
     </string-array>
 
     <string-array name="array_stops_greenline">
-        <item>Select a stop\u2026</item>
         <item>Broombridge</item>
         <item>Cabra</item>
         <item>Phibsborough</item>

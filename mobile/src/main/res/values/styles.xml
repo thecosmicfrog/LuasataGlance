@@ -19,18 +19,13 @@
 -->
 
 <resources>
-    <style name="AppTheme" parent="Theme.Material3.Light">
+    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/text_dark</item>
 
         <!-- Disable Material 3 dynamic colours. -->
         <item name="colorPrimary">@android:color/white</item>
         <item name="colorSurface">@android:color/white</item>
-
-        <item name="android:statusBarColor">@color/luas_purple_statusbar</item>
-        <item name="android:navigationBarColor">@color/luas_purple_statusbar</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
 
         <!-- Change general colour accent to the Luas shade of purple. -->
         <item name="colorAccent">@color/luas_purple</item>
@@ -43,6 +38,10 @@
             @style/LuasAtAGlanceFloatingActionButton
         </item>
 
+        <item name="extendedFloatingActionButtonStyle">
+            @style/LuasAtAGlanceExtendedFloatingActionButton
+        </item>
+
         <item name="snackbarStyle">@style/LuasAtAGlanceSnackbar</item>
     </style>
 
@@ -51,7 +50,7 @@
     </style>
 
     <style name="LuasAtAGlanceTabLayout" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
@@ -99,6 +98,10 @@
         <item name="backgroundTint">@color/message_warning</item>
     </style>
 
+    <style name="LuasAtAGlanceExtendedFloatingActionButton" parent="Widget.Material3.ExtendedFloatingActionButton.Primary">
+        <item name="backgroundTint">@color/message_warning</item>
+    </style>
+
     <style name="LuasAtAGlanceSnackbar" parent="Widget.Material3.Snackbar">
         <item name="backgroundTint">@color/luas_purple</item>
         <item name="android:textColor">@android:color/white</item>
@@ -107,6 +110,14 @@
 
     <style name="LuasAtAGlanceSnackbarShapeAppearance" parent="ShapeAppearance.Material3.Corner.Medium">
         <item name="cornerSize">@dimen/cardview_laag_corner_radius</item>
+    </style>
+
+    <style name="LuasAtAGlancePreferenceDialogStyle" parent="Theme.Material3.Light.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="dialogCornerRadius">@dimen/cardview_laag_corner_radius</item>
+        <item name="android:textColor">@color/text_dark</item>
+        <item name="colorAccent">@color/luas_purple</item>
     </style>
 </resources>
 

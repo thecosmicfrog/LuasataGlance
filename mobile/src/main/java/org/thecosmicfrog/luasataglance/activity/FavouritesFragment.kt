@@ -31,7 +31,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.adapter.FavouriteAdapter
 import org.thecosmicfrog.luasataglance.model.FavouriteInfo
@@ -78,7 +78,7 @@ class FavouritesFragment : Fragment() {
         val tutorialFavourites = "favourites"
 
         val fabFavouritesEdit =
-            rootView?.findViewById<FloatingActionButton>(R.id.fab_favourites_edit)
+            rootView?.findViewById< ExtendedFloatingActionButton>(R.id.fab_favourites_edit)
         fabFavouritesEdit?.setOnClickListener {
             startActivity(
                 Intent(
@@ -95,11 +95,11 @@ class FavouritesFragment : Fragment() {
 
         Preferences.saveHasRunOnce(context, tutorialFavourites, true)
 
-        listFavouriteStops = openListFavouritesStops()
+        listFavouriteStops = openListFavouritesStops().sortedBy { it.toString().lowercase() }
 
         val listFavouriteInfo: MutableList<FavouriteInfo> = ArrayList()
 
-        for (favouriteStop in listFavouriteStops as MutableList<CharSequence>) {
+        listFavouriteStops?.forEach { favouriteStop ->
             listFavouriteInfo.add(FavouriteInfo(favouriteStop))
         }
 
@@ -162,4 +162,3 @@ class FavouritesFragment : Fragment() {
         return mutableListOf()
     }
 }
-

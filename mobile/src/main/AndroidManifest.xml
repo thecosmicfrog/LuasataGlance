@@ -51,15 +51,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.FavouritesSelectActivity"
-            android:label="@string/title_activity_favourites_select" />
-        <activity
-            android:name=".activity.SettingsActivity"
-            android:parentActivityName=".activity.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.thecosmicfrog.luasataglance.activity.SettingsActivity" />
-        </activity>
+            android:name=".activity.FavouritesSelectActivity" />
         <activity android:name=".widget.StopForecastWidgetConfigureActivity"
             android:exported="true">
             <intent-filter>
@@ -107,6 +99,10 @@
         <activity
             android:name=".activity.AboutActivity"
             android:theme="@style/LuasAtAGlancePopupDialog" />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:theme="@style/LuasAtAGlancePopupDialog">
+        </activity>
         <activity
             android:name=".activity.WhatsNewActivity"
             android:theme="@style/LuasAtAGlancePopupDialog" />

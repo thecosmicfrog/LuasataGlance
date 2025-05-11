@@ -1,69 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Copyright 2015-2025 Aaron Hastings
-
-    This file is part of Luas at a Glance.
-
-    Luas at a Glance is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Luas at a Glance is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
--->
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/off_white"
-
+    android:background="@color/luas_purple"
     tools:context="org.thecosmicfrog.luasataglance.activity.MainActivity"
     tools:ignore="MergeRootFrame">
 
-    <FrameLayout
-        android:id="@+id/framelayout_fragment_replacer"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/off_white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomnavigationview"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <org.thecosmicfrog.luasataglance.view.NonSwipeableViewPager
-        android:id="@+id/nonswipeableviewpager_replacer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottomnavigationview"
-        app:layout_constraintStart_toStartOf="parent" />
+        <FrameLayout
+            android:id="@+id/framelayout_fragment_replacer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <org.thecosmicfrog.luasataglance.view.NonSwipeableViewPager
+            android:id="@+id/nonswipeableviewpager_replacer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomnavigationview"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:background="@color/luas_purple"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
         app:itemActiveIndicatorStyle="@style/LuasAtAGlanceBottomNavigationBarActiveIndicator"
-        app:itemPaddingTop="6dp"
-        app:itemPaddingBottom="8dp"
         app:itemTextAppearanceActiveBoldEnabled="true"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_bottom_navigation"
-        app:layout_constraintTop_toBottomOf="@id/framelayout_fragment_replacer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
-
