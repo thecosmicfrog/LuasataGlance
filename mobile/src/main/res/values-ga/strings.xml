@@ -153,6 +153,7 @@
     <string name="widget_arrow_right">\u25B6</string>
     <string name="widget_message_error">Fadhb idirlín.\n\nDéan seiceáil ar do nasc idirlíne.
     </string>
+    <string name="widget_select_confirm">Sabháil</string>
 
     <!--
         Stop arrays
