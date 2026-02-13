@@ -197,7 +197,7 @@ class WidgetListenerService : Service() {
         /* Launch coroutine in service scope. */
         CoroutineScope(Dispatchers.IO + Job()).launch {
             try {
-                val response = RetrofitClient.apiMethods.getStopForecast(
+                val response = RetrofitClient.getApiMethods().getStopForecast(
                     action = "times",
                     ver = "3",
                     station = mapStopNameId[stopName]

@@ -105,7 +105,7 @@ class LineViewModel(private val resourceProvider: ResourceProvider) : ViewModel(
                 _error.value = null
                 _showSnackbarWithTime.value = null
 
-                val response = RetrofitClient.apiMethods.getStopForecast(
+                val response = RetrofitClient.getApiMethods().getStopForecast(
                     action = "times",
                     ver = "3",
                     station = currentStopId

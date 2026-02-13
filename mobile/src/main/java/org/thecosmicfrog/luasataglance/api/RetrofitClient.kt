@@ -37,5 +37,5 @@ object RetrofitClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val apiMethods: ApiMethods = retrofit.create(ApiMethods::class.java)
+    fun getApiMethods(): ApiMethods = retrofit.create(ApiMethods::class.java)
 }

@@ -6,22 +6,18 @@ apply plugin: 'kotlin-android'
 android {
     namespace 'org.thecosmicfrog.luasataglance'
 
-    compileSdk 35
+    compileSdk = 36
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = '17'
+    kotlin {
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 
     defaultConfig {
         applicationId "org.thecosmicfrog.luasataglance"
-        targetSdk 35
         minSdk 29
-        compileSdk 35
+        targetSdk 36
         versionCode generateVersionCode()
         versionName generateVersionName()
     }
@@ -45,7 +41,7 @@ android {
             resValue "string", "release_date", generateReleaseDate()
 
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     productFlavors {
@@ -54,23 +50,22 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'androidx.appcompat:appcompat:1.7.0'
+    api 'androidx.appcompat:appcompat:1.7.1'
     api 'androidx.cardview:cardview:1.0.0'
-    api 'com.google.android.material:material:1.12.0'
+    api 'com.google.android.material:material:1.13.0'
     api 'androidx.legacy:legacy-support-v4:1.0.0'
-    api 'com.google.android.gms:play-services-maps:19.1.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    api 'com.google.android.gms:play-services-maps:20.0.0'
+    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
+    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation "androidx.preference:preference-ktx:1.2.1"
     implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
-    implementation 'androidx.activity:activity-ktx:1.10.1'
-    implementation "androidx.core:core-ktx:1.16.0"
+    implementation 'androidx.activity:activity-ktx:1.12.4'
+    implementation "androidx.core:core-ktx:1.17.0"
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 }
 
 private Integer generateVersionCode() {
