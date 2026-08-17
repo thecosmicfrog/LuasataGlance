@@ -35,6 +35,7 @@
     <string name="title_activity_news_travel_updates">Stádas Taistil</string>
     <string name="title_activity_settings">Roghanna</string>
     <string name="title_activity_whats_new">Cad atá nua</string>
+    <string name="title_activity_widget_select_stops">Roghnaigh stadanna don ghiuirléid</string>
 
     <!--
         Main UI
@@ -44,7 +45,6 @@
     <string name="none">Rud ar bith</string>
     <string name="message">Ag fanacht le stádas Luas\u2026</string>
     <string name="message_title">Stádas</string>
-    <string name="message_success">Gach seirbhís ag feidhmiú mar is gnách</string>
     <string name="message_no_status">Stádas ar bith faighte ón bhfreastalaí. Is le córas RTPI Luas an
         chúis.
     </string>
@@ -65,8 +65,8 @@
     <string name="due">ANN</string>
     <string name="min">nóim</string>
     <string name="mins">nóim</string>
-    <string name="no_trams_forecast"><b>Tram ar bith geallta</b></string>
-    <string name="no_trams_forecast_short"><b>Tram ar bith geallta</b></string>
+    <string name="no_trams_forecast"><b>Gan aon tramanna dlite</b></string>
+    <string name="no_trams_forecast_short"><b>Gan tramanna</b></string>
     <string name="bottomnav_map_short">Léarscáil</string>
     <string name="bottomnav_favourites_short">Ceanáin</string>
     <string name="tap_to_load_times"><b>Cliceáil chun amanna a fháil</b></string>
@@ -113,6 +113,8 @@
     <string name="content_desc_map_close">Cnaipe dún léarscáil</string>
     <string name="content_desc_map_chevron">Oscail an stad seo</string>
     <string name="content_desc_tabbar_menu">Roghchlár socruithe</string>
+    <string name="content_desc_widget_next_stop">An chéad stad eile</string>
+    <string name="content_desc_widget_prev_stop">An stad roimhe seo</string>
 
     <!--
         Favourites
@@ -151,8 +153,8 @@
     -->
     <string name="widget_arrow_left">\u25C0</string>
     <string name="widget_arrow_right">\u25B6</string>
-    <string name="widget_message_error">Fadhb idirlín.\n\nDéan seiceáil ar do nasc idirlíne.
-    </string>
+    <string name="widget_message_configure"><b>Cumraigh an ghiuirléid, le do thoil</b></string>
+    <string name="widget_message_error"><b>Fadhb idirlín</b></string>
     <string name="widget_select_confirm">Sabháil</string>
 
     <!--

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Height and weight must match item_tram.xml, so the placeholder occupies the same space. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/widget_tram_item_height"
+    android:layout_weight="1"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="14dp"
+        android:layout_weight="1"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/shimmer_gradient" />
+
+    <TextView
+        android:layout_width="28dp"
+        android:layout_height="14dp"
+        android:background="@drawable/shimmer_solid" />
+</LinearLayout>

@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2015-2025 Aaron Hastings
+
+    This file is part of Luas at a Glance.
+
+    Luas at a Glance is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Luas at a Glance is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,7 +25,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context="org.thecosmicfrog.luasataglance.activity.FavouritesSelectActivity">
+    tools:context="org.thecosmicfrog.luasataglance.activity.StopSelectActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -14,21 +33,17 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbarlayout_favourites"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/luas_purple"
             android:fitsSystemWindows="true"
-            app:elevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:elevation="0dp">
 
             <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_stop_select"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:elevation="@dimen/cardview_laag_elevation"
-                app:title="@string/title_activity_favourites_select" />
+                android:elevation="@dimen/cardview_laag_elevation" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -43,18 +58,15 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab_favourites_save"
+        android:id="@+id/fab_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:icon="@drawable/ic_done"
         app:iconTint="@android:color/white"
         app:iconGravity="end"
-        android:text="@string/favourites_save_selected"
         android:textColor="@android:color/white"
         app:tint="@android:color/white"
         app:rippleColor="@android:color/white" />

@@ -20,240 +20,125 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_root"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded_widget_background">
 
     <LinearLayout
         android:id="@+id/linearlayout_stop_name"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="22dp"
+        android:layout_height="@dimen/widget_header_height"
+        android:paddingVertical="4dp"
         android:weightSum="1"
-        android:elevation="@dimen/cardview_laag_elevation"
-        android:background="@color/message_success">
+        android:background="@drawable/widget_header_background">
 
-        <TextView
-            android:id="@+id/textview_stop_name_left_arrow"
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/button_prev_stop"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|start"
-            android:layout_weight="0.075"
-            android:layout_marginLeft="3dp"
-            android:layout_marginBottom="3dp"
-            android:text="@string/widget_arrow_left"
-            android:textColor="@android:color/white" />
+            android:contentDescription="@string/content_desc_widget_prev_stop"
+            android:src="@drawable/ic_arrow_left_alt"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_weight="0.15" />
 
         <TextView
             android:id="@+id/textview_stop_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|center_horizontal"
-            android:layout_weight="0.85"
+            android:gravity="center"
+            android:layout_weight="0.7"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textview_stop_name_right_arrow"
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/button_next_stop"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|end"
-            android:layout_marginRight="3dp"
-            android:layout_marginBottom="3dp"
-            android:layout_weight="0.075"
-            android:text="@string/widget_arrow_right"
-            android:textColor="@android:color/white" />
+            android:contentDescription="@string/content_desc_widget_next_stop"
+            android:src="@drawable/ic_arrow_right_alt"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_weight="0.15" />
     </LinearLayout>
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/widget_body"
         android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:elevation="@dimen/cardview_laag_elevation">
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:id="@+id/progressbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:progressTint="@android:color/white"
-            android:progressBackgroundTint="@android:color/white" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/linearlayout_stop_forecast"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/widget_body_background">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/forecast_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/cardview_laag_elevation">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textview_inbound"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/widget_direction_label_height"
                 android:background="@color/luas_purple"
-                android:elevation="2dp"
-                android:gravity="center_horizontal"
+                android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/inbound"
                 android:textColor="@android:color/white"
+                android:textSize="@dimen/widget_direction_label_text_size"
                 android:textStyle="bold" />
 
+            <!--
+                One container holds every row, including the outbound direction label, which is added at runtime between the two
+                sets of trams. Rows carry a layout weight, so they always divide exactly the height this container really has,
+                whatever the launcher gave the widget. A row count that is off by one changes every row's height by a couple of dp
+                instead of slicing the last row in half.
+
+                The label is a fixed height with no weight, so it is excluded from that division and keeps its size at every widget
+                size.
+
+                The row count is always made up to the full estimate with empty rows.
+            -->
             <LinearLayout
+                android:id="@+id/trams_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <TextView
-                    android:id="@+id/textview_tap_to_load_times"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="start"
-                    android:gravity="center_horizontal"
-                    android:text="@string/tap_to_load_times"
-                    android:textColor="#757575"
-                    android:textSize="16sp"
-                    android:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/textview_inbound_stop1_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="start"
-                    android:layout_weight="0.5"
-                    android:gravity="center_horizontal"
-                    android:textColor="#757575"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textview_inbound_stop1_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_weight="0.5"
-                    android:gravity="center_horizontal"
-                    android:textColor="#757575"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <TextView
-                    android:id="@+id/textview_inbound_stop2_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="start"
-                    android:layout_weight="0.5"
-                    android:gravity="center_horizontal"
-                    android:textColor="#757575"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textview_inbound_stop2_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_weight="0.5"
-                    android:gravity="center_horizontal"
-                    android:textColor="#757575"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical" />
         </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="6dp"
-            android:background="@android:color/white" />
 
         <LinearLayout
+            android:id="@+id/holding_screen"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/cardview_laag_elevation"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <!--
+                android:tint, not app:tint, despite what the UseAppTint lint check says. That check assumes AppCompat inflates the
+                layout and swaps in an AppCompatImageView. A widget is inflated by the launcher with a plain inflater, so the app
+                namespace is never read here and app:tint would silently do nothing. android:tint has been on ImageView since
+                API 21, well below our minSdk.
+            -->
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circular_purple_background"
+                android:contentDescription="@null"
+                android:padding="8dp"
+                android:src="@drawable/ic_refresh"
+                android:tint="@android:color/white"
+                tools:ignore="UseAppTint" />
 
             <TextView
-                android:id="@+id/textview_outbound"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/luas_purple"
-                android:elevation="2dp"
-                android:gravity="center_horizontal"
-                android:text="@string/outbound"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <TextView
-                    android:id="@+id/textview_outbound_stop1_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="start"
-                    android:layout_weight="0.5"
-                    android:gravity="center_horizontal"
-                    android:textColor="#757575"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textview_outbound_stop1_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_weight="0.5"
-                    android:gravity="center_horizontal"
-                    android:textColor="#757575"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <TextView
-                    android:id="@+id/textview_outbound_stop2_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="start"
-                    android:layout_weight="0.5"
-                    android:gravity="center_horizontal"
-                    android:textColor="#757575"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textview_outbound_stop2_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_weight="0.5"
-                    android:gravity="center_horizontal"
-                    android:textColor="#757575"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                android:id="@+id/holding_screen_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tap_to_load_times"
+                android:textSize="16sp"
+                android:layout_marginTop="12dp" />
         </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="6dp"
-            android:background="@android:color/white" />
-    </LinearLayout>
+    </FrameLayout>
 </LinearLayout>

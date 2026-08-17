@@ -20,123 +20,51 @@
  */
 package org.thecosmicfrog.luasataglance.activity
 
-import android.content.res.ColorStateList
-import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.adapter.FavouritesSelectAdapter
-import org.thecosmicfrog.luasataglance.databinding.ActivityFavouritesSelectBinding
 import org.thecosmicfrog.luasataglance.util.Serializer
 import java.io.BufferedInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.io.InputStream
-import java.io.ObjectInput
 import java.io.ObjectInputStream
 
-class FavouritesSelectActivity : AppCompatActivity() {
+/**
+ * Allows the user to select their favourite stops. Extends [StopSelectActivity] and
+ * persists the selection to the "favourites" file in internal storage.
+ */
+class FavouritesSelectActivity : StopSelectActivity() {
 
-    private val logTag: String = FavouritesSelectActivity::class.java.getSimpleName()
-    private val fileFavourites = "favourites"
+    private val logTag: String = FavouritesSelectActivity::class.java.simpleName
 
-    private var viewBinding: ActivityFavouritesSelectBinding? = null
-    private var adapter: FavouritesSelectAdapter? = null
-    private var selectedStops: ArrayList<CharSequence?>? = null
+    override val toolbarTitleRes = R.string.title_activity_favourites_select
+    override val fabTextRes = R.string.favourites_save_selected
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewBinding = ActivityFavouritesSelectBinding.inflate(layoutInflater)
-        val rootView: CoordinatorLayout? = viewBinding?.getRoot()
-        setContentView(rootView)
-
-        selectedStops = ArrayList<CharSequence?>()
-        val listAllStops = loadAllStops()
-
-        initRecyclerView(listAllStops)
-        initFab()
-        loadExistingfavourites()
-    }
-
-    /**
-     * Load the list of stops from resources.
-     * @return List of all stops across all lines.
-     */
-    private fun loadAllStops(): ArrayList<CharSequence?> {
-        val allStops = getResources().getStringArray(R.array.array_stops_all)
-        val listAllStops = ArrayList<CharSequence?>()
-
-        for (i in 1..<allStops.size) {
-            listAllStops.add(allStops[i])
-        }
-
-        val listAllStopsAlphabetised = ArrayList(listAllStops.sortedBy { it?.toString()?.lowercase() })
-
-        return listAllStopsAlphabetised
-    }
-
-    /**
-     * Initialise the RecyclerView with the list of stops.
-     * @param stops The list of stops to display.
-     */
-    private fun initRecyclerView(stops: ArrayList<CharSequence?>) {
-        val recyclerView = viewBinding?.recyclerviewStops
-        recyclerView?.setLayoutManager(LinearLayoutManager(this))
-
-        adapter = FavouritesSelectAdapter(stops, selectedStops)
-        recyclerView?.setAdapter(adapter)
-        adapter?.notifyDataSetChanged()
-    }
-
-    /**
-     * Initialise the edit FAB.
-     */
-    private fun initFab() {
-        val fabFavouritesSave = viewBinding!!.fabFavouritesSave
-        fabFavouritesSave.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.message_success))
-        fabFavouritesSave.setOnClickListener(View.OnClickListener { v: View? -> saveFavourites() })
-    }
-
-    /**
-     * Load the existing favourites from the file on disk.
-     */
-    private fun loadExistingfavourites() {
-        try {
-            val fileInput: InputStream = openFileInput(fileFavourites)
-            val buffer: InputStream = BufferedInputStream(fileInput)
-            val objectInput: ObjectInput = ObjectInputStream(buffer)
-
-            val listFavouriteStops = objectInput.readObject() as MutableList<CharSequence?>
-
-            selectedStops?.addAll(listFavouriteStops)
-            adapter?.notifyDataSetChanged()
-
-            objectInput.close()
-            buffer.close()
-            fileInput.close()
+    override fun loadSavedStops(): List<CharSequence> {
+        return try {
+            openFileInput("favourites").use { fileInput ->
+                ObjectInputStream(BufferedInputStream(fileInput)).use { objectInput ->
+                    @Suppress("UNCHECKED_CAST")
+                    (objectInput.readObject() as? List<CharSequence>) ?: emptyList()
+                }
+            }
         } catch (e: FileNotFoundException) {
             Log.i(logTag, "Favourites file doesn't exist.")
+            emptyList()
         } catch (e: ClassNotFoundException) {
             Log.e(logTag, Log.getStackTraceString(e))
+            emptyList()
         } catch (e: IOException) {
             Log.e(logTag, Log.getStackTraceString(e))
+            emptyList()
         }
     }
 
-    /**
-     * Save the selected stops to the favourites file on disk.
-     */
-    private fun saveFavourites() {
+    override fun onSave() {
         try {
-            if (!selectedStops!!.isEmpty()) {
-                val file = openFileOutput(fileFavourites, MODE_PRIVATE)
-                file.write(Serializer.serialize(selectedStops))
-                file.close()
+            if (selectedItems.isNotEmpty()) {
+                openFileOutput("favourites", MODE_PRIVATE).use { file ->
+                    file.write(Serializer.serialize(selectedItems))
+                }
             }
         } catch (e: IOException) {
             Log.e(logTag, Log.getStackTraceString(e))

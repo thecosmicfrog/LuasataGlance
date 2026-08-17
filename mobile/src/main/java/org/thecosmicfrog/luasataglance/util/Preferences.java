@@ -30,6 +30,17 @@ import org.thecosmicfrog.luasataglance.R;
 public final class Preferences {
 
     /*
+     * Prefix for the per-widget-instance selected stop name. The AppWidget ID is appended, so that two widgets on the same home
+     * screen do not share a single stop.
+     */
+    private static final String WIDGET_SELECTED_STOP_NAME_PREFIX = "widgetSelectedStopName_";
+
+    /*
+     * The single key used before storage became per-widget. Read as a fallback, never written.
+     */
+    private static final String WIDGET_SELECTED_STOP_NAME_LEGACY = "widgetSelectedStopName";
+
+    /*
      * ============================================================================================
      *  Load from shared preferences.
      * ============================================================================================
@@ -184,16 +195,26 @@ public final class Preferences {
     }
 
     /**
-     * Load the currently-selected stop name from shared preferences.
+     * Load the currently-selected stop name for a single widget instance from shared
+     * preferences.
      * @param context Context.
+     * @param appWidgetId AppWidget ID of the widget instance.
      * @return Selected stop name, or null if none found.
      */
-    public static String widgetSelectedStopName(Context context) {
+    public static String widgetSelectedStopName(Context context, int appWidgetId) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
 
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
-        return prefs.getString("widgetSelectedStopName", null);
+        /*
+         * Fall back to the single, shared key used before per-instance storage existed, so that widgets placed before this change
+         * keep working until the user next saves them. The legacy key is never written again, so each widget moves onto its own
+         * key the first time its stop is changed or its configuration is saved.
+         */
+        return prefs.getString(
+                WIDGET_SELECTED_STOP_NAME_PREFIX + appWidgetId,
+                prefs.getString(WIDGET_SELECTED_STOP_NAME_LEGACY, null)
+        );
     }
 
 
@@ -384,19 +405,55 @@ public final class Preferences {
     }
 
     /**
-     * Save the currently-selected stop name to shared preferences.
+     * Save the currently-selected stop name for a single widget instance to shared preferences.
      * @param context Context.
+     * @param appWidgetId AppWidget ID of the widget instance.
      * @param widgetSelectedStopName Name of the stop to save to shared preferences.
      * @return Successfully saved.
      */
-    public static boolean saveWidgetSelectedStopName(Context context,
+    public static boolean saveWidgetSelectedStopName(Context context, int appWidgetId,
                                                      String widgetSelectedStopName) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
 
         SharedPreferences.Editor prefs =
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
-        prefs.putString("widgetSelectedStopName", widgetSelectedStopName);
+        prefs.putString(WIDGET_SELECTED_STOP_NAME_PREFIX + appWidgetId, widgetSelectedStopName);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Remove the selected stop name belonging to a single widget instance. Called when that instance is deleted, so that its
+     * preference does not outlive it.
+     * @param context Context.
+     * @param appWidgetId AppWidget ID of the widget instance.
+     * @return Successfully removed.
+     */
+    public static boolean removeWidgetSelectedStopName(Context context, int appWidgetId) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.remove(WIDGET_SELECTED_STOP_NAME_PREFIX + appWidgetId);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Remove the pre-per-instance selected stop name. Called once the last widget is gone, since nothing can read it again and it
+     * would otherwise be handed to the next widget placed.
+     * @param context Context.
+     * @return Successfully removed.
+     */
+    public static boolean removeLegacyWidgetSelectedStopName(Context context) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.remove(WIDGET_SELECTED_STOP_NAME_LEGACY);
 
         return prefs.commit();
     }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2015-2025 Aaron Hastings
+
+    This file is part of Luas at a Glance.
+
+    Luas at a Glance is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Luas at a Glance is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!--
+    The outbound direction label, added into trams_container at runtime so that it sits between the two sets of tram rows. It
+    deliberately has no layout_weight, so the weighted tram rows divide the space that is left after this label has taken its fixed
+    height.
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textview_direction"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/widget_direction_label_height"
+    android:background="@color/luas_purple"
+    android:gravity="center"
+    android:maxLines="1"
+    android:textColor="@android:color/white"
+    android:textSize="@dimen/widget_direction_label_text_size"
+    android:textStyle="bold" />

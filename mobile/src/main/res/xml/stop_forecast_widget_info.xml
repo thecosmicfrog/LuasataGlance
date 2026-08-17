@@ -18,15 +18,23 @@
     along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<!--
+    minHeight is sized for the header, both direction labels, and four tram rows, which is the two per direction the widget always
+    asks for. Resizing below it leaves those rows too short to read, so it is not allowed.
+-->
 <appwidget-provider
     xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:minWidth="180dp"
-    android:minHeight="110dp"
+    android:minHeight="180dp"
+    android:minResizeHeight="180dp"
+    android:targetCellWidth="2"
+    android:targetCellHeight="3"
     android:updatePeriodMillis="0"
     android:previewImage="@raw/widget_preview"
     android:initialLayout="@layout/stop_forecast_widget"
     android:configure="org.thecosmicfrog.luasataglance.widget.StopForecastWidgetConfigureActivity"
+    android:widgetFeatures="reconfigurable"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen|keyguard"
     android:initialKeyguardLayout="@layout/stop_forecast_widget">

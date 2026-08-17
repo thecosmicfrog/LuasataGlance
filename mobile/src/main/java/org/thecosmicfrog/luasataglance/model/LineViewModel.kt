@@ -33,8 +33,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okio.IOException
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.api.ApiProvider
 import org.thecosmicfrog.luasataglance.api.ApiTimes
-import org.thecosmicfrog.luasataglance.api.RetrofitClient
 import org.thecosmicfrog.luasataglance.util.ResourceProvider
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.createStopForecast
 import retrofit2.HttpException
@@ -105,7 +105,7 @@ class LineViewModel(private val resourceProvider: ResourceProvider) : ViewModel(
                 _error.value = null
                 _showSnackbarWithTime.value = null
 
-                val response = RetrofitClient.getApiMethods().getStopForecast(
+                val response = ApiProvider.getApiMethods().getStopForecast(
                     action = "times",
                     ver = "3",
                     station = currentStopId

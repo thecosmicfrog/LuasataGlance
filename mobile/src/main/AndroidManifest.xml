@@ -64,12 +64,7 @@
                 <action android:name="org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.OnAppUpdateReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
-            </intent-filter>
-        </receiver>
+
         <receiver android:name=".widget.StopForecastWidget" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -79,11 +74,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/stop_forecast_widget_info" />
         </receiver>
-
-        <service
-            android:name=".service.WidgetListenerService"
-            android:foregroundServiceType="dataSync"
-            android:enabled="true" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
