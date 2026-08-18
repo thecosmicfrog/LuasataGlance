@@ -6,7 +6,7 @@ Android app providing real-time tram stop information for Dublin's Luas light ra
 
 ## Copyright and Licence
 
-Copyright 2015-2025 Aaron Hastings
+Copyright 2015-2026 Aaron Hastings
 
 >This program is free software: you can redistribute it and/or modify
 >it under the terms of the GNU General Public License as published by
