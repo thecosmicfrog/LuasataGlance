@@ -21,20 +21,12 @@
 package org.thecosmicfrog.luasataglance.receiver
 
 import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.media.RingtoneManager
-import android.os.Build
-import android.os.Build.VERSION_CODES
-import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.activity.MainActivity
 import org.thecosmicfrog.luasataglance.util.Constant
@@ -103,93 +95,38 @@ class NotifyTimesReceiver : BroadcastReceiver() {
      */
     private fun scheduleNotification(context: Context, notifyStopName: String, notifyTimeUserRequestedMins: Int,
                                      notifyDelayMillis: Int): Boolean {
-        val requestCodeOpenMainActivity = 0
         val requestCodeScheduleNotification = 1
-        val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                /*
-                 * Create a StringBuilder in order to format the notification message correctly.
-                 * Start by adding a message telling the user their tram is expected in N.
-                 */
-                val stringBuilderContentText = StringBuilder()
-                stringBuilderContentText.append(
-                    context.getString(R.string.notification_tram_expected)
-                ).append(
-                    notifyTimeUserRequestedMins.toString()
-                )
+        val requestCodeShowAlarm = 2
 
-                /* Append either "minutes" or "minute" depending on the time chosen. */
-                if (notifyTimeUserRequestedMins > 1) stringBuilderContentText.append(
-                    context.getString(R.string.notification_minutes)
-                ) else stringBuilderContentText.append(
-                    context.getString(R.string.notification_minute)
-                )
-
-                /* Prepare an Intent/PendingIntent to open the MainActivity with the stop-to-notify-for as a String extra. */
-                val intentOpenMainActivity = Intent(context, MainActivity::class.java)
-                intentOpenMainActivity.setPackage(context.packageName)
-                intentOpenMainActivity.action = NotifyTimesReceiver::class.java.name
-                intentOpenMainActivity.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                intentOpenMainActivity.putExtra(Constant.NOTIFY_STOP_NAME, notifyStopName)
-
-                val pendingIntentOpenMainActivity = PendingIntent.getActivity(
-                    context,
-                    requestCodeOpenMainActivity,
-                    intentOpenMainActivity,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-
-                /* Create a NotificationManager and NotificationChannel. */
-                val notificationManager = context.getSystemService(
-                    Context.NOTIFICATION_SERVICE
-                ) as NotificationManager
-
-                val notificationChannel = NotificationChannel(
-                    "notifyTimes",
-                    "Notify Times",
-                    NotificationManager.IMPORTANCE_HIGH
-                )
-
-                /* Configure notification channel. */
-                notificationChannel.description = "Notify Times"
-                notificationChannel.enableLights(true)
-                notificationChannel.lightColor = context.getColor(R.color.luas_purple)
-                notificationChannel.vibrationPattern = longArrayOf(100, 1000, 1000, 1000, 1000)
-                notificationChannel.enableVibration(true)
-                notificationChannel.importance = NotificationManager.IMPORTANCE_HIGH
-                notificationManager.createNotificationChannel(notificationChannel)
-
-                /*
-                 * Create the NotificationBuilder, setting an appropriate title and the message
-                 * built in the StringBuilder. The default notification sound should be played
-                 * and the device should vibrate twice for 1 second with a 1 second delay
-                 * between them. Setting MAX priority due to the time-sensitive nature of trams.
-                 */
-                val notificationBuilder = NotificationCompat.Builder(context, "notifyTimes")
-                    .setContentIntent(pendingIntentOpenMainActivity)
-                    .setContentTitle(context.getString(R.string.notification_title))
-                    .setContentText(stringBuilderContentText.toString())
-                    .setSmallIcon(R.drawable.laag_logo_notification)
-                    .setVibrate(longArrayOf(100, 1000, 1000, 1000, 1000))
-                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                    .setAutoCancel(true)
-
-                /* Display notification. */
-                notificationManager.notify(1, notificationBuilder.build())
-            }
+        /*
+         * Name NotifyTimesAlarmReceiver on the Intent. Without a component named on it, this goes out as a broadcast that only a
+         * receiver set up while the app is running could catch, and by the time the alarm fires the app is gone, so the reminder
+         * is lost with nothing logged anywhere. FLAG_UPDATE_CURRENT is what keeps the stop name and time current when a new
+         * reminder replaces an older one, since two of these count as the same PendingIntent no matter what is in the extras.
+         */
+        val intentNotify = Intent(context, NotifyTimesAlarmReceiver::class.java).apply {
+            setPackage(context.packageName)
+            putExtra(Constant.NOTIFY_STOP_NAME, notifyStopName)
+            putExtra(Constant.NOTIFY_TIME, notifyTimeUserRequestedMins)
         }
-
-        val receiverExported: Int? = if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) Context.RECEIVER_EXPORTED else null
-        context.applicationContext.registerReceiver(
-            broadcastReceiver,
-            IntentFilter("org.thecosmicfrog.luasataglance"),
-            receiverExported ?: 0
-        )
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             requestCodeScheduleNotification,
-            Intent(context.packageName),
+            intentNotify,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        /* Opened if the user taps the alarm Android shows in the quick settings shade while a reminder is pending. */
+        val pendingIntentShowAlarm = PendingIntent.getActivity(
+            context,
+            requestCodeShowAlarm,
+            Intent(context, MainActivity::class.java).apply {
+                setPackage(context.packageName)
+                action = NotifyTimesReceiver::class.java.name
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                putExtra(Constant.NOTIFY_STOP_NAME, notifyStopName)
+            },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -197,9 +134,15 @@ class NotifyTimesReceiver : BroadcastReceiver() {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         try {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + notifyDelayMillis,
+            /*
+             * This is the only kind of alarm Android will not delay. Everything else gets held back once it decides the app is
+             * used too rarely to be worth waking for (e.g., a user who rarely sets reminders).
+             */
+            alarmManager.setAlarmClock(
+                AlarmManager.AlarmClockInfo(
+                    System.currentTimeMillis() + notifyDelayMillis,
+                    pendingIntentShowAlarm
+                ),
                 pendingIntent
             )
 

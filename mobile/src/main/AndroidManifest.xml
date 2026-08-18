@@ -59,11 +59,14 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".receiver.NotifyTimesReceiver" android:exported="true">
+        <!-- Only ever sent to explicitly, by NotifyTimeActivity, so nothing outside the app needs to reach these. -->
+        <receiver android:name=".receiver.NotifyTimesReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".receiver.NotifyTimesAlarmReceiver" android:exported="false" />
 
         <receiver android:name=".widget.StopForecastWidget" android:exported="true">
             <intent-filter>
