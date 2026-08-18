@@ -50,13 +50,17 @@ object WidgetStopStore {
     private const val FILE_NAME_LEGACY = "widget_selected_stops"
 
     /**
-     * Loads the stops configured for one widget instance.
+     * Loads the stops configured for one widget instance, sorted alphabetically.
+     *
+     * The picker hands its selection back in the order the stops were ticked, which tells the user nothing about where the next
+     * and previous arrows will take them. Sorting on read rather than on save means widgets configured before this change get the
+     * same order without being reconfigured.
      *
      * @return The list of stop names, or null if neither the per-instance file nor the
      *         legacy file could be read.
      */
     fun load(context: Context, appWidgetId: Int): List<String>? {
-        return read(context, fileName(appWidgetId)) ?: read(context, FILE_NAME_LEGACY)
+        return (read(context, fileName(appWidgetId)) ?: read(context, FILE_NAME_LEGACY))?.sortedBy { it.lowercase() }
     }
 
     /**
