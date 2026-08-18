@@ -37,7 +37,9 @@ import androidx.core.net.toUri
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import org.thecosmicfrog.luasataglance.R
@@ -48,6 +50,7 @@ import org.thecosmicfrog.luasataglance.model.Tram
 import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -77,6 +80,10 @@ class StopForecastWidget : AppWidgetProvider() {
     /**
      * Called by the system on the widget's first placement and on each scheduled update. Triggers a full update (including a fresh
      * API fetch) for every active widget instance.
+     *
+     * @param context          Context.
+     * @param appWidgetManager Manager the updates are pushed through.
+     * @param appWidgetIds     IDs of every active widget instance.
      */
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (appWidgetId in appWidgetIds) {
@@ -89,8 +96,14 @@ class StopForecastWidget : AppWidgetProvider() {
      *
      * Cancels any pending timeout alarm, then triggers a fresh fetch so that the number of visible tram rows is recalculated to fit
      * the new dimensions.
+     *
+     * @param context          Context.
+     * @param appWidgetManager Manager the update is pushed through.
+     * @param appWidgetId      ID of the widget instance that was resized.
+     * @param newOptions       The instance's new options, as reported by the launcher.
      */
-    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle?) {
+    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int,
+                                           newOptions: Bundle?) {
         cancelTimeout(context, appWidgetId)
         updateAppWidget(context, appWidgetManager, appWidgetId, true)
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
@@ -105,6 +118,9 @@ class StopForecastWidget : AppWidgetProvider() {
      * - [ACTION_PREV_STOP]  — navigates to the previous stop in the configured list
      * - [ACTION_NEXT_STOP]  — navigates to the next stop in the configured list
      * - [ACTION_TIMEOUT]    — shows the holding screen if data has not arrived in time
+     *
+     * @param context Context.
+     * @param intent  The broadcast, carrying the action and the widget ID it applies to.
      */
     override fun onReceive(context: Context, intent: Intent) {
         pendingResult = goAsync()
@@ -137,6 +153,9 @@ class StopForecastWidget : AppWidgetProvider() {
      *
      * Cancels each instance's pending timeout alarm and deletes the state it owns, so that preferences and stop list files do not
      * accumulate for widgets that no longer exist.
+     *
+     * @param context      Context.
+     * @param appWidgetIds IDs of the widget instances that were removed.
      */
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         for (appWidgetId in appWidgetIds) {
@@ -152,6 +171,8 @@ class StopForecastWidget : AppWidgetProvider() {
      *
      * Clears the shared state left over from before storage became per-instance. The migration window closes with the last widget,
      * and leaving it would hand a stale stop to the next widget placed.
+     *
+     * @param context Context.
      */
     override fun onDisabled(context: Context) {
         Preferences.removeLegacyWidgetSelectedStopName(context)
@@ -161,6 +182,9 @@ class StopForecastWidget : AppWidgetProvider() {
 
     /**
      * Launches the main app, navigating directly to the stop currently selected in the widget.
+     *
+     * @param context     Context the Activity is started from.
+     * @param appWidgetId ID of the widget instance whose stop is opened.
      */
     private fun openApp(context: Context, appWidgetId: Int) {
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -173,7 +197,12 @@ class StopForecastWidget : AppWidgetProvider() {
     /**
      * Navigates to the adjacent stop in the user's configured stop list.
      *
-     * @param direction -1 for previous, +1 for next. Wraps around at list boundaries.
+     * The name and placeholder rows are drawn immediately, but the forecast is fetched only after [STOP_CHANGE_DEBOUNCE_MS], so
+     * that a user stepping through stops quickly does not spam the API.
+     *
+     * @param context     Context.
+     * @param appWidgetId ID of the widget instance being navigated.
+     * @param direction   -1 for previous, +1 for next. Wraps around at list boundaries.
      */
     private fun changeStop(context: Context, appWidgetId: Int, direction: Int) {
         cancelTimeout(context, appWidgetId)
@@ -184,9 +213,21 @@ class StopForecastWidget : AppWidgetProvider() {
         val currentIndex = widgetStops.indexOf(currentStopName).takeIf { it != -1 } ?: 0
 
         val newIndex = (currentIndex + direction + widgetStops.size) % widgetStops.size
+        val newStopName = widgetStops[newIndex]
+        val appWidgetManager = AppWidgetManager.getInstance(context)
 
-        Preferences.saveWidgetSelectedStopName(context, appWidgetId, widgetStops[newIndex])
-        updateAppWidget(context, AppWidgetManager.getInstance(context), appWidgetId, true)
+        Preferences.saveWidgetSelectedStopName(context, appWidgetId, newStopName)
+
+        updateAppWidget(context, appWidgetManager, appWidgetId, false)
+        showShimmer(context, appWidgetManager, appWidgetId, newStopName)
+
+        launchFetch(context, appWidgetManager, appWidgetId, newStopName, STOP_CHANGE_DEBOUNCE_MS)
+
+        /*
+         * The fetch outlives this broadcast, so nothing is holding the process up. Set the revert now, in case it is killed
+         * before the forecast arrives and the widget is left on its placeholder rows.
+         */
+        setTimeout(context, appWidgetId)
     }
 
     /**
@@ -195,7 +236,10 @@ class StopForecastWidget : AppWidgetProvider() {
      * The synchronous portion sets the stop name, directional labels, and click handlers. If [forceUpdate] is true,
      * [fetchAndDisplayTrams] is launched on [Dispatchers.IO] to load live tram data.
      *
-     * @param forceUpdate If true, a fresh API call is made after the UI is prepared.
+     * @param context          Context.
+     * @param appWidgetManager Manager the update is pushed through.
+     * @param appWidgetId      ID of the widget instance being updated.
+     * @param forceUpdate      If true, a fresh API call is made after the UI is prepared.
      */
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, forceUpdate: Boolean) {
         val views = RemoteViews(context.packageName, R.layout.stop_forecast_widget)
@@ -231,29 +275,58 @@ class StopForecastWidget : AppWidgetProvider() {
         appWidgetManager.updateAppWidget(appWidgetId, views)
 
         if (forceUpdate) {
-            outstandingFetches.incrementAndGet()
-            fetchScope.launch {
-                try {
-                    /*
-                     * Bounded so a hung request cannot hold the broadcast open indefinitely. The timeout alarm still covers what
-                     * the user sees.
-                     */
-                    val finished = withTimeoutOrNull(FETCH_TIMEOUT_MS.milliseconds) {
-                        fetchAndDisplayTrams(context, appWidgetManager, appWidgetId, stopName)
-                    }
+            launchFetch(context, appWidgetManager, appWidgetId, stopName, 0L)
+        }
+    }
 
-                    /*
-                     * Reported out here because the coroutine that timed out was cancelled and cannot draw anything itself.
-                     */
-                    if (finished == null) {
-                        Log.e("StopForecastWidget", "Timed out fetching forecast")
-                        showErrorRow(context, appWidgetManager, appWidgetId)
-                    }
-                } finally {
-                    releaseFetch()
+    /**
+     * Launches the forecast fetch for one widget, optionally after a delay.
+     *
+     * Only one fetch is ever pending per widget. Starting another cancels the one before it, which is what keeps a run of arrow
+     * taps down to a single request.
+     *
+     * @param context          Context.
+     * @param appWidgetManager Manager the resulting update is pushed through.
+     * @param appWidgetId      ID of the widget instance the forecast is for.
+     * @param stopName         Stop to fetch a forecast for.
+     * @param delayMs          Time to wait before fetching. Zero fetches straight away.
+     */
+    private fun launchFetch(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, stopName: String,
+                            delayMs: Long) {
+        /*
+         * A delayed fetch cannot hold the broadcast open. The system delivers this receiver's broadcasts one at a time, so the
+         * next tap would not arrive until this fetch had finished, and there would be nothing left to cancel.
+         */
+        val holdBroadcast = delayMs == 0L
+
+        if (holdBroadcast) outstandingFetches.incrementAndGet()
+
+        val job = fetchScope.launch {
+            try {
+                delay(delayMs.milliseconds)
+
+                /*
+                 * Bounded so a hung request cannot hold the broadcast open indefinitely. The timeout alarm still covers what
+                 * the user sees.
+                 */
+                val finished = withTimeoutOrNull(FETCH_TIMEOUT_MS.milliseconds) {
+                    fetchAndDisplayTrams(context, appWidgetManager, appWidgetId, stopName)
                 }
+
+                /*
+                 * Reported out here because the coroutine that timed out was cancelled and cannot draw anything itself.
+                 */
+                if (finished == null) {
+                    Log.e("StopForecastWidget", "Timed out fetching forecast")
+                    showErrorRow(context, appWidgetManager, appWidgetId)
+                }
+            } finally {
+                if (holdBroadcast) releaseFetch()
             }
         }
+
+        pendingFetches.put(appWidgetId, job)?.cancel()
+        job.invokeOnCompletion { pendingFetches.remove(appWidgetId, job) }
     }
 
     /**
@@ -272,31 +345,18 @@ class StopForecastWidget : AppWidgetProvider() {
      * Shows shimmer placeholder rows while the request is in flight, then replaces them with live tram times on success. The number
      * of rows shown is calculated from the current widget height. Sets a 15-second [AlarmManager] timeout after a successful fetch.
      * On failure, the containers are left empty.
+     *
+     * @param context          Context.
+     * @param appWidgetManager Manager the update is pushed through.
+     * @param appWidgetId      ID of the widget instance being updated.
+     * @param stopName         Stop to fetch a forecast for.
      */
     private suspend fun fetchAndDisplayTrams(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int,
                                              stopName: String) {
         val maxTotalTrams = maxTotalTramsFor(context, appWidgetManager, appWidgetId)
         val outboundLabel = directionLabels(context, stopName).second
 
-        /* The same per-direction cap the forecast will use, so the rows do not jump. */
-        val shimmerRowsPerDirection = maxTotalTrams / 2
-
-        /* Show shimmer placeholder rows while the API call is in flight. */
-        val shimmerViews = RemoteViews(context.packageName, R.layout.stop_forecast_widget)
-
-        shimmerViews.removeAllViews(R.id.trams_container)
-        repeat(shimmerRowsPerDirection) {
-            shimmerViews.addView(R.id.trams_container, RemoteViews(context.packageName, R.layout.item_tram_shimmer))
-        }
-
-        shimmerViews.addView(R.id.trams_container, directionLabelView(context, outboundLabel))
-        repeat(shimmerRowsPerDirection) {
-            shimmerViews.addView(R.id.trams_container, RemoteViews(context.packageName, R.layout.item_tram_shimmer))
-        }
-
-        addFillerRows(context, shimmerViews, R.id.trams_container, maxTotalTrams - (shimmerRowsPerDirection * 2))
-
-        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, shimmerViews)
+        showShimmer(context, appWidgetManager, appWidgetId, stopName)
 
         val stopId = StopNameIdMap(Locale.getDefault().toString())[stopName]
 
@@ -366,6 +426,41 @@ class StopForecastWidget : AppWidgetProvider() {
     }
 
     /**
+     * Fills the tram container with placeholder rows.
+     *
+     * Shown while a fetch is in flight or waiting out its debounce, so that stepping between stops does not leave the body empty.
+     * The rows match the forecast's own layout, so nothing shifts when the data lands.
+     *
+     * @param context          Context.
+     * @param appWidgetManager Manager the update is pushed through.
+     * @param appWidgetId      ID of the widget instance being updated.
+     * @param stopName         Stop the direction labels are resolved from.
+     */
+    private fun showShimmer(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, stopName: String) {
+        val maxTotalTrams = maxTotalTramsFor(context, appWidgetManager, appWidgetId)
+        val outboundLabel = directionLabels(context, stopName).second
+
+        /* The same per-direction cap the forecast will use, so the rows do not jump. */
+        val shimmerRowsPerDirection = maxTotalTrams / 2
+
+        val views = RemoteViews(context.packageName, R.layout.stop_forecast_widget)
+
+        views.removeAllViews(R.id.trams_container)
+        repeat(shimmerRowsPerDirection) {
+            views.addView(R.id.trams_container, RemoteViews(context.packageName, R.layout.item_tram_shimmer))
+        }
+
+        views.addView(R.id.trams_container, directionLabelView(context, outboundLabel))
+        repeat(shimmerRowsPerDirection) {
+            views.addView(R.id.trams_container, RemoteViews(context.packageName, R.layout.item_tram_shimmer))
+        }
+
+        addFillerRows(context, views, R.id.trams_container, maxTotalTrams - (shimmerRowsPerDirection * 2))
+
+        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views)
+    }
+
+    /**
      * Replaces the forecast rows with a single row carrying the network error message.
      *
      * Rendered as a tram row rather than on the holding screen, so the header and the stop navigation stay usable. The body keeps
@@ -373,6 +468,10 @@ class StopForecastWidget : AppWidgetProvider() {
      *
      * Times out back to the holding screen the same way a loaded forecast does, so the widget does not sit on a stale error
      * indefinitely.
+     *
+     * @param context          Context.
+     * @param appWidgetManager Manager the update is pushed through.
+     * @param appWidgetId      ID of the widget instance being updated.
      */
     private fun showErrorRow(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
         val views = RemoteViews(context.packageName, R.layout.stop_forecast_widget)
@@ -396,6 +495,8 @@ class StopForecastWidget : AppWidgetProvider() {
     /**
      * Adds a row of [RemoteViews] tram entries to the given container.
      *
+     * @param context        Context.
+     * @param parent         RemoteViews the rows are added to.
      * @param containerId    Resource ID of the target tram container.
      * @param trams          Full list of trams for this direction.
      * @param tramsToDisplay Maximum number of rows to add.
@@ -415,6 +516,8 @@ class StopForecastWidget : AppWidgetProvider() {
      * Both cases add exactly [rowCount] rows, never more, so that the caller can work out the filler count from the budget alone.
      * [splitTramBudget] never allocates a direction more rows than it asked for, and an empty direction asks for one.
      *
+     * @param context     Context.
+     * @param parent      RemoteViews the rows are added to.
      * @param containerId Resource ID of the target tram container.
      * @param trams       Full list of trams for this direction, possibly empty.
      * @param rowCount    Number of rows this direction has been allocated.
@@ -443,6 +546,8 @@ class StopForecastWidget : AppWidgetProvider() {
      * These reuse `item_tram` rather than a layout of their own, so that a filler row and a real row can never drift apart in
      * height.
      *
+     * @param context     Context.
+     * @param parent      RemoteViews the rows are added to.
      * @param containerId Resource ID of the target tram container.
      * @param count       Number of empty rows to add. Zero or fewer adds nothing.
      */
@@ -454,6 +559,11 @@ class StopForecastWidget : AppWidgetProvider() {
 
     /**
      * Reads the widget's currently reported height and converts it to a row count.
+     *
+     * @param context          Context.
+     * @param appWidgetManager Manager the reported size is read from.
+     * @param appWidgetId      ID of the widget instance being measured.
+     * @return Total tram row count across both directions.
      */
     private fun maxTotalTramsFor(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int): Int {
         val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
@@ -483,6 +593,7 @@ class StopForecastWidget : AppWidgetProvider() {
      *
      * Always even, so that the two directions can be given the same number of rows.
      *
+     * @param context        Context.
      * @param widgetHeightDp Reported widget height in dp, from [AppWidgetManager.getAppWidgetOptions].
      * @return Total tram row count across both directions (at least 1).
      */
@@ -519,6 +630,9 @@ class StopForecastWidget : AppWidgetProvider() {
      * deliberately not lent to the other direction, since a five-and-two split reads as a bug rather than as a quiet tram stop. The
      * two returned counts therefore always sum to at most [maxTotalTrams].
      *
+     * @param maxTotalTrams Row capacity across both directions.
+     * @param inboundSize   Number of rows the inbound direction has to show.
+     * @param outboundSize  Number of rows the outbound direction has to show.
      * @return Number of inbound rows to show, paired with the number of outbound rows.
      */
     private fun splitTramBudget(maxTotalTrams: Int, inboundSize: Int, outboundSize: Int): Pair<Int, Int> {
@@ -532,6 +646,8 @@ class StopForecastWidget : AppWidgetProvider() {
      *
      * Red Line stops use Eastbound/Westbound. Green Line stops use Northbound/Southbound.
      *
+     * @param context  Context.
+     * @param stopName Stop whose line decides which pair of labels is used.
      * @return Inbound label paired with the outbound label.
      */
     private fun directionLabels(context: Context, stopName: String): Pair<String, String> {
@@ -549,6 +665,10 @@ class StopForecastWidget : AppWidgetProvider() {
      *
      * It lives inside `trams_container` rather than in the static layout, so that the weighted tram rows above and below it divide
      * one container between them. Its own layout carries a fixed height and no weight, so it is excluded from that division.
+     *
+     * @param context Context.
+     * @param label   Direction name to show in the row.
+     * @return The label row, ready to be added to `trams_container`.
      */
     private fun directionLabelView(context: Context, label: String): RemoteViews {
         return RemoteViews(context.packageName, R.layout.item_direction_label).apply {
@@ -562,7 +682,10 @@ class StopForecastWidget : AppWidgetProvider() {
      * The intent [android.content.Intent.data] URI is set to a unique value per action and widget ID to prevent the system from
      * collapsing distinct intents into one.
      *
-     * @param action One of the ACTION_* constants defined in the companion object.
+     * @param context     Context the broadcast is sent from.
+     * @param appWidgetId ID of the widget instance the action applies to.
+     * @param action      One of the ACTION_* constants defined in the companion object.
+     * @return A broadcast [PendingIntent] unique to this action and widget ID.
      */
     private fun getPendingIntent(context: Context, appWidgetId: Int, action: String): PendingIntent {
         val intent = Intent(context, StopForecastWidget::class.java).apply {
@@ -584,6 +707,9 @@ class StopForecastWidget : AppWidgetProvider() {
      * When it fires, [ACTION_TIMEOUT] returns the widget to the holding screen. Tram times go stale quickly, so what is on screen
      * reverts to an invitation to reload rather than sitting there looking current. Called after a forecast loads and after an
      * error, since an error goes stale just as fast. [cancelTimeout] drops it when a new load starts.
+     *
+     * @param context     Context.
+     * @param appWidgetId ID of the widget instance the alarm is set for.
      */
     private fun setTimeout(context: Context, appWidgetId: Int) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -593,6 +719,9 @@ class StopForecastWidget : AppWidgetProvider() {
 
     /**
      * Cancels any pending [ACTION_TIMEOUT] alarm for this widget instance.
+     *
+     * @param context     Context.
+     * @param appWidgetId ID of the widget instance whose alarm is cancelled.
      */
     private fun cancelTimeout(context: Context, appWidgetId: Int) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -607,8 +736,10 @@ class StopForecastWidget : AppWidgetProvider() {
      * [AppWidgetManager.updateAppWidget] call would replace the entire RemoteViews and wipe all [PendingIntent]s, leaving the
      * widget unresponsive to touches.
      *
-     * @param message Optional text to display on the holding screen. If null, the existing string resource default
-     *                ("Tap to load times") is shown.
+     * @param context     Context.
+     * @param appWidgetId ID of the widget instance being updated.
+     * @param message     Optional text to display on the holding screen. If null, the existing string resource default
+     *                    ("Tap to load times") is shown.
      */
     private fun showHoldingScreen(context: Context, appWidgetId: Int, message: CharSequence? = null) {
         val views = RemoteViews(context.packageName, R.layout.stop_forecast_widget)
@@ -627,6 +758,19 @@ class StopForecastWidget : AppWidgetProvider() {
 
         /* Under the time a broadcast held open by goAsync is allowed to run for. */
         private const val FETCH_TIMEOUT_MS = 8000L
+
+        /*
+         * Delay period before fetching a stop forecast. Used to avoid spamming the Luas API as a user clicks the next/previous stop
+         * arrows. Commonly known as a "debounce". Long enough to step past a stop without fetching for it, short enough not to feel
+         * like an app lag.
+         */
+        private const val STOP_CHANGE_DEBOUNCE_MS = 750L
+
+        /*
+         * The fetch each widget is waiting on, so that a later tap can cancel an earlier one. Static because every broadcast gets
+         * a new receiver instance, which cannot see the job the previous tap started.
+         */
+        private val pendingFetches = ConcurrentHashMap<Int, Job>()
 
         /*
          * Two rows per direction. The rows are weighted, so asking for these at a height that does not really fit them makes them
