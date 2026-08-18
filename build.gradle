@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         // Gradle
-        classpath 'com.android.tools.build:gradle:9.1.0'
+        classpath 'com.android.tools.build:gradle:9.3.1'
 
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -18,21 +18,11 @@ buildscript {
     }
 }
 
-plugins {
-    id "org.sonarqube" version "2.7"
-}
-
 allprojects {
     ext.versionCode = 184
 
     repositories {
         google()
         mavenCentral()
-    }
-}
-
-sonarqube {
-    properties {
-        property 'sonar.exclusions', "**/src/**/res/values/google_maps_api.xml, **/google-services.json"
     }
 }
