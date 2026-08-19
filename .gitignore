@@ -11,6 +11,7 @@
 google-services.json
 gradle.properties
 manifest-merger-release-report.txt
+mobile/prod
 mobile/release
 mobile/wear2
 mobile/src/debug/res/values/google_maps_api.xml

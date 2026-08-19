@@ -33,6 +33,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okio.IOException
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.api.ApiMethods
 import org.thecosmicfrog.luasataglance.api.ApiProvider
 import org.thecosmicfrog.luasataglance.api.ApiTimes
 import org.thecosmicfrog.luasataglance.util.ResourceProvider
@@ -42,8 +43,20 @@ import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.time.Duration.Companion.milliseconds
 
-class LineViewModel(private val resourceProvider: ResourceProvider) : ViewModel() {
+/**
+ * ViewModel backing a single Luas line.
+ *
+ * @param resourceProvider Resolves strings without the ViewModel holding a Context.
+ * @param apiMethods       Source of stop forecasts. Defaults to the flavour's own provider, and is only ever passed explicitly by
+ *                         tests, which hand in a fake rather than reaching the live API. Resolved once here rather than per
+ *                         request, so the prod flavour builds one Retrofit client instead of one for every reload.
+ */
+class LineViewModel(
+    private val resourceProvider: ResourceProvider,
+    private val apiMethods: ApiMethods = ApiProvider.getApiMethods()
+) : ViewModel() {
 
     private val logTag = LineViewModel::class.java.simpleName
 
@@ -105,7 +118,7 @@ class LineViewModel(private val resourceProvider: ResourceProvider) : ViewModel(
                 _error.value = null
                 _showSnackbarWithTime.value = null
 
-                val response = ApiProvider.getApiMethods().getStopForecast(
+                val response = apiMethods.getStopForecast(
                     action = "times",
                     ver = "3",
                     station = currentStopId
@@ -159,7 +172,7 @@ class LineViewModel(private val resourceProvider: ResourceProvider) : ViewModel(
 
         reloadJob?.cancel()
         reloadJob = viewModelScope.launch {
-            delay(delayMillis)
+            delay(delayMillis.milliseconds)
 
             while (isActive) {
                 loadStopForecast(
@@ -169,7 +182,7 @@ class LineViewModel(private val resourceProvider: ResourceProvider) : ViewModel(
                     shouldShowSnackbar = false
                 )
 
-                delay(intervalMillis)
+                delay(intervalMillis.milliseconds)
             }
         }
     }

@@ -56,10 +56,13 @@ public final class Serializer {
             ByteArrayInputStream b = new ByteArrayInputStream(bytes);
             ObjectInputStream o = new ObjectInputStream(b);
 
+            /* Read before closing. Closed the other way round, every call returned null on a "stream closed" IOException. */
+            Object obj = o.readObject();
+
             o.close();
             b.close();
 
-            return o.readObject();
+            return obj;
         } catch (IOException | ClassNotFoundException e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
         }

@@ -33,6 +33,7 @@ import android.util.Log
 import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
+import androidx.annotation.VisibleForTesting
 import androidx.core.net.toUri
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -597,7 +598,8 @@ class StopForecastWidget : AppWidgetProvider() {
      * @param widgetHeightDp Reported widget height in dp, from [AppWidgetManager.getAppWidgetOptions].
      * @return Total tram row count across both directions (at least 1).
      */
-    private fun calculateMaxTotalTrams(context: Context, widgetHeightDp: Int): Int {
+    @VisibleForTesting
+    internal fun calculateMaxTotalTrams(context: Context, widgetHeightDp: Int): Int {
         val resources = context.resources
         val density = resources.displayMetrics.density
 
@@ -626,16 +628,17 @@ class StopForecastWidget : AppWidgetProvider() {
     /**
      * Divides the available row capacity between the two directions.
      *
-     * Both directions get the same cap, half the total each, so neither is ever shown more rows than the other. Spare capacity is
-     * deliberately not lent to the other direction, since a five-and-two split reads as a bug rather than as a quiet tram stop. The
-     * two returned counts therefore always sum to at most [maxTotalTrams].
+     * Each direction is capped at half the total, and spare rows go unused rather than to the other direction, so neither can
+     * ever show more rows than the other. The two counts add up to [maxTotalTrams] at most, and addFillerRows() pads out the
+     * difference.
      *
      * @param maxTotalTrams Row capacity across both directions.
      * @param inboundSize   Number of rows the inbound direction has to show.
      * @param outboundSize  Number of rows the outbound direction has to show.
      * @return Number of inbound rows to show, paired with the number of outbound rows.
      */
-    private fun splitTramBudget(maxTotalTrams: Int, inboundSize: Int, outboundSize: Int): Pair<Int, Int> {
+    @VisibleForTesting
+    internal fun splitTramBudget(maxTotalTrams: Int, inboundSize: Int, outboundSize: Int): Pair<Int, Int> {
         val perDirection = maxTotalTrams / 2
 
         return minOf(inboundSize, perDirection) to minOf(outboundSize, perDirection)
@@ -776,6 +779,7 @@ class StopForecastWidget : AppWidgetProvider() {
          * Two rows per direction. The rows are weighted, so asking for these at a height that does not really fit them makes them
          * shorter rather than dropping any. A widget too short to read them at all is ruled out by minResizeHeight.
          */
-        private const val MIN_TOTAL_TRAMS = 4
+        @VisibleForTesting
+        internal const val MIN_TOTAL_TRAMS = 4
     }
 }
