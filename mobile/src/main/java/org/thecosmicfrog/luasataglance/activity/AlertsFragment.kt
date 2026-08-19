@@ -21,10 +21,12 @@
 
 package org.thecosmicfrog.luasataglance.activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -58,6 +60,14 @@ class AlertsFragment : Fragment() {
         return rootView
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        /* Flush cookies to disk to ensure luas.ie cookie banner preference is honoured. */
+        CookieManager.getInstance().flush()
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 
@@ -77,6 +87,11 @@ class AlertsFragment : Fragment() {
         val webViewNews = rootView?.findViewById<WebView>(R.id.webview_news)
 
         webViewNews?.settings?.cacheMode = WebSettings.LOAD_NO_CACHE
+
+        /* Required for luas.ie. */
+        webViewNews?.settings?.javaScriptEnabled = true
+        webViewNews?.settings?.domStorageEnabled = true
+        CookieManager.getInstance().setAcceptCookie(true)
 
         webViewNews?.webViewClient = object : WebViewClient() {
             override fun onPageCommitVisible(view: WebView, url: String) {
