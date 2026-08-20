@@ -386,27 +386,7 @@ class StopForecastWidget : AppWidgetProvider() {
             val inboundTrams = stopForecast?.inboundTrams ?: emptyList()
             val outboundTrams = stopForecast?.outboundTrams ?: emptyList()
 
-            /*
-             * A direction with no trams still needs a row to say so, so it asks the budget for one. Counting it here rather than
-             * adding it afterwards is what stops an empty direction pushing the total past what fits when the other direction has a
-             * full forecast.
-             */
-            val (inboundToShow, outboundToShow) = splitTramBudget(
-                maxTotalTrams,
-                if (inboundTrams.isEmpty()) 1 else inboundTrams.size,
-                if (outboundTrams.isEmpty()) 1 else outboundTrams.size
-            )
-
-            /* Order matters. The label has to land between the two sets of rows. */
-            addDirectionRows(context, views, R.id.trams_container, inboundTrams, inboundToShow)
-            views.addView(R.id.trams_container, directionLabelView(context, outboundLabel))
-            addDirectionRows(context, views, R.id.trams_container, outboundTrams, outboundToShow)
-            addFillerRows(
-                context,
-                views,
-                R.id.trams_container,
-                maxTotalTrams - (inboundToShow + outboundToShow)
-            )
+            fillTramsContainer(context, views, maxTotalTrams, inboundTrams, outboundTrams, outboundLabel)
 
             setTimeout(context, appWidgetId)
         } catch (e: CancellationException) {
@@ -509,6 +489,41 @@ class StopForecastWidget : AppWidgetProvider() {
             tramView.setTextViewText(R.id.tram_due_time, tram.dueMinutes)
             parent.addView(containerId, tramView)
         }
+    }
+
+    /**
+     * Fills the tram container with a whole forecast: the inbound rows, the outbound label, the outbound rows, then filler.
+     *
+     * The container always ends up holding exactly [maxTotalTrams] rows plus the one label, whatever the forecast looks like.
+     * The rows are weighted, so LinearLayout divides the container between however many are present. Adding one row fewer than
+     * budgeted stretches every row, and one more clips the last.
+     *
+     * @param context        Context.
+     * @param views          RemoteViews holding the container.
+     * @param maxTotalTrams  Row budget across both directions.
+     * @param inboundTrams   Inbound trams, possibly empty.
+     * @param outboundTrams  Outbound trams, possibly empty.
+     * @param outboundLabel  Text for the label separating the two directions.
+     */
+    @VisibleForTesting
+    internal fun fillTramsContainer(context: Context, views: RemoteViews, maxTotalTrams: Int, inboundTrams: List<Tram>,
+                                    outboundTrams: List<Tram>, outboundLabel: String) {
+        /*
+         * A direction with no trams still needs a row to say so, so it asks the budget for one. Counting it here rather than
+         * adding it afterwards is what stops an empty direction pushing the total past what fits when the other direction has a
+         * full forecast.
+         */
+        val (inboundToShow, outboundToShow) = splitTramBudget(
+            maxTotalTrams,
+            if (inboundTrams.isEmpty()) 1 else inboundTrams.size,
+            if (outboundTrams.isEmpty()) 1 else outboundTrams.size
+        )
+
+        /* Order matters. The label has to land between the two sets of rows. */
+        addDirectionRows(context, views, R.id.trams_container, inboundTrams, inboundToShow)
+        views.addView(R.id.trams_container, directionLabelView(context, outboundLabel))
+        addDirectionRows(context, views, R.id.trams_container, outboundTrams, outboundToShow)
+        addFillerRows(context, views, R.id.trams_container, maxTotalTrams - (inboundToShow + outboundToShow))
     }
 
     /**
