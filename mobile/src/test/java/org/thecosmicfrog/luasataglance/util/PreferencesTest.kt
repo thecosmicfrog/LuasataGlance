@@ -30,7 +30,7 @@ import org.robolectric.RobolectricTestRunner
 import org.thecosmicfrog.luasataglance.R
 
 /**
- * Tests for the shared preferences wrapper.
+ * Tests for [Preferences], the wrapper every shared preference in the app goes through.
  *
  * Every getter repeats its key as a string literal, so a getter and its setter can name different keys and still compile. The
  * round trips catch that. The per-widget keys get more attention, since two widgets on one key means two widgets stuck on the

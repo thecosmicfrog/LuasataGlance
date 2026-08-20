@@ -560,7 +560,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
             )
         )
 
-        /* Draw Polylines from St. Stephen's Green to Bride's Glen. */
+        /* Draw Polylines from St. Stephen's Green to Brides Glen. */
         for (i in 13 until listStopNamesGreenLine.size - 1) {
             googleMap?.addPolyline(
                 PolylineOptions().add(

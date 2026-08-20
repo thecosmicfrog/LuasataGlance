@@ -30,7 +30,7 @@ import org.thecosmicfrog.luasataglance.model.StopForecastStatusDirection
 import org.thecosmicfrog.luasataglance.model.Tram
 
 /**
- * Tests for the parsing of an API response into a [org.thecosmicfrog.luasataglance.model.StopForecast].
+ * Tests for [StopForecastUtil.createStopForecast], which turns a Gson-parsed [ApiTimes] into a StopForecast.
  *
  * Gson fills ApiTimes from whatever the server sent, so trams, status, and message can all come back null, and direction can be
  * a string nobody expected. These tests pass in those shapes.

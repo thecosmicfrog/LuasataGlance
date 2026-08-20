@@ -30,7 +30,7 @@ import org.robolectric.RobolectricTestRunner
 import org.thecosmicfrog.luasataglance.util.Serializer
 
 /**
- * Tests for the per-widget stop list held in internal storage.
+ * Tests for [WidgetStopStore], which reads and writes the stop list belonging to one widget instance.
  *
  * The file format predates the per-instance naming and is on users' devices already, so both the current layout and the fallback
  * to the old shared file are covered here. Getting the fallback wrong either loses an existing widget's configuration or hands it

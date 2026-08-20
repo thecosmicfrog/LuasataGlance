@@ -42,7 +42,7 @@ class StopMapConsistencyTest {
 
     private lateinit var context: Context
 
-    /* The stop lists lead with a "no stop selected" sentinel, which is not a stop and is in none of the maps. */
+    /* The stop lists start with a "None" entry for the picker, which is not a stop and is in none of the maps. */
     private val stopsAll: List<String>
         get() = context.resources.getStringArray(R.array.array_stops_all).drop(1)
 

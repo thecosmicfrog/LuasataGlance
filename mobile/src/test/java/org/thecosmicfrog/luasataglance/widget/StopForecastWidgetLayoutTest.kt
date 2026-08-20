@@ -30,7 +30,7 @@ import org.robolectric.RobolectricTestRunner
 import org.thecosmicfrog.luasataglance.R
 
 /**
- * Tests for the widget's row budget arithmetic.
+ * Tests for calculateMaxTotalTrams() and splitTramBudget() in [StopForecastWidget], which decide how many tram rows are drawn.
  *
  * calculateMaxTotalTrams() can only estimate, since launchers report more height than the widget gets to draw in. As such, these
  * tests check the rules it has to follow rather than an exact row count: always even, never below four, never more than the budget.

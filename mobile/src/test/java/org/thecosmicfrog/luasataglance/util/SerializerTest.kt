@@ -28,7 +28,7 @@ import java.io.ByteArrayInputStream
 import java.io.ObjectInputStream
 
 /**
- * Tests for Java object serialization to internal storage.
+ * Tests for [Serializer], which turns a stop list into the bytes written to internal storage.
  *
  * The favourites and widget_selected_stops files on users' devices are in this format, so changing it needs a migration. These
  * tests pin the format, and check the bytes come back through a plain ObjectInputStream, which is how FavouritesFragment,
