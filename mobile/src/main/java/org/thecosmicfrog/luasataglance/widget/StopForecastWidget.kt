@@ -46,11 +46,11 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.activity.MainActivity
 import org.thecosmicfrog.luasataglance.api.ApiProvider
-import org.thecosmicfrog.luasataglance.model.StopNameIdMap
+import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.model.Tram
+import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil
-import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
@@ -359,7 +359,7 @@ class StopForecastWidget : AppWidgetProvider() {
 
         showShimmer(context, appWidgetManager, appWidgetId, stopName)
 
-        val stopId = StopNameIdMap(Locale.getDefault().toString())[stopName]
+        val stopId = Stops.idForName(context, stopName)
 
         if (stopId == null) {
             Log.e("StopForecastWidget", "Could not find stop ID for stop: $stopName")
@@ -485,7 +485,8 @@ class StopForecastWidget : AppWidgetProvider() {
     private fun addTramViews(context: Context, parent: RemoteViews, containerId: Int, trams: List<Tram>, tramsToDisplay: Int) {
         trams.take(tramsToDisplay).forEach { tram ->
             val tramView = RemoteViews(context.packageName, R.layout.item_tram)
-            tramView.setTextViewText(R.id.tram_destination, tram.destination)
+            /* The API answers in English, so an Irish device needs the same translation the app's own forecast does. */
+            tramView.setTextViewText(R.id.tram_destination, Stops.localiseApiName(context, tram.destination))
             tramView.setTextViewText(R.id.tram_due_time, tram.dueMinutes)
             parent.addView(containerId, tramView)
         }
@@ -669,9 +670,7 @@ class StopForecastWidget : AppWidgetProvider() {
      * @return Inbound label paired with the outbound label.
      */
     private fun directionLabels(context: Context, stopName: String): Pair<String, String> {
-        val redLineStops = context.resources.getStringArray(R.array.array_stops_redline)
-
-        return if (stopName in redLineStops) {
+        return if (Stops.line(Stops.idForName(context, stopName)) == Constant.RED_LINE) {
             context.getString(R.string.eastbound) to context.getString(R.string.westbound)
         } else {
             context.getString(R.string.northbound) to context.getString(R.string.southbound)

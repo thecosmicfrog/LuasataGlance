@@ -35,13 +35,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import org.thecosmicfrog.luasataglance.api.ApiMethods
 import org.thecosmicfrog.luasataglance.api.ApiTimes
 import org.thecosmicfrog.luasataglance.util.MainDispatcherRule
 import org.thecosmicfrog.luasataglance.util.ResourceProvider
 import retrofit2.Response
 import java.io.IOException
-import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -292,9 +292,10 @@ class LineViewModelTest {
     }
 
     @Test
+    @Config(qualifiers = "ga")
     fun `destinations are translated under an Irish locale`() = runTest {
+        /* The API says "Tallaght" whatever language the phone is set to, so LineViewModel translates it. */
         val viewModel = viewModel(FakeApiMethods { Response.success(apiTimes(tram("Tallaght", "Inbound", "3"))) })
-        viewModel.setLocale(Locale.forLanguageTag("ga-IE"))
 
         viewModel.loadStopForecast("Tallaght", "TAL")
         advanceUntilIdle()
@@ -305,12 +306,22 @@ class LineViewModelTest {
     @Test
     fun `destinations are left alone under any other locale`() = runTest {
         val viewModel = viewModel(FakeApiMethods { Response.success(apiTimes(tram("Tallaght", "Inbound", "3"))) })
-        viewModel.setLocale(Locale.forLanguageTag("en-IE"))
 
         viewModel.loadStopForecast("Tallaght", "TAL")
         advanceUntilIdle()
 
         assertThat(viewModel.stopForecastInfo.value!!.first.single().destination).isEqualTo("Tallaght")
+    }
+
+    @Test
+    @Config(qualifiers = "ga")
+    fun `a destination the app does not know is shown as the API sent it`() = runTest {
+        val viewModel = viewModel(FakeApiMethods { Response.success(apiTimes(tram("Not A Stop", "Inbound", "3"))) })
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        assertThat(viewModel.stopForecastInfo.value!!.first.single().destination).isEqualTo("Not A Stop")
     }
 
     @Test
@@ -450,21 +461,19 @@ class LineViewModelTest {
     }
 
     @Test
-    fun `a stop ID can be looked up once the map is built`() {
+    fun `a stop ID can be looked up from the name shown to the user`() {
         val viewModel = viewModel(FakeApiMethods { Response.success(apiTimes()) })
-
-        viewModel.setLocale(Locale.forLanguageTag("en-IE"))
-        viewModel.initStopNameIdMap()
 
         assertThat(viewModel.getStopId("Tallaght")).isEqualTo("TAL")
         assertThat(viewModel.getStopId("Not A Stop")).isNull()
     }
 
     @Test
-    fun `a stop ID lookup before the map is built returns null rather than throwing`() {
+    @Config(qualifiers = "ga")
+    fun `a stop ID can be looked up from the Irish name`() {
         val viewModel = viewModel(FakeApiMethods { Response.success(apiTimes()) })
 
-        assertThat(viewModel.getStopId("Tallaght")).isNull()
+        assertThat(viewModel.getStopId("Tamhlacht")).isEqualTo("TAL")
     }
 
     private fun viewModel(apiMethods: ApiMethods) = LineViewModel(resourceProvider, apiMethods)

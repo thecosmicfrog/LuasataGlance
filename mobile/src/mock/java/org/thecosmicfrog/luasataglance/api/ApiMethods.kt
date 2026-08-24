@@ -21,7 +21,7 @@
 package org.thecosmicfrog.luasataglance.api
 
 import org.thecosmicfrog.luasataglance.model.StopForecastStatus
-import org.thecosmicfrog.luasataglance.model.StopIdLineMap
+import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.model.Tram
 import org.thecosmicfrog.luasataglance.util.Constant
 import retrofit2.Response
@@ -45,7 +45,7 @@ class MockApiMethods : ApiMethods {
         var dueTimeRedLine = Random.nextInt(0, 3)
         var dueTimeGreenLine = Random.nextInt(0, 3)
 
-        val line = StopIdLineMap()[station]
+        val line = Stops.line(station)
 
         /* Generate 8 synthetic inbound trams. */
         repeat(8) {

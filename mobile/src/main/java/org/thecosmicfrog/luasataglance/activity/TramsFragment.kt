@@ -40,13 +40,11 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.adapter.TabsPagerAdapter
-import org.thecosmicfrog.luasataglance.model.StopIdLineMap
-import org.thecosmicfrog.luasataglance.model.StopNameIdMap
+import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.util.AppUtil
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.Settings
-import java.util.Locale
 
 class TramsFragment : Fragment() {
 
@@ -71,16 +69,13 @@ class TramsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         /* Inflate the layout for this Fragment. */
         rootView = inflater.inflate(R.layout.fragment_trams, container, false)
-        val mapStopNameId = StopNameIdMap(Locale.getDefault().toString())
-        val mapStopIdLine = StopIdLineMap()
 
         broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (!isAdded) return
 
                 val stopName = intent?.getStringExtra(Constant.INTENT_EXTRA_STOP_NAME)
-                val stopId = mapStopNameId[stopName]
-                val stopLine = mapStopIdLine[stopId]
+                val stopLine = Stops.line(Stops.idForName(requireContext(), stopName))
 
                 viewPager?.currentItem = when (stopLine) {
                     Constant.RED_LINE -> 0

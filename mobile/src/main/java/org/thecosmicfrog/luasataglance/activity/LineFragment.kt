@@ -61,7 +61,6 @@ import org.thecosmicfrog.luasataglance.util.StopForecastUtil.displayTutorial
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.showSnackbar
 import org.thecosmicfrog.luasataglance.view.SpinnerCardView
 import org.thecosmicfrog.luasataglance.view.StatusCardView
-import java.util.Locale
 
 class LineFragment : Fragment() {
 
@@ -150,9 +149,6 @@ class LineFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.setLocale(Locale.getDefault())
-        viewModel.initStopNameIdMap()
 
         initObservers()
     }
@@ -460,6 +456,9 @@ class LineFragment : Fragment() {
 
     /**
      * Set the current tab and the position of the Spinner.
+     *
+     * @param stopName Stop name as displayed.
+     * @return Whether the stop is on this line, and so whether the Spinner was set rather than the other tab selected.
      */
     private fun setTabAndSpinner(stopName: String?): Boolean {
         val arrayStopsRedLine = resources.getStringArray(resArrayStopsRedLine)

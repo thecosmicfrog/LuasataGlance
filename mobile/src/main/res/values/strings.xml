@@ -181,6 +181,83 @@
     <string name="widget_select_confirm">Confirm</string>
 
     <!--
+        Stop names. Keyed by the API's three-letter stop ID, which is the only stable identifier a stop has. The stop
+        arrays below reference these rather than repeating the names, and Stops.kt holds the matching R.string IDs, so a
+        stop is named in one place per language.
+    -->
+
+    <!-- Red Line -->
+    <string name="stop_tpt">The Point</string>
+    <string name="stop_sdk">Spencer Dock</string>
+    <string name="stop_mys">Mayor Square - NCI</string>
+    <string name="stop_gdk">George\'s Dock</string>
+    <string name="stop_con">Connolly</string>
+    <string name="stop_bus">Busáras</string>
+    <string name="stop_abb">Abbey Street</string>
+    <string name="stop_jer">Jervis</string>
+    <string name="stop_fou">Four Courts</string>
+    <string name="stop_smi">Smithfield</string>
+    <string name="stop_mus">Museum</string>
+    <string name="stop_heu">Heuston</string>
+    <string name="stop_jam">James\'s</string>
+    <string name="stop_fat">Fatima</string>
+    <string name="stop_ria">Rialto</string>
+    <string name="stop_sui">Suir Road</string>
+    <string name="stop_gol">Goldenbridge</string>
+    <string name="stop_dri">Drimnagh</string>
+    <string name="stop_bla">Blackhorse</string>
+    <string name="stop_blu">Bluebell</string>
+    <string name="stop_kyl">Kylemore</string>
+    <string name="stop_red">Red Cow</string>
+    <string name="stop_kin">Kingswood</string>
+    <string name="stop_bel">Belgard</string>
+    <string name="stop_coo">Cookstown</string>
+    <string name="stop_hos">Hospital</string>
+    <string name="stop_tal">Tallaght</string>
+    <string name="stop_fet">Fettercairn</string>
+    <string name="stop_cvn">Cheeverstown</string>
+    <string name="stop_cit">Citywest Campus</string>
+    <string name="stop_for">Fortunestown</string>
+    <string name="stop_sag">Saggart</string>
+
+    <!-- Green Line -->
+    <string name="stop_bro">Broombridge</string>
+    <string name="stop_cab">Cabra</string>
+    <string name="stop_phi">Phibsborough</string>
+    <string name="stop_gra">Grangegorman</string>
+    <string name="stop_brd">Broadstone - DIT</string>
+    <string name="stop_dom">Dominick</string>
+    <string name="stop_par">Parnell</string>
+    <string name="stop_oup">O\'Connell - Upper</string>
+    <string name="stop_ogp">O\'Connell - GPO</string>
+    <string name="stop_mar">Marlborough</string>
+    <string name="stop_wes">Westmoreland</string>
+    <string name="stop_try">Trinity</string>
+    <string name="stop_daw">Dawson</string>
+    <string name="stop_sts">St. Stephen\'s Green</string>
+    <string name="stop_har">Harcourt</string>
+    <string name="stop_cha">Charlemont</string>
+    <string name="stop_ran">Ranelagh</string>
+    <string name="stop_bee">Beechwood</string>
+    <string name="stop_cow">Cowper</string>
+    <string name="stop_mil">Milltown</string>
+    <string name="stop_win">Windy Arbour</string>
+    <string name="stop_dun">Dundrum</string>
+    <string name="stop_bal">Balally</string>
+    <string name="stop_kil">Kilmacud</string>
+    <string name="stop_sti">Stillorgan</string>
+    <string name="stop_san">Sandyford</string>
+    <string name="stop_cpk">Central Park</string>
+    <string name="stop_gle">Glencairn</string>
+    <string name="stop_gal">The Gallops</string>
+    <string name="stop_leo">Leopardstown Valley</string>
+    <string name="stop_baw">Ballyogan Wood</string>
+    <string name="stop_cck">Carrickmines</string>
+    <string name="stop_lau">Laughanstown</string>
+    <string name="stop_che">Cherrywood</string>
+    <string name="stop_bri">Brides Glen</string>
+
+    <!--
         Stop arrays
     -->
     <string-array name="array_lines">
@@ -203,147 +280,147 @@
     </string-array>
 
     <string-array name="array_stops_redline">
-        <item>The Point</item>
-        <item>Spencer Dock</item>
-        <item>Mayor Square - NCI</item>
-        <item>George\'s Dock</item>
-        <item>Connolly</item>
-        <item>Busáras</item>
-        <item>Abbey Street</item>
-        <item>Jervis</item>
-        <item>Four Courts</item>
-        <item>Smithfield</item>
-        <item>Museum</item>
-        <item>Heuston</item>
-        <item>James\'s</item>
-        <item>Fatima</item>
-        <item>Rialto</item>
-        <item>Suir Road</item>
-        <item>Goldenbridge</item>
-        <item>Drimnagh</item>
-        <item>Blackhorse</item>
-        <item>Bluebell</item>
-        <item>Kylemore</item>
-        <item>Red Cow</item>
-        <item>Kingswood</item>
-        <item>Belgard</item>
-        <item>Cookstown</item>
-        <item>Hospital</item>
-        <item>Tallaght</item>
-        <item>Fettercairn</item>
-        <item>Cheeverstown</item>
-        <item>Citywest Campus</item>
-        <item>Fortunestown</item>
-        <item>Saggart</item>
+        <item>@string/stop_tpt</item>
+        <item>@string/stop_sdk</item>
+        <item>@string/stop_mys</item>
+        <item>@string/stop_gdk</item>
+        <item>@string/stop_con</item>
+        <item>@string/stop_bus</item>
+        <item>@string/stop_abb</item>
+        <item>@string/stop_jer</item>
+        <item>@string/stop_fou</item>
+        <item>@string/stop_smi</item>
+        <item>@string/stop_mus</item>
+        <item>@string/stop_heu</item>
+        <item>@string/stop_jam</item>
+        <item>@string/stop_fat</item>
+        <item>@string/stop_ria</item>
+        <item>@string/stop_sui</item>
+        <item>@string/stop_gol</item>
+        <item>@string/stop_dri</item>
+        <item>@string/stop_bla</item>
+        <item>@string/stop_blu</item>
+        <item>@string/stop_kyl</item>
+        <item>@string/stop_red</item>
+        <item>@string/stop_kin</item>
+        <item>@string/stop_bel</item>
+        <item>@string/stop_coo</item>
+        <item>@string/stop_hos</item>
+        <item>@string/stop_tal</item>
+        <item>@string/stop_fet</item>
+        <item>@string/stop_cvn</item>
+        <item>@string/stop_cit</item>
+        <item>@string/stop_for</item>
+        <item>@string/stop_sag</item>
     </string-array>
 
     <string-array name="array_stops_greenline">
-        <item>Broombridge</item>
-        <item>Cabra</item>
-        <item>Phibsborough</item>
-        <item>Grangegorman</item>
-        <item>Broadstone - DIT</item>
-        <item>Dominick</item>
-        <item>Parnell</item>
-        <item>O\'Connell - Upper</item>
-        <item>O\'Connell - GPO</item>
-        <item>Marlborough</item>
-        <item>Westmoreland</item>
-        <item>Trinity</item>
-        <item>Dawson</item>
-        <item>St. Stephen\'s Green</item>
-        <item>Harcourt</item>
-        <item>Charlemont</item>
-        <item>Ranelagh</item>
-        <item>Beechwood</item>
-        <item>Cowper</item>
-        <item>Milltown</item>
-        <item>Windy Arbour</item>
-        <item>Dundrum</item>
-        <item>Balally</item>
-        <item>Kilmacud</item>
-        <item>Stillorgan</item>
-        <item>Sandyford</item>
-        <item>Central Park</item>
-        <item>Glencairn</item>
-        <item>The Gallops</item>
-        <item>Leopardstown Valley</item>
-        <item>Ballyogan Wood</item>
-        <item>Carrickmines</item>
-        <item>Laughanstown</item>
-        <item>Cherrywood</item>
-        <item>Brides Glen</item>
+        <item>@string/stop_bro</item>
+        <item>@string/stop_cab</item>
+        <item>@string/stop_phi</item>
+        <item>@string/stop_gra</item>
+        <item>@string/stop_brd</item>
+        <item>@string/stop_dom</item>
+        <item>@string/stop_par</item>
+        <item>@string/stop_oup</item>
+        <item>@string/stop_ogp</item>
+        <item>@string/stop_mar</item>
+        <item>@string/stop_wes</item>
+        <item>@string/stop_try</item>
+        <item>@string/stop_daw</item>
+        <item>@string/stop_sts</item>
+        <item>@string/stop_har</item>
+        <item>@string/stop_cha</item>
+        <item>@string/stop_ran</item>
+        <item>@string/stop_bee</item>
+        <item>@string/stop_cow</item>
+        <item>@string/stop_mil</item>
+        <item>@string/stop_win</item>
+        <item>@string/stop_dun</item>
+        <item>@string/stop_bal</item>
+        <item>@string/stop_kil</item>
+        <item>@string/stop_sti</item>
+        <item>@string/stop_san</item>
+        <item>@string/stop_cpk</item>
+        <item>@string/stop_gle</item>
+        <item>@string/stop_gal</item>
+        <item>@string/stop_leo</item>
+        <item>@string/stop_baw</item>
+        <item>@string/stop_cck</item>
+        <item>@string/stop_lau</item>
+        <item>@string/stop_che</item>
+        <item>@string/stop_bri</item>
     </string-array>
 
     <string-array name="array_stops_all">
-        <item>None</item>
-        <item>The Point</item>
-        <item>Spencer Dock</item>
-        <item>Mayor Square - NCI</item>
-        <item>George\'s Dock</item>
-        <item>Connolly</item>
-        <item>Busáras</item>
-        <item>Abbey Street</item>
-        <item>Jervis</item>
-        <item>Four Courts</item>
-        <item>Smithfield</item>
-        <item>Museum</item>
-        <item>Heuston</item>
-        <item>James\'s</item>
-        <item>Fatima</item>
-        <item>Rialto</item>
-        <item>Suir Road</item>
-        <item>Goldenbridge</item>
-        <item>Drimnagh</item>
-        <item>Blackhorse</item>
-        <item>Bluebell</item>
-        <item>Kylemore</item>
-        <item>Red Cow</item>
-        <item>Kingswood</item>
-        <item>Belgard</item>
-        <item>Cookstown</item>
-        <item>Hospital</item>
-        <item>Tallaght</item>
-        <item>Fettercairn</item>
-        <item>Cheeverstown</item>
-        <item>Citywest Campus</item>
-        <item>Fortunestown</item>
-        <item>Saggart</item>
-        <item>Broombridge</item>
-        <item>Cabra</item>
-        <item>Phibsborough</item>
-        <item>Grangegorman</item>
-        <item>Broadstone - DIT</item>
-        <item>Dominick</item>
-        <item>Parnell</item>
-        <item>O\'Connell - Upper</item>
-        <item>O\'Connell - GPO</item>
-        <item>Marlborough</item>
-        <item>Westmoreland</item>
-        <item>Trinity</item>
-        <item>Dawson</item>
-        <item>St. Stephen\'s Green</item>
-        <item>Harcourt</item>
-        <item>Charlemont</item>
-        <item>Ranelagh</item>
-        <item>Beechwood</item>
-        <item>Cowper</item>
-        <item>Milltown</item>
-        <item>Windy Arbour</item>
-        <item>Dundrum</item>
-        <item>Balally</item>
-        <item>Kilmacud</item>
-        <item>Stillorgan</item>
-        <item>Sandyford</item>
-        <item>Central Park</item>
-        <item>Glencairn</item>
-        <item>The Gallops</item>
-        <item>Leopardstown Valley</item>
-        <item>Ballyogan Wood</item>
-        <item>Carrickmines</item>
-        <item>Laughanstown</item>
-        <item>Cherrywood</item>
-        <item>Brides Glen</item>
+        <item>@string/none</item>
+        <item>@string/stop_tpt</item>
+        <item>@string/stop_sdk</item>
+        <item>@string/stop_mys</item>
+        <item>@string/stop_gdk</item>
+        <item>@string/stop_con</item>
+        <item>@string/stop_bus</item>
+        <item>@string/stop_abb</item>
+        <item>@string/stop_jer</item>
+        <item>@string/stop_fou</item>
+        <item>@string/stop_smi</item>
+        <item>@string/stop_mus</item>
+        <item>@string/stop_heu</item>
+        <item>@string/stop_jam</item>
+        <item>@string/stop_fat</item>
+        <item>@string/stop_ria</item>
+        <item>@string/stop_sui</item>
+        <item>@string/stop_gol</item>
+        <item>@string/stop_dri</item>
+        <item>@string/stop_bla</item>
+        <item>@string/stop_blu</item>
+        <item>@string/stop_kyl</item>
+        <item>@string/stop_red</item>
+        <item>@string/stop_kin</item>
+        <item>@string/stop_bel</item>
+        <item>@string/stop_coo</item>
+        <item>@string/stop_hos</item>
+        <item>@string/stop_tal</item>
+        <item>@string/stop_fet</item>
+        <item>@string/stop_cvn</item>
+        <item>@string/stop_cit</item>
+        <item>@string/stop_for</item>
+        <item>@string/stop_sag</item>
+        <item>@string/stop_bro</item>
+        <item>@string/stop_cab</item>
+        <item>@string/stop_phi</item>
+        <item>@string/stop_gra</item>
+        <item>@string/stop_brd</item>
+        <item>@string/stop_dom</item>
+        <item>@string/stop_par</item>
+        <item>@string/stop_oup</item>
+        <item>@string/stop_ogp</item>
+        <item>@string/stop_mar</item>
+        <item>@string/stop_wes</item>
+        <item>@string/stop_try</item>
+        <item>@string/stop_daw</item>
+        <item>@string/stop_sts</item>
+        <item>@string/stop_har</item>
+        <item>@string/stop_cha</item>
+        <item>@string/stop_ran</item>
+        <item>@string/stop_bee</item>
+        <item>@string/stop_cow</item>
+        <item>@string/stop_mil</item>
+        <item>@string/stop_win</item>
+        <item>@string/stop_dun</item>
+        <item>@string/stop_bal</item>
+        <item>@string/stop_kil</item>
+        <item>@string/stop_sti</item>
+        <item>@string/stop_san</item>
+        <item>@string/stop_cpk</item>
+        <item>@string/stop_gle</item>
+        <item>@string/stop_gal</item>
+        <item>@string/stop_leo</item>
+        <item>@string/stop_baw</item>
+        <item>@string/stop_cck</item>
+        <item>@string/stop_lau</item>
+        <item>@string/stop_che</item>
+        <item>@string/stop_bri</item>
     </string-array>
 
     <string-array name="array_notifytime_mins">

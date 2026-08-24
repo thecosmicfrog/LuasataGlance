@@ -29,6 +29,8 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.model.Stops
+import org.thecosmicfrog.luasataglance.util.Constant
 
 class FavouritesSelectAdapter(
     private val stops: ArrayList<CharSequence?>,
@@ -83,14 +85,12 @@ class FavouritesSelectAdapter(
      */
     private fun setLineIndicatorColor(holder: ViewHolder, stop: CharSequence) {
         val context = holder.itemView.context
-        val redLineStops = context.resources.getStringArray(R.array.array_stops_redline)
-        val greenLineStops = context.resources.getStringArray(R.array.array_stops_greenline)
 
-        when (stop) {
-            in redLineStops -> {
+        when (Stops.line(Stops.idForName(context, stop.toString()))) {
+            Constant.RED_LINE -> {
                 holder.lineIndicator.setBackgroundColor(context.getColor(R.color.tab_red_line))
             }
-            in greenLineStops -> {
+            Constant.GREEN_LINE -> {
                 holder.lineIndicator.setBackgroundColor(context.getColor(R.color.tab_green_line))
             }
             else -> {

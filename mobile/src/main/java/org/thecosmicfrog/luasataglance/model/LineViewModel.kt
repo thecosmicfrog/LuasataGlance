@@ -60,11 +60,6 @@ class LineViewModel(
 
     private val logTag = LineViewModel::class.java.simpleName
 
-    private val _locale = MutableStateFlow<Locale?>(null)
-    val locale: StateFlow<Locale?> = _locale.asStateFlow()
-
-    private var _mapStopNameId: StopNameIdMap? = null
-
     private val _status = MutableStateFlow<Status?>(null)
     val status: StateFlow<Status?> = _status.asStateFlow()
 
@@ -217,8 +212,6 @@ class LineViewModel(
      * @return A pair of lists containing the processed stop forecast information.
      */
     private fun processStopForecastInfo(stopForecast: StopForecast): Pair<List<StopForecastInfo>, List<StopForecastInfo>> {
-        val gaeilge = "ga"
-        val mapEnglishGaeilge = EnglishGaeilgeMap()
         val listStopForecastInfoInbound = mutableListOf<StopForecastInfo>()
         val listStopForecastInfoOutbound = mutableListOf<StopForecastInfo>()
 
@@ -236,11 +229,11 @@ class LineViewModel(
 
         (stopForecast.inboundTrams + stopForecast.outboundTrams).forEach { tram ->
             tram.dueMinutes?.let { dueMinutes ->
-                val destination = if (_locale.value?.toString()?.startsWith(gaeilge) == true) {
-                    mapEnglishGaeilge[tram.destination]
-                } else {
-                    tram.destination
-                }
+                /*
+                 * The API answers in English whatever language the phone is set to, so "Tallaght" becomes "Tamhlacht" here
+                 * on an Irish device.
+                 */
+                val destination = resourceProvider.localiseApiName(tram.destination)
 
                 val isDue = dueMinutes.equals("DUE", ignoreCase = true)
 
@@ -291,24 +284,9 @@ class LineViewModel(
     }
 
     /**
-     * Set the locale for the view model.
-     * @param locale The locale to set.
-     */
-    fun setLocale(locale: Locale) {
-        _locale.value = locale
-    }
-
-    /**
-     * Initialize the stop name ID map.
-     */
-    fun initStopNameIdMap() {
-        _mapStopNameId = StopNameIdMap(_locale.value?.toString())
-    }
-
-    /**
      * Get the stop ID for the given stop name.
-     * @param stopName The name of the stop.
-     * @return The ID of the stop.
+     * @param stopName The name of the stop, as displayed to the user.
+     * @return The ID of the stop, or null if no stop in this language has that name.
      */
-    fun getStopId(stopName: String?): String? = _mapStopNameId?.get(stopName)
+    fun getStopId(stopName: String?): String? = resourceProvider.stopId(stopName)
 }

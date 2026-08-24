@@ -45,7 +45,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException
-import org.thecosmicfrog.luasataglance.model.StopCoords
+import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -91,8 +91,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
 
         listMarkers = mutableListOf()
 
-        stopCoordsRedLine = StopCoords(Constant.RED_LINE).stopCoords
-        stopCoordsGreenLine = StopCoords(Constant.GREEN_LINE).stopCoords
+        /*
+         * Kept as a parallel array of coordinates rather than read from Stops directly, because drawPolylines walks it by index
+         * with ranges that encode where each line branches.
+         */
+        stopCoordsRedLine = Stops.redLine.map { doubleArrayOf(it.latitude, it.longitude) }.toTypedArray()
+        stopCoordsGreenLine = Stops.greenLine.map { doubleArrayOf(it.latitude, it.longitude) }.toTypedArray()
 
         /* Obtain the SupportMapFragment and get notified when the map is ready to be used. */
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?

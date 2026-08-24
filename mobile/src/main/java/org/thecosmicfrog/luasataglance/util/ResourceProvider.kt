@@ -23,15 +23,44 @@ package org.thecosmicfrog.luasataglance.util
 
 import android.content.Context
 import androidx.annotation.StringRes
+import org.thecosmicfrog.luasataglance.model.Stops
 
 /**
  * A simple wrapper around the Android Context to provide string resources.
  * Required for accessing string resources in ViewModel.
  * https://stackoverflow.com/a/61532615
+ *
+ * @param context Context.
  */
 class ResourceProvider(private val context: Context) {
 
+    /**
+     * The string with the given resource ID.
+     *
+     * @param resId String resource ID.
+     * @return The string.
+     */
     fun getString(@StringRes resId: Int): String {
         return context.getString(resId)
+    }
+
+    /**
+     * Translates a tram destination from the English name the API sends into the language the app is running in.
+     *
+     * @param apiName Destination as it arrived from the API, always English.
+     * @return The translated name, or [apiName] unchanged when the destination is not one of our stops.
+     */
+    fun localiseApiName(apiName: String?): String? {
+        return Stops.localiseApiName(context, apiName)
+    }
+
+    /**
+     * The stop ID for a stop name shown to the user, for example the one picked in the spinner.
+     *
+     * @param stopName Stop name as displayed.
+     * @return The stop ID, or null if no stop in this language has that name.
+     */
+    fun stopId(stopName: String?): String? {
+        return Stops.idForName(context, stopName)
     }
 }

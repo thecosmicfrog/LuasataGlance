@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.model.FavouriteInfo
 import org.thecosmicfrog.luasataglance.model.FavouriteViewHolder
+import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.util.Constant
 
 class FavouriteAdapter(private val listFavouriteInfo: List<FavouriteInfo>):
@@ -84,15 +85,12 @@ class FavouriteAdapter(private val listFavouriteInfo: List<FavouriteInfo>):
         val lineIndicator = holder.itemView.findViewById<View>(R.id.view_line_indicator)
         val context = holder.itemView.context
 
-        val redLineStops = context.resources.getStringArray(R.array.array_stops_redline)
-        val greenLineStops = context.resources.getStringArray(R.array.array_stops_greenline)
-
-        when (favouriteStopName) {
-            in redLineStops -> {
+        when (Stops.line(Stops.idForName(context, favouriteStopName.toString()))) {
+            Constant.RED_LINE -> {
                 lineIndicator.setBackgroundColor(context.getColor(R.color.tab_red_line))
             }
 
-            in greenLineStops -> {
+            Constant.GREEN_LINE -> {
                 lineIndicator.setBackgroundColor(context.getColor(R.color.tab_green_line))
             }
 
