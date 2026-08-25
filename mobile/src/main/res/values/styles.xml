@@ -111,6 +111,9 @@
 
     <style name="LuasAtAGlanceExtendedFloatingActionButton" parent="Widget.Material3.ExtendedFloatingActionButton.Primary">
         <item name="backgroundTint">@color/message_warning</item>
+
+        <item name="android:textColor">@color/text_dark</item>
+        <item name="iconTint">@color/text_dark</item>
     </style>
 
     <style name="LuasAtAGlanceSnackbar" parent="Widget.Material3.Snackbar">
