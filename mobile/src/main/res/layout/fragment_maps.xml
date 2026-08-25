@@ -46,12 +46,27 @@
     <androidx.fragment.app.FragmentContainerView
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:name="org.maplibre.android.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/appbarlayout_map"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:context="org.thecosmicfrog.luasataglance.activity.MainActivity$MapsFragment" />
+        tools:context="org.thecosmicfrog.luasataglance.activity.MapsFragment" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_my_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/content_desc_map_my_location"
+        android:elevation="@dimen/cardview_laag_elevation"
+        android:src="@drawable/ic_my_location"
+        app:backgroundTint="@color/luas_purple"
+        app:layout_constraintBottom_toBottomOf="@id/map"
+        app:layout_constraintEnd_toEndOf="@id/map"
+        app:rippleColor="@android:color/white"
+        app:tint="@android:color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

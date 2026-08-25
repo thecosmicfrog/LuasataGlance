@@ -309,7 +309,7 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
                 .setRationale(R.string.rationale_notifications)
                 .setPositiveButtonText(R.string.rationale_ask_accept)
                 .setNegativeButtonText(R.string.rationale_ask_decline)
-                .setTheme(android.R.style.Theme_Material_Light_Dialog_Alert)
+                .setTheme(R.style.LuasAtAGlanceRationaleDialog)
                 .build()
         )
     }

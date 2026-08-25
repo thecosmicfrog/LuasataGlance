@@ -94,6 +94,17 @@
         <item name="android:windowFrame">@null</item>
     </style>
 
+    <style name="LuasAtAGlanceRationaleDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/text_dark</item>
+        <item name="colorAccent">@color/luas_purple</item>
+        <item name="buttonBarPositiveButtonStyle">@style/LuasAtAGlanceRationaleDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/LuasAtAGlanceRationaleDialogButton</item>
+    </style>
+
+    <style name="LuasAtAGlanceRationaleDialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/luas_purple</item>
+    </style>
+
     <style name="LuasAtAGlanceFloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
         <item name="backgroundTint">@color/message_warning</item>
     </style>

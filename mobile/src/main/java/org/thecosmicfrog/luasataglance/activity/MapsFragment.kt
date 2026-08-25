@@ -22,7 +22,6 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -31,41 +30,56 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import org.maplibre.android.MapLibre
+import org.maplibre.android.annotations.Icon
+import org.maplibre.android.annotations.IconFactory
+import org.maplibre.android.annotations.Marker
+import org.maplibre.android.annotations.MarkerOptions
+import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.geometry.LatLng
+import org.maplibre.android.location.LocationComponentActivationOptions
+import org.maplibre.android.location.modes.CameraMode
+import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.maps.Style
+import org.maplibre.android.maps.SupportMapFragment
+import org.maplibre.android.style.expressions.Expression
+import org.maplibre.android.style.layers.LineLayer
+import org.maplibre.android.style.layers.Property
+import org.maplibre.android.style.layers.PropertyFactory
+import org.maplibre.android.style.sources.GeoJsonSource
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.databinding.FragmentMapsBinding
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException
 import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
+import org.thecosmicfrog.luasataglance.util.StopForecastUtil
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import pub.devrel.easypermissions.PermissionRequest
+import java.net.URI
 
-class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionCallbacks,
-    EasyPermissions.RationaleCallbacks {
+class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
 
     private val logTag = MapsFragment::class.java.simpleName
     private val permissionsLocation = Manifest.permission.ACCESS_FINE_LOCATION
-    private var rootView: View? = null
-    private var map: GoogleMap? = null
+    private var binding: FragmentMapsBinding? = null
+    private var map: MapLibreMap? = null
 
-    private lateinit var stopCoordsRedLine: Array<DoubleArray>
-    private lateinit var stopCoordsGreenLine: Array<DoubleArray>
     private lateinit var listMarkers: MutableList<Marker>
 
     companion object {
         const val requestCodeLocation = 101
+
+        private const val SOURCE_TRACKS = "luas-tracks"
+        private const val MARKER_LAYER = "org.maplibre.annotations.points"
+        private const val LINE_WIDTH = 4.0f
+        private const val MY_LOCATION_ZOOM = 14.0
 
         fun newInstance(): Fragment {
             val mapsFragment = MapsFragment()
@@ -77,30 +91,34 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        rootView = inflater.inflate(R.layout.fragment_maps, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        return rootView
+        MapLibre.getInstance(requireContext())
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentMapsBinding.inflate(inflater, container, false)
 
-        if (!isAdded) return
+        return binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         listMarkers = mutableListOf()
 
-        /*
-         * Kept as a parallel array of coordinates rather than read from Stops directly, because drawPolylines walks it by index
-         * with ranges that encode where each line branches.
-         */
-        stopCoordsRedLine = Stops.redLine.map { doubleArrayOf(it.latitude, it.longitude) }.toTypedArray()
-        stopCoordsGreenLine = Stops.greenLine.map { doubleArrayOf(it.latitude, it.longitude) }.toTypedArray()
+        binding?.fabMyLocation?.setOnClickListener { jumpToMyLocation() }
 
-        /* Obtain the SupportMapFragment and get notified when the map is ready to be used. */
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(this)
+
+        mapFragment?.getMapAsync { mapLibreMap ->
+            map = mapLibreMap
+
+            mapLibreMap.setStyle(getString(R.string.map_style_url)) { style ->
+                onStyleLoaded(mapLibreMap, style)
+            }
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -108,65 +126,40 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
 
         if (isVisibleToUser) {
             if (!Preferences.permissionLocationShouldNotAskAgain(context)) {
-                EasyPermissions.requestPermissions(
-                    PermissionRequest.Builder(
-                            this,
-                            requestCodeLocation,
-                            permissionsLocation
-                        ).setRationale(
-                            R.string.rationale_location
-                        ).setPositiveButtonText(
-                            R.string.rationale_ask_accept
-                        ).setNegativeButtonText(
-                            R.string.rationale_ask_decline
-                        ).setTheme(
-                            android.R.style.Theme_Material_Light_Dialog_Alert
-                        ).build()
-                )
+                requestLocationPermission()
             }
         }
     }
 
     /**
-     * @param googleMap GoogleMap.
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     * Draws everything on to the map once its style is loaded.
+     *
+     * @param mapLibreMap The map.
+     * @param style       The loaded style, which the location component needs.
      */
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-
-        initCustomInfoWindow()
+    private fun onStyleLoaded(mapLibreMap: MapLibreMap, style: Style) {
+        initCustomInfoWindow(mapLibreMap)
 
         setMyLocationEnabled()
 
         /* Set the default Camera position and zoom. */
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(53.34167328, -6.265131), 12.0f))
-
-        val stopNamesRedLine = resources.getStringArray(R.array.array_stops_redline)
-        val stopNamesGreenLine = resources.getStringArray(R.array.array_stops_greenline)
-
-        val listStopNamesRedLine = stopNamesRedLine.toMutableList()
-        val listStopNamesGreenLine = stopNamesGreenLine.toMutableList()
-
-        /* Compile a List of all stops. */
-        val listStopNamesAll = mutableListOf<String>()
-        listStopNamesAll.addAll(listStopNamesRedLine)
-        listStopNamesAll.addAll(listStopNamesGreenLine)
+        mapLibreMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(53.34167328, -6.265131), 12.0))
 
         /* Draw map markers. */
-        drawMarkers(listStopNamesRedLine, listStopNamesGreenLine)
+        drawMarkers(mapLibreMap)
 
-        /* Draw Polylines between Markers. */
-        drawPolylines(googleMap, listStopNamesRedLine, listStopNamesGreenLine)
+        drawLines(style)
 
-        /*
-         * When a user taps on a stop's info window, it should open the appropriate stop forecast.
-         */
-        map?.setOnInfoWindowClickListener { marker ->
+        /* Centre camera on marker when tapped. */
+        mapLibreMap.setOnMarkerClickListener { marker ->
+            mapLibreMap.animateCamera(CameraUpdateFactory.newLatLng(marker.position))
+
+            /* False, so MapLibre still opens the info window. Tapping the window opens the stop forecast. */
+            false
+        }
+
+        /* When a user taps on a stop's info window, it should open the appropriate stop forecast. */
+        mapLibreMap.setOnInfoWindowClickListener { marker ->
             context?.let { ctx ->
                 val localBroadcastManager = LocalBroadcastManager.getInstance(ctx)
 
@@ -175,20 +168,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
 
                 localBroadcastManager.sendBroadcast(intent)
             }
+
+            /* False, so MapLibre closes the info window. The broadcast above opens the stop forecast. */
+            false
         }
 
         /*
          * Move the Camera to the position of the stop that this Activity was opened from.
          * Also, open the Marker's info window.
          */
-        if (activity?.intent?.hasExtra(Constant.STOP_NAME) as Boolean) {
+        if (activity?.intent?.hasExtra(Constant.STOP_NAME) == true) {
             try {
-                val marker =
-                    findStopMarker(activity?.intent?.getStringExtra(Constant.STOP_NAME) as String)
+                val marker = findStopMarker(activity?.intent?.getStringExtra(Constant.STOP_NAME) as String)
 
-                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 14.0f))
+                mapLibreMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 13.0))
 
-                marker.showInfoWindow()
+                mapLibreMap.selectMarker(marker)
             } catch (e: StopMarkerNotFoundException) {
                 Log.e(logTag, Log.getStackTraceString(e))
             }
@@ -228,30 +223,101 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
     }
 
     /**
-     * Enable "my location" feature in Google Maps dialog.
+     * Switch on MapLibre's "blue dot".
      */
     @AfterPermissionGranted(requestCodeLocation)
     private fun setMyLocationEnabled() {
-        if (EasyPermissions.hasPermissions(context as Context, permissionsLocation)) {
-            try {
-                if (Preferences.permissionLocationGranted(context)) {
-                    Log.i(logTag, "Enabling user's location.")
+        val mapLibreMap = map ?: return
 
-                    map?.isMyLocationEnabled = true
+        /* EasyPermissions calls this again once the user grants permission, which can be before the style has loaded. */
+        val style = mapLibreMap.style ?: return
+
+        if (!EasyPermissions.hasPermissions(requireContext(), permissionsLocation)) {
+            return
+        }
+
+        try {
+            Log.i(logTag, "Enabling user's location.")
+
+            mapLibreMap.locationComponent.apply {
+                /* The "My Location" button calls this too, so guard against activating twice. */
+                if (!isLocationComponentActivated) {
+                    activateLocationComponent(
+                        LocationComponentActivationOptions.builder(requireContext(), style).build()
+                    )
                 }
-            } catch (e: SecurityException) {
-                Log.w(logTag, "Location permission not granted.")
-            } catch (e: Exception) {
-                Log.e(logTag, "Unknown error occurred while setting user's location.")
-                Log.e(logTag, e.stackTrace.toString())
+
+                isLocationComponentEnabled = true
+
+                /* NONE, so showing the position does not drag the camera away from where the user left it. */
+                cameraMode = CameraMode.NONE
             }
+        } catch (_: SecurityException) {
+            Log.w(logTag, "Location permission not granted.")
+        } catch (e: Exception) {
+            Log.e(logTag, "Unknown error occurred while setting user's location.")
+            Log.e(logTag, e.stackTrace.toString())
         }
     }
 
     /**
+     * Ask for location permission, showing the rationale dialog first.
+     */
+    private fun requestLocationPermission() {
+        EasyPermissions.requestPermissions(
+            PermissionRequest.Builder(
+                    this,
+                    requestCodeLocation,
+                    permissionsLocation
+                ).setRationale(
+                    R.string.rationale_location
+                ).setPositiveButtonText(
+                    R.string.rationale_ask_accept
+                ).setNegativeButtonText(
+                    R.string.rationale_ask_decline
+                ).setTheme(
+                    R.style.LuasAtAGlanceRationaleDialog
+                ).build()
+        )
+    }
+
+    /**
+     * Move the camera to where the user is.
+     */
+    private fun jumpToMyLocation() {
+        /* An explicit tap outranks the prompt shown on first view, so ask again even after a refusal. */
+        if (!EasyPermissions.hasPermissions(requireContext(), permissionsLocation)) {
+            requestLocationPermission()
+
+            return
+        }
+
+        val mapLibreMap = map ?: return
+
+        /* Permission may have just been granted, so switch the blue dot on before reading a position. */
+        setMyLocationEnabled()
+
+        val location = mapLibreMap.locationComponent.let {
+            if (it.isLocationComponentActivated) it.lastKnownLocation else null
+        }
+
+        if (location == null) {
+            /* No location yet, so there is nowhere to move to. */
+            activity?.let { StopForecastUtil.showSnackbar(it, getString(R.string.map_location_unavailable)) }
+
+            return
+        }
+
+        mapLibreMap.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), MY_LOCATION_ZOOM)
+        )
+    }
+
+    /**
      * Check if all permissions have been granted.
+     *
      * @param grantResults Grant results.
-     * @return All permissioned granted or not.
+     * @return All permissions granted or not.
      */
     private fun hasAllPermissionsGranted(grantResults: IntArray) : Boolean {
         for (grantResult in grantResults) {
@@ -264,324 +330,81 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
     }
 
     /**
-     * Draw markers for each stop.
-     * @param listStopNamesRedLine List of Red Line stop names.
-     * @param listStopNamesGreenLine List of Green Line stop names.
+     * Build a marker icon from a vector drawable.
+     *
+     * @param drawableRes The pin drawable.
+     * @return Icon for a Marker.
      */
-    private fun drawMarkers(listStopNamesRedLine: List<String>,
-                            listStopNamesGreenLine: List<String>) {
-        for (i in listStopNamesRedLine.indices) {
-            val latLng = LatLng(stopCoordsRedLine[i][0], stopCoordsRedLine[i][1])
-            
+    private fun markerIcon(@DrawableRes drawableRes: Int): Icon {
+        val drawable = requireNotNull(ContextCompat.getDrawable(requireContext(), drawableRes))
+
+        return IconFactory.getInstance(requireContext()).fromBitmap(drawable.toBitmap())
+    }
+
+    /**
+     * Draw markers for each stop.
+     *
+     * @param mapLibreMap Map on which to draw Markers.
+     */
+    private fun drawMarkers(mapLibreMap: MapLibreMap) {
+        val icons = mapOf(
+            Constant.RED_LINE to markerIcon(R.drawable.ic_map_marker_red_line),
+            Constant.GREEN_LINE to markerIcon(R.drawable.ic_map_marker_green_line)
+        )
+
+        for (stop in Stops.all) {
             val markerOptions =
                 MarkerOptions()
-                    .position(latLng)
-                    .title(listStopNamesRedLine[i])
-                    .icon(
-                        BitmapDescriptorFactory.defaultMarker(
-                            BitmapDescriptorFactory.HUE_RED
-                        )
-                    )
-            
-            val marker = map?.addMarker(markerOptions)
-            
-            listMarkers.add(marker as Marker)
-        }
+                    .position(LatLng(stop.latitude, stop.longitude))
+                    .title(getString(stop.nameRes))
+                    /* The snippet is never drawn. It carries the stop ID so the info window does not have to match on name. */
+                    .snippet(stop.id)
+                    .icon(icons.getValue(stop.line))
 
-        for (i in listStopNamesGreenLine.indices) {
-            val latLng = LatLng(stopCoordsGreenLine[i][0], stopCoordsGreenLine[i][1])
-
-            val markerOptions =
-                MarkerOptions()
-                    .position(latLng)
-                    .title(listStopNamesGreenLine[i])
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-
-            val marker = map?.addMarker(markerOptions)
-
-            listMarkers.add(marker as Marker)
+            listMarkers.add(mapLibreMap.addMarker(markerOptions))
         }
     }
 
     /**
-     * Draw lines between stops.
-     * This is done very manually for now.
-     * @param googleMap GoogleMap model on which to draw Polylines.
-     * @param listStopNamesRedLine List of Red Line stop names.
-     * @param listStopNamesGreenLine List of Green Line stop names.
+     * Draw the two Luas lines from the track geometry in assets.
+     *
+     * The coordinates are the tram tracks, from the OpenStreetMap route relations, rebuilt by `tools/generate_luas_tracks.py`.
+     *
+     * @param style The loaded style, which owns the source and both layers.
      */
-    private fun drawPolylines(googleMap: GoogleMap?, listStopNamesRedLine: List<String>,
-                              listStopNamesGreenLine: List<String>) {
-        /* Draw Polylines from The Point to George's Dock. */
-        for (i in 0..2) {
-            googleMap?.addPolyline(
-                PolylineOptions().add(
-                    LatLng(stopCoordsRedLine[i][0], stopCoordsRedLine[i][1]),
-                    LatLng(stopCoordsRedLine[i + 1][0], stopCoordsRedLine[i + 1][1])
-                ).width(12.0f).color(
-                    ContextCompat.getColor(context as Context, R.color.tab_red_line)
+    private fun drawLines(style: Style) {
+        style.addSource(GeoJsonSource(SOURCE_TRACKS, URI("asset://luas_tracks.geojson")))
+
+        val lineColours = listOf("red" to R.color.tab_red_line, "green" to R.color.tab_green_line)
+
+        for ((line, colourRes) in lineColours) {
+            val layer = LineLayer("$SOURCE_TRACKS-$line", SOURCE_TRACKS)
+                .withFilter(Expression.eq(Expression.get("line"), Expression.literal(line)))
+                .withProperties(
+                    PropertyFactory.lineColor(ContextCompat.getColor(requireContext(), colourRes)),
+                    PropertyFactory.lineWidth(LINE_WIDTH),
+                    /* The file holds hundreds of short ways rather than one path per line, so square ends show as notches. */
+                    PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                    PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND)
                 )
-            )
-        }
 
-        /* Draw Polyline from George's Dock to Busáras. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34952800, -6.24757500),
-                LatLng(53.35011668, -6.25158298)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_red_line)
-            )
-        )
+            /*
+             * addLayer puts a layer above every existing one, including the markers. Below MARKER_LAYER keeps the pins and the
+             * location dot clear of the track.
+             */
+            if (style.getLayer(MARKER_LAYER) != null) {
+                style.addLayerBelow(layer, MARKER_LAYER)
+            } else {
+                Log.w(logTag, "$MARKER_LAYER is missing, so the tracks will cover the markers.")
 
-        /* Draw Polylines from Connolly to Tallaght. */
-        for (i in 4..25) {
-            googleMap?.addPolyline(
-                PolylineOptions().add(
-                    LatLng(stopCoordsRedLine[i][0], stopCoordsRedLine[i][1]),
-                    LatLng(stopCoordsRedLine[i + 1][0], stopCoordsRedLine[i + 1][1])
-                ).width(12.0f).color(
-                    ContextCompat.getColor(context as Context, R.color.tab_red_line)
-                )
-            )
-        }
-
-        /* Draw Polyline from Belgard to Fettercairn. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.29929352, -6.37505436),
-                LatLng(53.29336849, -6.39591122)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_red_line)
-            )
-        )
-
-        /* Draw Polylines from Fettercairn to Saggart. */
-        for (i in 27 until listStopNamesRedLine.size - 1) {
-            googleMap?.addPolyline(
-                PolylineOptions().add(
-                    LatLng(stopCoordsRedLine[i][0], stopCoordsRedLine[i][1]),
-                    LatLng(stopCoordsRedLine[i + 1][0], stopCoordsRedLine[i + 1][1])
-                ).width(12.0f).color(
-                    ContextCompat.getColor(context as Context, R.color.tab_red_line)
-                )
-            )
-        }
-
-        /* Draw Polylines from Broombridge to Parnell. */
-        for (i in 0..5) {
-            googleMap?.addPolyline(
-                PolylineOptions().add(
-                    LatLng(stopCoordsGreenLine[i][0], stopCoordsGreenLine[i][1]),
-                    LatLng(
-                        stopCoordsGreenLine[i + 1][0],
-                        stopCoordsGreenLine[i + 1][1]
-                    )
-                ).width(12.0f).color(
-                    ContextCompat.getColor(context as Context, R.color.tab_green_line)
-                )
-            )
-        }
-
-        /* Draw Polylines from Parnell to Marlborough. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(stopCoordsGreenLine[6][0], stopCoordsGreenLine[6][1]),
-                LatLng(stopCoordsGreenLine[9][0], stopCoordsGreenLine[9][1])
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-
-        /* Draw Polyline from Marlborough to the corner of Hawkins Street and College Street. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(stopCoordsGreenLine[9][0], stopCoordsGreenLine[9][1]),
-                LatLng(53.34575198, -6.25701415)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-
-        /* Draw Polyline from the corner of Hawkins Street and College Street to Trinity. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34575198, -6.25701415),
-                LatLng(stopCoordsGreenLine[11][0], stopCoordsGreenLine[11][1])
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-
-        /*
-         * Draw Polylines around College Green, Grafton Street and Nassau Street, up to Dawson
-         * Street.
-         */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(stopCoordsGreenLine[11][0], stopCoordsGreenLine[11][1]),
-                LatLng(53.34495296, -6.25920819)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34495296, -6.25920819),
-                LatLng(53.34442293, -6.25948714)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34442293, -6.25948714),
-                LatLng(53.34398738, -6.25921892)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34398738, -6.25921892),
-                LatLng(53.34334845, -6.25924306)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34334845, -6.25924306),
-                LatLng(53.34318512, -6.25905799)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34318512, -6.25905799),
-                LatLng(53.34293531, -6.25772225)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34293531, -6.25772225),
-                LatLng(stopCoordsGreenLine[12][0], stopCoordsGreenLine[12][1])
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-
-        /* Draw Polylines from Dawson to the end of Dawson Street. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(stopCoordsGreenLine[12][0], stopCoordsGreenLine[12][1]),
-                LatLng(53.33950349, -6.25881123)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-
-        /* Draw Polylines from the end of Dawson Street to St. Stephen's Green. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.33950349, -6.25881123),
-                LatLng(53.33952431, -6.25876563)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.33952431, -6.25876563),
-                LatLng(53.33987183, -6.26049566)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.33987183, -6.26049566),
-                LatLng(53.33975012, -6.26091944)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.33975012, -6.26091944),
-                LatLng(stopCoordsGreenLine[13][0], stopCoordsGreenLine[13][1])
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-
-        /* Draw Polylines from Trinity to Westmoreland. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(stopCoordsGreenLine[11][0], stopCoordsGreenLine[11][1]),
-                LatLng(53.34532925, -6.25917064)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34532925, -6.25917064),
-                LatLng(stopCoordsGreenLine[10][0], stopCoordsGreenLine[10][1])
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-
-        /* Draw Polylines from Westmoreland to O'Connell Street Stops. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(stopCoordsGreenLine[10][0], stopCoordsGreenLine[10][1]),
-                LatLng(53.34693688, -6.25911700)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(53.34693688, -6.25911700),
-                LatLng(stopCoordsGreenLine[7][0], stopCoordsGreenLine[7][1])
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-
-        /* Draw Polyline from O'Connell - Upper to Parnell Street and close the loop. */
-        googleMap?.addPolyline(
-            PolylineOptions().add(
-                LatLng(stopCoordsGreenLine[7][0], stopCoordsGreenLine[7][1]),
-                LatLng(53.352594325768045, -6.261551109496622)
-            ).width(12.0f).color(
-                ContextCompat.getColor(context as Context, R.color.tab_green_line)
-            )
-        )
-
-        /* Draw Polylines from St. Stephen's Green to Brides Glen. */
-        for (i in 13 until listStopNamesGreenLine.size - 1) {
-            googleMap?.addPolyline(
-                PolylineOptions().add(
-                    LatLng(stopCoordsGreenLine[i][0], stopCoordsGreenLine[i][1]),
-                    LatLng(
-                        stopCoordsGreenLine[i + 1][0],
-                        stopCoordsGreenLine[i + 1][1]
-                    )
-                ).width(12.0f).color(
-                    ContextCompat.getColor(context as Context, R.color.tab_green_line)
-                )
-            )
+                style.addLayer(layer)
+            }
         }
     }
 
     /**
      * Find the Marker corresponding to a specific stop.
+     *
      * @param stopName Name of stop to find corresponding marker for.
      * @return Marker for specified stop name.
      */
@@ -600,54 +423,47 @@ class MapsFragment : Fragment(), OnMapReadyCallback, EasyPermissions.PermissionC
 
     /**
      * Initialise the custom info window for the map.
+     *
+     * @param mapLibreMap Map whose info windows to render.
      */
-    private fun initCustomInfoWindow() {
-        map?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
-            override fun getInfoWindow(marker: Marker): View? {
-                val view = layoutInflater.inflate(R.layout.infowindow_maps, null)
+    private fun initCustomInfoWindow(mapLibreMap: MapLibreMap) {
+        mapLibreMap.setInfoWindowAdapter { marker ->
+            val view = layoutInflater.inflate(R.layout.infowindow_maps, null)
 
-                view.findViewById<TextView>(R.id.title).text = marker.title
-                setMapInfoWindowLineIndicator(view, marker.title)
+            view.findViewById<TextView>(R.id.title).text = marker.title
+            setMapInfoWindowLineIndicator(view, marker.snippet)
 
-                return view
-            }
-
-            override fun getInfoContents(marker: Marker): View? {
-                return null
-            }
-        })
+            view
+        }
     }
 
     /**
-     * Set an aesthetically-pleasing indicator colour for map info windows based on the stop name.
-     * @param view The info window view containing the line indicator.
-     * @param stopName The name of the stop.
+     * Set an aesthetically-pleasing indicator colour for map info windows based on the stop.
+     *
+     * @param view   The info window view containing the line indicator.
+     * @param stopId The stop ID carried in the Marker's snippet.
      */
-    private fun setMapInfoWindowLineIndicator(view: View, stopName: String?) {
+    private fun setMapInfoWindowLineIndicator(view: View, stopId: String?) {
         val lineIndicator = view.findViewById<View>(R.id.view_line_indicator)
         val backgroundDrawable = lineIndicator.background
 
-        val redLineStops = resources.getStringArray(R.array.array_stops_redline)
-        val greenLineStops = resources.getStringArray(R.array.array_stops_greenline)
-
-        when (stopName) {
-            in redLineStops -> {
-                backgroundDrawable.setTint(
-                    ContextCompat.getColor(requireContext(), R.color.tab_red_line)
-                )
-            }
-            in greenLineStops -> {
-                backgroundDrawable.setTint(
-                    ContextCompat.getColor(requireContext(), R.color.tab_green_line)
-                )
-            }
+        val colorRes = when (Stops.line(stopId)) {
+            Constant.RED_LINE -> R.color.tab_red_line
+            Constant.GREEN_LINE -> R.color.tab_green_line
             else -> {
-                backgroundDrawable.setTint(
-                    ContextCompat.getColor(requireContext(), android.R.color.transparent)
-                )
-                Log.wtf("MapInfoWindow", "Stop name not found in red or green line arrays.")
+                Log.wtf("MapInfoWindow", "Stop ID on neither the Red nor the Green Line: $stopId")
+
+                android.R.color.transparent
             }
         }
+
+        backgroundDrawable.setTint(ContextCompat.getColor(requireContext(), colorRes))
+    }
+
+    override fun onDestroyView() {
+        map = null
+        binding = null
+
+        super.onDestroyView()
     }
 }
-

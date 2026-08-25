@@ -108,7 +108,7 @@ object WidgetStopStore {
                     return (objectInput.readObject() as? List<CharSequence>)?.map { it.toString() }
                 }
             }
-        } catch (e: FileNotFoundException) {
+        } catch (_: FileNotFoundException) {
             /* Expected. load() tries the per-instance file before falling back to the legacy one. */
             return null
         } catch (e: Exception) {

@@ -96,6 +96,10 @@
     <string name="about_license"><u>GNU General Public License (GPLv3)</u></string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
+    <string name="about_title_map_data">Map data</string>
+    <string name="about_map_data">Map tiles and Luas track geometry are copyright OpenStreetMap contributors, licensed under the
+        Open Database License (ODbL) 1.0.</string>
+    <string name="about_map_data_url" translatable="false">openstreetmap.org/copyright</string>
     <string name="about_title_privacypolicy">Privacy Policy</string>
     <string name="about_privacypolicy" translatable="false">luasataglance.thecosmicfrog.org/privacy"
     </string>
@@ -112,6 +116,7 @@
     <string name="content_desc_bottomnav_map">Luas Map button</string>
     <string name="content_desc_map_close">Close Luas Map</string>
     <string name="content_desc_map_chevron">Open this stop</string>
+    <string name="content_desc_map_my_location">Show my location</string>
     <string name="content_desc_tabbar_menu">Settings menu</string>
     <string name="content_desc_widget_next_stop">Next stop</string>
     <string name="content_desc_widget_prev_stop">Previous stop</string>
@@ -125,6 +130,12 @@
         in the bottom-right corner of this screen to start adding your most frequently-used Luas stops.
     </string>
     <string name="favourites_save_selected">Save selected</string>
+
+    <!--
+        Map
+    -->
+    <string name="map_style_url" translatable="false">https://tiles.openfreemap.org/styles/bright</string>
+    <string name="map_location_unavailable">Your location is not available yet.</string>
 
     <!--
         Notification

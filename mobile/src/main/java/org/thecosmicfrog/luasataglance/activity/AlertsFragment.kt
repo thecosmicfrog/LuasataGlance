@@ -67,6 +67,25 @@ class AlertsFragment : Fragment() {
         CookieManager.getInstance().flush()
     }
 
+    override fun onDestroyView() {
+        rootView?.findViewById<WebView>(R.id.webview_news)?.let { webViewNews ->
+            /* Detach before destroying, or Android logs a warning about destroying a WebView that is still in a hierarchy. */
+            (webViewNews.parent as? ViewGroup)?.removeView(webViewNews)
+
+            webViewNews.stopLoading()
+
+            /* luas.ie runs JavaScript, and about:blank drops it rather than leaving it running into destroy(). */
+            webViewNews.loadUrl("about:blank")
+
+            webViewNews.removeAllViews()
+            webViewNews.destroy()
+        }
+
+        rootView = null
+
+        super.onDestroyView()
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)

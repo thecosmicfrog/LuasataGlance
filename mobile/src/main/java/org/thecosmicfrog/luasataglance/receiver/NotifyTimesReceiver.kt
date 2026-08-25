@@ -147,7 +147,7 @@ class NotifyTimesReceiver : BroadcastReceiver() {
             )
 
             return true
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             Log.w(logTag, "Failed to schedule exact alarm.")
             Toast.makeText(
                 context,

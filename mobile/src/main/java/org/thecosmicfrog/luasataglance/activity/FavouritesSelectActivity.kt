@@ -47,7 +47,7 @@ class FavouritesSelectActivity : StopSelectActivity() {
                     (objectInput.readObject() as? List<CharSequence>) ?: emptyList()
                 }
             }
-        } catch (e: FileNotFoundException) {
+        } catch (_: FileNotFoundException) {
             Log.i(logTag, "Favourites file doesn't exist.")
             emptyList()
         } catch (e: ClassNotFoundException) {

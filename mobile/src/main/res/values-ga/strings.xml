@@ -98,6 +98,9 @@
         speisialta
     </string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
+    <string name="about_title_map_data">Sonraí léarscáile</string>
+    <string name="about_map_data">Is cóipcheart iad tíleanna léarscáile agus geoiméadracht rianta Luas le rannpháirtithe
+        OpenStreetMap, ceadúnaithe faoin gCeadúnas Bunachar Sonraí Oscailte (ODbL) 1.0.</string>
     <string name="about_title_privacypolicy">Beartas Príobháideachais</string>
     <string name="about_developed_by">Cruthaithe ag Aaron Hastings (thecosmicfrog)</string>
     <string name="about_irish_translations">Aistriúcháin Gaeilge le Feidhlim Seoighe agus Marcas Ó
@@ -112,6 +115,7 @@
     <string name="content_desc_bottomnav_map">Cnaipe Léarscáil</string>
     <string name="content_desc_map_close">Cnaipe dún léarscáil</string>
     <string name="content_desc_map_chevron">Oscail an stad seo</string>
+    <string name="content_desc_map_my_location">Taispeáin mo shuíomh</string>
     <string name="content_desc_tabbar_menu">Roghchlár socruithe</string>
     <string name="content_desc_widget_next_stop">An chéad stad eile</string>
     <string name="content_desc_widget_prev_stop">An stad roimhe seo</string>
@@ -124,6 +128,11 @@
     <string name="favourites_none_selected">Tosóimis!\n\nBrú an cnap <b>Athraigh</b> ar chúinne an
         scáileáin chun cuir le do liosta de stadanna Luas a úsáideann tú go minic.</string>
     <string name="favourites_save_selected">Sábháil</string>
+
+    <!--
+        Map
+    -->
+    <string name="map_location_unavailable">Níl do shuíomh ar fáil fós.</string>
 
     <!--
         Notification
