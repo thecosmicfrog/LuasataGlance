@@ -48,6 +48,15 @@ android {
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            /*
+             * MapLibre ships libmaplibre.so for four ABIs. No consumer devices are x86, so the release keeps only the ARM copies to
+             * reduce APK size. Debug still ships x86, so the emulator keeps working.
+             */
+            ndk {
+                //noinspection ChromeOsAbiSupport
+                abiFilters 'armeabi-v7a', 'arm64-v8a'
+            }
         }
     }
 
