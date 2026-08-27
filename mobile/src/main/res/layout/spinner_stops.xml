@@ -24,6 +24,6 @@
     android:id="@+id/spinner_stops"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@android:color/transparent"
     android:textSize="24sp"
     android:padding="12dp" />

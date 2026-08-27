@@ -19,17 +19,12 @@
 -->
 
 <!--
-    The outbound direction label, added into trams_container at runtime so that it sits between the two sets of tram rows. It
-    deliberately has no layout_weight, so the weighted tram rows divide the space that is left after this label has taken its fixed
-    height.
+    The icon of a bottom navigation item, set as `itemIconTint` in `activity_main.xml`.
 -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textview_direction"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/widget_direction_label_height"
-    android:background="@color/background_widget_accent"
-    android:gravity="center"
-    android:maxLines="1"
-    android:textColor="@color/text_on_widget_accent"
-    android:textSize="@dimen/widget_direction_label_text_size"
-    android:textStyle="bold" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:color="@color/text_on_accent"
+        android:state_checked="true" />
+
+    <item android:color="@color/text_on_bars" />
+</selector>

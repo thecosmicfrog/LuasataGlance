@@ -84,7 +84,7 @@ class StopForecastWidgetLayoutTest {
     }
 
     @Test
-    fun `row count matches the chrome and slack the layout reserves`() {
+    fun `row count matches the header, labels, and slack the layout reserves`() {
         val resources = context.resources
         val density = resources.displayMetrics.density
 
@@ -92,10 +92,10 @@ class StopForecastWidgetLayoutTest {
         val headerHeightDp = (resources.getDimension(R.dimen.widget_header_height) / density).toInt()
         val labelHeightDp = (resources.getDimension(R.dimen.widget_direction_label_height) / density).toInt()
         val slackDp = (resources.getDimension(R.dimen.widget_reported_height_slack) / density).toInt()
-        val chromeHeightDp = headerHeightDp + (labelHeightDp * 2)
+        val headerAndLabelsDp = headerHeightDp + (labelHeightDp * 2)
 
         heightsDp.forEach { height ->
-            val rows = (height - chromeHeightDp - slackDp) / tramItemHeightDp
+            val rows = (height - headerAndLabelsDp - slackDp) / tramItemHeightDp
             val expected = (rows - (rows % 2)).coerceAtLeast(StopForecastWidget.MIN_TOTAL_TRAMS)
 
             assertThat(widget.calculateMaxTotalTrams(context, height)).isEqualTo(expected)
@@ -167,10 +167,10 @@ class StopForecastWidgetLayoutTest {
 
         val headerHeightDp = (resources.getDimension(R.dimen.widget_header_height) / density).toInt()
         val labelHeightDp = (resources.getDimension(R.dimen.widget_direction_label_height) / density).toInt()
-        val chromeHeightDp = headerHeightDp + (labelHeightDp * 2)
+        val headerAndLabelsDp = headerHeightDp + (labelHeightDp * 2)
 
         val rows = widget.calculateMaxTotalTrams(context, MIN_RESIZE_HEIGHT_DP)
-        val heightPerRowDp = (MIN_RESIZE_HEIGHT_DP - chromeHeightDp) / rows
+        val heightPerRowDp = (MIN_RESIZE_HEIGHT_DP - headerAndLabelsDp) / rows
 
         assertThat(rows).isEqualTo(StopForecastWidget.MIN_TOTAL_TRAMS)
         assertThat(heightPerRowDp).isAtLeast(LEGIBLE_ROW_HEIGHT_DP)

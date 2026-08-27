@@ -36,8 +36,8 @@
             android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/message_success"
-            android:textColor="@android:color/white"
+            android:background="@color/status_fill_success"
+            android:textColor="@color/status_text_success"
             android:gravity="center_horizontal"
             android:paddingVertical="3dp" />
 
@@ -45,7 +45,7 @@
             android:id="@+id/textview_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="@color/background_card"
             android:ellipsize="none"
             android:gravity="center_horizontal"
             android:maxLines="30"

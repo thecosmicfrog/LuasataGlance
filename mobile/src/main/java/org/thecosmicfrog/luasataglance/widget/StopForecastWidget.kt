@@ -620,21 +620,16 @@ class StopForecastWidget : AppWidgetProvider() {
         val density = resources.displayMetrics.density
 
         val tramItemHeightDp = (resources.getDimension(R.dimen.widget_tram_item_height) / density).toInt()
-
-        /*
-         * The chrome is the header plus both direction labels. Those views are pinned to these same dimens in the layout, so this
-         * sum stays correct at any system font size.
-         */
         val headerHeightDp = (resources.getDimension(R.dimen.widget_header_height) / density).toInt()
         val labelHeightDp = (resources.getDimension(R.dimen.widget_direction_label_height) / density).toInt()
-        val chromeHeightDp = headerHeightDp + (labelHeightDp * 2)
+        val headerAndLabelsDp = headerHeightDp + (labelHeightDp * 2)
         val slackDp = (resources.getDimension(R.dimen.widget_reported_height_slack) / density).toInt()
 
         if (tramItemHeightDp == 0) {
             return 1
         }
 
-        val availableHeight = widgetHeightDp - chromeHeightDp - slackDp
+        val availableHeight = widgetHeightDp - headerAndLabelsDp - slackDp
         val rows = availableHeight / tramItemHeightDp
 
         /* An odd row is dropped rather than given to one direction, which would look lopsided. */

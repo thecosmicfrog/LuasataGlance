@@ -67,7 +67,8 @@ class MainActivity : AppCompatActivity() {
 
             ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
                 val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-                view.updatePadding(top = insets.top, bottom = insets.bottom)
+                view.updatePadding(top = insets.top)
+                binding.bottomnavigationview.updatePadding(bottom = insets.bottom)
                 WindowInsetsCompat.CONSUMED
             }
 
@@ -75,8 +76,8 @@ class MainActivity : AppCompatActivity() {
         } else {
             WindowCompat.setDecorFitsSystemWindows(window, true)
 
-            window.statusBarColor = resources.getColor(R.color.luas_purple_statusbar)
-            window.navigationBarColor = resources.getColor(R.color.luas_purple_statusbar)
+            window.statusBarColor = resources.getColor(R.color.background_status_bar)
+            window.navigationBarColor = resources.getColor(R.color.background_navbar)
         }
 
         setContentView(binding.root)

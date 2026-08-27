@@ -21,7 +21,7 @@
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textColor="?android:attr/textColorPrimary" />
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/tram_due_time"
@@ -29,6 +29,6 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textColor="?android:attr/textColorPrimary" />
+        android:textColor="@color/on_surface" />
 
 </LinearLayout>

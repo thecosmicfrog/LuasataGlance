@@ -27,7 +27,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES
@@ -39,7 +38,6 @@ import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -110,13 +108,6 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
                 R.layout.spinner_notify_time
             ).apply {
                 setDropDownViewResource(R.layout.spinner_notify_time)
-            }
-
-            background = background.constantState?.newDrawable()?.apply {
-                setColorFilter(
-                    ContextCompat.getColor(context, R.color.luas_purple),
-                    PorterDuff.Mode.SRC_ATOP
-                )
             }
         }
     }

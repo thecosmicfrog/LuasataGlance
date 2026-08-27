@@ -14,6 +14,6 @@
         android:right="6dp"
         android:top="6dp" />
 
-    <solid android:color="@android:color/white" />
+    <solid android:color="@color/background_popup" />
 </shape>
 

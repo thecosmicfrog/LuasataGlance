@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2015-2026 Aaron Hastings
+
+    This file is part of Luas at a Glance.
+
+    Luas at a Glance is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Luas at a Glance is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<resources>
+    <!-- Material3's baseline dark surfaces. `background_screen` sits behind `background_card`. -->
+    <color name="background_screen">#ff141218</color>
+    <color name="background_card">#ff211F26</color>
+    <color name="background_dialog">#ff1D1B20</color>
+
+    <!-- Spinner drop-downs float above a card, so they are a step lighter than the card. -->
+    <color name="background_popup">#ff2B2930</color>
+
+    <color name="background_appbar">#ff141218</color>
+    <color name="background_navbar">#ff211F26</color>
+    <color name="background_direction_group">#ff1D1B20</color>
+    <color name="background_status_bar">#ff141218</color>
+
+    <color name="background_accent">@color/icon_accent</color>
+    <color name="background_navbar_indicator">@color/icon_accent</color>
+    <color name="text_on_accent">#ff381E72</color>
+
+    <color name="on_surface">#ffE6E0E9</color>
+    <color name="on_surface_variant">#ffCAC4D0</color>
+
+    <color name="icon_accent">#ffD0BCFF</color>
+
+    <color name="shimmer_gradient_start">#ff3A383F</color>
+    <color name="shimmer_gradient_end">#ff2B2930</color>
+
+    <!-- Matches `on_surface`, since the bars this sits on are dark surfaces. -->
+    <color name="text_on_bars">#ffE6E0E9</color>
+
+    <color name="text_direction_header">#ffD0BCFF</color>
+
+    <color name="status_fill_success">#ff10361C</color>
+    <color name="status_fill_error">#ff4A1210</color>
+    <color name="status_text_success">#ff7BD98F</color>
+    <color name="status_text_error">#ffFF9E99</color>
+
+    <!-- Softened slightly. -->
+    <color name="tab_red_line">#ffE86A66</color>
+    <color name="tab_green_line">#ff4FA96A</color>
+
+    <!-- The outline and centre of a map stop marker. -->
+    <color name="map_marker_detail">#ff141218</color>
+</resources>

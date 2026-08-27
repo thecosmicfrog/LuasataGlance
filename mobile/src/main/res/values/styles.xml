@@ -19,20 +19,29 @@
 -->
 
 <resources>
-    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:textColor">@color/text_dark</item>
+    <!--
+        Every parent here is a DayNight variant.
+    -->
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Where Material's own components read text colour. -->
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
 
-        <!-- Disable Material 3 dynamic colours. -->
-        <item name="colorPrimary">@android:color/white</item>
-        <item name="colorSurface">@android:color/white</item>
+        <!-- Material's own `textColorPrimary` ignores `colorOnSurface`, so these are needed too. -->
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_variant</item>
+        <item name="android:textColorTertiary">@color/on_surface_variant</item>
 
-        <!-- Change general colour accent to the Luas shade of purple. -->
-        <item name="colorAccent">@color/luas_purple</item>
+        <!-- Also cancels Material3's elevation tint, so a card is exactly `background_card`. -->
+        <item name="colorPrimary">@color/background_card</item>
+        <item name="colorSurface">@color/background_card</item>
+
+        <!-- The permission dialog's buttons take their colour from here. -->
+        <item name="colorAccent">@color/icon_accent</item>
 
         <!-- Hack to change SettingsActivity toolbar color and back button to white. -->
         <item name="toolbarStyle">@style/toolbar_settings</item>
-        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlNormal">@color/text_on_bars</item>
 
         <item name="floatingActionButtonStyle">
             @style/LuasAtAGlanceFloatingActionButton
@@ -43,10 +52,11 @@
         </item>
 
         <item name="snackbarStyle">@style/LuasAtAGlanceSnackbar</item>
+        <item name="snackbarTextViewStyle">@style/LuasAtAGlanceSnackbarTextView</item>
     </style>
 
     <style name="toolbar_settings" parent="@style/Widget.AppCompat.Toolbar">
-        <item name="titleTextColor">@android:color/white</item>
+        <item name="titleTextColor">@color/text_on_bars</item>
     </style>
 
     <style name="LuasAtAGlanceTabLayout" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
@@ -54,8 +64,19 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="LuasAtAGlancePopupDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <!-- Keep the AppCompat parent. A Material3 one turns AboutActivity's links white on white. -->
+    <style name="LuasAtAGlancePopupDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:windowBackground">@drawable/popup_dialog_background</item>
+    </style>
+
+    <!--
+        MaterialCardView will not inflate under AppCompat. Applied whole rather than as a
+        `ThemeOverlay`, so text in those four layouts has to name its own colour.
+    -->
+    <style name="LuasAtAGlanceDialogContent" parent="Theme.MaterialComponents.DayNight.Bridge">
+        <!-- The Bridge theme's own dark greys are neutral, not purple-tinted. No-ops in light mode. -->
+        <item name="colorSurface">@color/background_card</item>
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -66,8 +87,8 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="LuasAtAGlanceActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/luas_purple</item>
-        <item name="background">@color/luas_purple</item>
+        <item name="android:background">@color/background_appbar</item>
+        <item name="background">@color/background_appbar</item>
     </style>
 
     <!-- "Pointer" at bottom of custom Google Maps info window. -->
@@ -84,54 +105,58 @@
     </style>
 
     <style name="LuasAtAGlanceBottomNavigationBarActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@color/luas_purple_light</item>
+        <item name="android:color">@color/background_navbar_indicator</item>
     </style>
 
-    <style name="LuasAtAGlancePermissionsRequestDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">#FFFFFF</item>
-        <item name="android:textColorPrimary">#000000</item>
-        <item name="android:textColorSecondary">#000000</item>
+    <style name="LuasAtAGlancePermissionsRequestDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:background">@color/background_card</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_variant</item>
         <item name="android:windowFrame">@null</item>
     </style>
 
-    <style name="LuasAtAGlanceRationaleDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:textColorPrimary">@color/text_dark</item>
-        <item name="colorAccent">@color/luas_purple</item>
+    <style name="LuasAtAGlanceRationaleDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="colorAccent">@color/icon_accent</item>
         <item name="buttonBarPositiveButtonStyle">@style/LuasAtAGlanceRationaleDialogButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/LuasAtAGlanceRationaleDialogButton</item>
     </style>
 
     <style name="LuasAtAGlanceRationaleDialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/luas_purple</item>
+        <item name="android:textColor">@color/icon_accent</item>
     </style>
 
+    <!-- The save button on Select Favourites is the exception, tinted green by `StopSelectActivity`. -->
     <style name="LuasAtAGlanceFloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
-        <item name="backgroundTint">@color/message_warning</item>
+        <item name="backgroundTint">@color/background_accent</item>
     </style>
 
     <style name="LuasAtAGlanceExtendedFloatingActionButton" parent="Widget.Material3.ExtendedFloatingActionButton.Primary">
-        <item name="backgroundTint">@color/message_warning</item>
+        <item name="backgroundTint">@color/background_accent</item>
 
-        <item name="android:textColor">@color/text_dark</item>
-        <item name="iconTint">@color/text_dark</item>
+        <item name="android:textColor">@color/text_on_accent</item>
+        <item name="iconTint">@color/text_on_accent</item>
     </style>
 
     <style name="LuasAtAGlanceSnackbar" parent="Widget.Material3.Snackbar">
-        <item name="backgroundTint">@color/luas_purple</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="backgroundTint">@color/background_accent</item>
         <item name="shapeAppearance">@style/LuasAtAGlanceSnackbarShapeAppearance</item>
+    </style>
+
+    <!-- `android:textColor` on the Snackbar style does nothing. Material reads this instead. -->
+    <style name="LuasAtAGlanceSnackbarTextView" parent="Widget.Material3.Snackbar.TextView">
+        <item name="android:textColor">@color/text_on_accent</item>
     </style>
 
     <style name="LuasAtAGlanceSnackbarShapeAppearance" parent="ShapeAppearance.Material3.Corner.Medium">
         <item name="cornerSize">@dimen/cardview_laag_corner_radius</item>
     </style>
 
-    <style name="LuasAtAGlancePreferenceDialogStyle" parent="Theme.Material3.Light.Dialog.Alert">
+    <style name="LuasAtAGlancePreferenceDialogStyle" parent="Theme.Material3.DayNight.Dialog.Alert">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="dialogCornerRadius">@dimen/cardview_laag_corner_radius</item>
-        <item name="android:textColor">@color/text_dark</item>
-        <item name="colorAccent">@color/luas_purple</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="colorAccent">@color/icon_accent</item>
     </style>
 </resources>
-

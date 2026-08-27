@@ -8,6 +8,6 @@
         android:bottomRightRadius="@dimen/cardview_laag_corner_radius"
         android:bottomLeftRadius="@dimen/cardview_laag_corner_radius" />
 
-    <solid android:color="@color/luas_purple" />
+    <solid android:color="@color/background_accent" />
 </shape>
 

@@ -33,6 +33,8 @@ import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
 import org.thecosmicfrog.luasataglance.R
 
 
@@ -106,6 +108,11 @@ class AlertsFragment : Fragment() {
         val webViewNews = rootView?.findViewById<WebView>(R.id.webview_news)
 
         webViewNews?.settings?.cacheMode = WebSettings.LOAD_NO_CACHE
+
+        /* luas.ie serves one light stylesheet and no dark variant, so WebView inverts it itself. */
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+            webViewNews?.settings?.let { WebSettingsCompat.setAlgorithmicDarkeningAllowed(it, true) }
+        }
 
         /* Required for luas.ie. */
         webViewNews?.settings?.javaScriptEnabled = true

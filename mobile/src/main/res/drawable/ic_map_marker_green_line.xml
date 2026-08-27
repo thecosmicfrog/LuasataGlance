@@ -31,11 +31,11 @@
     <path
         android:pathData="M12,2C8.13,2 5,5.13 5,9c0,5.25 7,13 7,13s7,-7.75 7,-13c0,-3.87 -3.13,-7 -7,-7z"
         android:fillColor="@color/tab_green_line"
-        android:strokeColor="@android:color/white"
+        android:strokeColor="@color/map_marker_detail"
         android:strokeWidth="1.0" />
     <path
         android:pathData="M12,11.5c-1.38,0 -2.5,-1.12 -2.5,-2.5s1.12,-2.5 2.5,-2.5 2.5,1.12 2.5,2.5 -1.12,2.5 -2.5,2.5z"
-        android:fillColor="@android:color/white"
-        android:strokeColor="@android:color/white"
+        android:fillColor="@color/map_marker_detail"
+        android:strokeColor="@color/map_marker_detail"
         android:strokeWidth="1.0" />
 </vector>

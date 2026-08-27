@@ -24,7 +24,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/background_screen"
     tools:context="org.thecosmicfrog.luasataglance.activity.StopSelectActivity">
 
     <LinearLayout
@@ -35,7 +35,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/luas_purple"
+            android:background="@color/background_appbar"
             android:fitsSystemWindows="true"
             app:elevation="0dp">
 
@@ -65,9 +65,9 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:icon="@drawable/ic_done"
-        app:iconTint="@android:color/white"
+        app:iconTint="@color/text_on_bars"
         app:iconGravity="end"
-        android:textColor="@android:color/white"
-        app:tint="@android:color/white"
-        app:rippleColor="@android:color/white" />
+        android:textColor="@color/text_on_bars"
+        app:tint="@color/text_on_bars"
+        app:rippleColor="@color/text_on_bars" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

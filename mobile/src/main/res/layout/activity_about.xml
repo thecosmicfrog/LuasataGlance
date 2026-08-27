@@ -20,7 +20,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:theme="@style/Theme.MaterialComponents.Light.Bridge"
+    android:theme="@style/LuasAtAGlanceDialogContent"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -49,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/app_name"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/on_surface"
                     android:layout_toStartOf="@id/imageview_about_laag_logo"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true" />
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_title_version"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/on_surface"
                 android:textStyle="bold"
                 android:paddingTop="8dp" />
 
@@ -76,13 +76,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/version_name"
-                android:textColor="@color/text_dark" />
+                android:textColor="@color/on_surface" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_title_description"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/on_surface"
                 android:textStyle="bold"
                 android:paddingTop="8dp" />
 
@@ -90,13 +90,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_description"
-                android:textColor="@color/text_dark" />
+                android:textColor="@color/on_surface" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_title_license"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/on_surface"
                 android:textStyle="bold"
                 android:paddingTop="8dp" />
 
@@ -111,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_title_source_bugs_features"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/on_surface"
                 android:textStyle="bold"
                 android:paddingTop="8dp" />
 
@@ -120,14 +120,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_source_bugs_features"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/on_surface"
                 android:autoLink="web" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_title_map_data"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/on_surface"
                 android:textStyle="bold"
                 android:paddingTop="8dp" />
 
@@ -135,7 +135,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_map_data"
-                android:textColor="@color/text_dark" />
+                android:textColor="@color/on_surface" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -148,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_title_privacypolicy"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/on_surface"
                 android:textStyle="bold"
                 android:paddingTop="8dp" />
 
@@ -163,7 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_developed_by"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/on_surface"
                 android:textStyle="bold"
                 android:paddingTop="16dp" />
 
@@ -171,7 +171,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_irish_translations"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/on_surface"
                 android:textStyle="bold"
                 android:paddingTop="8dp" />
         </LinearLayout>

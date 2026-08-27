@@ -421,7 +421,7 @@ class LineFragment : Fragment() {
         /* Set up Status CardView. */
         statusCardView = viewBinding?.statuscardview!!
 
-        /* Set up SwipeRefreshLayout. */
+        /* Spinner colours come from LaagSwipeRefreshLayout. */
         swipeRefreshLayout = viewBinding?.swiperefreshlayout!!
         swipeRefreshLayout?.setOnRefreshListener {
             viewModel.loadStopForecast(
@@ -537,9 +537,12 @@ class LineFragment : Fragment() {
             viewModel.status.collect { status ->
                 status?.let { (message, isError) ->
                     statusCardView?.setStatus(message)
-                    statusCardView?.setStatusColor(
-                        if (isError) R.color.message_error else R.color.message_success
-                    )
+
+                    if (isError) {
+                        statusCardView?.setStatusColor(R.color.status_fill_error, R.color.status_text_error)
+                    } else {
+                        statusCardView?.setStatusColor(R.color.status_fill_success, R.color.status_text_success)
+                    }
                 }
             }
         }
@@ -611,7 +614,7 @@ class LineFragment : Fragment() {
         if (!isAdded) return
 
         statusCardView?.setStatus(getString(R.string.message_error))
-        statusCardView?.setStatusColor(R.color.message_error)
+        statusCardView?.setStatusColor(R.color.status_fill_error, R.color.status_text_error)
 
         StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
     }

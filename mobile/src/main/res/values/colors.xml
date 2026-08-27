@@ -20,16 +20,59 @@
 
 <resources>
     <color name="luas_purple">#ff4d3475</color>
-    <color name="luas_purple_light">#664A9D</color>
     <color name="luas_purple_statusbar">#ff3f2a5f</color>
     <color name="message_success">#ff006600</color>
-    <color name="message_warning">#ED8C00</color>
     <color name="message_error">#ffe00000</color>
-    <color name="off_white">#ffefefef</color>
-    <color name="shimmer_gradient_start">#ffcacaca</color>
-    <color name="shimmer_gradient_end">#ff787878</color>
     <color name="tab_red_line">#ffff4d4d</color>
     <color name="tab_green_line">#ff33ad5C</color>
-    <color name="text_dark">#ff3C4043</color>
+
+    <!--
+        `background_navbar` also paints the strip behind the gesture handle. `background_status_bar`
+        reaches the screen only below API 34.
+    -->
+    <color name="background_appbar">@color/luas_purple</color>
+    <color name="background_navbar">@color/luas_purple</color>
+    <color name="background_direction_group">@color/luas_purple</color>
+    <color name="background_status_bar">@color/luas_purple_statusbar</color>
+
+    <!--
+        Every button, the Snackbar, and the navigation pill.
+    -->
+    <color name="background_accent">@color/luas_purple</color>
+    <color name="background_navbar_indicator">#664A9D</color>
+    <color name="text_on_accent">@color/text_on_bars</color>
+
+    <color name="background_widget_accent">@color/luas_purple</color>
+    <color name="text_on_widget_accent">#ffffffff</color>
+
+    <!-- The outline and centre of a map stop marker. -->
+    <color name="map_marker_detail">#ffffffff</color>
+
+    <color name="background_screen">#ffefefef</color>
+    <color name="background_card">#ffffffff</color>
+
+    <color name="background_popup">#ffffffff</color>
+    <color name="background_dialog">#ffefefef</color>
+
+    <color name="on_surface">#ff3C4043</color>
+    <color name="on_surface_variant">#ff3C4043</color>
     <color name="text_link">#ff80cbc4</color>
+
+    <!-- Toolbar titles, the two line tabs, and the bottom navigation labels. -->
+    <color name="text_on_bars">#ffffffff</color>
+
+    <!-- The Inbound and Outbound headings. -->
+    <color name="text_direction_header">#ffffffff</color>
+
+    <!-- The Status card's title band. `message_*` also tints the save button on Select Favourites. -->
+    <color name="status_fill_success">@color/message_success</color>
+    <color name="status_fill_error">@color/message_error</color>
+    <color name="status_text_success">#ffffffff</color>
+    <color name="status_text_error">#ffffffff</color>
+
+    <!-- The stop spinners' drop-down arrow, tinted by `LaagSpinner`. -->
+    <color name="icon_accent">@color/luas_purple</color>
+
+    <color name="shimmer_gradient_start">#ffcacaca</color>
+    <color name="shimmer_gradient_end">#ff787878</color>
 </resources>

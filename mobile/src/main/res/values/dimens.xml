@@ -35,9 +35,9 @@
     <dimen name="widget_tram_item_height">28dp</dimen>
 
     <!--
-        Fixed heights for the widget's chrome. calculateMaxTotalTrams sums these to work out how much room is left for tram rows, so
-        the corresponding views must use these dimens rather than wrap_content. Left to wrap, a large system font size grows the
-        chrome, the sum understates it, and too many rows are requested.
+        Fixed heights for the widget's header and direction labels. calculateMaxTotalTrams sums these to work out how much room
+        is left for tram rows, so the corresponding views must use these dimens rather than wrap_content. Left to wrap, a large
+        system font size grows them, the sum understates them, and too many rows are requested.
     -->
     <dimen name="widget_header_height">40dp</dimen>
     <dimen name="widget_direction_label_height">20dp</dimen>

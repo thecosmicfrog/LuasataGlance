@@ -113,7 +113,7 @@
             app:cardCornerRadius="@dimen/cardview_laag_corner_radius" />
     </LinearLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <org.thecosmicfrog.luasataglance.view.LaagSwipeRefreshLayout
         android:id="@+id/greenline_swiperefreshlayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -149,5 +149,5 @@
                     android:layout_marginBottom="64dp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </org.thecosmicfrog.luasataglance.view.LaagSwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

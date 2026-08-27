@@ -25,7 +25,7 @@
     android:id="@+id/constraintlayout_favourites"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/off_white"
+    android:background="@color/background_screen"
 
     tools:context="org.thecosmicfrog.luasataglance.activity.FavouritesFragment">
 
@@ -33,7 +33,7 @@
         android:id="@+id/appbarlayout_favourites"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/luas_purple"
+        android:background="@color/background_appbar"
         android:fitsSystemWindows="true"
         app:elevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
         android:paddingRight="12dp"
         android:paddingBottom="12dp"
         android:text="@string/favourites_none_selected"
-        android:textColor="@color/text_dark"
+        android:textColor="@color/on_surface"
         android:textSize="22sp"
         android:visibility="gone"
         tools:visibility="visible"
@@ -94,6 +94,6 @@
         app:iconGravity="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:rippleColor="@android:color/white" />
+        app:rippleColor="@color/text_on_accent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

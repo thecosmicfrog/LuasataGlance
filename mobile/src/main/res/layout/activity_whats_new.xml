@@ -20,7 +20,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:theme="@style/Theme.MaterialComponents.Light.Bridge"
+    android:theme="@style/LuasAtAGlanceDialogContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:elevation="@dimen/cardview_laag_elevation"
@@ -30,14 +30,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/background_card"
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="@color/background_card"
             android:orientation="horizontal">
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/imageview_whats_new_laag_logo"
                 android:text="@string/title_activity_whats_new"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/on_surface" />
 
             <ImageView
                 android:id="@+id/imageview_whats_new_laag_logo"
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="12dp"
                     android:text="@string/whatsnew_title_current"
-                    android:textColor="@color/text_dark"
+                    android:textColor="@color/on_surface"
                     android:textStyle="bold" />
 
                 <TextView
@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="8dp"
                     android:text="@string/whatsnew_content_current"
-                    android:textColor="@color/text_dark" />
+                    android:textColor="@color/on_surface" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

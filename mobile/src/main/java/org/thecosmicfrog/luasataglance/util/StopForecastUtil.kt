@@ -23,10 +23,8 @@ package org.thecosmicfrog.luasataglance.util
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -195,20 +193,7 @@ object StopForecastUtil {
             activity.findViewById(android.R.id.content),
             message,
             Snackbar.LENGTH_LONG
-        ).setAnchorView(bottomNavigationBar).setTextColor(Color.WHITE).show()
-    }
-
-    /**
-     * Extension function to set Snackbar text color.
-     * @param color Color to set Snackbar text to.
-     * @return Snackbar.
-     */
-    fun Snackbar.setTextColor(color: Int): Snackbar {
-        val textViewSnackBar =
-            view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        textViewSnackBar.setTextColor(color)
-
-        return this
+        ).setAnchorView(bottomNavigationBar).show()
     }
 }
 

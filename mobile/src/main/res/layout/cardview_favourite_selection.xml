@@ -51,7 +51,7 @@
             android:paddingBottom="1.5dp"
             android:paddingStart="2dp"
             android:paddingEnd="2dp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/on_surface"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/checkbox_stop"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackground"
-            app:buttonTint="@color/luas_purple"
+            app:buttonTint="@color/icon_accent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

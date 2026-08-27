@@ -29,7 +29,7 @@
         android:id="@+id/appbarlayout_map"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/luas_purple"
+        android:background="@color/background_appbar"
         android:fitsSystemWindows="true"
         app:elevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,9 +64,9 @@
         android:contentDescription="@string/content_desc_map_my_location"
         android:elevation="@dimen/cardview_laag_elevation"
         android:src="@drawable/ic_my_location"
-        app:backgroundTint="@color/luas_purple"
+        app:backgroundTint="@color/background_accent"
         app:layout_constraintBottom_toBottomOf="@id/map"
         app:layout_constraintEnd_toEndOf="@id/map"
-        app:rippleColor="@android:color/white"
-        app:tint="@android:color/white" />
+        app:rippleColor="@color/text_on_accent"
+        app:tint="@color/text_on_accent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

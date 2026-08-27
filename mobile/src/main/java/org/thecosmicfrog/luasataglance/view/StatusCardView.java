@@ -25,6 +25,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import androidx.annotation.ColorRes;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.card.MaterialCardView;
 
 import org.thecosmicfrog.luasataglance.R;
@@ -56,6 +59,7 @@ public class StatusCardView extends MaterialCardView {
 
     /**
      * Initialise custom View.
+     *
      * @param context Context.
      */
     public void init(Context context) {
@@ -73,7 +77,14 @@ public class StatusCardView extends MaterialCardView {
         textViewStatus.setText(status);
     }
 
-    public void setStatusColor(int color) {
-        textViewStatusTitle.setBackgroundResource(color);
+    /**
+     * Colour the title band.
+     *
+     * @param fillColor Background colour resource for the band.
+     * @param textColor Text colour resource for the title.
+     */
+    public void setStatusColor(@ColorRes int fillColor, @ColorRes int textColor) {
+        textViewStatusTitle.setBackgroundResource(fillColor);
+        textViewStatusTitle.setTextColor(ContextCompat.getColor(getContext(), textColor));
     }
 }

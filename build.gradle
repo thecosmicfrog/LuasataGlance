@@ -19,7 +19,7 @@ buildscript {
 }
 
 allprojects {
-    ext.versionCode = 187
+    ext.versionCode = 188
 
     repositories {
         google()

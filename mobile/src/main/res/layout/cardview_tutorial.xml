@@ -35,10 +35,10 @@
             android:layout_height="match_parent"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            android:background="@android:color/white"
+            android:background="@color/background_card"
             android:src="@drawable/ic_info"
             android:contentDescription="@string/tutorial_information"
-            app:tint="@color/text_dark" />
+            app:tint="@color/on_surface" />
 
         <TextView
             android:id="@+id/textview_tutorial"
@@ -48,6 +48,6 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:textSize="16sp"
-            android:background="@android:color/white" />
+            android:background="@color/background_card" />
     </LinearLayout>
 </merge>

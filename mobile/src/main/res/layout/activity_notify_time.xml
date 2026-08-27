@@ -24,7 +24,7 @@
  -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:theme="@style/Theme.MaterialComponents.Light.Bridge"
+    android:theme="@style/LuasAtAGlanceDialogContent"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/notify_when"
-        android:textColor="@color/text_dark"
+        android:textColor="@color/on_surface"
         android:textStyle="bold"
         android:paddingTop="8dp" />
 
@@ -52,13 +52,11 @@
         android:elevation="@dimen/cardview_laag_elevation"
         app:cardCornerRadius="@dimen/cardview_laag_corner_radius">
 
-        <Spinner
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        <org.thecosmicfrog.luasataglance.view.LaagSpinner
             android:id="@+id/spinner_notifytime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown"
-            android:backgroundTint="@color/luas_purple"
             android:popupBackground="@drawable/spinner_background" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -91,7 +89,7 @@
                 android:background="@drawable/laag_button"
                 android:elevation="@dimen/cardview_laag_elevation"
                 android:text="@string/notify_set"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/text_on_accent" />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

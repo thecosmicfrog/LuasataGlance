@@ -21,12 +21,10 @@
 package org.thecosmicfrog.luasataglance.view
 
 import android.content.Context
-import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import androidx.core.content.ContextCompat
 import com.google.android.material.card.MaterialCardView
 import org.thecosmicfrog.luasataglance.R
 
@@ -51,6 +49,7 @@ class SpinnerCardView : MaterialCardView {
 
     /**
      * Initialise custom View.
+     *
      * @param context Context.
      */
     fun init(context: Context?) {
@@ -60,23 +59,11 @@ class SpinnerCardView : MaterialCardView {
 
         /* Remove default MaterialCardView stroke (thin border around the card). */
         setStrokeWidth(0)
-
-        /* Set the Spinner's colour to Luas purple. */
-        if (spinnerStops?.background?.constantState != null) {
-            val spinnerDrawable =
-                spinnerStops?.background?.constantState?.newDrawable()
-
-            spinnerDrawable?.setColorFilter(
-                ContextCompat.getColor(getContext(), R.color.luas_purple),
-                PorterDuff.Mode.SRC_ATOP
-            )
-
-            spinnerStops?.background = spinnerDrawable
-        }
     }
 
     /**
      * Initialise the ArrayAdapter for stops.
+     *
      * @param resArrayStops Resource ID for array of stops.
      */
     private fun initAdapterStops(resArrayStops: Int) {
@@ -93,6 +80,7 @@ class SpinnerCardView : MaterialCardView {
 
     /**
      * Setter method which also triggers an initialisation of the ArrayAdapter for stops.
+     *
      * @param line Line to initialise.
      */
     fun setLine(line: String) {

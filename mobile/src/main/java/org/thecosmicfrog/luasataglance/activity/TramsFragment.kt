@@ -165,9 +165,6 @@ class TramsFragment : Fragment() {
                 )
             )
             tabLayout?.tabGravity = TabLayout.GRAVITY_FILL
-            tabLayout?.setBackgroundColor(
-                ContextCompat.getColor(context as Context, R.color.luas_purple)
-            )
 
             tabLayout?.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {

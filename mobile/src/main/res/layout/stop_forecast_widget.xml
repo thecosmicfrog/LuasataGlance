@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_weight="0.7"
-            android:textColor="@android:color/white"
+            android:textColor="@color/text_on_widget_accent"
             android:textStyle="bold" />
 
         <ImageButton
@@ -81,11 +81,11 @@
                 android:id="@+id/textview_inbound"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/widget_direction_label_height"
-                android:background="@color/luas_purple"
+                android:background="@color/background_widget_accent"
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="@string/inbound"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_on_widget_accent"
                 android:textSize="@dimen/widget_direction_label_text_size"
                 android:textStyle="bold" />
 
@@ -129,7 +129,7 @@
                 android:contentDescription="@null"
                 android:padding="8dp"
                 android:src="@drawable/ic_refresh"
-                android:tint="@android:color/white"
+                android:tint="@color/text_on_widget_accent"
                 tools:ignore="UseAppTint" />
 
             <TextView
@@ -137,6 +137,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tap_to_load_times"
+                android:textColor="@color/on_surface"
                 android:textSize="16sp"
                 android:layout_marginTop="12dp" />
         </LinearLayout>
