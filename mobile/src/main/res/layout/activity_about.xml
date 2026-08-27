@@ -32,148 +32,153 @@
         android:elevation="@dimen/cardview_laag_elevation"
         app:cardCornerRadius="@dimen/cardview_laag_corner_radius">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="@dimen/activity_vertical_margin">
+            android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:orientation="horizontal"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="@dimen/activity_vertical_margin">
+
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/Base.DialogWindowTitle.AppCompat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_name"
+                        android:textColor="@color/on_surface"
+                        android:layout_toStartOf="@id/imageview_about_laag_logo"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true" />
+
+                    <ImageView
+                        android:id="@+id/imageview_about_laag_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_launcher"
+                        android:contentDescription="@string/app_name" />
+                </RelativeLayout>
 
                 <TextView
-                    style="@style/Base.DialogWindowTitle.AppCompat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name"
+                    android:text="@string/about_title_version"
                     android:textColor="@color/on_surface"
-                    android:layout_toStartOf="@id/imageview_about_laag_logo"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true" />
+                    android:textStyle="bold"
+                    android:paddingTop="16dp" />
 
-                <ImageView
-                    android:id="@+id/imageview_about_laag_logo"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_launcher"
-                    android:contentDescription="@string/app_name" />
-            </RelativeLayout>
+                    android:text="@string/version_name"
+                    android:textColor="@color/on_surface" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_title_version"
-                android:textColor="@color/on_surface"
-                android:textStyle="bold"
-                android:paddingTop="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_title_description"
+                    android:textColor="@color/on_surface"
+                    android:textStyle="bold"
+                    android:paddingTop="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/version_name"
-                android:textColor="@color/on_surface" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_description"
+                    android:textColor="@color/on_surface" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_title_description"
-                android:textColor="@color/on_surface"
-                android:textStyle="bold"
-                android:paddingTop="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_title_source_bugs_features"
+                    android:textColor="@color/on_surface"
+                    android:textStyle="bold"
+                    android:paddingTop="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_description"
-                android:textColor="@color/on_surface" />
+                <TextView
+                    android:id="@+id/textview_sourcecode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_source_bugs_features"
+                    android:textColor="@color/on_surface"
+                    android:autoLink="web" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_title_license"
-                android:textColor="@color/on_surface"
-                android:textStyle="bold"
-                android:paddingTop="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_title_license"
+                    android:textColor="@color/on_surface"
+                    android:textStyle="bold"
+                    android:paddingTop="16dp" />
 
-            <TextView
-                android:id="@+id/textview_license"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_license"
-                android:textColor="@color/text_link" />
+                <TextView
+                    android:id="@+id/textview_license"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_license"
+                    android:textColor="@color/text_link" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_title_source_bugs_features"
-                android:textColor="@color/on_surface"
-                android:textStyle="bold"
-                android:paddingTop="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_title_map_data"
+                    android:textColor="@color/on_surface"
+                    android:textStyle="bold"
+                    android:paddingTop="16dp" />
 
-            <TextView
-                android:id="@+id/textview_sourcecode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_source_bugs_features"
-                android:textColor="@color/on_surface"
-                android:autoLink="web" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_map_data"
+                    android:textColor="@color/on_surface" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_title_map_data"
-                android:textColor="@color/on_surface"
-                android:textStyle="bold"
-                android:paddingTop="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_map_data_url"
+                    android:textColor="@color/text_link"
+                    android:autoLink="web" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_map_data"
-                android:textColor="@color/on_surface" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_title_privacypolicy"
+                    android:textColor="@color/on_surface"
+                    android:textStyle="bold"
+                    android:paddingTop="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_map_data_url"
-                android:textColor="@color/text_link"
-                android:autoLink="web" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_privacypolicy"
+                    android:textColor="@color/text_link"
+                    android:autoLink="web" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_title_privacypolicy"
-                android:textColor="@color/on_surface"
-                android:textStyle="bold"
-                android:paddingTop="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_developed_by"
+                    android:textColor="@color/on_surface"
+                    android:textStyle="bold"
+                    android:paddingTop="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_privacypolicy"
-                android:textColor="@color/text_link"
-                android:autoLink="web" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_developed_by"
-                android:textColor="@color/on_surface"
-                android:textStyle="bold"
-                android:paddingTop="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_irish_translations"
-                android:textColor="@color/on_surface"
-                android:textStyle="bold"
-                android:paddingTop="8dp" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_irish_translations"
+                    android:textColor="@color/on_surface"
+                    android:textStyle="bold"
+                    android:paddingTop="16dp" />
+            </LinearLayout>
+        </ScrollView>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

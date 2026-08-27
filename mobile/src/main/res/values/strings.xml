@@ -92,7 +92,7 @@
     <string name="about_title_description">Description</string>
     <string name="about_description">Android app providing real-time tram stop
         information for Dublin\'s Luas light rail service.</string>
-    <string name="about_title_license">Open Source License</string>
+    <string name="about_title_license">Open source license</string>
     <string name="about_license"><u>GNU General Public License (GPLv3)</u></string>
     <string name="about_title_source_bugs_features">Source code, bugs and feature requests</string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
@@ -100,7 +100,7 @@
     <string name="about_map_data">Map tiles and Luas track geometry are copyright OpenStreetMap contributors, licensed under the
         Open Database License (ODbL) 1.0.</string>
     <string name="about_map_data_url" translatable="false">openstreetmap.org/copyright</string>
-    <string name="about_title_privacypolicy">Privacy Policy</string>
+    <string name="about_title_privacypolicy">Privacy policy</string>
     <string name="about_privacypolicy" translatable="false">luasataglance.thecosmicfrog.org/privacy"
     </string>
     <string name="about_developed_by">Developed by Aaron Hastings (thecosmicfrog)</string>
@@ -172,6 +172,27 @@
     -->
     <string name="pref_title_default_stop">Default Stop</string>
     <string name="pref_key_default_stop" translatable="false">default_stop</string>
+
+    <string name="pref_title_theme">Theme</string>
+    <string name="pref_key_theme" translatable="false">theme</string>
+    <string name="pref_entry_theme_system">System</string>
+    <string name="pref_entry_theme_light">Light</string>
+    <string name="pref_entry_theme_dark">Dark</string>
+    <string name="pref_value_theme_system" translatable="false">system</string>
+    <string name="pref_value_theme_light" translatable="false">light</string>
+    <string name="pref_value_theme_dark" translatable="false">dark</string>
+
+    <string-array name="array_theme_entries">
+        <item>@string/pref_entry_theme_system</item>
+        <item>@string/pref_entry_theme_light</item>
+        <item>@string/pref_entry_theme_dark</item>
+    </string-array>
+
+    <string-array name="array_theme_values">
+        <item>@string/pref_value_theme_system</item>
+        <item>@string/pref_value_theme_light</item>
+        <item>@string/pref_value_theme_dark</item>
+    </string-array>
 
     <!--
         What's New
