@@ -69,6 +69,22 @@
         <item name="android:windowBackground">@drawable/popup_dialog_background</item>
     </style>
 
+    <style name="LuasAtAGlanceSettingsDialog" parent="LuasAtAGlancePopupDialog">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="alertDialogTheme">@style/LuasAtAGlanceAlertDialog</item>
+
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <item name="android:listPreferredItemPaddingStart">0dp</item>
+        <item name="android:listPreferredItemPaddingLeft">0dp</item>
+    </style>
+
+    <style name="LuasAtAGlanceAlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="colorAccent">@color/icon_accent</item>
+        <item name="colorBackgroundFloating">@color/background_card</item>
+        <item name="dialogCornerRadius">@dimen/cardview_laag_corner_radius</item>
+    </style>
+
     <!--
         MaterialCardView will not inflate under AppCompat. Applied whole rather than as a
         `ThemeOverlay`, so text in those four layouts has to name its own colour.

@@ -1,11 +1,25 @@
-package org.thecosmicfrog.luasataglance.activity;
+/**
+ * Copyright 2015-2026 Aaron Hastings
+ *
+ * This file is part of Luas at a Glance.
+ *
+ * Luas at a Glance is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Luas at a Glance is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.thecosmicfrog.luasataglance.activity
 
 import SettingsFragment
-import android.graphics.Color
 import android.os.Bundle
-import android.view.Window
-import android.view.WindowManager
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.FragmentActivity
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivitySettingsBinding
@@ -18,18 +32,6 @@ class SettingsActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivitySettingsBinding.inflate(layoutInflater)
-
-        /* Use dialog theme. */
-        setTheme(android.R.style.Theme_Material_Light_Dialog)
-
-        window.apply {
-            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-            requestFeature(Window.FEATURE_NO_TITLE)
-            setLayout(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT
-            )
-        }
 
         setContentView(binding.root)
 

@@ -19,7 +19,8 @@
 -->
 
 <PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
         android:id="@+id/listpreference_default_stop"
@@ -27,5 +28,6 @@
         android:title="@string/pref_title_default_stop"
         android:defaultValue="@string/none"
         android:entries="@array/array_stops_all"
-        android:entryValues="@array/array_stops_all" />
+        android:entryValues="@array/array_stops_all"
+        app:iconSpaceReserved="false" />
 </PreferenceScreen>

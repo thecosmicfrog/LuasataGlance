@@ -78,7 +78,7 @@
             android:theme="@style/LuasAtAGlancePopupDialog" />
         <activity
             android:name=".activity.SettingsActivity"
-            android:theme="@style/LuasAtAGlancePopupDialog">
+            android:theme="@style/LuasAtAGlanceSettingsDialog">
         </activity>
         <activity
             android:name=".activity.WhatsNewActivity"
