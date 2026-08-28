@@ -22,11 +22,10 @@ package org.thecosmicfrog.luasataglance.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Window
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import org.thecosmicfrog.luasataglance.databinding.ActivityAboutBinding
 
-class AboutActivity : FragmentActivity() {
+class AboutActivity : AppCompatActivity() {
 
     private val logTag = AboutActivity::class.java.simpleName
 
@@ -37,12 +36,6 @@ class AboutActivity : FragmentActivity() {
 
         viewBinding = ActivityAboutBinding.inflate(layoutInflater)
         val rootView = viewBinding.root
-
-        /* Use a Material Dialog theme. */
-        setTheme(android.R.style.Theme_Material_Dialog)
-
-        /* This is a Dialog. Get rid of the default Window title. */
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
 
         setContentView(rootView)
 

@@ -75,14 +75,14 @@
             android:parentActivityName=".activity.AboutActivity" />
         <activity
             android:name=".activity.AboutActivity"
-            android:theme="@style/LuasAtAGlancePopupDialog" />
+            android:theme="@style/LuasAtAGlanceCardDialog" />
         <activity
             android:name=".activity.SettingsActivity"
             android:theme="@style/LuasAtAGlanceSettingsDialog">
         </activity>
         <activity
             android:name=".activity.WhatsNewActivity"
-            android:theme="@style/LuasAtAGlancePopupDialog" />
+            android:theme="@style/LuasAtAGlanceCardDialog" />
     </application>
 
 </manifest>

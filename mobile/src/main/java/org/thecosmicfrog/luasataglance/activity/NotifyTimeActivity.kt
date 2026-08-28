@@ -33,12 +33,10 @@ import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.Window
-import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.thecosmicfrog.luasataglance.R
@@ -53,7 +51,7 @@ import pub.devrel.easypermissions.EasyPermissions.RationaleCallbacks
 import pub.devrel.easypermissions.PermissionRequest
 import java.util.Locale
 
-class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCallbacks {
+class NotifyTimeActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbacks {
 
     private lateinit var context: Context
     private lateinit var viewBinding: ActivityNotifyTimeBinding
@@ -72,18 +70,10 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
      * Initialise Activity.
      */
     private fun initActivity() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-
         viewBinding = ActivityNotifyTimeBinding.inflate(layoutInflater)
         context = viewBinding.root.context
 
         setContentView(viewBinding.root)
-
-        /* Set dialog width to 80% of screen width. */
-        val displayMetrics = resources.displayMetrics
-        val width = (displayMetrics.widthPixels * 0.80).toInt()
-
-        window?.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
     }
 
     /**
@@ -173,24 +163,11 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
      * Check if exact alarm permission is granted and request if not.
      */
     private fun checkAndRequestExactAlarmPermission(): Boolean {
-        if (Build.VERSION.SDK_INT >= VERSION_CODES.S) {
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            return if (!isExactAlarmPermissionGranted(alarmManager)) {
-                showExactAlarmPermissionDialog()
-                false
-            } else {
-                true
-            }
-        }
-        return true
-    }
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    /**
-     * Check if exact alarm permission is granted.
-     */
-    private fun isExactAlarmPermissionGranted(alarmManager: AlarmManager): Boolean {
-        return if (Build.VERSION.SDK_INT >= VERSION_CODES.S) {
-            alarmManager.canScheduleExactAlarms()
+        return if (!alarmManager.canScheduleExactAlarms()) {
+            showExactAlarmPermissionDialog()
+            false
         } else {
             true
         }
@@ -309,21 +286,19 @@ class NotifyTimeActivity : FragmentActivity(), PermissionCallbacks, RationaleCal
      * Open the Android system settings for exact alarm permission so user can enable it.
      */
     private fun openExactAlarmSystemSettings() {
-        if (Build.VERSION.SDK_INT >= VERSION_CODES.S) {
-            try {
-                Intent().apply {
-                    action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-                    data = Uri.parse("package:$packageName")
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }.also { startActivity(it) }
-            } catch (e: Exception) {
-                Log.e(logTag, "Failed to open exact alarm settings", e)
+        try {
+            Intent().apply {
+                action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                data = Uri.parse("package:$packageName")
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }.also { startActivity(it) }
+        } catch (e: Exception) {
+            Log.e(logTag, "Failed to open exact alarm settings", e)
 
-                /* Open the "App info" settings instead (user has to scroll down to "Alarms and reminders". */
-                startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.parse("package:$packageName")
-                })
-            }
+            /* Open the "App info" settings instead (user has to scroll down to "Alarms and reminders"). */
+            startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.parse("package:$packageName")
+            })
         }
     }
 

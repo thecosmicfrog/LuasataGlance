@@ -23,7 +23,7 @@ package org.thecosmicfrog.luasataglance.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 
 import org.thecosmicfrog.luasataglance.R;
 

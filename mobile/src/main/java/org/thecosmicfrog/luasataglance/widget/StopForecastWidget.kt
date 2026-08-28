@@ -584,18 +584,15 @@ class StopForecastWidget : AppWidgetProvider() {
      */
     private fun maxTotalTramsFor(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int): Int {
         val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
-        val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val sizes: ArrayList<SizeF>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                options.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, SizeF::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                options.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES)
-            }
-            sizes?.maxByOrNull { it.height }?.height?.toInt()
-                ?: options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+        val sizes: ArrayList<SizeF>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            options.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, SizeF::class.java)
         } else {
-            options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+            @Suppress("DEPRECATION")
+            options.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES)
         }
+
+        val height = sizes?.maxByOrNull { it.height }?.height?.toInt()
+            ?: options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
 
         return calculateMaxTotalTrams(context, height)
     }

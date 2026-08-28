@@ -30,4 +30,13 @@
         android:entries="@array/array_stops_all"
         android:entryValues="@array/array_stops_all"
         app:iconSpaceReserved="false" />
+
+    <ListPreference
+        android:id="@+id/listpreference_theme"
+        android:key="@string/pref_key_theme"
+        android:title="@string/pref_title_theme"
+        android:defaultValue="@string/pref_value_theme_system"
+        android:entries="@array/array_theme_entries"
+        android:entryValues="@array/array_theme_values"
+        app:iconSpaceReserved="false" />
 </PreferenceScreen>

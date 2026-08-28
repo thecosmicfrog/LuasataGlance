@@ -20,11 +20,11 @@ package org.thecosmicfrog.luasataglance.activity
 
 import SettingsFragment
 import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivitySettingsBinding
 
-class SettingsActivity : FragmentActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
 

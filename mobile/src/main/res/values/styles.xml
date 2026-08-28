@@ -67,13 +67,24 @@
     <!-- Keep the AppCompat parent. A Material3 one turns AboutActivity's links white on white. -->
     <style name="LuasAtAGlancePopupDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:windowBackground">@drawable/popup_dialog_background</item>
+
+        <item name="windowFixedWidthMajor">80%</item>
+        <item name="windowFixedWidthMinor">80%</item>
+
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+
+        <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="LuasAtAGlanceSettingsDialog" parent="LuasAtAGlancePopupDialog">
+    <!-- About, What's New, and Settings. Each of their layouts holds its own card, so the window behind it draws nothing. -->
+    <style name="LuasAtAGlanceCardDialog" parent="LuasAtAGlancePopupDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="LuasAtAGlanceSettingsDialog" parent="LuasAtAGlanceCardDialog">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="alertDialogTheme">@style/LuasAtAGlanceAlertDialog</item>
-
-        <item name="android:windowBackground">@android:color/transparent</item>
 
         <item name="android:listPreferredItemPaddingStart">0dp</item>
         <item name="android:listPreferredItemPaddingLeft">0dp</item>

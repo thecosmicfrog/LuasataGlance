@@ -183,8 +183,7 @@ class PreferencesTest {
     }
 
     /**
-     * Writes the single shared key used before storage became per-widget. Nothing in the app writes it anymore, so a test
-     * standing in for an old install has to write it directly.
+     * Writes the single shared key used before storage became per-widget.
      */
     private fun writeLegacyWidgetStopName() {
         context.getSharedPreferences("org.thecosmicfrog.luasataglance", Context.MODE_PRIVATE)
