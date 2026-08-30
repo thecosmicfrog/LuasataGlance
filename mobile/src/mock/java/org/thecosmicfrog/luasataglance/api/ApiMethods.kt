@@ -21,6 +21,7 @@
 package org.thecosmicfrog.luasataglance.api
 
 import org.thecosmicfrog.luasataglance.model.StopForecastStatus
+import org.thecosmicfrog.luasataglance.model.StopForecastStatusDirection
 import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.model.Tram
 import org.thecosmicfrog.luasataglance.util.Constant
@@ -84,7 +85,11 @@ class MockApiMethods : ApiMethods {
         val apiTimes = ApiTimes(
             createdTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date()),
             message = "Mock data for $line",
-            stopForecastStatus = StopForecastStatus(),
+            /* StopForecastStatus() defaults operatingNormally to false, which LineViewModel draws as a red status card. */
+            stopForecastStatus = StopForecastStatus(
+                StopForecastStatusDirection("Mock data for $line", true, true),
+                StopForecastStatusDirection("Mock data for $line", true, true)
+            ),
             trams = trams.sortedBy { it.dueMinutes?.toIntOrNull() ?: 0 }
         )
 

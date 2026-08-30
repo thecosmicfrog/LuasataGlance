@@ -24,10 +24,12 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -36,6 +38,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.api.ApiMethods
 import org.thecosmicfrog.luasataglance.api.ApiTimes
 import org.thecosmicfrog.luasataglance.util.MainDispatcherRule
@@ -476,17 +479,181 @@ class LineViewModelTest {
         assertThat(viewModel.getStopId("Tamhlacht")).isEqualTo("TAL")
     }
 
+    @Test
+    fun `a successful load sets the status without anything else asking it to`() = runTest {
+        val viewModel = viewModel(FakeApiMethods { Response.success(apiTimes(status = normalStatus())) })
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        assertThat(viewModel.status.value).isEqualTo(Status("Message", false))
+    }
+
+    @Test
+    fun `a failed load replaces the status with the error message`() = runTest {
+        val viewModel = viewModel(FakeApiMethods { throw IOException("no network") })
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        assertThat(viewModel.status.value?.isError).isTrue()
+        assertThat(viewModel.status.value?.message).isEqualTo(resourceProvider.getString(R.string.message_error))
+    }
+
+    @Test
+    fun `an unsuccessful response also reaches the status card`() = runTest {
+        val viewModel = viewModel(
+            FakeApiMethods { Response.error(503, "".toResponseBody("text/plain".toMediaType())) }
+        )
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        assertThat(viewModel.status.value?.isError).isTrue()
+    }
+
+    @Test
+    fun `an empty body also reaches the status card`() = runTest {
+        val viewModel = viewModel(FakeApiMethods { Response.success(null) })
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        assertThat(viewModel.status.value?.isError).isTrue()
+    }
+
+    @Test
+    fun `a recovery is emitted even though the Luas status message never changed`() = runTest {
+        var shouldFail = false
+        val viewModel = viewModel(
+            FakeApiMethods {
+                if (shouldFail) throw IOException("no network") else Response.success(apiTimes(status = normalStatus()))
+            }
+        )
+
+        /* UnconfinedTestDispatcher records each value as it is set. advanceUntilIdle() leaves a queued collector behind. */
+        val seen = mutableListOf<Status?>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.status.collect { seen.add(it) } }
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        shouldFail = true
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        shouldFail = false
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        assertThat(seen).containsExactly(
+            null,
+            Status("Message", false),
+            Status(resourceProvider.getString(R.string.message_error), true),
+            Status("Message", false)
+        ).inOrder()
+    }
+
+    @Test
+    fun `a response with no message says so rather than keeping the last status`() = runTest {
+        var shouldFail = true
+        val viewModel = viewModel(
+            FakeApiMethods {
+                if (shouldFail) throw IOException("no network") else Response.success(apiTimes(message = null))
+            }
+        )
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        shouldFail = false
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        assertThat(viewModel.status.value?.message).isEqualTo(resourceProvider.getString(R.string.message_no_status))
+    }
+
+    @Test
+    fun `a cleared forecast is drawn again even though the API repeated the same trams`() = runTest {
+        val viewModel = viewModel(
+            FakeApiMethods { Response.success(apiTimes(tram("The Point", "Inbound", "5"), status = normalStatus())) }
+        )
+
+        /* UnconfinedTestDispatcher records each value as it is set. advanceUntilIdle() leaves a queued collector behind. */
+        val seen = mutableListOf<Pair<List<StopForecastInfo>, List<StopForecastInfo>>?>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.stopForecastInfo.collect { seen.add(it) } }
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        viewModel.clearStopForecast()
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        /* The null between the two forecasts is the point. Without it StateFlow drops the second one and the shimmer stays. */
+        assertThat(seen.map { it?.first?.size }).containsExactly(null, 1, null, 1).inOrder()
+    }
+
+    @Test
+    fun `clearing the forecast empties both the forecast and its display rows`() = runTest {
+        val viewModel = viewModel(
+            FakeApiMethods { Response.success(apiTimes(tram("The Point", "Inbound", "5"), status = normalStatus())) }
+        )
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        viewModel.clearStopForecast()
+
+        assertThat(viewModel.stopForecast.value).isNull()
+        assertThat(viewModel.stopForecastInfo.value).isNull()
+    }
+
+    @Test
+    fun `a failed load clears the forecast rather than leaving stale trams on screen`() = runTest {
+        var shouldFail = false
+        val viewModel = viewModel(
+            FakeApiMethods {
+                if (shouldFail) throw IOException("no network")
+                else Response.success(apiTimes(tram("The Point", "Inbound", "5"), status = normalStatus()))
+            }
+        )
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+        assertThat(viewModel.stopForecastInfo.value).isNotNull()
+
+        shouldFail = true
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceUntilIdle()
+
+        assertThat(viewModel.stopForecastInfo.value).isNull()
+    }
+
     private fun viewModel(apiMethods: ApiMethods) = LineViewModel(resourceProvider, apiMethods)
 
     private fun tram(destination: String, direction: String, dueMinutes: String) =
         Tram(destination = destination, direction = direction, dueMinutes = dueMinutes)
 
-    private fun apiTimes(vararg trams: Tram, createdTime: String? = "2026-08-19T18:00:00") =
+    private fun apiTimes(
+        vararg trams: Tram,
+        createdTime: String? = "2026-08-19T18:00:00",
+        message: String? = "Message",
+        status: StopForecastStatus = StopForecastStatus()
+    ) =
         ApiTimes(
             createdTime = createdTime,
-            message = "Message",
-            stopForecastStatus = StopForecastStatus(),
+            message = message,
+            stopForecastStatus = status,
             trams = trams.toList()
+        )
+
+    /* StopForecastStatus defaults operatingNormally to false, which updateStatus() reads as an error. */
+    private fun normalStatus() =
+        StopForecastStatus(
+            StopForecastStatusDirection("Message", true, true),
+            StopForecastStatusDirection("Message", true, true)
         )
 
     private fun stopForecast(message: String, operatingNormally: Boolean) =

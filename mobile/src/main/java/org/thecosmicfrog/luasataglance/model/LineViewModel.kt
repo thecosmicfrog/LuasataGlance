@@ -92,6 +92,7 @@ class LineViewModel(
 
     /**
      * Load the stop forecast for the given stop name and ID.
+     *
      * @param stopName The name of the stop.
      * @param stopId The ID of the stop.
      * @param isRefreshing Whether or not the SwipeRefreshLayout is being refreshed.
@@ -125,6 +126,8 @@ class LineViewModel(
                         val stopForecast = createStopForecast(apiTimes)
                         _stopForecast.value = stopForecast
 
+                        updateStatus(stopForecast)
+
                         _stopForecastInfo.value = processStopForecastInfo(stopForecast = stopForecast)
 
                         if (shouldShowSnackbar) {
@@ -133,19 +136,19 @@ class LineViewModel(
                             }
                         }
                     } else {
-                        _error.value = "No data received from server"
+                        setError("No data received from server")
                     }
                 } else {
-                    _error.value = "Error: ${response.code()}"
+                    setError("Error: ${response.code()}")
                 }
 
             } catch (e: Exception) {
                 Log.e(logTag, "Error loading stop forecast", e)
 
                 when (e) {
-                    is IOException -> _error.value = "Network error"
-                    is HttpException -> _error.value = "Server error: ${e.code()}"
-                    else -> _error.value = "Unexpected error: ${e.message}"
+                    is IOException -> setError("Network error")
+                    is HttpException -> setError("Server error: ${e.code()}")
+                    else -> setError("Unexpected error: ${e.message}")
                 }
             } finally {
                 _isLoading.value = false
@@ -156,6 +159,7 @@ class LineViewModel(
 
     /**
      * Start auto-reloading the stop forecast at regular intervals.
+     *
      * @param stopName The name of the stop.
      * @param stopNameId The ID of the stop.
      * @param delayMillis Delay before starting the auto-reload.
@@ -191,23 +195,47 @@ class LineViewModel(
     }
 
     /**
+     * Record a failed load, and put the failure on the status card.
+     *
+     * @param message The error to report.
+     */
+    private fun setError(message: String) {
+        _error.value = message
+        _status.value = Status(resourceProvider.getString(R.string.message_error), true)
+
+        clearStopForecast()
+    }
+
+    /**
+     * Clear the stop forecast, so LineFragment draws the shimmer rows in its place.
+     */
+    fun clearStopForecast() {
+        _stopForecast.value = null
+        _stopForecastInfo.value = null
+    }
+
+    /**
      * Update the status of the stop forecast.
+     *
      * @param stopForecast The stop forecast to update.
      */
     fun updateStatus(stopForecast: StopForecast) {
         val operatingNormally = stopForecast.stopForecastStatusDirectionInbound.operatingNormally == true &&
                 stopForecast.stopForecastStatusDirectionOutbound.operatingNormally == true
 
-        stopForecast.message?.let {
+        val message = stopForecast.message
+
+        _status.value = if (message.isNullOrBlank()) {
+            Status(resourceProvider.getString(R.string.message_no_status), true)
+        } else {
             /* A lot of Luas statuses relate to lifts being out of service. Ignore these. */
-            val isError = !(operatingNormally || it.lowercase().contains("lift"))
-            val finalMessage = if (isError && it.isBlank()) "No status available" else it
-            _status.value = Status(finalMessage, isError)
+            Status(message, !(operatingNormally || message.lowercase().contains("lift")))
         }
     }
 
     /**
      * Process the stop forecast information and return a pair of lists for inbound and outbound trams.
+     *
      * @param stopForecast The stop forecast to process.
      * @return A pair of lists containing the processed stop forecast information.
      */
@@ -262,6 +290,7 @@ class LineViewModel(
 
     /**
      * Get the API created time from the ApiTimes object.
+     *
      * @param apiTimes The ApiTimes object containing the created time.
      * @return The formatted created time as a string.
      */
@@ -285,6 +314,7 @@ class LineViewModel(
 
     /**
      * Get the stop ID for the given stop name.
+     *
      * @param stopName The name of the stop, as displayed to the user.
      * @return The ID of the stop, or null if no stop in this language has that name.
      */

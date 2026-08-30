@@ -50,7 +50,6 @@ import org.thecosmicfrog.luasataglance.databinding.FragmentGreenlineBinding
 import org.thecosmicfrog.luasataglance.databinding.FragmentRedlineBinding
 import org.thecosmicfrog.luasataglance.model.LineViewModel
 import org.thecosmicfrog.luasataglance.model.LineViewModelFactory
-import org.thecosmicfrog.luasataglance.model.StopForecast
 import org.thecosmicfrog.luasataglance.model.StopForecastAdapter
 import org.thecosmicfrog.luasataglance.util.AppUtil
 import org.thecosmicfrog.luasataglance.util.Constant
@@ -61,6 +60,7 @@ import org.thecosmicfrog.luasataglance.util.StopForecastUtil.displayTutorial
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.showSnackbar
 import org.thecosmicfrog.luasataglance.view.SpinnerCardView
 import org.thecosmicfrog.luasataglance.view.StatusCardView
+import kotlin.time.Duration.Companion.milliseconds
 
 class LineFragment : Fragment() {
 
@@ -149,6 +149,15 @@ class LineFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        recyclerViewStopForecastsInbound = viewBinding?.recyclerViewStopForecastsInbound
+        recyclerViewStopForecastsOutbound = viewBinding?.recyclerViewStopForecastsOutbound
+        linearLayoutManagerInbound = LinearLayoutManager(ctx)
+        linearLayoutManagerOutbound = LinearLayoutManager(ctx)
+        linearLayoutManagerInbound?.orientation = LinearLayoutManager.VERTICAL
+        linearLayoutManagerOutbound?.orientation = LinearLayoutManager.VERTICAL
+        recyclerViewStopForecastsInbound?.layoutManager = linearLayoutManagerInbound
+        recyclerViewStopForecastsOutbound?.layoutManager = linearLayoutManagerOutbound
 
         initObservers()
     }
@@ -267,18 +276,6 @@ class LineFragment : Fragment() {
          * in order to prevent two HTTP requests in rapid succession.
          */
         autoReloadStopForecast(10000L)
-
-        recyclerViewStopForecastsInbound = viewBinding?.recyclerViewStopForecastsInbound
-        recyclerViewStopForecastsOutbound = viewBinding?.recyclerViewStopForecastsOutbound
-        linearLayoutManagerInbound = LinearLayoutManager(ctx)
-        linearLayoutManagerOutbound = LinearLayoutManager(ctx)
-        linearLayoutManagerInbound?.orientation = LinearLayoutManager.VERTICAL
-        linearLayoutManagerOutbound?.orientation = LinearLayoutManager.VERTICAL
-        recyclerViewStopForecastsInbound?.layoutManager = linearLayoutManagerInbound
-        recyclerViewStopForecastsOutbound?.layoutManager = linearLayoutManagerOutbound
-
-        /* Clears the stop forecast at app startup to show the shimmer effect. */
-        StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -293,7 +290,7 @@ class LineFragment : Fragment() {
                     /* Coroutine to assist with adding the delay below. */
                     viewLifecycleOwner.lifecycleScope.launch {
                         /* Add slight delay to prevent UI jank on tab change. */
-                        delay(500L)
+                        delay(500L.milliseconds)
 
                         withStarted {
                             val stopName = spinnerCardView?.spinnerStops?.selectedItem.toString()
@@ -319,10 +316,10 @@ class LineFragment : Fragment() {
                      * Clear the stop forecast of the "exiting tab" on tab change to avoid loading a stale
                      * stop forecast the next time the user opens it. Slight delay to prevent UI jank.
                      */
-                    delay(500L)
+                    delay(500L.milliseconds)
 
                     withStarted {
-                        StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
+                        viewModel.clearStopForecast()
                     }
                 }
             }
@@ -395,7 +392,7 @@ class LineFragment : Fragment() {
                     /* Hide the select stop tutorial, if it is visible. */
                     displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, false)
 
-                    StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
+                    viewModel.clearStopForecast()
 
                     /*
                      * Get the stop name from the current position of the Spinner, save it to
@@ -522,7 +519,7 @@ class LineFragment : Fragment() {
             viewModel.startAutoReload(
                 stopName = Preferences.selectedStopName(ctx, line),
                 stopNameId = viewModel.getStopId(Preferences.selectedStopName(ctx, line)),
-                delayMillis = delayTimeMillis.toLong()
+                delayMillis = delayTimeMillis
             )
         } else {
             viewModel.stopAutoReload()
@@ -548,8 +545,21 @@ class LineFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.stopForecast.collect { stopForecast ->
-                updateStopForecastUi(stopForecast)
+            viewModel.stopForecastInfo.collect { pair ->
+                /* Skips one value rather than the whole loop, so a forecast arriving while the tab is detached is dropped. */
+                if (!isAdded) return@collect
+
+                if (pair == null) {
+                    /*
+                     * Null covers a cold start, a stop change, tabbing away, and a failed load. LineViewModel.clearStopForecast()
+                     * sets it, and the fragment never empties these RecyclerViews itself.
+                     */
+                    StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
+                } else {
+                    /* Replaced rather than diffed, which is what makes swapping the shimmer adapter in and out cheap. */
+                    recyclerViewStopForecastsInbound ?.adapter = StopForecastAdapter(pair.first)
+                    recyclerViewStopForecastsOutbound?.adapter = StopForecastAdapter(pair.second)
+                }
             }
         }
 
@@ -568,7 +578,6 @@ class LineFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.error.collect { error ->
                 error?.let {
-                    statusRedAndClearStopForecast()
                     Log.e(logTag, "Error loading stop forecast: $it")
                 }
             }
@@ -583,39 +592,5 @@ class LineFragment : Fragment() {
                 }
             }
         }
-    }
-
-    /**
-     * Draw stop forecast to screen.
-     * @param stopForecast StopForecast model containing data for requested stop.
-     */
-    private fun updateStopForecastUi(stopForecast: StopForecast?) {
-        if (stopForecast == null) {
-            statusRedAndClearStopForecast()
-            return
-        }
-
-        viewModel.updateStatus(stopForecast)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.stopForecastInfo.collect { pair ->
-                pair?.let { (inbound, outbound) ->
-                    recyclerViewStopForecastsInbound ?.adapter = StopForecastAdapter(inbound)
-                    recyclerViewStopForecastsOutbound?.adapter = StopForecastAdapter(outbound)
-                }
-            }
-        }
-    }
-
-    /**
-     * Set the status of the StatusCardView to red and clear the stop forecast.
-     */
-    private fun statusRedAndClearStopForecast() {
-        if (!isAdded) return
-
-        statusCardView?.setStatus(getString(R.string.message_error))
-        statusCardView?.setStatusColor(R.color.status_fill_error, R.color.status_text_error)
-
-        StopForecastUtil.clearStopForecast(recyclerViewStopForecastsInbound, recyclerViewStopForecastsOutbound)
     }
 }

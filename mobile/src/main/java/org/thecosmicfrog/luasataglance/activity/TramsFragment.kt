@@ -34,6 +34,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
@@ -53,6 +54,8 @@ class TramsFragment : Fragment() {
     private var rootView: View? = null
     private var viewPager: ViewPager? = null
     private var broadcastReceiver: BroadcastReceiver? = null
+    private var colorRedLine: Int = 0
+    private var colorGreenLine: Int = 0
 
     companion object {
         fun newInstance(): Fragment {
@@ -152,8 +155,11 @@ class TramsFragment : Fragment() {
         viewPager = rootView?.findViewById<ViewPager>(R.id.trams_viewpager)
         val tabLayout = rootView?.findViewById<TabLayout>(R.id.trams_tablayout)
 
+        colorRedLine = ContextCompat.getColor(requireContext(), R.color.tab_red_line)
+        colorGreenLine = ContextCompat.getColor(requireContext(), R.color.tab_green_line)
+
         /* Only add tabs if they don't already exist. */
-        if (tabLayout?.tabCount ?: 0 < 2) {
+        if ((tabLayout?.tabCount ?: 0) < 2) {
             tabLayout?.addTab(
                 tabLayout.newTab().setTag(Constant.RED_LINE).setText(
                     getString(R.string.tab_red_line)
@@ -169,8 +175,6 @@ class TramsFragment : Fragment() {
             tabLayout?.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     viewPager?.currentItem = tab?.position as Int
-
-                    changeTabIndicatorColor(tabLayout)
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -187,24 +191,28 @@ class TramsFragment : Fragment() {
             viewPager?.adapter = pagerAdapter
             viewPager?.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
-            changeTabIndicatorColor(tabLayout)
+            viewPager?.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+                override fun onPageScrolled(position: Int, positionOffset: Float,
+                                            positionOffsetPixels: Int) {
+                    blendTabIndicatorColor(tabLayout, position + positionOffset)
+                }
+            })
+
+            blendTabIndicatorColor(tabLayout, tabLayout.selectedTabPosition.toFloat())
         }
     }
 
-    private fun changeTabIndicatorColor(tabLayout: TabLayout) {
-        when (tabLayout.selectedTabPosition) {
-            0 ->
-                tabLayout.setSelectedTabIndicatorColor(
-                    ContextCompat.getColor(requireContext(), R.color.tab_red_line)
-                )
-
-            1 ->
-                tabLayout.setSelectedTabIndicatorColor(
-                    ContextCompat.getColor(requireContext(), R.color.tab_green_line)
-                )
-
-            else -> return
-        }
+    /**
+     * Colour the tab indicator for a position part-way between the two tabs. Aesthetic only.
+     *
+     * @param tabLayout The TabLayout to colour.
+     * @param position 0.0 at the Red Line tab, 1.0 at the Green Line tab, and a fraction in between
+     *                 while a swipe is in progress.
+     */
+    private fun blendTabIndicatorColor(tabLayout: TabLayout, position: Float) {
+        tabLayout.setSelectedTabIndicatorColor(
+            ColorUtils.blendARGB(colorRedLine, colorGreenLine, position.coerceIn(0f, 1f))
+        )
     }
 
     private fun showWhatsNewDialog() {
