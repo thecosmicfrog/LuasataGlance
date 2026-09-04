@@ -62,9 +62,4 @@ public final class Constant {
      */
     public static final String RES_ARRAY_STOPS_RED_LINE = "resArrayStopsRedLine";
     public static final String RES_ARRAY_STOPS_GREEN_LINE = "resArrayStopsGreenLine";
-
-    /*
-     * Tutorials.
-     */
-    public static final String TUTORIAL_SELECT_STOP = "select_stop";
 }

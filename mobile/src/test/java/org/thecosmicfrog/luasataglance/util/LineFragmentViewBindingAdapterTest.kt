@@ -103,7 +103,6 @@ class LineFragmentViewBindingAdapterTest {
         "scrollview" to adapter.scrollview,
         "spinnerCardView" to adapter.spinnerCardView,
         "statuscardview" to adapter.statuscardview,
-        "tutorialcardviewSelectStop" to adapter.tutorialcardviewSelectStop,
         "swiperefreshlayout" to adapter.swiperefreshlayout
     )
 }

@@ -74,19 +74,6 @@ public final class Preferences {
     }
 
     /**
-     * Whether or not a particular tutorial has been completed by the user.
-     * @param context Context.
-     * @return Tutorial completed.
-     */
-    public static boolean hasRunOnce(Context context, String tutorialName) {
-        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
-
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
-        return prefs.getBoolean(tutorialName, false);
-    }
-
-    /**
      * Load index of the next stop to load from shared preferences.
      * @param context Context.
      * @return Index of the next stop to load, or 0 (first list entry) if none found.
@@ -237,24 +224,6 @@ public final class Preferences {
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
         prefs.putString("currentAppVersion", currentAppVersion);
-
-        return prefs.commit();
-    }
-
-    /**
-     * Store boolean value of whether a particular tutorial have been completed by the user.
-     * @param context Context.
-     * @param tutorialName Tutorial that has been completed or not.
-     * @param hasRun Whether or not tutorial has been completed.
-     * @return Successfully saved.
-     */
-    public static boolean saveHasRunOnce(Context context, String tutorialName, boolean hasRun) {
-        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
-
-        SharedPreferences.Editor prefs =
-                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
-
-        prefs.putBoolean(tutorialName, hasRun);
 
         return prefs.commit();
     }

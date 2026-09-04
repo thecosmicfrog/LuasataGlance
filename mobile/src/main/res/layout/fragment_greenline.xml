@@ -90,27 +90,6 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="7.2dp" />
-
-        <org.thecosmicfrog.luasataglance.view.TutorialCardView
-            android:id="@+id/tutorialcardview_select_stop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:cardCornerRadius="@dimen/cardview_laag_corner_radius" />
-
-        <org.thecosmicfrog.luasataglance.view.TutorialCardView
-            android:id="@+id/tutorialcardview_notifications"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:cardCornerRadius="@dimen/cardview_laag_corner_radius" />
-
-        <org.thecosmicfrog.luasataglance.view.TutorialCardView
-            android:id="@+id/tutorialcardview_favourites"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:cardCornerRadius="@dimen/cardview_laag_corner_radius" />
     </LinearLayout>
 
     <org.thecosmicfrog.luasataglance.view.LaagSwipeRefreshLayout

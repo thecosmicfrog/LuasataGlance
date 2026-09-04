@@ -75,8 +75,6 @@ class FavouritesFragment : Fragment() {
 
         if (!isAdded) return
 
-        val tutorialFavourites = "favourites"
-
         val fabFavouritesEdit =
             rootView?.findViewById< ExtendedFloatingActionButton>(R.id.fab_favourites_edit)
         fabFavouritesEdit?.setOnClickListener {
@@ -92,8 +90,6 @@ class FavouritesFragment : Fragment() {
             R.id.textview_favourites_none_selected
         )
         textViewFavouritesNoneSelected?.visibility = View.GONE
-
-        Preferences.saveHasRunOnce(context, tutorialFavourites, true)
 
         listFavouriteStops = openListFavouritesStops().sortedBy { it.toString().lowercase() }
 

@@ -75,46 +75,6 @@ object StopForecastUtil {
     }
 
     /**
-     * Determine if this is the first time the app has been launched and, if so, display a brief
-     * tutorial on how to use a particular feature of the app.
-     * @param line          Currently-selected line.
-     * @param tutorial      Tutorial to display.
-     * @param shouldDisplay Whether or not tutorial should display.
-     */
-    @JvmStatic
-    fun displayTutorial(viewBinding: LineFragmentViewBindingAdapter, line: String, tutorial: String?, shouldDisplay: Boolean) {
-        /* Only display tutorials on the Red Line tab. */
-        if (line == Constant.RED_LINE) {
-            when (tutorial) {
-                Constant.TUTORIAL_SELECT_STOP -> {
-                    val tutorialCardViewSelectStop = viewBinding.tutorialcardviewSelectStop
-
-                    tutorialCardViewSelectStop?.setTutorial(
-                        tutorialCardViewSelectStop.context.resources.getText(
-                            R.string.select_stop_tutorial
-                        )
-                    )
-
-                    if (shouldDisplay) {
-                        if (!Preferences.hasRunOnce(tutorialCardViewSelectStop?.context, tutorial)) {
-                            Log.i(logTag, "First time launching. Displaying select stop tutorial.")
-
-                            tutorialCardViewSelectStop?.visibility = View.VISIBLE
-
-                            Preferences.saveHasRunOnce(tutorialCardViewSelectStop?.context, tutorial, true)
-                        }
-                    } else {
-                        tutorialCardViewSelectStop?.visibility = View.GONE
-                    }
-                }
-                else ->
-                    /* If for some reason the specified tutorial doesn't make sense. */
-                    Log.wtf(logTag, "Invalid tutorial specified.")
-            }
-        }
-    }
-
-    /**
      * Create a usable stop forecast with the data returned from the server.
      * @param apiTimes ApiTimes model created by Retrofit, containing raw stop forecast data.
      * @return Usable stop forecast.

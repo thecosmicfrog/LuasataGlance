@@ -56,7 +56,6 @@ import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.LineFragmentViewBindingAdapter
 import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil
-import org.thecosmicfrog.luasataglance.util.StopForecastUtil.displayTutorial
 import org.thecosmicfrog.luasataglance.util.StopForecastUtil.showSnackbar
 import org.thecosmicfrog.luasataglance.view.SpinnerCardView
 import org.thecosmicfrog.luasataglance.view.StatusCardView
@@ -267,9 +266,6 @@ class LineFragment : Fragment() {
             setTabAndSpinner(Preferences.defaultStopName(ctx))
         }
 
-        /* Display tutorial for selecting a stop, if required. */
-        displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, true)
-
         /*
          * Reload stop forecast.
          * Induce 10 second delay if app is launching from cold start (timerTaskReload == null)
@@ -388,9 +384,6 @@ class LineFragment : Fragment() {
                  */
                 if (isVisibleToUser) {
                     swipeRefreshLayout?.isEnabled = true
-
-                    /* Hide the select stop tutorial, if it is visible. */
-                    displayTutorial(viewBinding!!, line!!, Constant.TUTORIAL_SELECT_STOP, false)
 
                     viewModel.clearStopForecast()
 

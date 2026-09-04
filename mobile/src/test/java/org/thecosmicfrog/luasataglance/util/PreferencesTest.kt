@@ -59,15 +59,6 @@ class PreferencesTest {
     }
 
     @Test
-    fun `a tutorial is not marked as run until it has been`() {
-        assertThat(Preferences.hasRunOnce(context, Constant.TUTORIAL_SELECT_STOP)).isFalse()
-
-        Preferences.saveHasRunOnce(context, Constant.TUTORIAL_SELECT_STOP, true)
-
-        assertThat(Preferences.hasRunOnce(context, Constant.TUTORIAL_SELECT_STOP)).isTrue()
-    }
-
-    @Test
     fun `the next stop index round trips and defaults to the first entry`() {
         assertThat(Preferences.indexNextStopToLoad(context)).isEqualTo(0)
 

@@ -47,6 +47,5 @@ class LineFragmentViewBindingAdapter(b1: FragmentRedlineBinding?, b2: FragmentGr
     val scrollview = b1?.redlineScrollview ?: b2?.greenlineScrollview
     val spinnerCardView = b1?.redlineSpinnerCardView ?: b2?.greenlineSpinnerCardView
     val statuscardview = b1?.redlineStatuscardview ?: b2?.greenlineStatuscardview
-    val tutorialcardviewSelectStop = b1?.tutorialcardviewSelectStop ?: b2?.tutorialcardviewSelectStop
     val swiperefreshlayout = b1?.redlineSwiperefreshlayout ?: b2?.greenlineSwiperefreshlayout
 }
