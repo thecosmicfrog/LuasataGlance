@@ -94,7 +94,7 @@ class AlertsFragment : Fragment() {
 
         if (!isAdded || !isVisibleToUser) return
 
-        val urlTravelUpdates = "https://luas.ie/travel-updates/"
+        val urlTravelUpdates = "https://www.luas.ie/traffic-info/"
 
         val progressBarNews = rootView?.findViewById<ProgressBar>(R.id.progressbar_news)
         val swipeRefreshLayoutNews =
