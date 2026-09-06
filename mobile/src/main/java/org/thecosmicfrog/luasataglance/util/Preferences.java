@@ -182,6 +182,19 @@ public final class Preferences {
     }
 
     /**
+     * Load whether the welcome screen has already been shown.
+     * @param context Context.
+     * @return Welcome screen has been shown.
+     */
+    public static boolean welcomeShown(Context context) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getBoolean("welcomeShown", false);
+    }
+
+    /**
      * Load the currently-selected stop name for a single widget instance from shared
      * preferences.
      * @param context Context.
@@ -369,6 +382,23 @@ public final class Preferences {
          */
         prefs.putString("selectedStopName", selectedStopName);
         prefs.putString(line + "_selectedStopName", selectedStopName);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Save whether the welcome screen has been shown.
+     * @param context Context.
+     * @param welcomeShown Welcome screen has been shown.
+     * @return Successfully saved.
+     */
+    public static boolean saveWelcomeShown(Context context, boolean welcomeShown) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.putBoolean("welcomeShown", welcomeShown);
 
         return prefs.commit();
     }

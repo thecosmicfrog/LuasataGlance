@@ -159,6 +159,14 @@
     <string name="pref_entry_theme_dark">Dorcha</string>
 
     <!--
+        Welcome
+    -->
+    <string name="welcome_title">Fáilte go\nLuas at a Glance</string>
+    <string name="welcome_theme_prompt">Roghnaigh cuma na haipe</string>
+    <string name="welcome_theme_hint">Is féidir leat é seo a athrú am ar bith sna <b>Socruithe</b>.</string>
+    <string name="welcome_get_started">Tosaigh</string>
+
+    <!--
         Widget
     -->
     <string name="widget_arrow_left">\u25C0</string>

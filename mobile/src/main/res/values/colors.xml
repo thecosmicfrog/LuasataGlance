@@ -75,4 +75,12 @@
 
     <color name="shimmer_gradient_start">#ffcacaca</color>
     <color name="shimmer_gradient_end">#ff787878</color>
+
+    <!-- Welcome screen. -->
+    <color name="welcome_background">#ff2b1d42</color>
+    <color name="welcome_tram">#ffc3abf5</color>
+    <color name="welcome_track">#ff4a3670</color>
+    <color name="welcome_title">#fff2edfb</color>
+    <color name="welcome_button_background">@color/welcome_tram</color>
+    <color name="welcome_button_text">#ff2b1d42</color>
 </resources>

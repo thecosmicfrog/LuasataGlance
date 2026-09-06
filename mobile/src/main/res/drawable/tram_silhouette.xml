@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2015-2026 Aaron Hastings
+
+    This file is part of Luas at a Glance.
+
+    Luas at a Glance is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Luas at a Glance is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:width="571dp"
+    android:height="104dp"
+    android:viewportWidth="571"
+    android:viewportHeight="104"
+    android:tint="@color/welcome_tram"
+    tools:ignore="VectorRaster">
+
+    <!-- Tram body -->
+    <path
+        android:fillColor="#ffffffff"
+        android:fillType="evenOdd"
+        android:pathData="
+            M4,88 C4,83 7,75 10,66 C16,49 24,34 30,28 C36,23 44,20 54,20 L517,20
+            C527,20 535,23 541,28 C547,34 555,49 561,66 C564,75 567,83 567,88
+            C567,93 565,98 559,98 L12,98 C6,98 4,93 4,88 Z
+            M30.9,33 L57,33 L57,58.5 L48.5,73 L11.9,73
+            C16.55,59 22.05,44.97 30.9,33 Z
+            M63,33 L90,33 L90,94 L63,94 Z
+            M93,33 L136,33 L136,73 L93,73 Z
+            M139,33 L182,33 L182,73 L139,73 Z
+            M185,33 L205,33 L205,94 L185,94 Z
+            M206.5,33 L226.5,33 L226.5,94 L206.5,94 Z
+            M229.5,33 L272.5,33 L272.5,73 L229.5,73 Z
+            M277.25,20 L278.75,20 L278.75,98 L277.25,98 Z
+            M280.25,20 L281.75,20 L281.75,98 L280.25,98 Z
+            M283.25,20 L284.75,20 L284.75,98 L283.25,98 Z
+            M286.25,20 L287.75,20 L287.75,98 L286.25,98 Z
+            M289.25,20 L290.75,20 L290.75,98 L289.25,98 Z
+            M292.25,20 L293.75,20 L293.75,98 L292.25,98 Z
+            M298.5,33 L341.5,33 L341.5,73 L298.5,73 Z
+            M344.5,33 L364.5,33 L364.5,94 L344.5,94 Z
+            M366,33 L386,33 L386,94 L366,94 Z
+            M389,33 L432,33 L432,73 L389,73 Z
+            M435,33 L478,33 L478,73 L435,73 Z
+            M481,33 L508,33 L508,94 L481,94 Z
+            M540.1,33 L514,33 L514,58.5 L522.5,73 L559.1,73
+            C554.45,59 548.95,44.97 540.1,33 Z" />
+
+    <!-- Pantograph -->
+    <path
+        android:fillColor="#ffffffff"
+        android:pathData="
+            M135.7,16 L149.7,16 L149.7,21 L135.7,21 Z
+            M145.16,19.96 L113.12,12.44 L113.05,10.79 L136.87,3 L146.53,3 L121.25,11.26 L145.84,17.04 Z
+            M121.7,0 L159.7,0 L159.7,3 L121.7,3 Z" />
+</vector>

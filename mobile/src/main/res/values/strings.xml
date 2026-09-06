@@ -191,6 +191,14 @@
     </string-array>
 
     <!--
+        Welcome
+    -->
+    <string name="welcome_title">Welcome to\nLuas at a Glance</string>
+    <string name="welcome_theme_prompt">Choose how the app should look</string>
+    <string name="welcome_theme_hint">You can change this at any time in <b>Settings</b>.</string>
+    <string name="welcome_get_started">Get started</string>
+
+    <!--
         What's New
     -->
     <string name="whatsnew_title_current" translatable="false">Version %s (%s)</string>

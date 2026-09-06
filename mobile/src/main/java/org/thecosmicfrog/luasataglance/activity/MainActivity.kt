@@ -40,7 +40,9 @@ import org.thecosmicfrog.luasataglance.adapter.ReplacerPagerAdapter
 import org.thecosmicfrog.luasataglance.databinding.ActivityMainBinding
 import org.thecosmicfrog.luasataglance.util.AppUtil.getScreenHeight
 import org.thecosmicfrog.luasataglance.util.Constant
+import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.view.NonSwipeableViewPager
+import androidx.core.view.size
 
 class MainActivity : AppCompatActivity() {
 
@@ -99,6 +101,11 @@ class MainActivity : AppCompatActivity() {
         getScreenHeight(windowManager, resources, applicationContext)
 
         configureAppAesthetics()
+
+        /* Display WelcomeActivity on first launch. */
+        if (savedInstanceState == null && !Preferences.welcomeShown(this)) {
+            startActivity(Intent(this, WelcomeActivity::class.java))
+        }
     }
 
     override fun onResume() {
@@ -152,7 +159,7 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigationView = binding.bottomnavigationview
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-        val bottomNavigationViewItemCount = bottomNavigationView.menu.size()
+        val bottomNavigationViewItemCount = bottomNavigationView.menu.size
 
         val replacerPagerAdapter = ReplacerPagerAdapter(
             supportFragmentManager,

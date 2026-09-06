@@ -179,6 +179,23 @@
         <item name="cornerSize">@dimen/cardview_laag_corner_radius</item>
     </style>
 
+    <style name="AppTheme.Welcome">
+        <item name="android:windowBackground">@color/welcome_background</item>
+    </style>
+
+    <style name="LuasAtAGlanceWelcomeThemeButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@color/welcome_theme_button_text</item>
+        <item name="backgroundTint">@color/welcome_theme_button_background</item>
+        <item name="strokeColor">@color/icon_accent</item>
+        <item name="rippleColor">@color/icon_accent</item>
+    </style>
+
+    <style name="LuasAtAGlanceWelcomeButton" parent="Widget.Material3.Button">
+        <item name="android:textColor">@color/welcome_button_text</item>
+        <item name="backgroundTint">@color/welcome_button_background</item>
+        <item name="shapeAppearance">@style/LuasAtAGlanceSnackbarShapeAppearance</item>
+    </style>
+
     <style name="LuasAtAGlancePreferenceDialogStyle" parent="Theme.Material3.DayNight.Dialog.Alert">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:background">@android:color/transparent</item>

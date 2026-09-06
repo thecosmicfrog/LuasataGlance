@@ -78,11 +78,13 @@
             android:theme="@style/LuasAtAGlanceCardDialog" />
         <activity
             android:name=".activity.SettingsActivity"
-            android:theme="@style/LuasAtAGlanceSettingsDialog">
-        </activity>
+            android:theme="@style/LuasAtAGlanceSettingsDialog" />
         <activity
             android:name=".activity.WhatsNewActivity"
             android:theme="@style/LuasAtAGlanceCardDialog" />
+        <activity
+            android:name=".activity.WelcomeActivity"
+            android:theme="@style/AppTheme.Welcome" />
     </application>
 
 </manifest>

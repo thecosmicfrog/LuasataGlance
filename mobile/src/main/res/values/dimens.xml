@@ -28,31 +28,23 @@
 
     <dimen name="cardview_laag_corner_radius">12dp</dimen>
 
-    <!--
-        Target height for one tram row. Rows are weighted rather than fixed, so this is only used to choose how many of them to
-        render. Their final height is whatever an equal division of the container works out to.
-    -->
     <dimen name="widget_tram_item_height">28dp</dimen>
-
-    <!--
-        Fixed heights for the widget's header and direction labels. calculateMaxTotalTrams sums these to work out how much room
-        is left for tram rows, so the corresponding views must use these dimens rather than wrap_content. Left to wrap, a large
-        system font size grows them, the sum understates them, and too many rows are requested.
-    -->
     <dimen name="widget_header_height">40dp</dimen>
     <dimen name="widget_direction_label_height">20dp</dimen>
-
-    <!--
-        Pinned so that the label still fits its band at a large system font size. The band is deliberately short, since every dp it
-        takes is a dp the tram rows do not get.
-    -->
     <dimen name="widget_direction_label_text_size">12sp</dimen>
+    <dimen name="widget_reported_height_slack">16dp</dimen>
 
     <!--
-        Launchers report more height through OPTION_APPWIDGET_SIZES and OPTION_APPWIDGET_MAX_HEIGHT than the widget actually gets to
-        draw in. Measuring three widget sizes on one device put the difference somewhere between 16dp and 36dp, and it is
-        launcher-specific, so it cannot be derived. Subtracted before choosing a row count so that the estimate errs low, which
-        keeps the weighted rows close to their target height instead of being squeezed below it.
+        The welcome screen. The tram is much wider than the device it is drawn on, and `wrap_content` would cap it at the width of
+        its parent and shrink it to fit, so both sides are stated. WelcomeActivity stops the tram with its nose on the card's left
+        margin.
     -->
-    <dimen name="widget_reported_height_slack">16dp</dimen>
+    <dimen name="welcome_stage_height">211dp</dimen>
+    <dimen name="welcome_tram_height">208dp</dimen>
+    <dimen name="welcome_tram_width">1142dp</dimen>
+    <dimen name="welcome_track_height">3dp</dimen>
+
+    <!-- How far the title falls as it fades in, and how far the card and button rise behind it. -->
+    <dimen name="welcome_title_slide">32dp</dimen>
+    <dimen name="welcome_content_rise">24dp</dimen>
 </resources>

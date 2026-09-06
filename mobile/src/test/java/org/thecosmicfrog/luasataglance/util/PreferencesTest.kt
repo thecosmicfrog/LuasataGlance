@@ -59,6 +59,16 @@ class PreferencesTest {
     }
 
     @Test
+    fun `the welcome screen counts as unshown until it says otherwise`() {
+        /* MainActivity launches WelcomeActivity on a false, so a fresh install has to read false rather than throwing. */
+        assertThat(Preferences.welcomeShown(context)).isFalse()
+
+        Preferences.saveWelcomeShown(context, true)
+
+        assertThat(Preferences.welcomeShown(context)).isTrue()
+    }
+
+    @Test
     fun `the next stop index round trips and defaults to the first entry`() {
         assertThat(Preferences.indexNextStopToLoad(context)).isEqualTo(0)
 

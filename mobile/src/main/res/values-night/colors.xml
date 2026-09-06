@@ -60,4 +60,10 @@
 
     <!-- The outline and centre of a map stop marker. -->
     <color name="map_marker_detail">#ff141218</color>
+
+    <!-- Welcome screen. -->
+    <color name="welcome_background">@color/background_screen</color>
+    <color name="welcome_tram">@color/luas_purple</color>
+    <color name="welcome_track">#ff2b2930</color>
+    <color name="welcome_button_text">@color/welcome_title</color>
 </resources>

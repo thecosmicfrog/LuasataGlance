@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2015-2026 Aaron Hastings
+
+    This file is part of Luas at a Glance.
+
+    Luas at a Glance is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Luas at a Glance is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Luas at a Glance.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:id="@+id/textview_welcome_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:gravity="center_horizontal"
+            android:lineSpacingMultiplier="0.95"
+            android:text="@string/welcome_title"
+            android:textColor="@color/welcome_title"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:id="@+id/framelayout_welcome_stage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/welcome_stage_height"
+            android:layout_marginTop="24dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/welcome_track_height"
+                android:layout_gravity="bottom"
+                android:background="@color/welcome_track" />
+
+            <ImageView
+                android:id="@+id/imageview_welcome_tram"
+                android:layout_width="@dimen/welcome_tram_width"
+                android:layout_height="@dimen/welcome_tram_height"
+                android:layout_gravity="bottom|start"
+                android:layout_marginBottom="@dimen/welcome_track_height"
+                android:contentDescription="@null"
+                android:src="@drawable/tram_silhouette" />
+        </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardview_welcome_theme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="24dp"
+            android:elevation="@dimen/cardview_laag_elevation"
+            app:cardBackgroundColor="@color/background_card"
+            app:cardCornerRadius="@dimen/cardview_laag_corner_radius"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/welcome_theme_prompt"
+                    android:textColor="@color/on_surface"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/togglegroup_welcome_theme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_welcome_theme_system"
+                        style="@style/LuasAtAGlanceWelcomeThemeButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/pref_entry_theme_system" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_welcome_theme_light"
+                        style="@style/LuasAtAGlanceWelcomeThemeButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/pref_entry_theme_light" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_welcome_theme_dark"
+                        style="@style/LuasAtAGlanceWelcomeThemeButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/pref_entry_theme_dark" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/welcome_theme_hint"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_welcome_get_started"
+            style="@style/LuasAtAGlanceWelcomeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="24dp"
+            android:minHeight="52dp"
+            android:text="@string/welcome_get_started"
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>
