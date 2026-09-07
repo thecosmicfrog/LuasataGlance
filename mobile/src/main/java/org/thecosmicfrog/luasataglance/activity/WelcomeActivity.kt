@@ -85,6 +85,9 @@ class WelcomeActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        /* Back dismisses this screen too. A theme change recreates the activity without finishing it, so isFinishing skips it. */
+        if (isFinishing) Preferences.saveWelcomeShown(this, true)
+
         tramAnimator?.cancel()
         tramAnimator = null
     }

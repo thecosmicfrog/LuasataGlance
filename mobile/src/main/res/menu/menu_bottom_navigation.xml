@@ -27,7 +27,7 @@
 
     <item
         android:id="@+id/menuitem_bottomnav_trams"
-        android:title="Trams"
+        android:title="@string/action_trams"
         android:icon="@drawable/ic_tram"
         android:orderInCategory="1"
         app:showAsAction="never" />

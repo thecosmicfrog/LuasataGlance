@@ -21,33 +21,35 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardview_stop_forecast"
     android:layout_width="fill_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
     app:cardCornerRadius="@dimen/cardview_laag_corner_radius">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintlayout_stop_forecast"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/stop_forecast_row_min_height"
         android:paddingTop="6dp"
         android:paddingBottom="6dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintlayout_stop_details"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline_cardview_stop_forecast"
+            app:layout_constraintEnd_toStartOf="@id/constraintlayout_due_time_details"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintlayout_stop"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +70,7 @@
                 <TextView
                     android:id="@+id/textview_stop_forecast_set_reminder"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:text="@string/tap_to_set_reminder"
                     android:textSize="10sp"
@@ -79,27 +81,21 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_cardview_stop_forecast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.85" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintlayout_due_time_details"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="12dp"
+            android:minWidth="@dimen/stop_forecast_due_time_min_width"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/guideline_cardview_stop_forecast"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintlayout_due_time"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -109,27 +105,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="8"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/textview_stop_forecast_due_time_min_mins"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="8" />
 
                 <TextView
                     android:id="@+id/textview_stop_forecast_due_time_min_mins"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="mins"
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_stop_forecast_due_time_value" />
+                    app:layout_constraintTop_toBottomOf="@+id/textview_stop_forecast_due_time_value"
+                    tools:text="mins" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
-

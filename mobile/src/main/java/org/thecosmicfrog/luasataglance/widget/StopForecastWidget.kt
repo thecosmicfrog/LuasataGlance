@@ -247,7 +247,16 @@ class StopForecastWidget : AppWidgetProvider() {
         val stopName = Preferences.widgetSelectedStopName(context, appWidgetId)
 
         if (stopName == null) {
-            showHoldingScreen(context, appWidgetId, context.getText(R.string.widget_message_configure))
+            /*
+             * Returns before the setOnClickPendingIntent calls below, so partiallyUpdateAppWidget has no handlers to preserve and
+             * the widget takes no touches at all. The one set here opens StopForecastWidgetConfigureActivity.
+             */
+            views.setViewVisibility(R.id.forecast_content, View.GONE)
+            views.setViewVisibility(R.id.holding_screen, View.VISIBLE)
+            views.setTextViewText(R.id.holding_screen_text, context.getText(R.string.widget_message_configure))
+            views.setOnClickPendingIntent(R.id.widget_body, getConfigurePendingIntent(context, appWidgetId))
+
+            appWidgetManager.updateAppWidget(appWidgetId, views)
 
             return
         }
@@ -711,6 +720,28 @@ class StopForecastWidget : AppWidgetProvider() {
     }
 
     /**
+     * Builds a [PendingIntent] that opens [StopForecastWidgetConfigureActivity] for one widget.
+     *
+     * @param context     Context the activity is started from.
+     * @param appWidgetId ID of the widget instance to configure.
+     * @return An activity [PendingIntent] unique to this widget.
+     */
+    private fun getConfigurePendingIntent(context: Context, appWidgetId: Int): PendingIntent {
+        val intent = Intent(context, StopForecastWidgetConfigureActivity::class.java).apply {
+            action = AppWidgetManager.ACTION_APPWIDGET_CONFIGURE
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            data = "configure://$appWidgetId".toUri()
+        }
+
+        return PendingIntent.getActivity(
+            context,
+            appWidgetId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+    /**
      * Schedules an [AlarmManager] alarm 15 seconds from now.
      *
      * When it fires, [ACTION_TIMEOUT] returns the widget to the holding screen. Tram times go stale quickly, so what is on screen
@@ -747,14 +778,19 @@ class StopForecastWidget : AppWidgetProvider() {
      *
      * @param context     Context.
      * @param appWidgetId ID of the widget instance being updated.
-     * @param message     Optional text to display on the holding screen. If null, the existing string resource default
-     *                    ("Tap to load times") is shown.
+     * @param message     Text to display on the holding screen. Defaults to "Tap to load times".
      */
     private fun showHoldingScreen(context: Context, appWidgetId: Int, message: CharSequence? = null) {
         val views = RemoteViews(context.packageName, R.layout.stop_forecast_widget)
         views.setViewVisibility(R.id.forecast_content, View.GONE)
         views.setViewVisibility(R.id.holding_screen, View.VISIBLE)
-        message?.let { views.setTextViewText(R.id.holding_screen_text, it) }
+
+        /*
+         * A partial update leaves the text an earlier one wrote, so leaving it unset let a widget that had once shown "Please
+         * configure widget" repeat it on every 15 second revert, long after it had a stop.
+         */
+        views.setTextViewText(R.id.holding_screen_text, message ?: context.getText(R.string.tap_to_load_times))
+
         AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(appWidgetId, views)
     }
 

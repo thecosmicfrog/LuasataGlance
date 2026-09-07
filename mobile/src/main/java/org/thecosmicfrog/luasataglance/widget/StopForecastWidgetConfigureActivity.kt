@@ -24,6 +24,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.activity.StopSelectActivity
 import org.thecosmicfrog.luasataglance.util.Preferences
@@ -63,13 +64,21 @@ class StopForecastWidgetConfigureActivity : StopSelectActivity() {
     }
 
     override fun onSave() {
+        /*
+         * RESULT_OK on an empty selection leaves the launcher holding a widget with no stop to draw. Backing out rather than
+         * saving still drops it, since onCreate sets RESULT_CANCELED.
+         */
+        if (selectedItems.isEmpty()) {
+            Toast.makeText(this, R.string.widget_select_at_least_one_stop, Toast.LENGTH_LONG).show()
+
+            return
+        }
+
         try {
-            if (selectedItems.isNotEmpty()) {
-                WidgetStopStore.save(this, mAppWidgetId, selectedItems)
-                Preferences.saveWidgetSelectedStopName(
-                    this, mAppWidgetId, selectedItems[0].toString()
-                )
-            }
+            WidgetStopStore.save(this, mAppWidgetId, selectedItems)
+            Preferences.saveWidgetSelectedStopName(
+                this, mAppWidgetId, selectedItems[0].toString()
+            )
         } catch (e: IOException) {
             Log.e(logTag, Log.getStackTraceString(e))
         }
