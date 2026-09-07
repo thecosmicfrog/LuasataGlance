@@ -33,6 +33,7 @@ import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -50,6 +51,7 @@ import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks
 import pub.devrel.easypermissions.EasyPermissions.RationaleCallbacks
 import pub.devrel.easypermissions.PermissionRequest
 import java.util.Locale
+import androidx.core.net.toUri
 
 class NotifyTimeActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbacks {
 
@@ -82,6 +84,16 @@ class NotifyTimeActivity : AppCompatActivity(), PermissionCallbacks, RationaleCa
     private fun initViews() {
         initNotifyTimeSpinner()
         initNotifyButton()
+        showReplaceWarningIfReminderPending()
+    }
+
+    /**
+     * Warn that scheduling will replace a reminder that has not fired yet. Only one reminder can exist at a time.
+     */
+    private fun showReplaceWarningIfReminderPending() {
+        if (Preferences.notifyTriggerTime(context) > System.currentTimeMillis()) {
+            viewBinding.textviewNotifytimeReplacesExisting.visibility = View.VISIBLE
+        }
     }
 
     /**
@@ -289,7 +301,7 @@ class NotifyTimeActivity : AppCompatActivity(), PermissionCallbacks, RationaleCa
         try {
             Intent().apply {
                 action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-                data = Uri.parse("package:$packageName")
+                data = "package:$packageName".toUri()
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }.also { startActivity(it) }
         } catch (e: Exception) {
@@ -297,7 +309,7 @@ class NotifyTimeActivity : AppCompatActivity(), PermissionCallbacks, RationaleCa
 
             /* Open the "App info" settings instead (user has to scroll down to "Alarms and reminders"). */
             startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.parse("package:$packageName")
+                data = "package:$packageName".toUri()
             })
         }
     }

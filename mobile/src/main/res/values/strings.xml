@@ -148,6 +148,7 @@
     <string name="notify_set">Schedule</string>
     <string name="notify_when">When would you like to be notified about this tram?</string>
     <string name="notify_successful">Notification scheduled.</string>
+    <string name="notify_replaces_existing">This will replace your previously scheduled notification.</string>
     <string name="notify_unsuccessful_exact_alarm">Notification creation failed. Please grant app permission to set exact alarms."
     </string>
     <string name="notify_invalid_time">Invalid time: Tram expected before then.</string>

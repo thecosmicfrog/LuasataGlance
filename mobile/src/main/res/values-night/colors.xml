@@ -54,6 +54,8 @@
     <color name="status_text_success">#ff7BD98F</color>
     <color name="status_text_error">#ffFF9E99</color>
 
+    <color name="text_error">#ffFF9E99</color>
+
     <!-- Softened slightly. -->
     <color name="tab_red_line">#ffE86A66</color>
     <color name="tab_green_line">#ff4FA96A</color>

@@ -60,6 +60,16 @@
             android:popupBackground="@drawable/spinner_background" />
     </com.google.android.material.card.MaterialCardView>
 
+    <TextView
+        android:id="@+id/textview_notifytime_replaces_existing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:text="@string/notify_replaces_existing"
+        android:textColor="@color/text_error"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="24dp" />

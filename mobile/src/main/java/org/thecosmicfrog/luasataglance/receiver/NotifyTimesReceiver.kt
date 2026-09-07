@@ -133,18 +133,20 @@ class NotifyTimesReceiver : BroadcastReceiver() {
         /* Wake up the device. */
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
+        val triggerTime = System.currentTimeMillis() + notifyDelayMillis
+
         try {
             /*
              * This is the only kind of alarm Android will not delay. Everything else gets held back once it decides the app is
              * used too rarely to be worth waking for (e.g., a user who rarely sets reminders).
              */
             alarmManager.setAlarmClock(
-                AlarmManager.AlarmClockInfo(
-                    System.currentTimeMillis() + notifyDelayMillis,
-                    pendingIntentShowAlarm
-                ),
+                AlarmManager.AlarmClockInfo(triggerTime, pendingIntentShowAlarm),
                 pendingIntent
             )
+
+            /* NotifyTimeActivity warns about replacing a reminder while this time is still in the future. */
+            Preferences.saveNotifyTriggerTime(context, triggerTime)
 
             return true
         } catch (_: SecurityException) {

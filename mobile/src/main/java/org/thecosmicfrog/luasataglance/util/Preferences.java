@@ -113,6 +113,19 @@ public final class Preferences {
     }
 
     /**
+     * Load the time the scheduled reminder is due to fire from shared preferences.
+     * @param context Context.
+     * @return Trigger time in milliseconds since the epoch, or 0 if no reminder has been scheduled.
+     */
+    public static long notifyTriggerTime(Context context) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getLong("notifyTriggerTime", 0);
+    }
+
+    /**
      * Whether or not a user should be prompted for location permission.
      * @param context Context.
      * @return User should be asked again.
@@ -288,6 +301,23 @@ public final class Preferences {
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
         prefs.putInt("notifyStopTimeExpected", notifyStopTimeExpected);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Save the time the scheduled reminder is due to fire to shared preferences.
+     * @param context Context.
+     * @param notifyTriggerTime Trigger time in milliseconds since the epoch.
+     * @return Successfully saved.
+     */
+    public static boolean saveNotifyTriggerTime(Context context, long notifyTriggerTime) {
+        final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
+
+        SharedPreferences.Editor prefs =
+                context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+
+        prefs.putLong("notifyTriggerTime", notifyTriggerTime);
 
         return prefs.commit();
     }
