@@ -219,12 +219,17 @@ class LineFragment : Fragment() {
             )
         }
 
+        val defaultStopName = Preferences.defaultStopName(ctx)
+        val hasDefaultStop = defaultStopName != null && defaultStopName != getString(R.string.none)
+
         /*
          * If an Intent did not bring us to this Activity and there is a stop name saved in
          * shared preferences, load that stop.
          * This provides persistence to the app across shutdowns.
+         *
+         * Skipped when a default stop is set, since the block below loads that instead.
          */
-        if (act?.intent?.hasExtra(Constant.STOP_NAME)?.not() == true) {
+        if (!hasDefaultStop && act?.intent?.hasExtra(Constant.STOP_NAME)?.not() == true) {
             if (Preferences.selectedStopName(ctx, Constant.NO_LINE) != null) {
                 val stopName = Preferences.selectedStopName(ctx, Constant.NO_LINE)
 
@@ -261,9 +266,8 @@ class LineFragment : Fragment() {
             if (hasSetTabAndSpinner) {
                 act?.intent?.removeExtra(Constant.NOTIFY_STOP_NAME)
             }
-        } else if (Preferences.defaultStopName(ctx) != getString(R.string.none)
-            && Preferences.defaultStopName(ctx) != null) {
-            setTabAndSpinner(Preferences.defaultStopName(ctx))
+        } else if (hasDefaultStop) {
+            setTabAndSpinner(defaultStopName)
         }
 
         /*

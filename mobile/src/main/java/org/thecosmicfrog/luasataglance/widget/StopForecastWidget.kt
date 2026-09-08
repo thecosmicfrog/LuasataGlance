@@ -245,6 +245,8 @@ class StopForecastWidget : AppWidgetProvider() {
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, forceUpdate: Boolean) {
         val views = RemoteViews(context.packageName, R.layout.stop_forecast_widget)
         val stopName = Preferences.widgetSelectedStopName(context, appWidgetId)
+            ?: WidgetStopStore.load(context, appWidgetId)?.firstOrNull()
+                ?.also { Preferences.saveWidgetSelectedStopName(context, appWidgetId, it) }
 
         if (stopName == null) {
             /*
