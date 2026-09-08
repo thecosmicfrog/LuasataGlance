@@ -216,6 +216,9 @@ class TramsFragment : Fragment() {
     }
 
     private fun showWhatsNewDialog() {
+        /* Prevent What's New dialog from displaying on top of the welcome screen. */
+        if (!Preferences.welcomeShown(context)) return
+
         /* Don't show the What's New dialog if we're running in Firebase Test Lab. */
         if (AppUtil.isRunningInFirebaseTestLab(context)) {
             Log.i(

@@ -82,11 +82,15 @@ class WelcomeActivity : AppCompatActivity() {
         outState.putBoolean(STATE_HAS_ANIMATED_IN, true)
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        /* Prevent the Welcome screen showing on every launch. */
+        if (isFinishing) Preferences.saveWelcomeShown(this, true)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-
-        /* Back dismisses this screen too. A theme change recreates the activity without finishing it, so isFinishing skips it. */
-        if (isFinishing) Preferences.saveWelcomeShown(this, true)
 
         tramAnimator?.cancel()
         tramAnimator = null
