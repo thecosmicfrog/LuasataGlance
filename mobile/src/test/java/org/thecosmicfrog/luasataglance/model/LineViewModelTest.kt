@@ -24,6 +24,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -631,6 +632,155 @@ class LineViewModelTest {
         assertThat(viewModel.stopForecastInfo.value).isNull()
     }
 
+    @Test
+    fun `a reply for the previous stop is dropped rather than drawn under the new one`() = runTest {
+        val tallaght = CompletableDeferred<Response<ApiTimes>>()
+        val api = FakeApiMethods { station ->
+            if (station == "TAL") tallaght.await()
+            else Response.success(apiTimes(tram("Connolly", "Inbound", "3"), status = normalStatus()))
+        }
+        val viewModel = viewModel(api)
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        runCurrent()
+
+        /* Without this the test would pass green even if the first request never went out. */
+        assertThat(api.callCount).isEqualTo(1)
+
+        /* Switch stop while the first is still unanswered. */
+        viewModel.loadStopForecast("Jervis", "JER")
+        advanceUntilIdle()
+
+        val jervis = viewModel.stopForecastInfo.value
+
+        tallaght.complete(Response.success(apiTimes(tram("The Point", "Inbound", "9"), status = normalStatus())))
+        advanceUntilIdle()
+
+        assertThat(viewModel.stopForecastInfo.value).isEqualTo(jervis)
+    }
+
+    @Test
+    fun `a failure for the previous stop does not replace the new one with an error`() = runTest {
+        val tallaght = CompletableDeferred<Response<ApiTimes>>()
+        val api = FakeApiMethods { station ->
+            if (station == "TAL") tallaght.await()
+            else Response.success(apiTimes(tram("Connolly", "Inbound", "3"), status = normalStatus()))
+        }
+        val viewModel = viewModel(api)
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        runCurrent()
+
+        /* Without this the test would pass green even if the first request never went out. */
+        assertThat(api.callCount).isEqualTo(1)
+
+        viewModel.loadStopForecast("Jervis", "JER")
+        advanceUntilIdle()
+
+        tallaght.completeExceptionally(IOException("no network"))
+        advanceUntilIdle()
+
+        assertThat(viewModel.stopForecastInfo.value).isNotNull()
+        assertThat(viewModel.status.value?.isError).isFalse()
+    }
+
+    @Test
+    fun `auto reload waits for the reply instead of firing the next request on top of it`() = runTest {
+        val inFlight = CompletableDeferred<Response<ApiTimes>>()
+        val api = FakeApiMethods { inFlight.await() }
+        val viewModel = viewModel(api)
+
+        viewModel.startAutoReload("Tallaght", "TAL", intervalMillis = 1000L)
+
+        /* Four intervals pass with the first request still unanswered. */
+        advanceTimeBy(4500.milliseconds)
+        runCurrent()
+
+        assertThat(api.callCount).isEqualTo(1)
+
+        inFlight.complete(Response.success(apiTimes(tram("Connolly", "Inbound", "3"), status = normalStatus())))
+        advanceTimeBy(1100.milliseconds)
+        runCurrent()
+
+        assertThat(api.callCount).isEqualTo(2)
+
+        viewModel.stopAutoReload()
+    }
+
+    @Test
+    fun `stopping auto reload cancels the request already in flight`() = runTest {
+        val inFlight = CompletableDeferred<Response<ApiTimes>>()
+        val api = FakeApiMethods { inFlight.await() }
+        val viewModel = viewModel(api)
+
+        viewModel.startAutoReload("Tallaght", "TAL", intervalMillis = 1000L)
+        runCurrent()
+        assertThat(api.callCount).isEqualTo(1)
+
+        viewModel.stopAutoReload()
+        advanceUntilIdle()
+
+        /* The reply lands after the fragment has gone. Nothing should be published, and no error shown. */
+        inFlight.complete(Response.success(apiTimes(tram("Connolly", "Inbound", "3"), status = normalStatus())))
+        advanceUntilIdle()
+
+        assertThat(viewModel.stopForecastInfo.value).isNull()
+        assertThat(viewModel.status.value).isNull()
+    }
+
+    @Test
+    fun `an older reply for the same stop cannot overwrite a newer one`() = runTest {
+        val first = CompletableDeferred<Response<ApiTimes>>()
+        val second = CompletableDeferred<Response<ApiTimes>>()
+        var call = 0
+        val api = FakeApiMethods {
+            call++
+            if (call == 1) first.await() else second.await()
+        }
+        val viewModel = viewModel(api)
+
+        /* A long interval so the loop fires once and the test drives the ordering itself. */
+        viewModel.startAutoReload("Tallaght", "TAL", intervalMillis = 600000L)
+        runCurrent()
+        assertThat(api.callCount).isEqualTo(1)
+
+        /* A pull to refresh on the same stop, issued while the loop's request is still out. */
+        viewModel.loadStopForecast("Tallaght", "TAL", isRefreshing = true)
+        runCurrent()
+        assertThat(api.callCount).isEqualTo(2)
+
+        second.complete(Response.success(apiTimes(tram("Connolly", "Inbound", "3"), status = normalStatus())))
+        runCurrent()
+
+        /* The loop's older reply lands last, and says the tram is further away than the newer one did. */
+        first.complete(Response.success(apiTimes(tram("Connolly", "Inbound", "4"), status = normalStatus())))
+        runCurrent()
+
+        assertThat(viewModel.stopForecast.value?.inboundTrams?.map { it.dueMinutes }).containsExactly("3")
+
+        viewModel.stopAutoReload()
+    }
+
+    @Test
+    fun `a request slower than the fetch timeout is reported rather than waited on`() = runTest {
+        /* Slower than the 8000ms fetch timeout, so the timeout wins and the late reply is never published. */
+        val api = FakeApiMethods {
+            delay(9000.milliseconds)
+            Response.success(apiTimes(tram("Connolly", "Inbound", "3"), status = normalStatus()))
+        }
+        val viewModel = viewModel(api)
+
+        viewModel.loadStopForecast("Tallaght", "TAL")
+        advanceTimeBy(8500.milliseconds)
+        runCurrent()
+
+        assertThat(viewModel.error.value).isEqualTo("Network error")
+
+        advanceUntilIdle()
+
+        assertThat(viewModel.stopForecast.value).isNull()
+    }
+
     private fun viewModel(apiMethods: ApiMethods) = LineViewModel(resourceProvider, apiMethods)
 
     private fun tram(destination: String, direction: String, dueMinutes: String) =
@@ -668,7 +818,7 @@ class LineViewModelTest {
      *
      * @param response Supplies the response for each call, so a test can change it between calls or throw from it.
      */
-    private class FakeApiMethods(private val response: suspend () -> Response<ApiTimes>) : ApiMethods {
+    private class FakeApiMethods(private val response: suspend (station: String?) -> Response<ApiTimes>) : ApiMethods {
 
         var callCount = 0
         var lastStation: String? = null
@@ -677,7 +827,7 @@ class LineViewModelTest {
             callCount++
             lastStation = station
 
-            return response()
+            return response(station)
         }
     }
 }

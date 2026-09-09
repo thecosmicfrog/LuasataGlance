@@ -24,13 +24,16 @@ package org.thecosmicfrog.luasataglance.model
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import okio.IOException
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.api.ApiMethods
@@ -82,8 +85,11 @@ class LineViewModel(
     val showSnackbarWithTime: StateFlow<String?> = _showSnackbarWithTime.asStateFlow()
 
     private var reloadJob: Job? = null
-    private var currentStopName: String? = null
+    private var loadJob: Job? = null
     private var currentStopId: String? = null
+
+    /* Bumped per request. Only the newest may publish, so a slow reply cannot overwrite a later one. */
+    private var latestRequest = 0
 
     override fun onCleared() {
         super.onCleared()
@@ -101,56 +107,92 @@ class LineViewModel(
     fun loadStopForecast(stopName: String?, stopId: String?, isRefreshing: Boolean = false, shouldShowSnackbar: Boolean = false) {
         if (stopName.isNullOrBlank() || stopId.isNullOrBlank()) return
 
-        currentStopName = stopName
         currentStopId = stopId
 
-        viewModelScope.launch {
-            try {
-                if (isRefreshing) {
-                    _isRefreshing.value = true
-                } else {
-                    _isLoading.value = true
-                }
-                _error.value = null
-                _showSnackbarWithTime.value = null
+        /* Prevent a superseded request continuing to run. */
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch { fetchStopForecast(stopId, isRefreshing, shouldShowSnackbar) }
+    }
 
-                val response = apiMethods.getStopForecast(
+    /**
+     * Fetch one stop forecast and publish it.
+     *
+     * Suspends until the request finishes, so [startAutoReload] can wait for it rather than firing the next one on top.
+     *
+     * @param stopId The ID of the stop.
+     * @param isRefreshing Whether or not the SwipeRefreshLayout is being refreshed.
+     * @param shouldShowSnackbar Whether or not we should show a Snackbar to the user with the API created time.
+     */
+    private suspend fun fetchStopForecast(stopId: String, isRefreshing: Boolean, shouldShowSnackbar: Boolean) {
+        val request = ++latestRequest
+        val job = currentCoroutineContext()[Job]
+
+        try {
+            if (isRefreshing) {
+                _isRefreshing.value = true
+            } else {
+                _isLoading.value = true
+            }
+            _error.value = null
+            _showSnackbarWithTime.value = null
+
+            val response = withTimeoutOrNull(FETCH_TIMEOUT_MS.milliseconds) {
+                apiMethods.getStopForecast(
                     action = "times",
                     ver = "3",
-                    station = currentStopId
+                    station = stopId
                 )
+            }
 
-                if (response.isSuccessful) {
-                    val apiTimes = response.body()
-                    if (apiTimes != null) {
-                        val stopForecast = createStopForecast(apiTimes)
-                        _stopForecast.value = stopForecast
+            /* Prevent a superseded reply overwriting a newer one. */
+            if (request != latestRequest) return
 
-                        updateStatus(stopForecast)
+            if (response == null) {
+                setError("Network error")
 
-                        _stopForecastInfo.value = processStopForecastInfo(stopForecast = stopForecast)
+                return
+            }
 
-                        if (shouldShowSnackbar) {
-                            getApiCreatedTime(apiTimes)?.let { time ->
-                                _showSnackbarWithTime.value = "Times updated at $time"
-                            }
+            if (response.isSuccessful) {
+                val apiTimes = response.body()
+
+                if (apiTimes != null) {
+                    val stopForecast = createStopForecast(apiTimes)
+                    _stopForecast.value = stopForecast
+
+                    updateStatus(stopForecast)
+
+                    _stopForecastInfo.value = processStopForecastInfo(stopForecast = stopForecast)
+
+                    if (shouldShowSnackbar) {
+                        getApiCreatedTime(apiTimes)?.let { time ->
+                            _showSnackbarWithTime.value = "Times updated at $time"
                         }
-                    } else {
-                        setError("No data received from server")
                     }
                 } else {
-                    setError("Error: ${response.code()}")
+                    setError("No data received from server")
                 }
+            } else {
+                setError("Error: ${response.code()}")
+            }
 
-            } catch (e: Exception) {
-                Log.e(logTag, "Error loading stop forecast", e)
+        } catch (e: Exception) {
+            /* Prevent LineFragment stopping the reload from being reported as a failed request. */
+            if (e is CancellationException && job?.isActive != true) throw e
 
-                when (e) {
-                    is IOException -> setError("Network error")
-                    is HttpException -> setError("Server error: ${e.code()}")
-                    else -> setError("Unexpected error: ${e.message}")
-                }
-            } finally {
+            Log.e(logTag, "Error loading stop forecast", e)
+
+            /* Prevent a superseded failure erroring a newer request. */
+            if (request != latestRequest) return
+
+            when (e) {
+                is IOException -> setError("Network error")
+                is HttpException -> setError("Server error: ${e.code()}")
+                else -> setError("Unexpected error: ${e.message}")
+            }
+        } finally {
+            /* Prevent a superseded reply hiding the progress bar for the request still running. */
+            if (request == latestRequest) {
                 _isLoading.value = false
                 _isRefreshing.value = false
             }
@@ -163,10 +205,9 @@ class LineViewModel(
      * @param stopName The name of the stop.
      * @param stopNameId The ID of the stop.
      * @param delayMillis Delay before starting the auto-reload.
-     * @param intervalMillis Interval between auto-reloads.
+     * @param intervalMillis Gap between one reply and the next request, rather than between requests.
      */
     fun startAutoReload(stopName: String?, stopNameId: String?, delayMillis: Long = 0L, intervalMillis: Long = 10000L) {
-        currentStopName = stopName
         currentStopId = stopNameId
 
         reloadJob?.cancel()
@@ -174,12 +215,9 @@ class LineViewModel(
             delay(delayMillis.milliseconds)
 
             while (isActive) {
-                loadStopForecast(
-                    stopName = currentStopName,
-                    stopId = currentStopId,
-                    isRefreshing = false,
-                    shouldShowSnackbar = false
-                )
+                /* Awaited. Prevent a request slower than intervalMillis having the next one fired on top of it. */
+                currentStopId?.takeIf { it.isNotBlank() }
+                    ?.let { fetchStopForecast(it, isRefreshing = false, shouldShowSnackbar = false) }
 
                 delay(intervalMillis.milliseconds)
             }
@@ -319,4 +357,9 @@ class LineViewModel(
      * @return The ID of the stop, or null if no stop in this language has that name.
      */
     fun getStopId(stopName: String?): String? = resourceProvider.stopId(stopName)
+
+    companion object {
+        /* Under startAutoReload's 10000L default, so a slow request cannot hold the loop past its next tick. */
+        private const val FETCH_TIMEOUT_MS = 8000L
+    }
 }
