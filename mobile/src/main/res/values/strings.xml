@@ -27,6 +27,7 @@
     <!--
         Activities
     -->
+    <string name="title_activity_default_stop_select">Select Default Stop</string>
     <string name="title_activity_favourites">Favourites</string>
     <string name="title_activity_favourites_select">Select Favourites</string>
     <string name="title_activity_license">License</string>
@@ -170,6 +171,7 @@
     -->
     <string name="pref_title_default_stop">Default Stop</string>
     <string name="pref_key_default_stop" translatable="false">default_stop</string>
+    <string name="pref_default_stop_save">Set default stop</string>
 
     <string name="pref_title_theme">Theme</string>
     <string name="pref_key_theme" translatable="false">theme</string>

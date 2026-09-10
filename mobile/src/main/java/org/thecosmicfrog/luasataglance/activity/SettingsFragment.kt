@@ -1,9 +1,13 @@
+package org.thecosmicfrog.luasataglance.activity
+
+import android.content.Intent
 import android.os.Bundle
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.ThemeUtil
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener {
@@ -11,16 +15,26 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
-        bindPreferenceSummaryToValue(
-            findPreference(getString(R.string.pref_key_default_stop)),
-            getString(R.string.none)
-        )
+        defaultStopPreference()?.setOnPreferenceClickListener {
+            startActivity(Intent(requireContext(), DefaultStopSelectActivity::class.java))
+
+            true
+        }
 
         bindPreferenceSummaryToValue(
             findPreference(getString(R.string.pref_key_theme)),
             getString(R.string.pref_value_theme_system)
         )
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        /* DefaultStopSelectActivity saves the stop itself, so the summary is only right again once it has closed. */
+        defaultStopPreference()?.summary = Preferences.defaultStopName(requireContext())
+    }
+
+    private fun defaultStopPreference(): Preference? = findPreference(getString(R.string.pref_key_default_stop))
 
     private fun bindPreferenceSummaryToValue(preference: Preference?, defaultValue: String) {
         preference?.let {

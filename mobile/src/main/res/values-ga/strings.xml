@@ -27,6 +27,7 @@
     <!--
         Activities
     -->
+    <string name="title_activity_default_stop_select">Roghnaigh Stad Réamhshocraithe</string>
     <string name="title_activity_favourites">Ceanáin</string>
     <string name="title_activity_favourites_select">Roghnaigh Ceanáin</string>
     <string name="title_activity_license">Ceadúnas</string>
@@ -154,6 +155,7 @@
         Settings
     -->
     <string name="pref_title_default_stop">Stad Réamhshocraithe</string>
+    <string name="pref_default_stop_save">Sábháil stad réamhshocraithe</string>
 
     <string name="pref_title_theme">Téama</string>
     <string name="pref_entry_theme_system">Córas</string>

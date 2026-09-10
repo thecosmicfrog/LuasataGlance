@@ -18,7 +18,6 @@
  */
 package org.thecosmicfrog.luasataglance.activity
 
-import SettingsFragment
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.thecosmicfrog.luasataglance.R

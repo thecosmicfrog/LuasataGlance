@@ -89,7 +89,7 @@ class StopsTest {
     /* Agreement with the string arrays. */
     @Test
     fun `the Red Line list is in the same order as its array`() {
-        /* MapsFragment.drawPolylines walks these by index, using ranges that encode where the line branches. */
+        /* Catches a stop added to Stops but not to the array, or added to both in a different position. */
         assertThat(Stops.redLine.map { context.getString(it.nameRes) }).containsExactlyElementsIn(stopsRedLine).inOrder()
     }
 

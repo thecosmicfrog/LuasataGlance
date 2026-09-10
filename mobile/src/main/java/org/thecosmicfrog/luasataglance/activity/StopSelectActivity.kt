@@ -27,13 +27,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.thecosmicfrog.luasataglance.R
-import org.thecosmicfrog.luasataglance.adapter.FavouritesSelectAdapter
+import org.thecosmicfrog.luasataglance.adapter.StopSelectAdapter
 import org.thecosmicfrog.luasataglance.databinding.ActivityStopSelectBinding
 
 /**
  * Abstract base Activity for selecting a list of stops with checkboxes.
  *
- * Handles the shared UI (toolbar, RecyclerView with [FavouritesSelectAdapter], save FAB) and stop loading. Subclasses provide the
+ * Handles the shared UI (toolbar, RecyclerView with [StopSelectAdapter], save FAB) and stop loading. Subclasses provide the
  * toolbar title and FAB text, and implement the load and save behaviour specific to their use case.
  */
 abstract class StopSelectActivity : AppCompatActivity() {
@@ -45,6 +45,9 @@ abstract class StopSelectActivity : AppCompatActivity() {
     /** String resource for the save FAB label. */
     @get:StringRes
     protected abstract val fabTextRes: Int
+
+    /** Whether checking a stop unchecks the others, e.g., [DefaultStopSelectActivity] is a screen that picks a single stop. */
+    protected open val isSingleSelect: Boolean = false
 
     /**
      * The mutable list of currently selected stops, shared with the adapter so that tap events update it in place.
@@ -72,11 +75,11 @@ abstract class StopSelectActivity : AppCompatActivity() {
      *
      * @return Alphabetically sorted list of all stop names.
      */
-    private fun loadAllStops(): ArrayList<CharSequence?> {
+    protected open fun loadAllStops(): ArrayList<CharSequence?> {
         val allStops = resources.getStringArray(R.array.array_stops_all)
 
         /*
-         * Create and return a sorted ArrayList of stop names, skipping the first element in the array ("Select a stop"),
+         * Create and return a sorted ArrayList of stop names, skipping the first element in the array ("None"),
          * casting to CharSequence for adapter compatibility, and sorting alphabetically in a case-insensitive manner.
          */
         return ArrayList(
@@ -94,7 +97,7 @@ abstract class StopSelectActivity : AppCompatActivity() {
     private fun initRecyclerView(stops: ArrayList<CharSequence?>) {
         viewBinding.recyclerviewStops.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = FavouritesSelectAdapter(stops, selectedItems)
+            adapter = StopSelectAdapter(stops, selectedItems, isSingleSelect)
         }
     }
 

@@ -60,9 +60,9 @@ public final class Preferences {
     }
 
     /**
-     * Load the currently-selected stop name from shared preferences.
+     * Load the default stop name from shared preferences.
      * @param context Context.
-     * @return Selected stop name, or null if none found.
+     * @return Default stop name, or R.string.none if no default has been set.
      */
     public static String defaultStopName(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -250,6 +250,21 @@ public final class Preferences {
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 
         prefs.putString("currentAppVersion", currentAppVersion);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Save the default stop name to shared preferences.
+     * @param context Context.
+     * @param defaultStopName Name of the stop to load on startup, or R.string.none for no default.
+     * @return Successfully saved.
+     */
+    public static boolean saveDefaultStopName(Context context, String defaultStopName) {
+        SharedPreferences.Editor prefs =
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
+
+        prefs.putString(context.getString(R.string.pref_key_default_stop), defaultStopName);
 
         return prefs.commit();
     }

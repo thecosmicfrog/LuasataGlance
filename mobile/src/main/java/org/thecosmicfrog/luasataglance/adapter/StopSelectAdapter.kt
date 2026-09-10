@@ -32,12 +32,20 @@ import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.util.Constant
 
-class FavouritesSelectAdapter(
+/**
+ * Lists stops as cards, each with a stripe in its line's colour and a checkbox.
+ *
+ * @param stops         The stops to list, in the order they are shown.
+ * @param selectedStops The stops currently checked, updated in place as the user taps.
+ * @param singleSelect  Whether checking a stop unchecks the others, as the default stop screen needs.
+ */
+class StopSelectAdapter(
     private val stops: ArrayList<CharSequence?>,
-    private val selectedStops: ArrayList<CharSequence?>?
-) : RecyclerView.Adapter<FavouritesSelectAdapter.ViewHolder>() {
+    private val selectedStops: ArrayList<CharSequence?>?,
+    private val singleSelect: Boolean = false
+) : RecyclerView.Adapter<StopSelectAdapter.ViewHolder>() {
 
-    private val logTag = FavouritesSelectAdapter::class.java.simpleName
+    private val logTag = StopSelectAdapter::class.java.simpleName
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val checkBox: CheckBox = view.findViewById(R.id.checkbox_stop)
@@ -47,7 +55,7 @@ class FavouritesSelectAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.cardview_favourite_selection, parent, false)
+            .inflate(R.layout.cardview_stop_selection, parent, false)
         return ViewHolder(view)
     }
 
@@ -61,12 +69,16 @@ class FavouritesSelectAdapter(
 
         /* Toggle the checkbox state. */
         val onClickListener = View.OnClickListener {
-            if (selectedStops?.contains(stop) == true) {
-                selectedStops.remove(stop)
+            if (singleSelect) {
+                selectOnly(holder, stop)
             } else {
-                selectedStops?.add(stop) == true
+                if (selectedStops?.contains(stop) == true) {
+                    selectedStops.remove(stop)
+                } else {
+                    selectedStops?.add(stop)
+                }
+                holder.checkBox.isChecked = selectedStops?.contains(stop) == true
             }
-            holder.checkBox.isChecked = selectedStops?.contains(stop) == true
         }
 
         /* Allow the user to tap either the entire card or the checkbox to toggle the selection. */
@@ -80,13 +92,15 @@ class FavouritesSelectAdapter(
 
     /**
      * Set an aesthetically-pleasing indicator colour based on the stop name and its associated line.
+     *
      * @param holder The ViewHolder for the RecyclerView.
      * @param stop The name of the stop.
      */
     private fun setLineIndicatorColor(holder: ViewHolder, stop: CharSequence) {
         val context = holder.itemView.context
+        val stopId = Stops.idForName(context, stop.toString())
 
-        when (Stops.line(Stops.idForName(context, stop.toString()))) {
+        when (Stops.line(stopId)) {
             Constant.RED_LINE -> {
                 holder.lineIndicator.setBackgroundColor(context.getColor(R.color.tab_red_line))
             }
@@ -95,9 +109,29 @@ class FavouritesSelectAdapter(
             }
             else -> {
                 holder.lineIndicator.setBackgroundColor(Color.TRANSPARENT)
-                Log.wtf(logTag, "Stop name not found in red or green line arrays.")
+
+                /* The default stop screen lists "None", which is not a stop, so only a real stop with no line is a bug. */
+                if (stopId != null) Log.wtf(logTag, "Stop name not found in red or green line arrays.")
             }
         }
+    }
+
+    /**
+     * Check a single stop, unchecking whichever stop was checked before.
+     *
+     * @param holder The ViewHolder for the row tapped.
+     * @param stop   The name of the stop tapped.
+     */
+    private fun selectOnly(holder: ViewHolder, stop: CharSequence?) {
+        val selected = selectedStops ?: return
+        val previousPosition = stops.indexOf(selected.firstOrNull())
+
+        selected.clear()
+        selected.add(stop)
+
+        /* The row checked before this one has to be redrawn as well, or two rows are left looking checked. */
+        if (previousPosition >= 0) notifyItemChanged(previousPosition)
+        notifyItemChanged(holder.bindingAdapterPosition)
     }
 
     override fun getItemCount() = stops.size

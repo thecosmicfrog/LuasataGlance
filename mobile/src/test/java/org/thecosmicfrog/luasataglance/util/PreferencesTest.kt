@@ -140,6 +140,22 @@ class PreferencesTest {
     }
 
     @Test
+    fun `a default stop survives a save and load`() {
+        Preferences.saveDefaultStopName(context, "Tallaght")
+
+        assertThat(Preferences.defaultStopName(context)).isEqualTo("Tallaght")
+    }
+
+    @Test
+    fun `saving the none entry turns the default stop back off`() {
+        Preferences.saveDefaultStopName(context, "Tallaght")
+        Preferences.saveDefaultStopName(context, context.getString(R.string.none))
+
+        /* LineFragment compares against R.string.none to decide whether to load a default stop at all. */
+        assertThat(Preferences.defaultStopName(context)).isEqualTo(context.getString(R.string.none))
+    }
+
+    @Test
     fun `two widgets do not share a stop`() {
         Preferences.saveWidgetSelectedStopName(context, FIRST_WIDGET_ID, "Tallaght")
         Preferences.saveWidgetSelectedStopName(context, SECOND_WIDGET_ID, "Sandyford")
