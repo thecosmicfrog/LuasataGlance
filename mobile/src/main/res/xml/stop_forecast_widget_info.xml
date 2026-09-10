@@ -31,7 +31,7 @@
     android:targetCellWidth="2"
     android:targetCellHeight="3"
     android:updatePeriodMillis="0"
-    android:previewImage="@raw/widget_preview"
+    android:previewLayout="@layout/stop_forecast_widget_preview"
     android:initialLayout="@layout/stop_forecast_widget"
     android:configure="org.thecosmicfrog.luasataglance.widget.StopForecastWidgetConfigureActivity"
     android:widgetFeatures="reconfigurable"
