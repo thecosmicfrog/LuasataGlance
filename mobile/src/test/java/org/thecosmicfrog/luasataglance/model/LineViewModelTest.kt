@@ -547,6 +547,7 @@ class LineViewModelTest {
         viewModel.loadStopForecast("Tallaght", "TAL")
         advanceUntilIdle()
 
+        /* No null between the message and the error, so the card does not shimmer on its way to showing the failure. */
         assertThat(seen).containsExactly(
             null,
             Status("Message", false),
@@ -597,18 +598,22 @@ class LineViewModelTest {
     }
 
     @Test
-    fun `clearing the forecast empties both the forecast and its display rows`() = runTest {
+    fun `clearing the forecast empties the forecast, its display rows, and the status`() = runTest {
         val viewModel = viewModel(
             FakeApiMethods { Response.success(apiTimes(tram("The Point", "Inbound", "5"), status = normalStatus())) }
         )
 
         viewModel.loadStopForecast("Tallaght", "TAL")
         advanceUntilIdle()
+        assertThat(viewModel.status.value).isNotNull()
 
         viewModel.clearStopForecast()
 
         assertThat(viewModel.stopForecast.value).isNull()
         assertThat(viewModel.stopForecastInfo.value).isNull()
+
+        /* The null status puts the shimmer back on the card, rather than the previous stop's message staying up. */
+        assertThat(viewModel.status.value).isNull()
     }
 
     @Test

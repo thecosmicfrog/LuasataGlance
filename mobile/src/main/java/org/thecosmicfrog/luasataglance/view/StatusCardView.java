@@ -23,11 +23,13 @@ package org.thecosmicfrog.luasataglance.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.card.MaterialCardView;
 
 import org.thecosmicfrog.luasataglance.R;
@@ -38,6 +40,7 @@ public class StatusCardView extends MaterialCardView {
 
     private TextView textViewStatusTitle;
     private TextView textViewStatus;
+    private ShimmerFrameLayout shimmerFrameLayoutStatus;
 
     public StatusCardView(Context context) {
         super(context);
@@ -70,11 +73,26 @@ public class StatusCardView extends MaterialCardView {
 
         textViewStatusTitle = findViewById(R.id.textview_status_title);
         textViewStatus = findViewById(R.id.textview_status);
+        shimmerFrameLayoutStatus = findViewById(R.id.shimmer_status);
     }
 
+    /**
+     * Show a status message in place of the shimmer.
+     *
+     * @param status The status message to display.
+     */
     public void setStatus(String status) {
-        textViewStatus = findViewById(R.id.textview_status);
+        shimmerFrameLayoutStatus.setVisibility(View.GONE);
+        textViewStatus.setVisibility(View.VISIBLE);
         textViewStatus.setText(status);
+    }
+
+    /**
+     * Show the shimmer in place of a status message.
+     */
+    public void showShimmer() {
+        textViewStatus.setVisibility(View.GONE);
+        shimmerFrameLayoutStatus.setVisibility(View.VISIBLE);
     }
 
     /**

@@ -51,8 +51,28 @@
             android:maxLines="30"
             android:scrollHorizontally="false"
             android:autoLink="all"
-            android:text="@string/message"
             android:textSize="16sp"
-            android:paddingVertical="3dp" />
+            android:paddingVertical="3dp"
+            android:visibility="gone" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_card"
+            android:paddingVertical="3dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/status_shimmer_bar_height"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="@dimen/status_shimmer_bar_inset"
+                android:background="@drawable/shimmer_gradient" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
     </LinearLayout>
 </merge>

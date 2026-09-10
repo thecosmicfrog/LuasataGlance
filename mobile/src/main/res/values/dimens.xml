@@ -32,6 +32,9 @@
     <dimen name="stop_forecast_row_min_height">50dp</dimen>
     <dimen name="stop_forecast_due_time_min_width">54dp</dimen>
 
+    <dimen name="status_shimmer_bar_height">16dp</dimen>
+    <dimen name="status_shimmer_bar_inset">12dp</dimen>
+
     <dimen name="widget_tram_item_height">28dp</dimen>
     <dimen name="widget_header_height">40dp</dimen>
     <dimen name="widget_direction_label_height">20dp</dimen>

@@ -44,7 +44,6 @@
     <string name="tab_red_line">Red Line</string>
     <string name="tab_green_line">Green Line</string>
     <string name="none">None</string>
-    <string name="message">Awaiting Luas status&#8230;</string>
     <string name="message_title">Status</string>
     <string name="message_no_status">No status message received from server. The Luas RTPI system
         may be down.

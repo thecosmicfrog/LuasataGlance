@@ -239,17 +239,19 @@ class LineViewModel(
      */
     private fun setError(message: String) {
         _error.value = message
-        _status.value = Status(resourceProvider.getString(R.string.message_error), true)
 
-        clearStopForecast()
+        clearStopForecast(status = Status(resourceProvider.getString(R.string.message_error), true))
     }
 
     /**
-     * Clear the stop forecast, so LineFragment draws the shimmer rows in its place.
+     * Clear the stop forecast, so LineFragment draws its shimmer rows in place of the trams.
+     *
+     * @param status The status to show, or null to shimmer the status card too.
      */
-    fun clearStopForecast() {
+    fun clearStopForecast(status: Status? = null) {
         _stopForecast.value = null
         _stopForecastInfo.value = null
+        _status.value = status
     }
 
     /**

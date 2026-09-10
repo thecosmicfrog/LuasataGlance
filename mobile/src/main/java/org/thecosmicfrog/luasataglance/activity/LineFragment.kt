@@ -418,12 +418,19 @@ class LineFragment : Fragment() {
         /* Spinner colours come from LaagSwipeRefreshLayout. */
         swipeRefreshLayout = viewBinding?.swiperefreshlayout!!
         swipeRefreshLayout?.setOnRefreshListener {
-            viewModel.loadStopForecast(
-                stopName = Preferences.selectedStopName(ctx, line),
-                stopId = viewModel.getStopId(Preferences.selectedStopName(ctx, line)),
-                isRefreshing = true,
-                shouldShowSnackbar = true
-            )
+            val stopName = currentStopName()
+            val stopId = viewModel.getStopId(stopName)
+
+            if (stopName == null || stopId == null) {
+                swipeRefreshLayout?.isRefreshing = false
+            } else {
+                viewModel.loadStopForecast(
+                    stopName = stopName,
+                    stopId = stopId,
+                    isRefreshing = true,
+                    shouldShowSnackbar = true
+                )
+            }
         }
 
         scrollView = viewBinding?.scrollview!!
@@ -513,9 +520,11 @@ class LineFragment : Fragment() {
         viewModel.stopAutoReload()
 
         if (isVisibleToUser) {
+            val stopName = currentStopName()
+
             viewModel.startAutoReload(
-                stopName = Preferences.selectedStopName(ctx, line),
-                stopNameId = viewModel.getStopId(Preferences.selectedStopName(ctx, line)),
+                stopName = stopName,
+                stopNameId = viewModel.getStopId(stopName),
                 delayMillis = delayTimeMillis
             )
         } else {
@@ -524,19 +533,29 @@ class LineFragment : Fragment() {
     }
 
     /**
+     * The stop the Spinner is showing, which is the stop drawn on screen.
+     *
+     * @return The selected stop name, or null if the view is gone.
+     */
+    private fun currentStopName(): String? = spinnerCardView?.spinnerStops?.selectedItem?.toString()
+
+    /**
      * Initialise observers for the ViewModel.
      */
     private fun initObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.status.collect { status ->
-                status?.let { (message, isError) ->
-                    statusCardView?.setStatus(message)
+                if (status == null) {
+                    /* Null covers a cold start, a stop change, and a tab change. */
+                    statusCardView?.showShimmer()
+                } else {
+                    statusCardView?.setStatus(status.message)
+                }
 
-                    if (isError) {
-                        statusCardView?.setStatusColor(R.color.status_fill_error, R.color.status_text_error)
-                    } else {
-                        statusCardView?.setStatusColor(R.color.status_fill_success, R.color.status_text_success)
-                    }
+                if (status?.isError == true) {
+                    statusCardView?.setStatusColor(R.color.status_fill_error, R.color.status_text_error)
+                } else {
+                    statusCardView?.setStatusColor(R.color.status_fill_success, R.color.status_text_success)
                 }
             }
         }
