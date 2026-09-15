@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.children
 import androidx.core.view.doOnLayout
 import androidx.core.view.updatePadding
 import org.thecosmicfrog.luasataglance.R
@@ -45,6 +46,8 @@ class WelcomeActivity : AppCompatActivity() {
 
     private var tramAnimator: ObjectAnimator? = null
 
+    private var isLeaving = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -59,7 +62,7 @@ class WelcomeActivity : AppCompatActivity() {
         binding.buttonWelcomeGetStarted.setOnClickListener {
             Preferences.saveWelcomeShown(this, true)
 
-            finish()
+            animateExit()
         }
 
         /* Stop the tram from re-animating if a user picks a new theme. */
@@ -92,6 +95,8 @@ class WelcomeActivity : AppCompatActivity() {
 
         tramAnimator?.cancel()
         tramAnimator = null
+
+        binding.imageviewWelcomeTram.animate().cancel()
     }
 
     /**
@@ -179,6 +184,61 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     /**
+     * Run [animateContentIn] backwards, then let the tram pull out of the stop and take the screen with it.
+     */
+    private fun animateExit() {
+        /* "Get started" stays tappable through its own fade, and a second tap would restart the departure. */
+        if (isLeaving) return
+
+        isLeaving = true
+
+        binding.buttonWelcomeGetStarted.isEnabled = false
+
+        /* A theme tapped on the way out recreates the activity, which drops the animation and leaves the screen up. */
+        binding.togglegroupWelcomeTheme.children.forEach { it.isEnabled = false }
+
+        binding.textviewWelcomeTitle.animate()
+            .alpha(0f)
+            .translationY(-resources.getDimension(R.dimen.welcome_title_slide))
+            .setStartDelay(DELAY_CONTENT_OUT_STAGGER_MS * 2)
+            .setDuration(DURATION_CONTENT_OUT_MS)
+            .setInterpolator(INTERPOLATOR_DEPART)
+
+        val drop = resources.getDimension(R.dimen.welcome_content_rise)
+
+        /* The button led the way in last, so it leads the way out first. */
+        listOf(binding.buttonWelcomeGetStarted, binding.cardviewWelcomeTheme).forEachIndexed { index, view ->
+            view.animate()
+                .alpha(0f)
+                .translationY(drop)
+                .setStartDelay(index * DELAY_CONTENT_OUT_STAGGER_MS)
+                .setDuration(DURATION_CONTENT_OUT_MS)
+                .setInterpolator(INTERPOLATOR_DEPART)
+        }
+
+        departTram()
+    }
+
+    /**
+     * Accelerate the tram off the left edge and close the screen once its tail has gone with it.
+     */
+    private fun departTram() {
+        val tram = binding.imageviewWelcomeTram
+
+        /* A tap before the tram has finished arriving departs from wherever it got to. */
+        tramAnimator?.cancel()
+        tramAnimator = null
+
+        /* The drawable is much wider than an average phone screen so most of the travel is the body streaming past. */
+        tram.animate()
+            .translationX(-tram.width.toFloat())
+            .setStartDelay(DELAY_TRAM_DEPART_MS)
+            .setDuration(DURATION_TRAM_DEPART_MS)
+            .setInterpolator(INTERPOLATOR_DEPART)
+            .withEndAction { finish() }
+    }
+
+    /**
      * Put the content where [animateContentIn] would leave it, for a recreate after a theme change.
      */
     private fun showContentImmediately() {
@@ -238,8 +298,17 @@ class WelcomeActivity : AppCompatActivity() {
         private const val DELAY_CONTENT_STAGGER_MS = 100L
         private const val DURATION_CONTENT_MS = 400L
 
-        /* Decelerate easing. Everything here arrives rather than leaves, so nothing uses the accelerating one. */
+        private const val DELAY_CONTENT_OUT_STAGGER_MS = 60L
+        private const val DURATION_CONTENT_OUT_MS = 250L
+
+        private const val DELAY_TRAM_DEPART_MS = 150L
+        private const val DURATION_TRAM_DEPART_MS = 1700L
+
+        /* Decelerate easing, for everything arriving. */
         private val INTERPOLATOR_DECELERATE = PathInterpolator(0f, 0f, 0.2f, 1f)
+
+        /* Emphasized accelerate, the mirror of the above. Used for everything leaving when "Get started" is tapped. */
+        private val INTERPOLATOR_DEPART = PathInterpolator(0.3f, 0f, 1f, 1f)
 
         /* Emphasized decelerate. A harder version of the above. Used only for the tram coming to a stand. */
         private val INTERPOLATOR_ARRIVE = PathInterpolator(0.05f, 0.7f, 0.1f, 1f)
