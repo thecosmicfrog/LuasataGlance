@@ -168,7 +168,7 @@
     <!--
         Settings
     -->
-    <string name="pref_title_default_stop">Default Stop</string>
+    <string name="pref_title_default_stop">Default stop</string>
     <string name="pref_key_default_stop" translatable="false">default_stop</string>
     <string name="pref_default_stop_save">Set default stop</string>
 

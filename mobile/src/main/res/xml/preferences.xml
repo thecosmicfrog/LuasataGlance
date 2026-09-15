@@ -19,22 +19,21 @@
 -->
 
 <PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- SettingsFragment opens DefaultStopSelectActivity from here, so that the list matches the favourites and widget screens. -->
     <Preference
         android:id="@+id/preference_default_stop"
         android:key="@string/pref_key_default_stop"
         android:title="@string/pref_title_default_stop"
-        app:iconSpaceReserved="false" />
+        android:icon="@drawable/near_me" />
 
     <ListPreference
         android:id="@+id/listpreference_theme"
         android:key="@string/pref_key_theme"
         android:title="@string/pref_title_theme"
+        android:icon="@drawable/palette"
         android:defaultValue="@string/pref_value_theme_system"
         android:entries="@array/array_theme_entries"
-        android:entryValues="@array/array_theme_values"
-        app:iconSpaceReserved="false" />
+        android:entryValues="@array/array_theme_values" />
 </PreferenceScreen>
