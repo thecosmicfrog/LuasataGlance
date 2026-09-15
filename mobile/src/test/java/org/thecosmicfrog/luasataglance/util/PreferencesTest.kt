@@ -21,6 +21,7 @@
 package org.thecosmicfrog.luasataglance.util
 
 import android.content.Context
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -153,6 +154,34 @@ class PreferencesTest {
 
         /* LineFragment compares against R.string.none to decide whether to load a default stop at all. */
         assertThat(Preferences.defaultStopName(context)).isEqualTo(context.getString(R.string.none))
+    }
+
+    @Test
+    fun `the theme falls back to the Android system option`() {
+        assertThat(Preferences.theme(context)).isEqualTo(context.getString(R.string.pref_value_theme_system))
+    }
+
+    @Test
+    fun `a theme survives a save and load`() {
+        Preferences.saveTheme(context, context.getString(R.string.pref_value_theme_dark))
+
+        assertThat(Preferences.theme(context)).isEqualTo(context.getString(R.string.pref_value_theme_dark))
+    }
+
+    @Test
+    fun `a theme saved from the Welcome screen is the one the Settings picker reads`() {
+        Preferences.saveTheme(context, context.getString(R.string.pref_value_theme_light))
+
+        /*
+         * SettingsFragment's ListPreference reads the default file through the preference framework rather than through
+         * Preferences, so saveTheme writing to the `org.thecosmicfrog.luasataglance` file instead would leave the Welcome screen
+         * and the Settings picker showing different themes.
+         */
+        val asThePickerSeesIt = PreferenceManager
+            .getDefaultSharedPreferences(context)
+            .getString(context.getString(R.string.pref_key_theme), null)
+
+        assertThat(asThePickerSeesIt).isEqualTo(context.getString(R.string.pref_value_theme_light))
     }
 
     @Test

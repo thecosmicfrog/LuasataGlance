@@ -22,6 +22,7 @@ package org.thecosmicfrog.luasataglance.util
 
 import android.app.UiModeManager
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -33,35 +34,42 @@ import org.robolectric.annotation.Config
 import org.thecosmicfrog.luasataglance.R
 
 /**
- * Tests [ThemeUtil], which turns the Theme setting into a mode for UiModeManager. Anything it does not recognise comes out as
- * MODE_NIGHT_AUTO, so a wrong value looks like the Android system option rather than failing.
+ * Tests [ThemeUtil], which turns the Theme setting into a night mode for AppCompat, and for UiModeManager as well when the user
+ * picked the theme.
  */
 @RunWith(RobolectricTestRunner::class)
 class ThemeUtilTest {
 
     private lateinit var context: Context
 
-    /* The mode ThemeUtil last passed to UiModeManager.setApplicationNightMode. */
-    private val appliedNightMode: Int
+    /* The mode ThemeUtil last passed to AppCompatDelegate.setDefaultNightMode, which themes the app. */
+    private val appCompatNightMode: Int
+        get() = AppCompatDelegate.getDefaultNightMode()
+
+    /* The mode ThemeUtil last passed to UiModeManager.setApplicationNightMode. This one only reaches the splash screen. */
+    private val splashNightMode: Int
         get() = shadowOf(context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager).applicationNightMode
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
+
+        /* AppCompat's mode is static, so a value left behind by the previous test would be read as this one's result. */
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
     @Test
     fun `Light holds the app in light mode whatever the device is set to`() {
         ThemeUtil.applyTheme(context, context.getString(R.string.pref_value_theme_light))
 
-        assertThat(appliedNightMode).isEqualTo(UiModeManager.MODE_NIGHT_NO)
+        assertThat(appCompatNightMode).isEqualTo(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     @Test
     fun `Dark holds the app in dark mode whatever the device is set to`() {
         ThemeUtil.applyTheme(context, context.getString(R.string.pref_value_theme_dark))
 
-        assertThat(appliedNightMode).isEqualTo(UiModeManager.MODE_NIGHT_YES)
+        assertThat(appCompatNightMode).isEqualTo(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
     @Test
@@ -69,21 +77,41 @@ class ThemeUtilTest {
         ThemeUtil.applyTheme(context, context.getString(R.string.pref_value_theme_dark))
         ThemeUtil.applyTheme(context, context.getString(R.string.pref_value_theme_system))
 
-        assertThat(appliedNightMode).isEqualTo(UiModeManager.MODE_NIGHT_AUTO)
+        assertThat(appCompatNightMode).isEqualTo(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
     @Test
     fun `an unrecognised value follows the device rather than crashing`() {
+        ThemeUtil.applyTheme(context, context.getString(R.string.pref_value_theme_dark))
         ThemeUtil.applyTheme(context, "midnight")
 
-        assertThat(appliedNightMode).isEqualTo(UiModeManager.MODE_NIGHT_AUTO)
+        assertThat(appCompatNightMode).isEqualTo(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
     @Test
     fun `a null value follows the device`() {
+        ThemeUtil.applyTheme(context, context.getString(R.string.pref_value_theme_dark))
         ThemeUtil.applyTheme(context, null)
 
-        assertThat(appliedNightMode).isEqualTo(UiModeManager.MODE_NIGHT_AUTO)
+        assertThat(appCompatNightMode).isEqualTo(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+    }
+
+    @Test
+    fun `a theme the user picks both themes the app and reaches the splash screen`() {
+        ThemeUtil.applyPickedTheme(context, context.getString(R.string.pref_value_theme_dark))
+
+        assertThat(appCompatNightMode).isEqualTo(AppCompatDelegate.MODE_NIGHT_YES)
+        assertThat(splashNightMode).isEqualTo(UiModeManager.MODE_NIGHT_YES)
+    }
+
+    @Test
+    fun `a process start leaves the splash screen mode alone`() {
+        ThemeUtil.applyPickedTheme(context, context.getString(R.string.pref_value_theme_dark))
+
+        ThemeUtil.applyTheme(context, context.getString(R.string.pref_value_theme_light))
+
+        assertThat(appCompatNightMode).isEqualTo(AppCompatDelegate.MODE_NIGHT_NO)
+        assertThat(splashNightMode).isEqualTo(UiModeManager.MODE_NIGHT_YES)
     }
 
     @Test
@@ -92,8 +120,8 @@ class ThemeUtilTest {
         val values = context.resources.getStringArray(R.array.array_theme_values)
 
         val nightModes = values.map { value ->
-            ThemeUtil.applyTheme(context, value)
-            appliedNightMode
+            ThemeUtil.applyPickedTheme(context, value)
+            splashNightMode
         }
 
         assertThat(values).hasLength(3)
@@ -120,7 +148,7 @@ class ThemeUtilTest {
         /* Translating pref_value_theme_dark would leave an Irish device saving "Dorcha" and matching nothing. */
         ThemeUtil.applyTheme(context, context.getString(R.string.pref_value_theme_dark))
 
-        assertThat(appliedNightMode).isEqualTo(UiModeManager.MODE_NIGHT_YES)
+        assertThat(appCompatNightMode).isEqualTo(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
     @Test

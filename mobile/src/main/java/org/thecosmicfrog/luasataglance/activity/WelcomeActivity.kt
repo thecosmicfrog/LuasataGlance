@@ -26,13 +26,11 @@ import android.view.View
 import android.view.animation.PathInterpolator
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.updatePadding
-import androidx.preference.PreferenceManager
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivityWelcomeBinding
 import org.thecosmicfrog.luasataglance.util.Preferences
@@ -194,9 +192,7 @@ class WelcomeActivity : AppCompatActivity() {
      * Check the button for the theme the app is already in, before anything listens for a change.
      */
     private fun checkCurrentTheme() {
-        val theme = PreferenceManager.getDefaultSharedPreferences(this).getString(
-            getString(R.string.pref_key_theme), getString(R.string.pref_value_theme_system)
-        )
+        val theme = Preferences.theme(this)
 
         binding.togglegroupWelcomeTheme.check(
             when (theme) {
@@ -221,11 +217,9 @@ class WelcomeActivity : AppCompatActivity() {
                 else -> getString(R.string.pref_value_theme_system)
             }
 
-            PreferenceManager.getDefaultSharedPreferences(this).edit {
-                putString(getString(R.string.pref_key_theme), theme)
-            }
+            Preferences.saveTheme(this, theme)
 
-            ThemeUtil.applyTheme(this, theme)
+            ThemeUtil.applyPickedTheme(this, theme)
         }
     }
 

@@ -22,6 +22,7 @@ package org.thecosmicfrog.luasataglance.util
 
 import android.app.UiModeManager
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import org.thecosmicfrog.luasataglance.R
 
 object ThemeUtil {
@@ -33,16 +34,47 @@ object ThemeUtil {
      * @param theme One of the values in `array_theme_values`.
      */
     fun applyTheme(context: Context, theme: String?) {
+        AppCompatDelegate.setDefaultNightMode(themeSetting(context, theme).appCompatNightMode)
+    }
+
+    /**
+     * Apply a theme the user has just picked, and tell Android which colours to draw the splash screen in.
+     *
+     * @param context Context.
+     * @param theme One of the values in `array_theme_values`.
+     */
+    fun applyPickedTheme(context: Context, theme: String?) {
+        applyTheme(context, theme)
+
         val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
 
-        uiModeManager.setApplicationNightMode(
-            when (theme) {
-                context.getString(R.string.pref_value_theme_light) -> UiModeManager.MODE_NIGHT_NO
-                context.getString(R.string.pref_value_theme_dark) -> UiModeManager.MODE_NIGHT_YES
+        /* Only affects the splash screen. */
+        uiModeManager.setApplicationNightMode(themeSetting(context, theme).splashNightMode)
+    }
 
-                /* UiModeManager has no "match the device" constant. MODE_NIGHT_AUTO follows the device's light and dark setting. */
-                else -> UiModeManager.MODE_NIGHT_AUTO
-            }
-        )
+    /**
+     * Match a stored preference value against the three the picker offers.
+     *
+     * @param context Context.
+     * @param theme One of the values in `array_theme_values`.
+     * @return The matching setting, or [ThemeSetting.SYSTEM] for anything unrecognised.
+     */
+    private fun themeSetting(context: Context, theme: String?) = when (theme) {
+        context.getString(R.string.pref_value_theme_light) -> ThemeSetting.LIGHT
+        context.getString(R.string.pref_value_theme_dark) -> ThemeSetting.DARK
+
+        /* An unrecognised value comes out as the Android system option. */
+        else -> ThemeSetting.SYSTEM
+    }
+
+    /**
+     * A Theme setting and the night mode it means to each API.
+     */
+    private enum class ThemeSetting(val appCompatNightMode: Int, val splashNightMode: Int) {
+
+        /* UiModeManager has no "match the device" constant. MODE_NIGHT_AUTO follows the device's light and dark setting. */
+        SYSTEM(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, UiModeManager.MODE_NIGHT_AUTO),
+        LIGHT(AppCompatDelegate.MODE_NIGHT_NO, UiModeManager.MODE_NIGHT_NO),
+        DARK(AppCompatDelegate.MODE_NIGHT_YES, UiModeManager.MODE_NIGHT_YES)
     }
 }

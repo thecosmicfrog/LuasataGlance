@@ -21,7 +21,7 @@
 package org.thecosmicfrog.luasataglance
 
 import android.app.Application
-import androidx.preference.PreferenceManager
+import org.thecosmicfrog.luasataglance.util.Preferences
 import org.thecosmicfrog.luasataglance.util.ThemeUtil
 
 class LuasAtAGlanceApplication : Application() {
@@ -29,11 +29,7 @@ class LuasAtAGlanceApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-
-        ThemeUtil.applyTheme(
-            this,
-            preferences.getString(getString(R.string.pref_key_theme), getString(R.string.pref_value_theme_system))
-        )
+        /* AppCompat keeps its night mode in the process, not on disk, so every start has to set it from the `theme` preference. */
+        ThemeUtil.applyTheme(this, Preferences.theme(this))
     }
 }

@@ -54,7 +54,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         val stringValue = newValue.toString()
 
         if (preference.key == getString(R.string.pref_key_theme)) {
-            ThemeUtil.applyTheme(preference.context, stringValue)
+            ThemeUtil.applyPickedTheme(preference.context, stringValue)
         }
 
         if (preference is ListPreference) {

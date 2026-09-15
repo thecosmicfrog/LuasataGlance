@@ -195,6 +195,20 @@ public final class Preferences {
     }
 
     /**
+     * Load the theme from shared preferences.
+     * @param context Context.
+     * @return One of the values in array_theme_values, defaulting to the Android system option.
+     */
+    public static String theme(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        return prefs.getString(
+                context.getString(R.string.pref_key_theme),
+                context.getString(R.string.pref_value_theme_system)
+        );
+    }
+
+    /**
      * Load whether the welcome screen has already been shown.
      * @param context Context.
      * @return Welcome screen has been shown.
@@ -427,6 +441,21 @@ public final class Preferences {
          */
         prefs.putString("selectedStopName", selectedStopName);
         prefs.putString(line + "_selectedStopName", selectedStopName);
+
+        return prefs.commit();
+    }
+
+    /**
+     * Save the theme to shared preferences.
+     * @param context Context.
+     * @param theme One of the values in array_theme_values.
+     * @return Successfully saved.
+     */
+    public static boolean saveTheme(Context context, String theme) {
+        SharedPreferences.Editor prefs =
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
+
+        prefs.putString(context.getString(R.string.pref_key_theme), theme);
 
         return prefs.commit();
     }
