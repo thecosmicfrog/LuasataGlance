@@ -22,17 +22,24 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.Manifest
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.PathInterpolator
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.net.toUri
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.maplibre.android.MapLibre
@@ -55,6 +62,7 @@ import org.maplibre.android.style.sources.GeoJsonSource
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.FragmentMapsBinding
 import org.thecosmicfrog.luasataglance.exception.StopMarkerNotFoundException
+import org.thecosmicfrog.luasataglance.model.Stop
 import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
@@ -73,6 +81,9 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, EasyPermis
 
     private lateinit var listMarkers: MutableList<Marker>
 
+    /* The stop the directions FAB currently offers, which is whatever marker's info window is open. Null hides the FAB. */
+    private var directionsMarker: Marker? = null
+
     companion object {
         const val requestCodeLocation = 101
 
@@ -80,6 +91,12 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, EasyPermis
         private const val MARKER_LAYER = "org.maplibre.annotations.points"
         private const val LINE_WIDTH = 4.0f
         private const val MY_LOCATION_ZOOM = 14.0
+
+        private const val DURATION_DIRECTIONS_FAB_IN_MS = 250L
+        private const val DURATION_DIRECTIONS_FAB_OUT_MS = 200L
+
+        private val INTERPOLATOR_DECELERATE = PathInterpolator(0f, 0f, 0.2f, 1f)
+        private val INTERPOLATOR_ACCELERATE = PathInterpolator(0.3f, 0f, 1f, 1f)
 
         fun newInstance(): Fragment {
             val mapsFragment = MapsFragment()
@@ -89,6 +106,47 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, EasyPermis
 
             return mapsFragment
         }
+
+        /**
+         * Open a stop in the user's maps app (e.g., Google Maps), which drops a pin on it with its own Directions button.
+         *
+         * @param context Context.
+         * @param stop    Stop to open.
+         * @param label   Name to caption the pin with.
+         */
+        @VisibleForTesting
+        internal fun openDirections(context: Context, stop: Stop, label: String) {
+            try {
+                context.startActivity(Intent(Intent.ACTION_VIEW, directionsUri(stop, label)))
+            } catch (_: ActivityNotFoundException) {
+                /* No maps app installed, so open Google Maps in the browser, straight onto its directions screen. */
+                context.startActivity(Intent(Intent.ACTION_VIEW, directionsWebUri(stop)))
+            }
+        }
+
+        /**
+         * Build the `geo:` URI that hands a stop to the user's maps app.
+         *
+         * @param stop  Stop to open.
+         * @param label Name to caption the pin with.
+         * @return URI centred on the stop with a labelled pin on it.
+         */
+        @VisibleForTesting
+        internal fun directionsUri(stop: Stop, label: String): Uri {
+            val point = "${stop.latitude},${stop.longitude}"
+
+            return "geo:$point?q=$point(${Uri.encode(label)})".toUri()
+        }
+
+        /**
+         * Build the Google Maps web URL used when no app handles `geo:`.
+         *
+         * @param stop Stop to get directions to.
+         * @return URL with the stop as the destination and walking as the mode.
+         */
+        @VisibleForTesting
+        internal fun directionsWebUri(stop: Stop): Uri =
+            "https://www.google.com/maps/dir/?api=1&destination=${stop.latitude},${stop.longitude}&travelmode=walking".toUri()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,6 +167,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, EasyPermis
         listMarkers = mutableListOf()
 
         binding?.fabMyLocation?.setOnClickListener { jumpToMyLocation() }
+        binding?.fabDirections?.setOnClickListener { directionsMarker?.let { openDirections(it) } }
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 
@@ -153,9 +212,20 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, EasyPermis
         /* Centre camera on marker when tapped. */
         mapLibreMap.setOnMarkerClickListener { marker ->
             mapLibreMap.animateCamera(CameraUpdateFactory.newLatLng(marker.position))
+            showDirectionsFab(marker)
 
             /* False, so MapLibre still opens the info window. Tapping the window opens the stop forecast. */
             false
+        }
+
+        /*
+         * Fires for every info window that closes, including the old one when the user taps straight from one marker to another.
+         * By then showDirectionsFab() has already moved on to the new marker, so only a close for the current one hides the FAB.
+         */
+        mapLibreMap.setOnInfoWindowCloseListener { marker ->
+            if (marker == directionsMarker) {
+                hideDirectionsFab()
+            }
         }
 
         /* When a user taps on a stop's info window, it should open the appropriate stop forecast. */
@@ -184,6 +254,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, EasyPermis
                 mapLibreMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 13.0))
 
                 mapLibreMap.selectMarker(marker)
+                showDirectionsFab(marker)
             } catch (e: StopMarkerNotFoundException) {
                 Log.e(logTag, Log.getStackTraceString(e))
             }
@@ -435,6 +506,67 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, EasyPermis
 
             view
         }
+    }
+
+    /**
+     * Show the directions FAB for a stop, sliding it up from behind the "My Location" FAB.
+     *
+     * @param marker Marker of the stop whose info window is open.
+     */
+    private fun showDirectionsFab(marker: Marker) {
+        /* Tapping straight from one marker to another only changes which stop the FAB opens. It is already on screen. */
+        val alreadyShown = directionsMarker != null
+
+        directionsMarker = marker
+
+        if (alreadyShown) return
+
+        binding?.fabDirections?.let { fab ->
+            fab.animate().cancel()
+
+            fab.translationY = directionsFabSlideDistance(fab)
+            fab.visibility = View.VISIBLE
+
+            fab.animate()
+                .translationY(0f)
+                .setDuration(DURATION_DIRECTIONS_FAB_IN_MS)
+                .setInterpolator(INTERPOLATOR_DECELERATE)
+        }
+    }
+
+    /**
+     * Hide the directions FAB, once no info window is open, by sliding it back down behind the "My Location" FAB.
+     */
+    private fun hideDirectionsFab() {
+        directionsMarker = null
+
+        binding?.fabDirections?.let { fab ->
+            fab.animate()
+                .translationY(directionsFabSlideDistance(fab))
+                .setDuration(DURATION_DIRECTIONS_FAB_OUT_MS)
+                .setInterpolator(INTERPOLATOR_ACCELERATE)
+                .withEndAction { fab.visibility = View.INVISIBLE }
+        }
+    }
+
+    /**
+     * Distance from the directions FAB's resting place to the "My Location" FAB, which hides it. The "My Location" FAB is on top
+     * because fragment_maps.xml declares it later at the same elevation.
+     *
+     * @param fab The directions FAB.
+     * @return Distance in pixels.
+     */
+    private fun directionsFabSlideDistance(fab: View): Float = (fab.height + fab.marginBottom).toFloat()
+
+    /**
+     * Open the stop a marker represents in the user's maps app.
+     *
+     * @param marker Marker of the stop to open, with the stop ID in its snippet.
+     */
+    private fun openDirections(marker: Marker) {
+        val stop = Stops.byId(marker.snippet) ?: return
+
+        context?.let { openDirections(it, stop, marker.title) }
     }
 
     /**

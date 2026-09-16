@@ -96,8 +96,8 @@
     </string>
     <string name="about_source_bugs_features">github.com/thecosmicfrog/luasataglance</string>
     <string name="about_title_map_data">Sonraí léarscáile</string>
-    <string name="about_map_data">Is cóipcheart iad tíleanna léarscáile agus geoiméadracht rianta Luas le rannpháirtithe
-        OpenStreetMap, ceadúnaithe faoin Open Database License (ODbL) 1.0.</string>
+    <string name="about_map_data">Sonraí léarscáile © rannpháirtithe OpenStreetMap, ar fáil faoin Open Database License (ODbL) 1.0.
+        Tíleanna le OpenFreeMap, © OpenMapTiles.</string>
     <string name="about_title_privacypolicy">Beartas príobháideachais</string>
     <string name="about_developed_by">Cruthaithe ag Aaron Hastings (thecosmicfrog)</string>
     <string name="about_irish_translations">Aistriúcháin Gaeilge le Feidhlim Seoighe agus Marcas Ó
@@ -112,6 +112,7 @@
     <string name="content_desc_bottomnav_map">Cnaipe Léarscáil</string>
     <string name="content_desc_map_close">Cnaipe dún léarscáil</string>
     <string name="content_desc_map_chevron">Oscail an stad seo</string>
+    <string name="content_desc_map_directions">Treoracha chuig an stad seo</string>
     <string name="content_desc_map_my_location">Taispeáin mo shuíomh</string>
     <string name="content_desc_tabbar_menu">Roghchlár socruithe</string>
     <string name="content_desc_widget_next_stop">An chéad stad eile</string>

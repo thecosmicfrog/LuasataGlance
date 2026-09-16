@@ -64,11 +64,11 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/view_line_indicator"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/imagebutton_chevron"
+                app:layout_constraintRight_toLeftOf="@id/imageview_chevron"
                 tools:text="St. Stephen's Green" />
 
-            <ImageButton
-                android:id="@+id/imagebutton_chevron"
+            <ImageView
+                android:id="@+id/imageview_chevron"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:background="@color/background_card"

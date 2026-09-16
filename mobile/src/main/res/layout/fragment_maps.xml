@@ -56,6 +56,22 @@
         tools:context="org.thecosmicfrog.luasataglance.activity.MapsFragment" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_directions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/content_desc_map_directions"
+        android:elevation="@dimen/cardview_laag_elevation"
+        android:src="@drawable/ic_directions"
+        android:visibility="invisible"
+        app:backgroundTint="@color/background_accent"
+        app:layout_constraintBottom_toTopOf="@id/fab_my_location"
+        app:layout_constraintEnd_toEndOf="@id/map"
+        app:rippleColor="@color/text_on_accent"
+        app:tint="@color/text_on_accent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_my_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
