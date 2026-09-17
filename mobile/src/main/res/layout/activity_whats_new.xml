@@ -50,14 +50,15 @@
                 android:text="@string/title_activity_whats_new"
                 android:textColor="@color/on_surface" />
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageview_whats_new_laag_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/laag_logo_size"
+                android:layout_height="@dimen/laag_logo_size"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/ic_launcher" />
+                android:src="@mipmap/ic_launcher"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </RelativeLayout>
 
         <View

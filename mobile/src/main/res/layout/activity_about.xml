@@ -58,14 +58,15 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true" />
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imageview_about_laag_logo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/laag_logo_size"
+                        android:layout_height="@dimen/laag_logo_size"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/ic_launcher"
-                        android:contentDescription="@string/app_name" />
+                        android:src="@mipmap/ic_launcher"
+                        android:contentDescription="@string/app_name"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
                 </RelativeLayout>
 
                 <TextView
