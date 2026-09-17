@@ -30,6 +30,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.activity.NotifyTimeActivity
+import org.thecosmicfrog.luasataglance.model.NotifyTimeOptions
 import org.thecosmicfrog.luasataglance.api.ApiTimes
 import org.thecosmicfrog.luasataglance.model.StopForecast
 import org.thecosmicfrog.luasataglance.model.StopForecastShimmerAdapter
@@ -124,15 +125,15 @@ object StopForecastUtil {
     ) {
         if (notifyStopTimeStr.isEmpty()) return
 
-        /* Don't permit the user to schedule a notification for a tram that is due now, or in 1 or 2 minutes. */
-        if (notifyStopTimeStr.matches(Regex("${context.getString(R.string.due)}|1|2"))) {
+        /* "DUE", 1, and 2 leave nothing for NotifyTimeActivity to offer, since its earliest reminder is 2 minutes before. */
+        if (!NotifyTimeOptions.canSchedule(notifyStopTimeStr)) {
             showSnackbar((context as Activity), context.getString(R.string.cannot_schedule_notification))
 
             return
         }
 
         Preferences.saveNotifyStopName(context, stopName)
-        Preferences.saveNotifyStopTimeExpected(context, Integer.parseInt(notifyStopTimeStr))
+        Preferences.saveNotifyStopTimeExpected(context, notifyStopTimeStr.toInt())
 
         context.startActivity(
             Intent(context, NotifyTimeActivity::class.java)

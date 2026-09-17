@@ -148,6 +148,7 @@
     -->
     <string name="notify_set">Schedule</string>
     <string name="notify_when">When would you like to be notified about this tram?</string>
+    <string name="notify_mins_before_arrival">%1$d mins before arrival</string>
     <string name="notify_successful">Notification scheduled.</string>
     <string name="notify_replaces_existing">This will replace your previously scheduled notification.</string>
     <string name="notify_unsuccessful_exact_alarm">Notification creation failed. Please grant app permission to set exact alarms."
@@ -462,22 +463,5 @@
         <item>@string/stop_lau</item>
         <item>@string/stop_che</item>
         <item>@string/stop_bri</item>
-    </string-array>
-
-    <string-array name="array_notifytime_mins">
-        <item>2 mins before arrival</item>
-        <item>3 mins before arrival</item>
-        <item>4 mins before arrival</item>
-        <item>5 mins before arrival</item>
-        <item>6 mins before arrival</item>
-        <item>7 mins before arrival</item>
-        <item>8 mins before arrival</item>
-        <item>9 mins before arrival</item>
-        <item>10 mins before arrival</item>
-        <item>11 mins before arrival</item>
-        <item>12 mins before arrival</item>
-        <item>13 mins before arrival</item>
-        <item>14 mins before arrival</item>
-        <item>15 mins before arrival</item>
     </string-array>
 </resources>

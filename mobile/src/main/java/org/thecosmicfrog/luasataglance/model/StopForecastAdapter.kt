@@ -49,28 +49,14 @@ class StopForecastAdapter(
 
     override fun onBindViewHolder(holder: StopForecastViewHolder, position: Int) {
         val stopForecast = listStopForecastInfo[position]
-        val destValue = holder.textViewDestination?.resources?.getString(R.string.no_trams_forecast)
-        val dueMinsValue = holder.textViewDueMinutes?.resources?.getString(R.string.due)
-        val regexCannotScheduleNotification = Regex(
-            "${destValue}\$|${dueMinsValue}\$|1\$|2\$|^\$"
-        )
 
         holder.textViewDestination?.text = stopForecast.destination
         holder.textViewDueMinutes?.text = stopForecast.dueMinutes
         holder.textViewMinOrMins?.text = stopForecast.minOrMins
         holder.textViewMinOrMins?.visibility = if (stopForecast.showMinOrMins) View.VISIBLE else View.GONE
 
-        /*
-         * If the tram is arriving soon, or if there are no trams scheduled, don't show the
-         * "Tap to set reminder" text.
-         */
-        when (holder.textViewDueMinutes?.text?.matches(regexCannotScheduleNotification) == true ||
-                holder.textViewDestination?.text?.matches(regexCannotScheduleNotification) == true) {
-            true -> {
-                holder.textViewSetReminder?.visibility = View.GONE
-            }
-            else -> {}
-        }
+        holder.textViewSetReminder?.visibility =
+            if (NotifyTimeOptions.canSchedule(stopForecast.dueMinutes)) View.VISIBLE else View.GONE
 
         /* Set OnClickListener for each item in the RecyclerView. */
         holder.itemView.setOnClickListener {

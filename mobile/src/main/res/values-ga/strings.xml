@@ -145,6 +145,7 @@
     -->
     <string name="notify_set">Sceideal</string>
     <string name="notify_when">Cathain ar mhaith leat fógra a fháil faoin tram seo?</string>
+    <string name="notify_mins_before_arrival">%1$d nóim roimh theacht</string>
     <string name="notify_successful">Fógra sceidealaithe.</string>
     <string name="notify_replaces_existing">Cuirfear seo in ionad d\'fhógra sceidealaithe roimhe seo.</string>
     <string name="notify_unsuccessful_exact_alarm">Níorbh fhéidir fógra a chruthú. Tabhair cead aip chun aláraim chruinne a shocrú.
@@ -277,22 +278,5 @@
         <item>8</item>
         <item>9</item>
         <item>10</item>
-    </string-array>
-
-    <string-array name="array_notifytime_mins">
-        <item>2 nóim roimh theacht</item>
-        <item>3 nóim roimh theacht</item>
-        <item>4 nóim roimh theacht</item>
-        <item>5 nóim roimh theacht</item>
-        <item>6 nóim roimh theacht</item>
-        <item>7 nóim roimh theacht</item>
-        <item>8 nóim roimh theacht</item>
-        <item>9 nóim roimh theacht</item>
-        <item>10 nóim roimh theacht</item>
-        <item>11 nóim roimh theacht</item>
-        <item>12 nóim roimh theacht</item>
-        <item>13 nóim roimh theacht</item>
-        <item>14 nóim roimh theacht</item>
-        <item>15 nóim roimh theacht</item>
     </string-array>
 </resources>

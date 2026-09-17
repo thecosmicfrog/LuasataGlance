@@ -42,7 +42,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivityNotifyTimeBinding
-import org.thecosmicfrog.luasataglance.model.NotifyTimesMap
+import org.thecosmicfrog.luasataglance.model.NotifyTimeOptions
 import org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver
 import org.thecosmicfrog.luasataglance.util.Constant
 import org.thecosmicfrog.luasataglance.util.Preferences
@@ -50,20 +50,33 @@ import pub.devrel.easypermissions.EasyPermissions
 import pub.devrel.easypermissions.EasyPermissions.PermissionCallbacks
 import pub.devrel.easypermissions.EasyPermissions.RationaleCallbacks
 import pub.devrel.easypermissions.PermissionRequest
-import java.util.Locale
 import androidx.core.net.toUri
 
 class NotifyTimeActivity : AppCompatActivity(), PermissionCallbacks, RationaleCallbacks {
 
     private lateinit var context: Context
     private lateinit var viewBinding: ActivityNotifyTimeBinding
-    private var mapNotifyTimes: Map<String, Int>? = null
+
+    private var notifyTimeOptions: List<Int> = emptyList()
+
     private val logTag = NotifyTimeActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initActivity()
+
+        /* The due time of the tapped tram, saved by StopForecastUtil.showNotifyTimeDialog() just before starting this. */
+        notifyTimeOptions = NotifyTimeOptions.forTramDueIn(Preferences.notifyStopTimeExpected(context))
+
+        /* StopForecastUtil refuses such a tram before starting this Activity, so only a stale preference gets this far. */
+        if (notifyTimeOptions.isEmpty()) {
+            Toast.makeText(this, R.string.cannot_schedule_notification, Toast.LENGTH_LONG).show()
+            finish()
+
+            return
+        }
+
         initViews()
         checkRequiredPermissions()
     }
@@ -97,20 +110,15 @@ class NotifyTimeActivity : AppCompatActivity(), PermissionCallbacks, RationaleCa
     }
 
     /**
-     * Initialise Spinner.
+     * Fill the Spinner with only the times that make sense for this tram. A tram due in 9 minutes offers 2 to 8.
      */
     private fun initNotifyTimeSpinner() {
-        val localeDefault = Locale.getDefault().toString()
-        mapNotifyTimes = NotifyTimesMap(localeDefault, "dialog")
-
-        viewBinding.spinnerNotifytime.apply {
-            adapter = ArrayAdapter.createFromResource(
-                applicationContext,
-                R.array.array_notifytime_mins,
-                R.layout.spinner_notify_time
-            ).apply {
-                setDropDownViewResource(R.layout.spinner_notify_time)
-            }
+        viewBinding.spinnerNotifytime.adapter = ArrayAdapter(
+            applicationContext,
+            R.layout.spinner_notify_time,
+            notifyTimeOptions.map { getString(R.string.notify_mins_before_arrival, it) }
+        ).apply {
+            setDropDownViewResource(R.layout.spinner_notify_time)
         }
     }
 
@@ -211,10 +219,7 @@ class NotifyTimeActivity : AppCompatActivity(), PermissionCallbacks, RationaleCa
             setClass(applicationContext, NotifyTimesReceiver::class.java)
             action = NotifyTimeActivity::class.java.name
             putExtra(Constant.NOTIFY_STOP_NAME, Preferences.notifyStopName(applicationContext))
-            putExtra(
-                Constant.NOTIFY_TIME,
-                mapNotifyTimes!![viewBinding.spinnerNotifytime.selectedItem.toString()]
-            )
+            putExtra(Constant.NOTIFY_TIME, notifyTimeOptions[viewBinding.spinnerNotifytime.selectedItemPosition])
         }.also { sendBroadcast(it) }
     }
 
