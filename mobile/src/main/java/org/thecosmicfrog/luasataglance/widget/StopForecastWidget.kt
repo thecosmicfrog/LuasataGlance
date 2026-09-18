@@ -79,8 +79,8 @@ class StopForecastWidget : AppWidgetProvider() {
     private val fetchScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
-     * Called by the system on the widget's first placement and on each scheduled update. Triggers a full update (including a fresh
-     * API fetch) for every active widget instance.
+     * Called by the system after the widget is configured, on boot, and after the app is updated. Draws every instance at its
+     * holding screen. No forecast is fetched, since none of those is the user asking for one.
      *
      * @param context          Context.
      * @param appWidgetManager Manager the updates are pushed through.
@@ -88,15 +88,15 @@ class StopForecastWidget : AppWidgetProvider() {
      */
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId, true)
+            resetAppWidget(context, appWidgetManager, appWidgetId)
         }
     }
 
     /**
-     * Called when the widget is resized by the user.
+     * Called when the widget is resized, and also whenever the launcher restarts and binds it again.
      *
-     * Cancels any pending timeout alarm, then triggers a fresh fetch so that the number of visible tram rows is recalculated to fit
-     * the new dimensions.
+     * Draws the holding screen ("Tap to load times") rather than fetching. Fetching here puts tram times on the widget every time
+     * the launcher is restarted, which is not a good UX.
      *
      * @param context          Context.
      * @param appWidgetManager Manager the update is pushed through.
@@ -105,8 +105,7 @@ class StopForecastWidget : AppWidgetProvider() {
      */
     override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int,
                                            newOptions: Bundle?) {
-        cancelTimeout(context, appWidgetId)
-        updateAppWidget(context, appWidgetManager, appWidgetId, true)
+        resetAppWidget(context, appWidgetManager, appWidgetId)
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
@@ -232,6 +231,25 @@ class StopForecastWidget : AppWidgetProvider() {
     }
 
     /**
+     * Draws the widget at its holding screen ("Tap to load times").
+     *
+     * Used for every update the system sends rather than the user. Any pending timeout is dropped, since there is nothing left for
+     * it to revert.
+     *
+     * @param context          Context.
+     * @param appWidgetManager Manager the update is pushed through.
+     * @param appWidgetId      ID of the widget instance being reset.
+     */
+    private fun resetAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+        cancelTimeout(context, appWidgetId)
+
+        /* An unconfigured widget has already been drawn asking to be configured, which the holding screen must not overwrite. */
+        updateAppWidget(context, appWidgetManager, appWidgetId, false) ?: return
+
+        showHoldingScreen(context, appWidgetId)
+    }
+
+    /**
      * Builds and pushes a [RemoteViews] update for the widget, then optionally kicks off an async forecast fetch.
      *
      * The synchronous portion sets the stop name, directional labels, and click handlers. If [forceUpdate] is true,
@@ -241,8 +259,10 @@ class StopForecastWidget : AppWidgetProvider() {
      * @param appWidgetManager Manager the update is pushed through.
      * @param appWidgetId      ID of the widget instance being updated.
      * @param forceUpdate      If true, a fresh API call is made after the UI is prepared.
+     * @return The stop the widget was drawn for, or null if it has no stops and was drawn asking to be configured.
      */
-    private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, forceUpdate: Boolean) {
+    private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int,
+                                forceUpdate: Boolean): String? {
         val views = RemoteViews(context.packageName, R.layout.stop_forecast_widget)
         val stopName = Preferences.widgetSelectedStopName(context, appWidgetId)
             ?: WidgetStopStore.load(context, appWidgetId)?.firstOrNull()
@@ -260,7 +280,7 @@ class StopForecastWidget : AppWidgetProvider() {
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
 
-            return
+            return null
         }
 
         views.setTextViewText(R.id.textview_stop_name, stopName)
@@ -289,6 +309,8 @@ class StopForecastWidget : AppWidgetProvider() {
         if (forceUpdate) {
             launchFetch(context, appWidgetManager, appWidgetId, stopName, 0L)
         }
+
+        return stopName
     }
 
     /**
@@ -756,7 +778,7 @@ class StopForecastWidget : AppWidgetProvider() {
     private fun setTimeout(context: Context, appWidgetId: Int) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = getPendingIntent(context, appWidgetId, ACTION_TIMEOUT)
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 15000, intent)
+        alarmManager.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 15000, intent)
     }
 
     /**
