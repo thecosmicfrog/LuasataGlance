@@ -47,9 +47,9 @@ public final class Preferences {
      */
 
     /**
-     * Load the current app version from shared preferences.
+     * Load the versionCode of the app that last showed What's New.
      * @param context Context.
-     * @return Current app version, or -1 if not found.
+     * @return versionCode as a string, or -1 if not found.
      */
     public static String currentAppVersion(Context context) {
         final String PREFS_NAME = "org.thecosmicfrog.luasataglance";
@@ -252,9 +252,9 @@ public final class Preferences {
      */
 
     /**
-     * Save the current app version according to strings.xml.
+     * Save the versionCode of the app that last showed What's New.
      * @param context Context.
-     * @param currentAppVersion Current app version according to strings.xml.
+     * @param currentAppVersion versionCode as a string.
      * @return Successfully saved.
      */
     public static boolean saveCurrentAppVersion(Context context, String currentAppVersion) {

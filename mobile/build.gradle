@@ -132,12 +132,28 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0'
 }
 
-private Integer generateVersionCode() {
-    project.versionCode
+private String generateVersionName() {
+    project.versionName
 }
 
-private String generateVersionName() {
-    String.format("0.%s", Integer.toString(generateVersionCode()))
+/*
+ * The Play Store needs versionCode to rise with every upload, so it is packed from the SemVer as
+ * `major * 10000 + minor * 100 + patch`.
+ * e.g., 2.0.0 gives 20000
+ */
+private Integer generateVersionCode() {
+    def parts = generateVersionName().tokenize('.')
+    if (parts.size() != 3 || parts.any { !it.isInteger() }) {
+        throw new GradleException("versionName '${generateVersionName()}' is not major.minor.patch")
+    }
+
+    /* Safety check for numbers too high. */
+    def (major, minor, patch) = parts.collect { it.toInteger() }
+    if (minor > 99 || patch > 99) {
+        throw new GradleException("versionName '${generateVersionName()}' has a minor or patch above 99")
+    }
+
+    major * 10000 + minor * 100 + patch
 }
 
 private static String generateReleaseDate() {

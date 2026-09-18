@@ -39,6 +39,7 @@ import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import org.thecosmicfrog.luasataglance.BuildConfig
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.adapter.TabsPagerAdapter
 import org.thecosmicfrog.luasataglance.model.Stops
@@ -231,20 +232,14 @@ class TramsFragment : Fragment() {
         }
 
         /*
-         * Load two values for the current app version. One comes from strings.xml and the other
-         * comes from shared preferences. The value from strings.xml should be considered the
-         * definitive value.
+         * Compares versionCode rather than versionName, since "2.0.10" does not order as a number. Installs from before 2.0.0 saved
+         * versionName with the dots removed, such as "0198", which parses to the versionCode of that release.
          */
-        val appVersionCurrent = getString(R.string.version_name).replace(".", "")
+        val appVersionCurrent = BuildConfig.VERSION_CODE.toString()
         val appVersionSaved = Preferences.currentAppVersion(context)
-        val appVersionCurrentNumeric = appVersionCurrent.toDouble()
-        val appVersionSavedNumeric = appVersionSaved.toDouble()
+        val appVersionCurrentNumeric = appVersionCurrent.toInt()
+        val appVersionSavedNumeric = appVersionSaved.toIntOrNull() ?: -1
 
-        /*
-         * If the definitive current app version is greater than the version stored in shared
-         * preferences, the user has recently updated the app to a newer version.
-         * In this case, display the What's New dialog.
-         */
         if (appVersionCurrentNumeric > appVersionSavedNumeric) {
             Log.i(
                 logTag,

@@ -14,7 +14,8 @@ buildscript {
 }
 
 allprojects {
-    ext.versionCode = 198
+    // SemVer (`major.minor.patch`).
+    ext.versionName = '2.0.0'
 
     repositories {
         google()
