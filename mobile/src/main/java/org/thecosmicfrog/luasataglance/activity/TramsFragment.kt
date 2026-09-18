@@ -135,6 +135,7 @@ class TramsFragment : Fragment() {
                 val popupMenuOverflowMenu = PopupMenu(context as Context, v as View)
 
                 popupMenuOverflowMenu.inflate(R.menu.menu_overflow)
+                popupMenuOverflowMenu.setForceShowIcon(true)
                 popupMenuOverflowMenu.show()
 
                 popupMenuOverflowMenu.setOnMenuItemClickListener(
