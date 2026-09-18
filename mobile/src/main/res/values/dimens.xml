@@ -25,6 +25,9 @@
 
     <dimen name="laag_logo_size">48dp</dimen>
 
+    <dimen name="whatsnew_bullet_gap">12dp</dimen>
+    <dimen name="whatsnew_bullet_radius">2dp</dimen>
+
     <!-- Default CardView elevation, as @dimen/cardview_default_elevation is marked as private. -->
     <dimen name="cardview_laag_elevation">2dp</dimen>
 

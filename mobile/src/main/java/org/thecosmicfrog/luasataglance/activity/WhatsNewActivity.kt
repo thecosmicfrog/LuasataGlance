@@ -21,7 +21,11 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.BulletSpan
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivityWhatsNewBinding
 
@@ -38,6 +42,7 @@ class WhatsNewActivity : AppCompatActivity() {
         setContentView(rootView)
 
         formatAndSetWhatsNewTitles()
+        formatAndSetWhatsNewContent()
     }
 
     private fun formatAndSetWhatsNewTitles() {
@@ -47,6 +52,31 @@ class WhatsNewActivity : AppCompatActivity() {
                 getString(R.string.version_name),
                 getString(R.string.release_date)
         )
+    }
+
+    /**
+     * Turns each line of `whatsnew_content_current` into a bulleted paragraph.
+     */
+    private fun formatAndSetWhatsNewContent() {
+        val gapWidth = resources.getDimensionPixelSize(R.dimen.whatsnew_bullet_gap)
+        val bulletRadius = resources.getDimensionPixelSize(R.dimen.whatsnew_bullet_radius)
+        val bulletColor = ContextCompat.getColor(this, R.color.on_surface)
+
+        val content = SpannableStringBuilder()
+        getString(R.string.whatsnew_content_current).split('\n').map { it.trim() }.filter { it.isNotEmpty() }
+            .forEachIndexed { index, line ->
+                if (index > 0) content.append('\n')
+                val start = content.length
+                content.append(line)
+                content.setSpan(
+                    BulletSpan(gapWidth, bulletColor, bulletRadius),
+                    start,
+                    content.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+
+        viewBinding.textviewWhatsnewContentCurrent.text = content
     }
 }
 
