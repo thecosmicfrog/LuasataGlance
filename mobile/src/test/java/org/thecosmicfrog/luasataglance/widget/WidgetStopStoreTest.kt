@@ -27,6 +27,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import org.thecosmicfrog.luasataglance.util.Serializer
 
 /**
@@ -69,6 +70,20 @@ class WidgetStopStoreTest {
 
         assertThat(WidgetStopStore.load(context, FIRST_WIDGET_ID))
             .containsExactly("Abbey Street", "belgard", "the Point")
+            .inOrder()
+    }
+
+    @Test
+    @Config(qualifiers = "ga")
+    fun `a fada sorts in with its base letter rather than after Z`() {
+        /*
+         * Code point order put Áth an Ghainimh last, so the widget arrows reached it after Tamhlacht rather than before
+         * Baile Amhlaoibh.
+         */
+        WidgetStopStore.save(context, FIRST_WIDGET_ID, listOf("Tamhlacht", "Áth an Ghainimh", "Baile Amhlaoibh"))
+
+        assertThat(WidgetStopStore.load(context, FIRST_WIDGET_ID))
+            .containsExactly("Áth an Ghainimh", "Baile Amhlaoibh", "Tamhlacht")
             .inOrder()
     }
 

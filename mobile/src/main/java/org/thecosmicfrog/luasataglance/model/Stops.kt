@@ -25,6 +25,7 @@ import android.content.res.Configuration
 import androidx.annotation.StringRes
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.util.Constant
+import java.text.Collator
 import java.util.Locale
 
 /**
@@ -207,6 +208,17 @@ object Stops {
 
         return map[name]
     }
+
+    /**
+     * The order stop names are shown in wherever the user picks from a list.
+     *
+     * A Collator for the device's language sorts an Irish fada in with its base letter.
+     */
+    val nameOrder: Comparator<CharSequence?>
+        get() {
+            val collator = Collator.getInstance(Locale.getDefault())
+            return compareBy(collator) { it?.toString() ?: "" }
+        }
 
     /**
      * Translates a destination from the English name the API sends into the device's language.

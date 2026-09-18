@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.adapter.FavouriteAdapter
 import org.thecosmicfrog.luasataglance.model.FavouriteInfo
 import org.thecosmicfrog.luasataglance.util.Preferences
@@ -91,7 +92,7 @@ class FavouritesFragment : Fragment() {
         )
         textViewFavouritesNoneSelected?.visibility = View.GONE
 
-        listFavouriteStops = openListFavouritesStops().sortedBy { it.toString().lowercase() }
+        listFavouriteStops = openListFavouritesStops().sortedWith(Stops.nameOrder)
 
         val listFavouriteInfo: MutableList<FavouriteInfo> = ArrayList()
 

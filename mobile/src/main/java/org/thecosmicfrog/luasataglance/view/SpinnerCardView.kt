@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.google.android.material.card.MaterialCardView
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.model.Stops
 
 class SpinnerCardView : MaterialCardView {
 
@@ -68,7 +69,7 @@ class SpinnerCardView : MaterialCardView {
      */
     private fun initAdapterStops(resArrayStops: Int) {
         val arrayStops = resources.getStringArray(resArrayStops)
-        val listStops = arrayStops.toList().sortedBy { it.lowercase() }
+        val listStops = arrayStops.toList().sortedWith(Stops.nameOrder)
         adapterStops = ArrayAdapter(
             context,
             R.layout.spinner_stops,

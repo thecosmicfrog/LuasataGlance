@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.adapter.StopSelectAdapter
 import org.thecosmicfrog.luasataglance.databinding.ActivityStopSelectBinding
 
@@ -80,12 +81,12 @@ abstract class StopSelectActivity : AppCompatActivity() {
 
         /*
          * Create and return a sorted ArrayList of stop names, skipping the first element in the array ("None"),
-         * casting to CharSequence for adapter compatibility, and sorting alphabetically in a case-insensitive manner.
+         * casting to CharSequence for adapter compatibility, and sorting alphabetically.
          */
         return ArrayList(
             (1 until allStops.size)
                 .map { allStops[it] as CharSequence? }
-                .sortedBy { it?.toString()?.lowercase() }
+                .sortedWith(Stops.nameOrder)
         )
     }
 

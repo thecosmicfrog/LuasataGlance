@@ -21,13 +21,12 @@
 package org.thecosmicfrog.luasataglance.activity
 
 import android.os.Bundle
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.BulletSpan
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.databinding.ActivityWhatsNewBinding
+import org.thecosmicfrog.luasataglance.databinding.ItemWhatsnewBinding
 
 class WhatsNewActivity : AppCompatActivity() {
 
@@ -46,37 +45,28 @@ class WhatsNewActivity : AppCompatActivity() {
     }
 
     private fun formatAndSetWhatsNewTitles() {
-        val textViewWhatsNewTitleCurrent = viewBinding.textviewWhatsnewTitleCurrent
-        textViewWhatsNewTitleCurrent.text = String.format(
-                getString(R.string.whatsnew_title_current),
-                getString(R.string.version_name),
-                getString(R.string.release_date)
+        viewBinding.textviewWhatsnewTitleCurrent.text = getString(
+            R.string.whatsnew_title_current,
+            getString(R.string.version_name),
+            getString(R.string.release_date)
         )
     }
 
     /**
-     * Turns each line of `whatsnew_content_current` into a bulleted paragraph.
+     * Shows each line of `whatsnew_content_current` as a bulleted item, one `item_whatsnew` row per line.
      */
     private fun formatAndSetWhatsNewContent() {
-        val gapWidth = resources.getDimensionPixelSize(R.dimen.whatsnew_bullet_gap)
-        val bulletRadius = resources.getDimensionPixelSize(R.dimen.whatsnew_bullet_radius)
-        val bulletColor = ContextCompat.getColor(this, R.color.on_surface)
+        val container = viewBinding.linearlayoutWhatsnewContentCurrent
 
-        val content = SpannableStringBuilder()
         getString(R.string.whatsnew_content_current).split('\n').map { it.trim() }.filter { it.isNotEmpty() }
             .forEachIndexed { index, line ->
-                if (index > 0) content.append('\n')
-                val start = content.length
-                content.append(line)
-                content.setSpan(
-                    BulletSpan(gapWidth, bulletColor, bulletRadius),
-                    start,
-                    content.length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
+                val item = ItemWhatsnewBinding.inflate(layoutInflater, container, false)
+                item.textviewWhatsnewItem.text = line
 
-        viewBinding.textviewWhatsnewContentCurrent.text = content
+                /* The container's own paddingTop separates the first item from the version title. */
+                if (index == 0) item.root.updateLayoutParams<MarginLayoutParams> { topMargin = 0 }
+
+                container.addView(item.root)
+            }
     }
 }
-

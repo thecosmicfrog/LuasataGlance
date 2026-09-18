@@ -46,6 +46,7 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.thecosmicfrog.luasataglance.R
+import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.databinding.FragmentGreenlineBinding
 import org.thecosmicfrog.luasataglance.databinding.FragmentRedlineBinding
 import org.thecosmicfrog.luasataglance.model.LineViewModel
@@ -465,8 +466,8 @@ class LineFragment : Fragment() {
         val arrayStopsRedLine = resources.getStringArray(resArrayStopsRedLine)
         val arrayStopGreenLine = resources.getStringArray(resArrayStopsGreenLine)
 
-        val listStopsRedLine = arrayStopsRedLine.toList().sortedBy { it.lowercase() }
-        val listStopsGreenLine = arrayStopGreenLine.toList().sortedBy { it.lowercase() }
+        val listStopsRedLine = arrayStopsRedLine.toList().sortedWith(Stops.nameOrder)
+        val listStopsGreenLine = arrayStopGreenLine.toList().sortedWith(Stops.nameOrder)
         var listStopsThisLine: List<String>? = null
         var indexOtherLine = -1
 

@@ -22,6 +22,7 @@ package org.thecosmicfrog.luasataglance.widget
 
 import android.content.Context
 import android.util.Log
+import org.thecosmicfrog.luasataglance.model.Stops
 import org.thecosmicfrog.luasataglance.util.Serializer
 import java.io.BufferedInputStream
 import java.io.FileNotFoundException
@@ -60,7 +61,7 @@ object WidgetStopStore {
      *         legacy file could be read.
      */
     fun load(context: Context, appWidgetId: Int): List<String>? {
-        return (read(context, fileName(appWidgetId)) ?: read(context, FILE_NAME_LEGACY))?.sortedBy { it.lowercase() }
+        return (read(context, fileName(appWidgetId)) ?: read(context, FILE_NAME_LEGACY))?.sortedWith(Stops.nameOrder)
     }
 
     /**

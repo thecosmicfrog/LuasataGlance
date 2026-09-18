@@ -252,4 +252,23 @@ class StopsTest {
         private const val WESTERNMOST_LONGITUDE = -6.5
         private const val EASTERNMOST_LONGITUDE = -6.1
     }
+
+    /* Sort order. */
+    @Test
+    @Config(qualifiers = "ga")
+    fun `a fada sorts in with its base letter rather than after Z`() {
+        val sorted = stopsAll.sortedWith(Stops.nameOrder)
+
+        /* Code point order puts every name starting with Á or Ó after the last unaccented name. */
+        assertThat(sorted.indexOf("Áth an Ghainimh")).isLessThan(sorted.indexOf("Baile Amhlaoibh"))
+        assertThat(sorted.indexOf("Ó Conaill - AOP")).isLessThan(sorted.indexOf("Parnell"))
+        assertThat(sorted.last()).doesNotContain("Ó Conaill")
+    }
+
+    @Test
+    fun `English names sort alphabetically ignoring case`() {
+        val sorted = stopsAll.sortedWith(Stops.nameOrder)
+
+        assertThat(sorted).isEqualTo(stopsAll.sortedBy { it.lowercase() })
+    }
 }
