@@ -124,8 +124,8 @@
     -->
     <string name="favourites_title">Favourites</string>
     <string name="favourites_edit">Edit favourites</string>
-    <string name="favourites_none_selected">Let\'s get started!\n\nTap the <b>Edit</b> button
-        in the bottom-right corner of this screen to start adding your most frequently-used Luas stops.
+    <string name="favourites_none_selected">Tap the <b>Edit favourites</b> button in the corner of this screen to add your favourite
+        Luas stops.
     </string>
     <string name="favourites_save_selected">Save selected</string>
 

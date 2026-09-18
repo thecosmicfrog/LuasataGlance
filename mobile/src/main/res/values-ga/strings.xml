@@ -122,9 +122,9 @@
         Favourites
     -->
     <string name="favourites_title">Ceanáin</string>
-    <string name="favourites_edit">Eagar</string>
-    <string name="favourites_none_selected">Tosóimis!\n\nBrú an cnap <b>Athraigh</b> ar chúinne an
-        scáileáin chun cuir le do liosta de stadanna Luas a úsáideann tú go minic.</string>
+    <string name="favourites_edit">Athraigh</string>
+    <string name="favourites_none_selected">Brú an cnap <b>Athraigh</b> ar chúinne an scáileáin chun cuir le do liosta de stadanna
+        Luas a úsáideann tú go minic.</string>
     <string name="favourites_save_selected">Sábháil</string>
 
     <!--
