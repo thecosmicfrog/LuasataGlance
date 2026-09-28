@@ -34,6 +34,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowAlarmManager
+import org.robolectric.shadows.ShadowToast
 import org.thecosmicfrog.luasataglance.R
 import org.thecosmicfrog.luasataglance.receiver.NotifyTimesReceiver
 import org.thecosmicfrog.luasataglance.util.Constant
@@ -133,5 +134,17 @@ class NotifyTimeActivityTest {
         assertThat(activity.isFinishing).isTrue()
         assertThat(shadowOf(application).broadcastIntents.none { it.component?.className == NotifyTimesReceiver::class.java.name })
             .isTrue()
+    }
+
+    @Test
+    fun `a user who declined notifications gets a Toast and the dialog closes`() {
+        /* Set by onRationaleDenied(). */
+        Preferences.savePermissionNotificationsShouldNotAskAgain(application, true)
+
+        val activity = launchFor(tramDueInMins = 9)
+
+        assertThat(activity.isFinishing).isTrue()
+        assertThat(ShadowToast.getTextOfLatestToast())
+            .isEqualTo(application.getString(R.string.please_allow_notification_permissions))
     }
 }
