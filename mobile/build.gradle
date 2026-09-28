@@ -46,8 +46,10 @@ android {
             resValue "string", "version_name", generateVersionName()
             resValue "string", "release_date", generateReleaseDate()
 
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            /* Shrinks code and resources with R8, using proguard-android-optimize.txt. */
+            optimization {
+                enable = true
+            }
 
             /*
              * MapLibre ships libmaplibre.so for four ABIs. No consumer devices are x86, so the release keeps only the ARM copies to

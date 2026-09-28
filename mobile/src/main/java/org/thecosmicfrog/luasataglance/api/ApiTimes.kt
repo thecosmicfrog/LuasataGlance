@@ -28,11 +28,13 @@ data class ApiTimes(
     @SerializedName("created")
     val createdTime: String?,
 
+    @SerializedName("message")
     val message: String?,
 
     @SerializedName("status")
     val stopForecastStatus: StopForecastStatus?,
 
+    @SerializedName("trams")
     val trams: List<Tram?>?
 )
 

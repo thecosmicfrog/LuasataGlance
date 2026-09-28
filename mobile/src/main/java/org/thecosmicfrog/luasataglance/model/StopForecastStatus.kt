@@ -31,4 +31,3 @@ data class StopForecastStatus(
     val stopForecastStatusDirectionOutbound: StopForecastStatusDirection =
         StopForecastStatusDirection()
 )
-

@@ -20,11 +20,16 @@
  */
 package org.thecosmicfrog.luasataglance.model
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class StopForecastStatusDirection(
+    @SerializedName("message")
     var message: String? = null,
+
+    @SerializedName("forecastsEnabled")
     var forecastsEnabled: Boolean? = false,
+
+    @SerializedName("operatingNormally")
     var operatingNormally: Boolean? = false
 ) : Serializable
-

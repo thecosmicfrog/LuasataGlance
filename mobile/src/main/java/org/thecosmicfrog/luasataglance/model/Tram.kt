@@ -20,12 +20,18 @@
  */
 package org.thecosmicfrog.luasataglance.model
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class Tram(
+    @SerializedName("destination")
     val destination: String?,
+
+    @SerializedName("direction")
     val direction: String?,
+
+    @SerializedName("dueMinutes")
     val dueMinutes: String?,
+
     val serialVersionUID: Long = 0L
 ) : Serializable
-
