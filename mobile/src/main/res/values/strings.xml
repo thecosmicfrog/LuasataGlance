@@ -209,10 +209,8 @@
     <string name="whatsnew_bullet" translatable="false">\u2022</string>
     <string name="whatsnew_title_current" translatable="false">Version %s (%s)</string>
     <string name="whatsnew_content_current" translatable="false">
-        Fresh new design that displays even more trams at your stop.\n
-        Improved map that is easier to use.\n
-        Support for both light and dark modes. You can change this at any time in Settings.\n
-        Fully reworked widget - now resizable and more reliable.
+        Fixed widget not working on mobile data for some devices.\n
+        Fixed crash with tram notifications.
     </string>
 
     <!--
@@ -222,6 +220,9 @@
     <string name="widget_arrow_right">\u25B6</string>
     <string name="widget_message_configure"><b>Please configure widget</b></string>
     <string name="widget_message_error"><b>Network error</b></string>
+    <string name="widget_message_restricted"><b>Battery use is set to <i>Restricted</i>. Tap to change it.</b></string>
+    <string name="widget_notification_channel">Widget</string>
+    <string name="widget_notification_loading">Loading tram times</string>
     <string name="widget_select_confirm">Confirm</string>
     <string name="widget_select_at_least_one_stop">Please select at least one stop</string>
 

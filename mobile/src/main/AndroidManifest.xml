@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -54,6 +53,12 @@
         </receiver>
 
         <receiver android:name=".receiver.NotifyTimesAlarmReceiver" android:exported="false" />
+
+        <!-- Started by StopForecastWidget when the widget is tapped. A short service needs no FOREGROUND_SERVICE_* permission. -->
+        <service
+            android:name=".widget.WidgetFetchService"
+            android:exported="false"
+            android:foregroundServiceType="shortService" />
 
         <receiver android:name=".widget.StopForecastWidget" android:exported="true">
             <intent-filter>

@@ -178,6 +178,9 @@
     <string name="widget_arrow_right">\u25B6</string>
     <string name="widget_message_configure"><b>Cumraigh an ghiuirléid, le do thoil</b></string>
     <string name="widget_message_error"><b>Fadhb idirlín</b></string>
+    <string name="widget_message_restricted"><b>Tá úsáid ceallraí <i>srianta</i>. Cliceáil chun é a athrú.</b></string>
+    <string name="widget_notification_channel">Giuirléid</string>
+    <string name="widget_notification_loading">Amanna á bhfáil</string>
     <string name="widget_select_confirm">Sabháil</string>
     <string name="widget_select_at_least_one_stop">Roghnaigh stad amháin ar a laghad, le do thoil</string>
 
