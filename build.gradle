@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         // Gradle
-        classpath 'com.android.tools.build:gradle:9.3.2'
+        classpath 'com.android.tools.build:gradle:9.4.1'
 
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -15,7 +15,7 @@ buildscript {
 
 allprojects {
     // SemVer (`major.minor.patch`).
-    ext.versionName = '2.0.3'
+    ext.versionName = '2.0.4'
 
     repositories {
         google()

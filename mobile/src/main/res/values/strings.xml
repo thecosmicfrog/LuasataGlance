@@ -209,8 +209,7 @@
     <string name="whatsnew_bullet" translatable="false">\u2022</string>
     <string name="whatsnew_title_current" translatable="false">Version %s (%s)</string>
     <string name="whatsnew_content_current" translatable="false">
-        Fixed widget not working on mobile data for some devices.\n
-        Fixed crash with tram notifications.
+        Performance improvements and app size reduction.
     </string>
 
     <!--
